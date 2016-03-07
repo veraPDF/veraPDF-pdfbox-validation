@@ -163,31 +163,7 @@
       <dependency>
         <groupId>org.verapdf</groupId>
         <artifactId>core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.verapdf</groupId>
-        <artifactId>gui</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.verapdf</groupId>
-        <artifactId>feature-report</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.verapdf</groupId>
-        <artifactId>model-implementation</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.verapdf</groupId>
-        <artifactId>metadata-fixer</artifactId>
-        <version>${project.version}</version>
+        <version>${verapdf.model.version}</version>
       </dependency>
 
       <dependency>
