@@ -1,5 +1,6 @@
 package org.verapdf.model.impl.pb.pd;
 
+import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.common.COSObjectable;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentProperties;
@@ -17,6 +18,8 @@ import java.util.List;
  * @author Timur Kamalov
  */
 public class PBoxPDOCProperties extends PBoxPDObject implements PDOCProperties {
+
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDOCProperties.class);
 
 	public static final String OC_PROPERTIES_TYPE = "PDOCProperties";
 
@@ -40,6 +43,8 @@ public class PBoxPDOCProperties extends PBoxPDObject implements PDOCProperties {
 	}
 
 	private List<PDOCConfig> getD() {
+		List<PDOCConfig> result = new ArrayList<>();
+
 		COSBase contentProperties = this.simplePDObject.getCOSObject();
 		if (contentProperties instanceof COSDictionary) {
 			COSDictionary defaultConfig = (COSDictionary) ((COSDictionary) contentProperties).getDictionaryObject(COSName.D);
@@ -49,13 +54,15 @@ public class PBoxPDOCProperties extends PBoxPDObject implements PDOCProperties {
 
 			PDOCConfig pdConfig = new PBoxPDOCConfig(defaultConfig, groupNamesList, false);
 
-			List<PDOCConfig> result = new ArrayList<>();
 			result.add(pdConfig);
 			return result;
 		} else {
-			//TODO : log error
+			LOGGER.warn("Invalid object type of the default optional configuration dictionary. Returning empty config.");
+			PDOCConfig config = new PBoxPDOCConfig(new COSDictionary());
+
+			result.add(config);
+			return result;
 		}
-		return Collections.emptyList();
 	}
 
 	private List<PDOCConfig> getConfigs() {
@@ -76,7 +83,7 @@ public class PBoxPDOCProperties extends PBoxPDObject implements PDOCProperties {
 					PDOCConfig pdConfig = new PBoxPDOCConfig(config, groupNamesList, names.contains(((COSDictionary) config).getString(COSName.NAME)));
 					result.add(pdConfig);
 				} else {
-					//TODO : log error
+					LOGGER.warn("Invalid object type of the configuration dictionary. Ignoring config.");
 				}
 			}
 			return result;
@@ -94,8 +101,6 @@ public class PBoxPDOCProperties extends PBoxPDObject implements PDOCProperties {
 			if (name != null) {
 				result.add(name);
 			}
-		} else {
-			//TODO : log error
 		}
 
 		COSArray configs = (COSArray) contentProperties.getDictionaryObject(CONFIGS);
@@ -107,8 +112,6 @@ public class PBoxPDOCProperties extends PBoxPDObject implements PDOCProperties {
 					if (name != null) {
 						result.add(name);
 					}
-				} else {
-					//TODO : log error
 				}
 			}
 		}

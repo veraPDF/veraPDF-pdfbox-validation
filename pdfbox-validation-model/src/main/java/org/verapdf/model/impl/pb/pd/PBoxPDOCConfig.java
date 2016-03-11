@@ -1,5 +1,6 @@
 package org.verapdf.model.impl.pb.pd;
 
+import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.common.COSObjectable;
 import org.verapdf.model.pdlayer.PDOCConfig;
@@ -13,12 +14,20 @@ import java.util.List;
  */
 public class PBoxPDOCConfig extends PBoxPDObject implements PDOCConfig {
 
+	public static final Logger LOGGER = Logger.getLogger(PBoxPDOCConfig.class);
+
 	public static final String OC_CONFIG_TYPE = "PDOCConfig";
 
 	public static final String EVENT_KEY = "Event";
 
 	private final List<String> groupNames;
 	private final boolean duplicateName;
+
+	public PBoxPDOCConfig(COSObjectable simplePDObject) {
+		super(simplePDObject, OC_CONFIG_TYPE);
+		this.groupNames = null;
+		this.duplicateName = false;
+	}
 
 	public PBoxPDOCConfig(COSObjectable simplePDObject, List<String> groupNames, boolean duplicateName) {
 		super(simplePDObject, OC_CONFIG_TYPE);
@@ -50,14 +59,14 @@ public class PBoxPDOCConfig extends PBoxPDObject implements PDOCConfig {
 							return Boolean.FALSE;
 						}
 					} else {
-						// TODO : log exception
+						LOGGER.warn("Invalid object type in order array. Ignoring the object.");
 					}
 				}
 				if (groupsInOrder < groupNames.size()) {
 					return Boolean.FALSE;
 				}
 			} else {
-				//TODO : log exception
+				LOGGER.warn("Invalid object type of Order entry. Ignoring the Order entry.");
 			}
 		} else {
 			if (groupNames.size() > 0) {
@@ -70,24 +79,28 @@ public class PBoxPDOCConfig extends PBoxPDObject implements PDOCConfig {
 	@Override
 	public String getAS() {
 		COSBase asArray = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.AS);
-		if (asArray != null && asArray instanceof COSArray) {
-			String result = new String();
-			for (int i = 0; i < ((COSArray) asArray).size(); i++) {
-				COSBase element = ((COSArray) asArray).getObject(i);
-				if (element instanceof COSDictionary) {
-					String event = ((COSDictionary) element).getString(EVENT_KEY);
-					if (event != null && !event.isEmpty()) {
-						result.concat(event);
+		if (asArray != null) {
+			String result = "";
+			if (asArray instanceof COSArray) {
+				for (int i = 0; i < ((COSArray) asArray).size(); i++) {
+					COSBase element = ((COSArray) asArray).getObject(i);
+					if (element instanceof COSDictionary) {
+						String event = ((COSDictionary) element).getString(EVENT_KEY);
+						if (event != null && !event.isEmpty()) {
+							result = result.concat(event);
+						}
+					} else {
+						LOGGER.warn("Invalid object type in the AS array. Ignoring the object.");
 					}
-				} else {
-					//TODO : log exception
 				}
+				return result;
+			} else {
+				LOGGER.warn("Invalid object type of AS entry. Ignoring the entry.");
+				return result;
 			}
-			return result;
 		} else {
-			//TODO : log exception
+			return null;
 		}
-		return null;
 	}
 
 	@Override
