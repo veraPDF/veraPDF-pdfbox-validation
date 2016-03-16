@@ -2,10 +2,12 @@ package org.verapdf.model.impl.pb.operator.markedcontent;
 
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosName;
 import org.verapdf.model.impl.pb.cos.PBCosName;
 import org.verapdf.model.operator.Op_BMC;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,8 +23,8 @@ public class PBOp_BMC extends PBOpMarkedContent implements Op_BMC {
 	/** Type name for {@code PBOp_BMC} */
     public static final String OP_BMC_TYPE = "Op_BMC";
 
-    public PBOp_BMC(List<COSBase> arguments) {
-        super(arguments, OP_BMC_TYPE);
+    public PBOp_BMC(List<COSBase> arguments, PDDocument document, PDFAFlavour flavour) {
+        super(arguments, OP_BMC_TYPE, document, flavour);
     }
 
     @Override

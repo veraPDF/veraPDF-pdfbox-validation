@@ -4,7 +4,9 @@ import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSNumber;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.coslayer.CosBBox;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 /**
  * Implementation of bounding box
@@ -26,8 +28,8 @@ public class PBCosBBox extends PBCosArray implements CosBBox {
 	 *
 	 * @param array pdfbox COSArray
 	 */
-	public PBCosBBox(COSArray array) {
-		super(array, COS_BBOX_TYPE);
+	public PBCosBBox(COSArray array, PDDocument document, PDFAFlavour flavour) {
+		super(array, COS_BBOX_TYPE, document, flavour);
 	}
 
 	/**

@@ -4,6 +4,7 @@ import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosObject;
@@ -11,6 +12,7 @@ import org.verapdf.model.impl.pb.cos.PBCosArray;
 import org.verapdf.model.impl.pb.cos.PBCosStream;
 import org.verapdf.model.pdlayer.PDAcroForm;
 import org.verapdf.model.pdlayer.PDFormField;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,10 +32,15 @@ public class PBoxPDAcroForm extends PBoxPDObject implements PDAcroForm {
 
 	private final boolean needAppearance;
 
+	private final PDDocument document;
+	private final PDFAFlavour flavour;
+
     public PBoxPDAcroForm(
-            org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm acroForm) {
+            org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm acroForm, PDDocument document, PDFAFlavour flavour) {
         super(acroForm, ACRO_FORM_TYPE);
 		this.needAppearance = acroForm.getNeedAppearances();
+		this.document = document;
+		this.flavour = flavour;
     }
 
     @Override
@@ -73,9 +80,9 @@ public class PBoxPDAcroForm extends PBoxPDObject implements PDAcroForm {
 			if (isStream || value instanceof COSArray) {
 				ArrayList<CosObject> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 				if (isStream) {
-					list.add(new PBCosStream((COSStream) value));
+					list.add(new PBCosStream((COSStream) value, this.document, this.flavour));
 				} else {
-					list.add(new PBCosArray((COSArray) value));
+					list.add(new PBCosArray((COSArray) value, this.document, this.flavour));
 				}
 				return Collections.unmodifiableList(list);
 			}

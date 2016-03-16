@@ -25,7 +25,7 @@ public class PBoxPDPageTest extends BaseTest {
 		expectedID = null;
 
 		setUp(FILE_RELATIVE_PATH);
-		actual = new PBoxPDPage(document.getPage(0));
+		actual = new PBoxPDPage(document.getPage(0), document, null);
 	}
 
 	@Test

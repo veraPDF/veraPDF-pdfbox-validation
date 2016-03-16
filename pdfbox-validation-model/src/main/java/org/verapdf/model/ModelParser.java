@@ -2,9 +2,9 @@ package org.verapdf.model;
 
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.verapdf.model.coslayer.CosDocument;
 import org.verapdf.model.impl.pb.cos.PBCosDocument;
 import org.verapdf.pdfa.ValidationModelParser;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -20,15 +20,16 @@ public final class ModelParser implements ValidationModelParser, Closeable {
     private static final Logger LOGGER = Logger.getLogger(ModelParser.class);
 
     private PDDocument document;
-	private final long size;
+
+    private final PDFAFlavour flavour;
 
     /**
      * @param toLoad
      * @throws IOException
      */
-    public ModelParser(InputStream toLoad) throws IOException {
-        this.size = toLoad.available();
+    public ModelParser(InputStream toLoad, PDFAFlavour flavour) throws IOException {
         this.document = PDDocument.load(toLoad, false, true);
+        this.flavour = flavour;
     }
 
     /**
@@ -55,8 +56,8 @@ public final class ModelParser implements ValidationModelParser, Closeable {
      *             object
      */
     @Override
-    public CosDocument getRoot() throws IOException {
-        return new PBCosDocument(this.document, this.size);
+    public org.verapdf.model.baselayer.Object getRoot() throws IOException {
+        return new PBCosDocument(this.document, this.flavour);
     }
 
 	@Override

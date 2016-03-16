@@ -29,7 +29,7 @@ public class PBoxPDXImageTest extends PBoxPDAbstractXObjectTest {
 
 		setUp(FILE_RELATIVE_PATH);
 		PDXObject xObject = document.getPage(0).getResources().getXObject(COSName.getPDFName(IMAGE_NAME));
-		actual = new PBoxPDXImage((PDImageXObject) xObject);
+		actual = new PBoxPDXImage((PDImageXObject) xObject, document, null);
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import org.verapdf.model.impl.BaseTest;
 import org.verapdf.model.impl.axl.AXLMainXMPPackage;
 import org.verapdf.model.impl.pb.cos.PBCosStream;
 import org.verapdf.model.pdlayer.PDMetadata;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -26,7 +27,7 @@ public class PBoxPDMetadataTest extends BaseTest {
 		expectedID = null;
 
 		setUp(FILE_RELATIVE_PATH);
-		actual = new PBoxPDMetadata(document.getDocumentCatalog().getMetadata(), Boolean.TRUE);
+		actual = new PBoxPDMetadata(document.getDocumentCatalog().getMetadata(), Boolean.TRUE, document, PDFAFlavour.PDFA_1_B);
 	}
 
 	@Test

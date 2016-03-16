@@ -2,14 +2,13 @@ package org.verapdf.model.impl.pb.cos;
 
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.*;
-import org.verapdf.model.baselayer.*;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosFilter;
 import org.verapdf.model.coslayer.CosStream;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,8 +39,8 @@ public class PBCosStream extends PBCosDict implements CosStream {
      * Default constructor
      * @param stream pdfbox COSStream
      */
-	public PBCosStream(COSStream stream) {
-        super(stream, COS_STREAM_TYPE);
+	public PBCosStream(COSStream stream, PDDocument document, PDFAFlavour flavour) {
+        super(stream, COS_STREAM_TYPE, document, flavour);
         this.length = parseLength(stream);
         this.fileSpec = stream.getItem("F") != null ? stream.getItem("F")
                 .toString() : null;

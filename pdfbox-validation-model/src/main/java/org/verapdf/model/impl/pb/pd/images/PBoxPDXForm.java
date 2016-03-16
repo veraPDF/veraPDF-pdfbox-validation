@@ -3,6 +3,7 @@ package org.verapdf.model.impl.pb.pd.images;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosDict;
@@ -14,6 +15,7 @@ import org.verapdf.model.pdlayer.PDContentStream;
 import org.verapdf.model.pdlayer.PDGroup;
 import org.verapdf.model.pdlayer.PDXForm;
 import org.verapdf.model.tools.resources.PDInheritableResources;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,8 +33,8 @@ public class PBoxPDXForm extends PBoxPDXObject implements PDXForm {
     public static final String REF = "Ref";
     public static final String CONTENT_STREAM = "contentStream";
 
-	public PBoxPDXForm(PDFormXObject simplePDObject, PDInheritableResources resources) {
-		super(simplePDObject, resources, X_FORM_TYPE);
+	public PBoxPDXForm(PDFormXObject simplePDObject, PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
+		super(simplePDObject, resources, X_FORM_TYPE, document, flavour);
 	}
 
 	@Override
@@ -63,7 +65,7 @@ public class PBoxPDXForm extends PBoxPDXObject implements PDXForm {
                 .getGroup();
         if (group != null) {
 			List<PDGroup> groups = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			groups.add(new PBoxPDGroup(group));
+			groups.add(new PBoxPDGroup(group, this.document, this.flavour));
 			return Collections.unmodifiableList(groups);
         }
         return Collections.emptyList();
@@ -75,7 +77,7 @@ public class PBoxPDXForm extends PBoxPDXObject implements PDXForm {
         COSStream ps = (COSStream) cosStream.getDictionaryObject(COSName.PS);
         if (ps != null) {
 			List<CosStream> postScript = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			postScript.add(new PBCosStream(ps));
+			postScript.add(new PBCosStream(ps, this.document, this.flavour));
 			return Collections.unmodifiableList(postScript);
         }
         return Collections.emptyList();
@@ -88,7 +90,7 @@ public class PBoxPDXForm extends PBoxPDXObject implements PDXForm {
     private List<PDContentStream> getContentStream() {
         List<PDContentStream> streams = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
         streams.add(new PBoxPDContentStream(
-				(PDFormXObject) this.simplePDObject, this.resources));
+				(PDFormXObject) this.simplePDObject, this.resources, this.document, this.flavour));
         return streams;
     }
 }

@@ -5,7 +5,8 @@ import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.*;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.common.COSObjectable;
 import org.apache.pdfbox.pdmodel.interactive.action.PDPageAdditionalActions;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
@@ -16,7 +17,9 @@ import org.verapdf.model.coslayer.CosDict;
 import org.verapdf.model.impl.pb.cos.PBCosBBox;
 import org.verapdf.model.impl.pb.cos.PBCosDict;
 import org.verapdf.model.pdlayer.*;
+import org.verapdf.model.pdlayer.PDPage;
 import org.verapdf.model.tools.resources.PDInheritableResources;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,13 +62,18 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 	/** Maximal number of actions in page dictionary */
 	public static final int MAX_NUMBER_OF_ACTIONS = 2;
 
+	private final org.apache.pdfbox.pdmodel.PDDocument document;
+	private final PDFAFlavour flavour;
+
 	/**
 	 * Default constructor.
 	 *
 	 * @param simplePDObject Apache PDFBox page representation
 	 */
-	public PBoxPDPage(org.apache.pdfbox.pdmodel.PDPage simplePDObject) {
+	public PBoxPDPage(org.apache.pdfbox.pdmodel.PDPage simplePDObject, PDDocument document, PDFAFlavour flavour) {
 		super((COSObjectable) simplePDObject, PAGE_TYPE);
+		this.document = document;
+		this.flavour = flavour;
 	}
 
 	@Override
@@ -105,7 +113,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 			org.apache.pdfbox.pdmodel.graphics.form.PDGroup group =
 					new org.apache.pdfbox.pdmodel.graphics.form.PDGroup(
 							(COSDictionary) groupDictionary);
-			groups.add(new PBoxPDGroup(group));
+			groups.add(new PBoxPDGroup(group, this.document, this.flavour));
 			return Collections.unmodifiableList(groups);
 		}
 		return Collections.emptyList();
@@ -117,7 +125,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 				(org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject;
 		PDInheritableResources resources = PDInheritableResources
 				.getInstance(stream.getResources(), PDInheritableResources.EMPTY_RESOURCES);
-		contentStreams.add(new PBoxPDContentStream(stream, resources));
+		contentStreams.add(new PBoxPDContentStream(stream, resources, this.document, this.flavour));
 		return contentStreams;
 	}
 
@@ -166,7 +174,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 				PDAppearanceStream stream = annotation.getNormalAppearanceStream();
 				PDResources resources = stream != null ? stream.getResources() : PDInheritableResources.EMPTY_RESOURCES;
 				PDInheritableResources extRes = PDInheritableResources.getInstance(pageResources, resources);
-				annotations.add(new PBoxPDAnnot(annotation, extRes));
+				annotations.add(new PBoxPDAnnot(annotation, extRes, this.document, this.flavour));
 			}
 		}
 	}
@@ -196,7 +204,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 				.getCOSObject().getDictionaryObject(key);
 		if (array instanceof COSArray) {
 			ArrayList<CosBBox> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			list.add(new PBCosBBox((COSArray) array));
+			list.add(new PBCosBBox((COSArray) array, this.document, this.flavour));
 			return Collections.unmodifiableList(list);
 		}
 		return Collections.emptyList();
@@ -207,7 +215,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 				.getCOSObject().getDictionaryObject(COSName.getPDFName(PRESENTATION_STEPS));
 		if (presSteps instanceof COSDictionary) {
 			ArrayList<CosDict> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			list.add(new PBCosDict((COSDictionary) presSteps));
+			list.add(new PBCosDict((COSDictionary) presSteps, this.document, this.flavour));
 			return Collections.unmodifiableList(list);
 		}
 		return Collections.emptyList();

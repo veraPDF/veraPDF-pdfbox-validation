@@ -2,12 +2,14 @@ package org.verapdf.model.impl.pb.operator.textshow;
 
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosArray;
 import org.verapdf.model.factory.operator.GraphicState;
 import org.verapdf.model.impl.pb.cos.PBCosArray;
 import org.verapdf.model.operator.Op_TJ_Big;
 import org.verapdf.model.tools.resources.PDInheritableResources;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,8 +30,8 @@ public class PBOp_TJ_Big extends PBOpTextShow implements Op_TJ_Big {
     public static final String SPECIAL_STRINGS = "specialStrings";
 
     public PBOp_TJ_Big(List<COSBase> arguments, GraphicState state,
-					   PDInheritableResources resources) {
-        super(arguments, state, resources, OP_TJ_BIG_TYPE);
+                       PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
+        super(arguments, state, resources, OP_TJ_BIG_TYPE, document, flavour);
     }
 
     @Override
@@ -48,7 +50,7 @@ public class PBOp_TJ_Big extends PBOpTextShow implements Op_TJ_Big {
 			if (base instanceof COSArray) {
 				List<CosArray> array =
 						new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-				array.add(new PBCosArray((COSArray) base));
+				array.add(new PBCosArray((COSArray) base, this.document, this.flavour));
 				return Collections.unmodifiableList(array);
 			}
 		}

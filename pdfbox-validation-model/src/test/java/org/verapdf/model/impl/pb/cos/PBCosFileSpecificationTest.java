@@ -7,7 +7,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.verapdf.model.baselayer.Object;
-import org.verapdf.model.coslayer.CosFileSpecification;
 import org.verapdf.model.external.EmbeddedFile;
 import org.verapdf.model.impl.BaseTest;
 import org.verapdf.model.impl.pb.external.PBoxEmbeddedFile;
@@ -28,7 +27,7 @@ public class PBCosFileSpecificationTest extends BaseTest {
         COSDictionary specification = new COSDictionary();
         specification.setItem(COSName.EF, new COSDictionary());
 
-        actual = new PBCosFileSpecification(specification);
+        actual = new PBCosFileSpecification(specification, document, null);
     }
 
     @Test

@@ -1,15 +1,17 @@
 package org.verapdf.model.impl.pb.pd;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.log4j.Logger;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.factory.colors.ColorSpaceFactory;
 import org.verapdf.model.pdlayer.PDColorSpace;
 import org.verapdf.model.pdlayer.PDGroup;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -22,9 +24,14 @@ public class PBoxPDGroup extends PBoxPDObject implements PDGroup {
 
 	public static final String COLOR_SPACE = "colorSpace";
 
+    private final PDDocument document;
+    private final PDFAFlavour flavour;
+
     public PBoxPDGroup(
-            org.apache.pdfbox.pdmodel.graphics.form.PDGroup simplePDObject) {
+            org.apache.pdfbox.pdmodel.graphics.form.PDGroup simplePDObject, PDDocument document, PDFAFlavour flavour) {
         super(simplePDObject, GROUP_TYPE);
+        this.document = document;
+        this.flavour = flavour;
     }
 
     @Override
@@ -47,7 +54,7 @@ public class PBoxPDGroup extends PBoxPDObject implements PDGroup {
 					((org.apache.pdfbox.pdmodel.graphics.form.PDGroup) this.simplePDObject)
                     .getColorSpace();
             PDColorSpace colorSpace = ColorSpaceFactory
-                    .getColorSpace(pbColorSpace);
+                    .getColorSpace(pbColorSpace, this.document, this.flavour);
             if (colorSpace != null) {
 				List<PDColorSpace> colorSpaces = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 				colorSpaces.add(colorSpace);

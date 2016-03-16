@@ -31,7 +31,7 @@ public class PBoxPDXFormTest extends PBoxPDAbstractXObjectTest {
 		setUp(FILE_RELATIVE_PATH);
 		PDResources pageResources = document.getPage(0).getResources();
 		PDFormXObject xObject = (PDFormXObject) pageResources.getXObject(COSName.getPDFName(FORM_NAME));
-		actual = new PBoxPDXForm(xObject, PDInheritableResources.getInstance(pageResources, xObject.getResources()));
+		actual = new PBoxPDXForm(xObject, PDInheritableResources.getInstance(pageResources, xObject.getResources()), document, null);
 	}
 
 	@Override

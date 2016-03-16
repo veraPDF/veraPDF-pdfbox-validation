@@ -739,8 +739,9 @@ public final class TestNodeGenerator {
     }
 
     public static FeatureTreeNode getMetadataNode() throws FeatureParsingException, FileNotFoundException, URISyntaxException {
-        FeatureTreeNode rootMetadataNode = FeatureTreeNode.createRootMetadataNode(METADATA);
-        rootMetadataNode.setValue(DatatypeConverter.printHexBinary(getMetadataBytesFromFile("/metadata_bytes.txt")));
+        FeatureTreeNode rootMetadataNode = FeatureTreeNode.createRootNode(METADATA);
+        FeatureTreeNode xmpNode = FeatureTreeNode.createChildMetadataNode("xmpPackage", rootMetadataNode);
+        xmpNode.setValue(DatatypeConverter.printHexBinary(getMetadataBytesFromFile("/metadata_bytes.txt")));
         return rootMetadataNode;
     }
 

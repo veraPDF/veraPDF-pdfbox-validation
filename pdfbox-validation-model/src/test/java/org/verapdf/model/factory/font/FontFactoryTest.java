@@ -47,32 +47,32 @@ public class FontFactoryTest {
 	@Test
 	public void testType0CID0Generating() throws IOException {
 		PDFont font = resources.getFont(COSName.getPDFName("C0_0"));
-		org.verapdf.model.pdlayer.PDFont convertedFont = FontFactory.parseFont(font);
+		org.verapdf.model.pdlayer.PDFont convertedFont = FontFactory.parseFont(font, document, null);
 		Assert.assertTrue(convertedFont instanceof PDType0Font);
 	}
 
 	@Test
 	public void testType0CID2Generating() throws IOException {
 		PDFont font = resources.getFont(COSName.getPDFName("C2_0"));
-		Assert.assertTrue(FontFactory.parseFont(font) instanceof PDType0Font);
+		Assert.assertTrue(FontFactory.parseFont(font, document, null) instanceof PDType0Font);
 	}
 
 	@Test
 	public void testType1Generating() throws IOException {
 		PDFont font = resources.getFont(COSName.getPDFName("T1_0"));
-		Assert.assertTrue(FontFactory.parseFont(font) instanceof PDType1Font);
+		Assert.assertTrue(FontFactory.parseFont(font, document, null) instanceof PDType1Font);
 	}
 
 	@Test
 	public void testType3Generating() throws IOException {
 		PDFont font = resources.getFont(COSName.getPDFName("T3_0"));
-		Assert.assertTrue(FontFactory.parseFont(font) instanceof PDType3Font);
+		Assert.assertTrue(FontFactory.parseFont(font, document, null) instanceof PDType3Font);
 	}
 
 	@Test
 	public void testTrueTypeGenerating() throws IOException {
 		PDFont font = resources.getFont(COSName.getPDFName("TT0"));
-		Assert.assertTrue(FontFactory.parseFont(font) instanceof PDTrueTypeFont);
+		Assert.assertTrue(FontFactory.parseFont(font, document, null) instanceof PDTrueTypeFont);
 	}
 
 	@AfterClass

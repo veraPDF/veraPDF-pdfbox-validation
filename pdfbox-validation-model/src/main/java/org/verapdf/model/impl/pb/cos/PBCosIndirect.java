@@ -2,10 +2,12 @@ package org.verapdf.model.impl.pb.cos;
 
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSObject;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosIndirect;
 import org.verapdf.model.coslayer.CosObject;
 import org.verapdf.model.tools.IDGenerator;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,14 +29,19 @@ public class PBCosIndirect extends PBCosObject implements CosIndirect {
 
     private final String id;
 
+    private final PDDocument document;
+    private final PDFAFlavour flavour;
+
     /**
      * Default constructor
      * @param indirectObject pdfbox COSObject
      */
-    public PBCosIndirect(COSObject indirectObject) {
+    public PBCosIndirect(COSObject indirectObject, PDDocument document, PDFAFlavour flavour) {
         super(indirectObject, COS_INDIRECT_TYPE);
         this.isSpacingPDFACompliant = getspacingCompliesPDFA(indirectObject);
 		this.id = IDGenerator.generateID(indirectObject);
+        this.document = document;
+        this.flavour = flavour;
     }
 
 	@Override
@@ -58,7 +65,7 @@ public class PBCosIndirect extends PBCosObject implements CosIndirect {
     private List<CosObject> parseDirectObject() {
         List<CosObject> list = new ArrayList<>();
         COSBase base = ((COSObject) baseObject).getObject();
-        list.add(base != null ? getFromValue(base) : PBCosNull.getInstance());
+        list.add(base != null ? getFromValue(base, this.document, this.flavour) : PBCosNull.getInstance());
         return Collections.unmodifiableList(list);
     }
 

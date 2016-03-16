@@ -31,7 +31,7 @@ public abstract class PBoxPDPatternTest extends BaseTest {
 	private static PDPattern getPattern(PDInheritableResources resources,
 										COSName patternCosName)
 			throws IOException {
-		return ColorSpaceFactory.getPattern(resources.getPattern(patternCosName), resources);
+		return ColorSpaceFactory.getPattern(resources.getPattern(patternCosName), resources, document, null);
 	}
 
 }

@@ -28,7 +28,7 @@ public class PBoxPDExtGStateTest extends BaseTest {
 		setUp(FILE_RELATIVE_PATH);
 		PDResources resources = document.getPage(0).getResources();
 		COSName next = resources.getExtGStateNames().iterator().next();
-		actual = new PBoxPDExtGState(resources.getExtGState(next));
+		actual = new PBoxPDExtGState(resources.getExtGState(next), document, null);
 	}
 
 	@Test

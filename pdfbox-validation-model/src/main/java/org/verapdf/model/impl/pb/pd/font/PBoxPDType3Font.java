@@ -2,6 +2,7 @@ package org.verapdf.model.impl.pb.pd.font;
 
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.PDFontLike;
 import org.apache.pdfbox.pdmodel.font.PDType3CharProc;
 import org.verapdf.model.baselayer.Object;
@@ -9,6 +10,7 @@ import org.verapdf.model.impl.pb.pd.PBoxPDContentStream;
 import org.verapdf.model.pdlayer.PDContentStream;
 import org.verapdf.model.pdlayer.PDType3Font;
 import org.verapdf.model.tools.resources.PDInheritableResources;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,9 +28,14 @@ public class PBoxPDType3Font extends PBoxPDSimpleFont implements PDType3Font {
 
 	private final PDInheritableResources resources;
 
-	public PBoxPDType3Font(PDFontLike font, PDInheritableResources resources) {
+	private final PDDocument document;
+	private final PDFAFlavour flavour;
+
+	public PBoxPDType3Font(PDFontLike font, PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
 		super(font, TYPE3_FONT_TYPE);
 		this.resources = resources;
+		this.document = document;
+		this.flavour = flavour;
 	}
 
 	@Override
@@ -53,7 +60,7 @@ public class PBoxPDType3Font extends PBoxPDSimpleFont implements PDType3Font {
 			for (COSName cosName : keySet) {
 				PDType3CharProc charProc = ((org.apache.pdfbox.pdmodel.font.PDType3Font) this.pdFontLike)
 						.getCharProc(cosName);
-				list.add(new PBoxPDContentStream(charProc, this.resources));
+				list.add(new PBoxPDContentStream(charProc, this.resources, this.document, this.flavour));
 			}
 			return Collections.unmodifiableList(list);
 		}

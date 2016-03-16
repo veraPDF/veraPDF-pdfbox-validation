@@ -1,8 +1,10 @@
 package org.verapdf.model.impl.pb.operator.markedcontent;
 
 import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.operator.Op_BDC;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.util.List;
 
@@ -17,8 +19,8 @@ public class PBOp_BDC extends PBOpMarkedContent implements Op_BDC {
 	/** Type name for {@code PBOp_BDC} */
     public static final String OP_BDC_TYPE = "Op_BDC";
 
-    public PBOp_BDC(List<COSBase> arguments) {
-        super(arguments, OP_BDC_TYPE);
+    public PBOp_BDC(List<COSBase> arguments, PDDocument document, PDFAFlavour flavour) {
+        super(arguments, OP_BDC_TYPE, document, flavour);
     }
 
 	@Override

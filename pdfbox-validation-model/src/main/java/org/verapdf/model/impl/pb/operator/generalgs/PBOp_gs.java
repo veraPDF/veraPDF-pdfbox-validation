@@ -1,11 +1,13 @@
 package org.verapdf.model.impl.pb.operator.generalgs;
 
 import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.impl.pb.pd.PBoxPDExtGState;
 import org.verapdf.model.operator.Op_gs;
 import org.verapdf.model.pdlayer.PDExtGState;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,10 +28,15 @@ public class PBOp_gs extends PBOpGeneralGS implements Op_gs {
 
     private PDExtendedGraphicsState extGState;
 
+    private final PDDocument document;
+    private final PDFAFlavour flavour;
+
     public PBOp_gs(List<COSBase> arguments,
-				   PDExtendedGraphicsState extGState) {
+				   PDExtendedGraphicsState extGState, PDDocument document, PDFAFlavour flavour) {
         super(arguments, OP_GS_TYPE);
         this.extGState = extGState;
+        this.document = document;
+        this.flavour = flavour;
     }
 
     @Override
@@ -43,7 +50,7 @@ public class PBOp_gs extends PBOpGeneralGS implements Op_gs {
     private List<PDExtGState> getExtGState() {
         if (this.extGState != null) {
 			List<PDExtGState> extGStates = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			extGStates.add(new PBoxPDExtGState(this.extGState));
+			extGStates.add(new PBoxPDExtGState(this.extGState, this.document, this.flavour));
 			return Collections.unmodifiableList(extGStates);
         }
         return Collections.emptyList();

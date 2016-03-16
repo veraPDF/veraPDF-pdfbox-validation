@@ -4,10 +4,12 @@ import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSString;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosFileSpecification;
 import org.verapdf.model.external.EmbeddedFile;
 import org.verapdf.model.impl.pb.external.PBoxEmbeddedFile;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,8 +35,8 @@ public class PBCosFileSpecification extends PBCosDict implements
      * Default constructor
      * @param dictionary pdfbox COSDictionary
      */
-    public PBCosFileSpecification(COSDictionary dictionary) {
-        super(dictionary, COS_FILE_SPECIFICATION_TYPE);
+    public PBCosFileSpecification(COSDictionary dictionary, PDDocument document, PDFAFlavour flavour) {
+        super(dictionary, COS_FILE_SPECIFICATION_TYPE, document, flavour);
 		this.f = this.getStringValue(COSName.F);
 		this.uf = this.getStringValue(COSName.UF);
     }

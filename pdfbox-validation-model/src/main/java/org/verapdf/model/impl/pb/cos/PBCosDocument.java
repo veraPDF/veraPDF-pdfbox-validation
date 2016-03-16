@@ -9,6 +9,7 @@ import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.*;
 import org.verapdf.model.impl.pb.pd.PBoxPDDocument;
 import org.verapdf.model.tools.XMPChecker;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
 import java.util.*;
@@ -33,9 +34,10 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
     public static final String ID = "ID";
 	public static final String REQUIREMENTS = "Requirements";
 
+	private final PDFAFlavour flavour;
+
     private PDDocument pdDocument;
 
-    private final long sizeOfDocument;
     private final long indirectObjectCount;
     private final float version;
 	private final long headerOffset;
@@ -57,31 +59,21 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
     /**
      * Default constructor
      * @param pdDocument pdfbox PDDocument
-     * @param length original length of the document
      */
-	public PBCosDocument(PDDocument pdDocument, long length) {
-        this(pdDocument.getDocument(), length);
+	public PBCosDocument(PDDocument pdDocument, PDFAFlavour flavour) {
+        this(pdDocument.getDocument(), flavour);
         this.pdDocument = pdDocument;
-    }
-
-    /**
-     * Constructor using pdfbox COSDocument without length
-     * @param cosDocument pdfbox COSDocument
-     */
-    public PBCosDocument(COSDocument cosDocument) {
-        this(cosDocument, -1);
     }
 
     /**
      * Constructor using pdfbox COSDocument
      * @param cosDocument pdfbox COSDocument
-     * @param length original length of the document
      */
-    public PBCosDocument(COSDocument cosDocument, long length) {
+    public PBCosDocument(COSDocument cosDocument, PDFAFlavour flavour) {
         super(cosDocument, COS_DOCUMENT_TYPE);
 		this.catalog = this.getCatalog();
+		this.flavour = flavour;
 
-		this.sizeOfDocument = length;
 		this.indirectObjectCount = cosDocument.getObjects().size();
 		this.version = cosDocument.getVersion();
 		this.headerOffset = cosDocument.getHeaderOffset();
@@ -121,14 +113,6 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
     @Override
     public Double getversion() {
         return Double.valueOf(this.version);
-    }
-
-    /**
-     * Size of the byte sequence representing the document
-     */
-    @Override
-    public Long getsize() {
-        return Long.valueOf(sizeOfDocument);
     }
 
 	@Override
@@ -299,7 +283,7 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 				final Set<Map.Entry<String, PDComplexFileSpecification>> entries = names.entrySet();
 				for (Map.Entry<String, PDComplexFileSpecification> entry : entries) {
 					files.add(new PBCosFileSpecification(entry.getValue()
-							.getCOSObject()));
+							.getCOSObject(), this.pdDocument, this.flavour));
 				}
 			}
 		} catch (IOException e) {
@@ -315,7 +299,7 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
     private List<CosTrailer> getTrailer() {
 		COSDocument cosDocument = (COSDocument) this.baseObject;
         List<CosTrailer> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-        list.add(new PBCosTrailer(cosDocument.getTrailer()));
+        list.add(new PBCosTrailer(cosDocument.getTrailer(), this.pdDocument, this.flavour));
         return Collections.unmodifiableList(list);
     }
 
@@ -327,7 +311,7 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 				.getObjects();
 		List<CosIndirect> list = new ArrayList<>(objects.size());
 		for (COSObject object : objects) {
-            list.add(new PBCosIndirect(object));
+            list.add(new PBCosIndirect(object, this.pdDocument, this.flavour));
         }
         return Collections.unmodifiableList(list);
     }
@@ -339,7 +323,7 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 		if (pdDocument != null) {
 			List<org.verapdf.model.pdlayer.PDDocument> document =
 					new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			document.add(new PBoxPDDocument(pdDocument));
+			document.add(new PBoxPDDocument(pdDocument, flavour));
 			return Collections.unmodifiableList(document);
 		}
         return Collections.emptyList();
@@ -371,7 +355,7 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 		ArrayList<CosDict> list = new ArrayList<>(((COSArray) reqArray).size());
 		for (COSBase element : (COSArray) reqArray) {
 			if (element instanceof COSDictionary) {
-				list.add(new PBCosDict((COSDictionary) element));
+				list.add(new PBCosDict((COSDictionary) element, this.pdDocument, this.flavour));
 			}
 		}
 		return Collections.unmodifiableList(list);

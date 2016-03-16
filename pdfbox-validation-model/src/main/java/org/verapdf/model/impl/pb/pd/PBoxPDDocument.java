@@ -12,6 +12,7 @@ import org.verapdf.model.coslayer.CosDict;
 import org.verapdf.model.impl.pb.cos.PBCosDict;
 import org.verapdf.model.pdlayer.*;
 import org.verapdf.model.tools.OutlinesHelper;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,14 +57,16 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 	public static final int MAX_NUMBER_OF_ACTIONS = 5;
 
 	private final PDDocumentCatalog catalog;
+	private final PDFAFlavour flavour;
 
 	/**
 	 * Default constructor
 	 * @param document high level document representation
 	 */
-    public PBoxPDDocument(org.apache.pdfbox.pdmodel.PDDocument document) {
+    public PBoxPDDocument(org.apache.pdfbox.pdmodel.PDDocument document, PDFAFlavour flavour) {
         super(document, PD_DOCUMENT_TYPE);
 		this.catalog = this.getDocumentCatalog();
+		this.flavour = flavour;
     }
 
 	private PDDocumentCatalog getDocumentCatalog() {
@@ -169,7 +172,7 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 		PDPageTree pageTree = this.document.getPages();
 		List<PDPage> pages = new ArrayList<>(pageTree.getCount());
 		for (org.apache.pdfbox.pdmodel.PDPage page : pageTree) {
-			pages.add(new PBoxPDPage(page));
+			pages.add(new PBoxPDPage(page, this.document, this.flavour));
 		}
 		return Collections.unmodifiableList(pages);
 	}
@@ -179,7 +182,7 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 			org.apache.pdfbox.pdmodel.common.PDMetadata meta = this.catalog.getMetadata();
 			if (meta != null && meta.getCOSObject() != null) {
 				List<PDMetadata> metadata = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-				metadata.add(new PBoxPDMetadata(meta, Boolean.TRUE));
+				metadata.add(new PBoxPDMetadata(meta, Boolean.TRUE, this.document, this.flavour));
 				return Collections.unmodifiableList(metadata);
 			}
 		}
@@ -192,7 +195,7 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 					this.catalog.getOutputIntents();
 			List<PDOutputIntent> outputIntents = new ArrayList<>(pdfboxOutputIntents.size());
 			for (org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent intent : pdfboxOutputIntents) {
-				outputIntents.add(new PBoxPDOutputIntent(intent));
+				outputIntents.add(new PBoxPDOutputIntent(intent, this.document, this.flavour));
 			}
 			return Collections.unmodifiableList(outputIntents);
 		}
@@ -205,7 +208,7 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 					this.catalog.getAcroForm();
 			if (form != null) {
 				List<PDAcroForm> forms = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-				forms.add(new PBoxPDAcroForm(form));
+				forms.add(new PBoxPDAcroForm(form, this.document, this.flavour));
 				return Collections.unmodifiableList(forms);
 			}
 		}
@@ -266,7 +269,7 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 					element = ((COSObject) element).getObject();
 				}
 				if (element instanceof COSDictionary) {
-					presentations.add(new PBCosDict((COSDictionary) element));
+					presentations.add(new PBCosDict((COSDictionary) element, this.document, flavour));
 					this.getAlternatePresentations(presentations, (COSDictionary) element);
 				}
 			}

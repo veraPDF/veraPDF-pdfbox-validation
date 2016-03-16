@@ -1,5 +1,6 @@
 package org.verapdf.model.factory.colors;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.graphics.color.*;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDAbstractPattern;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDShadingPattern;
@@ -10,6 +11,7 @@ import org.verapdf.model.impl.pb.pd.pattern.PBoxPDTilingPattern;
 import org.verapdf.model.pdlayer.PDColorSpace;
 import org.verapdf.model.pdlayer.PDPattern;
 import org.verapdf.model.tools.resources.PDInheritableResources;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 /**
  * Factory for transforming PDColorSpace objects of pdfbox to corresponding
@@ -45,8 +47,8 @@ public class ColorSpaceFactory {
 	 * {@code colorSpace} argument {@code null} or unsupported type
 	 */
 	public static PDColorSpace getColorSpace(
-			org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace colorSpace) {
-		return getColorSpace(colorSpace, null, PDInheritableResources.EMPTY_EXTENDED_RESOURCES);
+			org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace colorSpace, PDDocument document, PDFAFlavour flavour) {
+		return getColorSpace(colorSpace, null, PDInheritableResources.EMPTY_EXTENDED_RESOURCES, document, flavour);
 	}
 
 	/**
@@ -63,7 +65,7 @@ public class ColorSpaceFactory {
 	 */
 	public static PDColorSpace getColorSpace(
 			org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace colorSpace,
-			PDAbstractPattern pattern, PDInheritableResources resources) {
+			PDAbstractPattern pattern, PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
 		if (colorSpace == null) {
 			return null;
 		}
@@ -73,7 +75,7 @@ public class ColorSpaceFactory {
 			case CAL_RGB:
 				return new PBoxPDCalRGB((PDCalRGB) colorSpace);
 			case DEVICE_N:
-				return new PBoxPDDeviceN((PDDeviceN) colorSpace);
+				return new PBoxPDDeviceN((PDDeviceN) colorSpace, document, flavour);
 			case DEVICE_CMYK:
 				return PBoxPDDeviceCMYK.getInstance();
 			case DEVICE_GRB:
@@ -85,11 +87,11 @@ public class ColorSpaceFactory {
 			case LAB:
 				return new PBoxPDLab((PDLab) colorSpace);
 			case SEPARATION:
-				return new PBoxPDSeparation((PDSeparation) colorSpace);
+				return new PBoxPDSeparation((PDSeparation) colorSpace, document, flavour);
 			case INDEXED:
-				return new PBoxPDIndexed((PDIndexed) colorSpace);
+				return new PBoxPDIndexed((PDIndexed) colorSpace, document, flavour);
 			case PATTERN:
-				return getPattern(pattern, resources);
+				return getPattern(pattern, resources, document, flavour);
 			default:
 				return null;
 		}
@@ -105,14 +107,14 @@ public class ColorSpaceFactory {
 	 * @return {@code <? extends PDPattern>} object or {@code null} if
 	 * {@code pattern} argument is {@code null}
 	 */
-	public static PDPattern getPattern(PDAbstractPattern pattern, PDInheritableResources resources) {
+	public static PDPattern getPattern(PDAbstractPattern pattern, PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
 		if (pattern != null) {
 			if (pattern.getPatternType() == PDAbstractPattern.TYPE_SHADING_PATTERN) {
-				return new PBoxPDShadingPattern((PDShadingPattern) pattern);
+				return new PBoxPDShadingPattern((PDShadingPattern) pattern, document, flavour);
 			} else if (pattern.getPatternType() == PDAbstractPattern.TYPE_TILING_PATTERN) {
 				PDTilingPattern tiling = (PDTilingPattern) pattern;
 				PDInheritableResources pdResources = resources.getExtendedResources(tiling.getResources());
-				return new PBoxPDTilingPattern(tiling, pdResources);
+				return new PBoxPDTilingPattern(tiling, pdResources, document, flavour);
 			}
 		}
 		return null;

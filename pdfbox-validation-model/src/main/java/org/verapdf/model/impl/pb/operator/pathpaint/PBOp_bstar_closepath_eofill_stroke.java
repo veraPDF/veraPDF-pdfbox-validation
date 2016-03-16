@@ -1,9 +1,11 @@
 package org.verapdf.model.impl.pb.operator.pathpaint;
 
 import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.factory.operator.GraphicState;
 import org.verapdf.model.operator.Op_bstar_closepath_eofill_stroke;
 import org.verapdf.model.tools.resources.PDInheritableResources;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.util.List;
 
@@ -29,7 +31,7 @@ public class PBOp_bstar_closepath_eofill_stroke extends PBOpFillAndStroke
 	 */
 	public PBOp_bstar_closepath_eofill_stroke(List<COSBase> arguments,
 											  final GraphicState state,
-											  final PDInheritableResources resources) {
-		super(arguments, state, resources, OP_BSTAR_CLOSEPATH_EOFILL_STROKE_TYPE);
+											  final PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
+		super(arguments, state, resources, OP_BSTAR_CLOSEPATH_EOFILL_STROKE_TYPE, document, flavour);
 	}
 }

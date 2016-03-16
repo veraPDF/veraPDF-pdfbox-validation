@@ -31,8 +31,8 @@ public class PBCosIndirectTest extends BaseTest {
         expectedType = TYPES.contains(PBCosIndirect.COS_INDIRECT_TYPE) ? PBCosIndirect.COS_INDIRECT_TYPE : null;
         expectedID = String.valueOf(objectNumber) + " " + String.valueOf(generationNumber);
 
-        actual = new PBCosIndirect(createObject(null, Boolean.TRUE));
-        secondActual = new PBCosIndirect(createObject(new COSDictionary(), Boolean.FALSE));
+        actual = new PBCosIndirect(createObject(null, Boolean.TRUE), document, null);
+        secondActual = new PBCosIndirect(createObject(new COSDictionary(), Boolean.FALSE), document, null);
     }
 
     private static COSObject createObject(COSBase base, Boolean spacings) throws IOException {

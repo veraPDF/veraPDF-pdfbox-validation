@@ -39,7 +39,7 @@ public class PBCosDictTest extends BaseTest {
 
         expectedLength = dictionary.size();
 
-        actual = new PBCosDict(dictionary);
+        actual = new PBCosDict(dictionary, document, null);
     }
 
     @Test

@@ -2,8 +2,8 @@ package org.verapdf.model.impl.pb.pd.images;
 
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.*;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDResources;
-import org.apache.pdfbox.pdmodel.common.COSObjectable;
 import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
@@ -16,6 +16,7 @@ import org.verapdf.model.impl.pb.external.PBoxJPEG2000;
 import org.verapdf.model.pdlayer.PDColorSpace;
 import org.verapdf.model.pdlayer.PDXImage;
 import org.verapdf.model.tools.resources.PDInheritableResources;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,8 +40,8 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 
 	private final boolean interpolate;
 
-    public PBoxPDXImage(PDImage simplePDObject) {
-        super(simplePDObject, PDInheritableResources.EMPTY_EXTENDED_RESOURCES, X_IMAGE_TYPE);
+    public PBoxPDXImage(PDImage simplePDObject, PDDocument document, PDFAFlavour flavour) {
+        super(simplePDObject, PDInheritableResources.EMPTY_EXTENDED_RESOURCES, X_IMAGE_TYPE, document, flavour);
 		this.interpolate = simplePDObject.getInterpolate();
     }
 
@@ -83,7 +84,7 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 		if (!image.isStencil()) {
 			try {
 				PDColorSpace buffer = ColorSpaceFactory
-						.getColorSpace(image.getColorSpace());
+						.getColorSpace(image.getColorSpace(), this.document, this.flavour);
 				if (buffer != null) {
 					List<PDColorSpace> colorSpaces =
 							new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
@@ -133,7 +134,7 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 				final PDStream stream = new PDStream((COSStream) alternatesImages);
 				PDImageXObject imageXObject = new PDImageXObject(stream,
 						resources);
-				alternates.add(new PBoxPDXImage(imageXObject));
+				alternates.add(new PBoxPDXImage(imageXObject, this.document, this.flavour));
 			} catch (IOException e) {
 				LOGGER.error(
 						"Error in creating Alternate XObject. "

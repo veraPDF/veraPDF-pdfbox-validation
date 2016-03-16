@@ -38,7 +38,7 @@ public class PBCosArrayTest extends BaseTest {
         array.add(object);
         array.add(null);
 
-        actual = new PBCosArray(array);
+        actual = new PBCosArray(array, document, null);
     }
 
     @Test

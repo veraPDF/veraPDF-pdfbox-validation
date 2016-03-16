@@ -8,12 +8,8 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.verapdf.model.baselayer.*;
 import org.verapdf.model.baselayer.Object;
-import org.verapdf.model.coslayer.CosFilter;
 import org.verapdf.model.coslayer.CosIIFilter;
-import org.verapdf.model.coslayer.CosStream;
-import org.verapdf.model.impl.pb.cos.PBCosStream;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -32,7 +28,7 @@ public class PBoxPDInlineImageTest extends PBoxPDXImageTest {
 
 		final COSDictionary parameters = getParameters();
 		PDInlineImage image = new PDInlineImage(parameters, new byte[0], new PDResources(new COSDictionary()));
-		actual = new PBoxPDInlineImage(image);
+		actual = new PBoxPDInlineImage(image, document, null);
 	}
 
 	private static COSDictionary getParameters() {
