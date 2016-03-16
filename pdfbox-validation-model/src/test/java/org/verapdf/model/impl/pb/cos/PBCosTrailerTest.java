@@ -31,7 +31,7 @@ public class PBCosTrailerTest extends BaseTest {
         trailer.setItem(COSName.ROOT, root);
         trailer.setItem(COSName.ENCRYPT, root);
 
-        actual = new PBCosTrailer(trailer);
+        actual = new PBCosTrailer(trailer, document, null);
     }
 
     @Test

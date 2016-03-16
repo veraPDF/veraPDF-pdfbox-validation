@@ -1,6 +1,7 @@
 package org.verapdf.model.impl.pb.pd;
 
 import org.apache.pdfbox.cos.*;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.graphics.PDFontSetting;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingIntent;
@@ -13,6 +14,7 @@ import org.verapdf.model.pdlayer.PDHalftone;
 import org.verapdf.model.impl.pb.cos.PBCosReal;
 import org.verapdf.model.impl.pb.cos.PBCosRenderingIntent;
 import org.verapdf.model.pdlayer.PDExtGState;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +41,10 @@ public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
 	private final Double ca;
 	private final Double CA;
 
-    public PBoxPDExtGState(PDExtendedGraphicsState state) {
+	private final PDDocument document;
+	private final PDFAFlavour flavour;
+
+    public PBoxPDExtGState(PDExtendedGraphicsState state, PDDocument document, PDFAFlavour flavour) {
         super(state, EXT_G_STATE_TYPE);
 		this.tr = this.getStringProperty(state, COSName.TR);
 		this.tr2 = this.getStringProperty(state, COSName.getPDFName("TR2"));
@@ -47,6 +52,8 @@ public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
 		this.BM = this.getStringProperty(state, COSName.BM);
 		this.ca = this.getDoubleProperty(state, COSName.CA_NS);
 		this.CA = this.getDoubleProperty(state, COSName.CA);
+		this.document = document;
+		this.flavour = flavour;
     }
 
 	@Override
@@ -150,7 +157,7 @@ public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
 	private List<CosObject> getHalftonePhase() {
 		COSDictionary dict = ((PDExtendedGraphicsState) this.simplePDObject).getCOSObject();
 		COSBase halftonePhase = dict.getDictionaryObject(COSName.getPDFName("HTP"));
-		CosObject value = PBCosObject.getFromValue(halftonePhase);
+		CosObject value = PBCosObject.getFromValue(halftonePhase, document, flavour);
 		if (value != null) {
 			ArrayList<CosObject> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 			list.add(value);

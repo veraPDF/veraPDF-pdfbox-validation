@@ -25,7 +25,7 @@ public class PBoxPDDocumentTest extends BaseTest{
 		expectedID = null;
 
 		setUp(FILE_RELATIVE_PATH);
-		actual = new PBoxPDDocument(document);
+		actual = new PBoxPDDocument(document, null);
 	}
 
 	@Test

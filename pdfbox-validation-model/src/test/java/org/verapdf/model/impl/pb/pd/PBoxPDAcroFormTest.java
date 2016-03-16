@@ -24,7 +24,7 @@ public class PBoxPDAcroFormTest extends BaseTest {
 		expectedID = null;
 
 		setUp(FILE_RELATIVE_PATH);
-		actual = new PBoxPDAcroForm(document.getDocumentCatalog().getAcroForm());
+		actual = new PBoxPDAcroForm(document.getDocumentCatalog().getAcroForm(), document, null);
 	}
 
 	@Test

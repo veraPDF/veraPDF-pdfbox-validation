@@ -4,12 +4,14 @@ import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.impl.pb.pd.images.PBoxPDInlineImage;
 import org.verapdf.model.operator.Op_EI;
 import org.verapdf.model.pdlayer.PDInlineImage;
 import org.verapdf.model.tools.resources.PDInheritableResources;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,11 +32,16 @@ public class PBOp_EI extends PBOpInlineImage implements Op_EI {
 	private final byte[] imageData;
 	private final PDResources resources;
 
+	private final PDDocument document;
+	private final PDFAFlavour flavour;
+
 	public PBOp_EI(List<COSBase> arguments, byte[] imageData,
-				   PDInheritableResources resources) {
+				   PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
 		super(arguments, OP_EI_TYPE);
 		this.imageData = imageData;
 		this.resources = this.getResources(resources);
+		this.document = document;
+		this.flavour = flavour;
 	}
 
 	@Override
@@ -56,7 +63,7 @@ public class PBOp_EI extends PBOpInlineImage implements Op_EI {
 							this.resources);
 
 			List<PDInlineImage> inlineImages = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			inlineImages.add(new PBoxPDInlineImage(inlineImage));
+			inlineImages.add(new PBoxPDInlineImage(inlineImage, this.document, this.flavour));
 			return Collections.unmodifiableList(inlineImages);
 		} catch (IOException e) {
 			LOGGER.error(e);

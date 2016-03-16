@@ -1,16 +1,19 @@
 package org.verapdf.model.impl.pb.pd;
 
 import org.apache.log4j.Logger;
-import org.apache.pdfbox.cos.*;
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSStream;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
-import org.verapdf.model.coslayer.CosDict;
 import org.verapdf.model.coslayer.CosObject;
 import org.verapdf.model.external.ICCOutputProfile;
-import org.verapdf.model.impl.pb.cos.PBCosDict;
 import org.verapdf.model.impl.pb.cos.PBCosObject;
 import org.verapdf.model.impl.pb.external.PBoxICCOutputProfile;
 import org.verapdf.model.pdlayer.PDOutputIntent;
 import org.verapdf.model.tools.IDGenerator;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,10 +36,15 @@ public class PBoxPDOutputIntent extends PBoxPDObject implements PDOutputIntent {
 
 	private final String destOutputProfileIndirect;
 
+	private final PDDocument document;
+	private final PDFAFlavour flavour;
+
 	public PBoxPDOutputIntent(
-			org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent simplePDObject) {
+			org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent simplePDObject, PDDocument document, PDFAFlavour flavour) {
 		super(simplePDObject, OUTPUT_INTENT_TYPE);
 		this.destOutputProfileIndirect = this.getDestOutputProfileIndirect(simplePDObject);
+		this.document = document;
+		this.flavour = flavour;
 	}
 
 	private String getDestOutputProfileIndirect(org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent intent) {
@@ -89,7 +97,7 @@ public class PBoxPDOutputIntent extends PBoxPDObject implements PDOutputIntent {
 	private List<CosObject> getDestOutputProfileRef() {
 		COSDictionary dict = (COSDictionary) this.simplePDObject.getCOSObject();
 		COSBase ref = dict.getDictionaryObject(COSName.getPDFName(DEST_OUTPUT_PROFILE_REF));
-		CosObject value = PBCosObject.getFromValue(ref);
+		CosObject value = PBCosObject.getFromValue(ref, this.document, this.flavour);
 		if (value != null) {
 			ArrayList<CosObject> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 			list.add(value);

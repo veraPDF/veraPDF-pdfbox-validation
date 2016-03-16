@@ -1,7 +1,9 @@
 package org.verapdf.model.impl.pb.operator.pathpaint;
 
 import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.operator.Op_n;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.util.List;
 
@@ -23,8 +25,8 @@ public class PBOp_n extends PBOpPathPaint implements Op_n {
 	 *
 	 * @param arguments arguments for current operator, must be empty.
 	 */
-	public PBOp_n(List<COSBase> arguments) {
-		super(arguments, null, null, null, null, OP_N_TYPE);
+	public PBOp_n(List<COSBase> arguments, PDDocument document, PDFAFlavour flavour) {
+		super(arguments, null, null, null, null, OP_N_TYPE, document, flavour);
 	}
 
 }

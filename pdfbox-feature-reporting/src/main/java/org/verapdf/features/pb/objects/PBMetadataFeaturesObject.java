@@ -52,11 +52,10 @@ public class PBMetadataFeaturesObject implements IFeaturesObject {
 	@Override
 	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
 		if (metadata != null) {
-			FeatureTreeNode root = PBCreateNodeHelper.parseMetadata(metadata, "metadata", null, collection);
+			FeatureTreeNode root = FeatureTreeNode.createRootNode("metadata");
+			PBCreateNodeHelper.parseMetadata(metadata, "xmpPackage", root, collection);
 
-			if (root != null) {
-				collection.addNewFeatureTree(FeaturesObjectTypesEnum.METADATA, root);
-			}
+			collection.addNewFeatureTree(FeaturesObjectTypesEnum.METADATA, root);
 			return root;
 		}
 		return null;

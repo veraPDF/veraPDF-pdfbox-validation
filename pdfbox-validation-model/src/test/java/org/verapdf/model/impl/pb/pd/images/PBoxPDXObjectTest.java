@@ -23,7 +23,7 @@ public class PBoxPDXObjectTest extends PBoxPDAbstractXObjectTest {
 
 		setUp(FILE_RELATIVE_PATH);
 		PDXObject xObject = document.getPage(0).getResources().getXObject(COSName.getPDFName(POST_SCRIPT_NAME));
-		actual = new PBoxPDXObject(xObject);
+		actual = new PBoxPDXObject(xObject, document, null);
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package org.verapdf.model.factory.font;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
 import org.apache.pdfbox.pdmodel.font.PDType1CFont;
@@ -11,6 +12,7 @@ import org.verapdf.model.impl.pb.pd.font.PBoxPDType1Font;
 import org.verapdf.model.impl.pb.pd.font.PBoxPDType3Font;
 import org.verapdf.model.pdlayer.PDFont;
 import org.verapdf.model.tools.resources.PDInheritableResources;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 /**
  * Font factory for transforming Apache PDFBox
@@ -46,19 +48,19 @@ public final class FontFactory {
 	 * @return VeraPDF font representation
 	 */
 	public static PDFont parseFont(
-			org.apache.pdfbox.pdmodel.font.PDFont pdfboxFont) {
-		return parseFont(pdfboxFont, PDInheritableResources.EMPTY_EXTENDED_RESOURCES);
+			org.apache.pdfbox.pdmodel.font.PDFont pdfboxFont, PDDocument document, PDFAFlavour flavour) {
+		return parseFont(pdfboxFont, PDInheritableResources.EMPTY_EXTENDED_RESOURCES, document, flavour);
 	}
 
 	public static PDFont parseFont(
 			org.apache.pdfbox.pdmodel.font.PDFont pdfboxFont,
-			PDInheritableResources resources) {
+			PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
 		if (pdfboxFont == null) {
 			return null;
 		}
 		switch (pdfboxFont.getSubType()) {
 			case TYPE_0:
-				return new PBoxPDType0Font(pdfboxFont);
+				return new PBoxPDType0Font(pdfboxFont, document, flavour);
 			case TYPE_1:
 				if (pdfboxFont instanceof PDType1Font) {
 					return new PBoxPDType1Font((PDType1Font) pdfboxFont);
@@ -68,7 +70,7 @@ public final class FontFactory {
 			case TYPE_3: {
 				PDResources fontResources = ((PDType3Font) pdfboxFont).getResources();
 				PDInheritableResources pdResources = resources.getExtendedResources(fontResources);
-				return new PBoxPDType3Font(pdfboxFont, pdResources);
+				return new PBoxPDType3Font(pdfboxFont, pdResources, document, flavour);
 			}
 			case TRUE_TYPE:
 				return new PBoxPDTrueTypeFont((PDTrueTypeFont) pdfboxFont);

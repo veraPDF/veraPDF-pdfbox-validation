@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.font.PDCIDFontType2;
 import org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
@@ -12,6 +13,7 @@ import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosStream;
 import org.verapdf.model.impl.pb.cos.PBCosStream;
 import org.verapdf.model.pdlayer.PDCIDFont;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +29,9 @@ public class PBoxPDCIDFont extends PBoxPDFont implements PDCIDFont {
 
     private static final Logger LOGGER = Logger.getLogger(PBoxPDCIDFont.class);
 
+    private final PDDocument document;
+    private final PDFAFlavour flavour;
+
     public static final String CID_FONT_TYPE = "PDCIDFont";
 
     public static final String CID_SET = "CIDSet";
@@ -34,8 +39,10 @@ public class PBoxPDCIDFont extends PBoxPDFont implements PDCIDFont {
     public static final String IDENTITY = "Identity";
     public static final String CUSTOM = "Custom";
 
-    public PBoxPDCIDFont(PDFontLike font) {
+    public PBoxPDCIDFont(PDFontLike font, PDDocument document, PDFAFlavour flavour) {
         super(font, CID_FONT_TYPE);
+        this.document = document;
+        this.flavour = flavour;
     }
 
 	@Override
@@ -91,7 +98,7 @@ public class PBoxPDCIDFont extends PBoxPDFont implements PDCIDFont {
         PDStream cidSet = getCIDSetStream();
         if (cidSet != null) {
             List<CosStream> res = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-            res.add(new PBCosStream(cidSet.getStream()));
+            res.add(new PBCosStream(cidSet.getStream(), this.document, this.flavour));
             return Collections.unmodifiableList(res);
         }
         return Collections.emptyList();

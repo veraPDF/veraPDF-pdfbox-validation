@@ -5,6 +5,7 @@ import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceNAttributes;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosUnicodeName;
@@ -13,6 +14,7 @@ import org.verapdf.model.impl.pb.cos.PBCosUnicodeName;
 import org.verapdf.model.pdlayer.PDColorSpace;
 import org.verapdf.model.pdlayer.PDDeviceN;
 import org.verapdf.model.pdlayer.PDSeparation;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,10 +41,15 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 
 	private final boolean areColorantsPresent;
 
+	private final PDDocument document;
+	private final PDFAFlavour flavour;
+
 	public PBoxPDDeviceN(
-			org.apache.pdfbox.pdmodel.graphics.color.PDDeviceN simplePDObject) {
+			org.apache.pdfbox.pdmodel.graphics.color.PDDeviceN simplePDObject, PDDocument document, PDFAFlavour flavour) {
 		super(simplePDObject, DEVICE_N_TYPE);
 		this.areColorantsPresent = this.areColorantsPresent(simplePDObject);
+		this.document = document;
+		this.flavour = flavour;
 	}
 
 	private boolean areColorantsPresent(
@@ -99,7 +106,7 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 			org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace alternateColorSpace =
 					((org.apache.pdfbox.pdmodel.graphics.color.PDDeviceN) this.simplePDObject)
 							.getAlternateColorSpace();
-			PDColorSpace space = ColorSpaceFactory.getColorSpace(alternateColorSpace);
+			PDColorSpace space = ColorSpaceFactory.getColorSpace(alternateColorSpace, this.document, this.flavour);
 			if (space != null) {
 				List<PDColorSpace> colorSpace = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 				colorSpace.add(space);
@@ -146,7 +153,7 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 				org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace colorSpace =
 						org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace.create(value);
 				if (colorSpace instanceof org.apache.pdfbox.pdmodel.graphics.color.PDSeparation) {
-					list.add(new PBoxPDSeparation((org.apache.pdfbox.pdmodel.graphics.color.PDSeparation) colorSpace));
+					list.add(new PBoxPDSeparation((org.apache.pdfbox.pdmodel.graphics.color.PDSeparation) colorSpace, this.document, this.flavour));
 				}
 			} catch (IOException e) {
 				LOGGER.warn("Problems with color space obtain.", e);

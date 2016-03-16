@@ -1,6 +1,7 @@
 package org.verapdf.model.impl.pb.operator.pathpaint;
 
 import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDAbstractPattern;
 import org.verapdf.model.factory.colors.ColorSpaceFactory;
@@ -8,6 +9,7 @@ import org.verapdf.model.factory.operator.GraphicState;
 import org.verapdf.model.impl.pb.operator.base.PBOperator;
 import org.verapdf.model.operator.OpPathPaint;
 import org.verapdf.model.tools.resources.PDInheritableResources;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,6 +33,9 @@ public abstract class PBOpPathPaint extends PBOperator implements OpPathPaint {
 
 	private final PDInheritableResources resources;
 
+	private final PDDocument document;
+	private final PDFAFlavour flavour;
+
 	/**
 	 * Default constructor
 	 *
@@ -39,19 +44,21 @@ public abstract class PBOpPathPaint extends PBOperator implements OpPathPaint {
 	 * @param resources resources for tilling pattern if it`s used
 	 */
     protected PBOpPathPaint(List<COSBase> arguments, final GraphicState state,
-			final PDInheritableResources resources, final String opType) {
+			final PDInheritableResources resources, final String opType, PDDocument document, PDFAFlavour flavour) {
 		this(arguments, state.getPattern(), state.getStrokeColorSpace(),
-				state.getFillColorSpace(), resources, opType);
+				state.getFillColorSpace(), resources, opType, document, flavour);
     }
 
 	protected PBOpPathPaint(List<COSBase> arguments, PDAbstractPattern pattern,
 							PDColorSpace pbStrokeColorSpace, PDColorSpace pbFillColorSpace,
-							PDInheritableResources resources, final String type) {
+							PDInheritableResources resources, final String type, PDDocument document, PDFAFlavour flavour) {
 		super(arguments, type);
 		this.pbStrokeColorSpace = pbStrokeColorSpace;
 		this.pbFillColorSpace = pbFillColorSpace;
 		this.pattern = pattern;
 		this.resources = resources;
+		this.document = document;
+		this.flavour = flavour;
 	}
 
 	protected List<org.verapdf.model.pdlayer.PDColorSpace> getFillCS() {
@@ -66,7 +73,7 @@ public abstract class PBOpPathPaint extends PBOperator implements OpPathPaint {
 			PDColorSpace colorSpace) {
 		org.verapdf.model.pdlayer.PDColorSpace veraColorSpace =
 				ColorSpaceFactory.getColorSpace(colorSpace,
-						this.pattern, this.resources);
+						this.pattern, this.resources, this.document, this.flavour);
 		if (veraColorSpace != null) {
 			List<org.verapdf.model.pdlayer.PDColorSpace> list =
 					new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);

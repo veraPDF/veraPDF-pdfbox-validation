@@ -26,7 +26,7 @@ public class PBoxPDSeparationTest extends PBoxPDColorSpaceTest {
 
 		setUp(FILE_RELATIVE_PATH);
 		PDColorSpace separation = document.getPage(0).getResources().getColorSpace(COSName.getPDFName(COLOR_SPACE_NAME));
-		actual = new PBoxPDSeparation((PDSeparation) separation);
+		actual = new PBoxPDSeparation((PDSeparation) separation, document, null);
 	}
 
 	@Test

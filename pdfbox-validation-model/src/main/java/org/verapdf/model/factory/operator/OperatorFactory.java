@@ -2,8 +2,10 @@ package org.verapdf.model.factory.operator;
 
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.operator.Operator;
 import org.verapdf.model.tools.resources.PDInheritableResources;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,10 +38,10 @@ public final class OperatorFactory {
 	 * @return list of {@link Operator} objects of veraPDF-library
 	 */
     public static List<Operator> operatorsFromTokens(List<Object> pdfBoxTokens,
-													 PDInheritableResources resources) {
+                                                     PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
         List<Operator> result = new ArrayList<>();
         List<COSBase> arguments = new ArrayList<>();
-        OperatorParser parser = new OperatorParser();
+        OperatorParser parser = new OperatorParser(document, flavour);
 
         for (Object pdfBoxToken : pdfBoxTokens) {
             if (pdfBoxToken instanceof COSBase) {

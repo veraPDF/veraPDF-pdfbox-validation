@@ -41,7 +41,7 @@ public abstract class PBOperatorTest extends BaseTest {
 		parser.parse();
 
 		List<Operator> operators = OperatorFactory.operatorsFromTokens(parser.getTokens(),
-				PDInheritableResources.getInstance(resources));
+				PDInheritableResources.getInstance(resources), document, null);
 		actual = getActual(operators, expectedType);
 
 		operators.clear();

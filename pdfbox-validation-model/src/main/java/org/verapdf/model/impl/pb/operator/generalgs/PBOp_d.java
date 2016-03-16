@@ -2,11 +2,13 @@ package org.verapdf.model.impl.pb.operator.generalgs;
 
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosArray;
 import org.verapdf.model.coslayer.CosReal;
 import org.verapdf.model.impl.pb.cos.PBCosArray;
 import org.verapdf.model.operator.Op_d;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,8 +29,13 @@ public class PBOp_d extends PBOpGeneralGS implements Op_d {
 	/** Name of link to the dash phase */
     public static final String DASH_PHASE = "dashPhase";
 
-    public PBOp_d(List<COSBase> arguments) {
+    private final PDDocument document;
+    private final PDFAFlavour flavour;
+
+    public PBOp_d(List<COSBase> arguments, PDDocument document, PDFAFlavour flavour) {
         super(arguments, OP_D_TYPE);
+        this.document = document;
+        this.flavour = flavour;
     }
 
     @Override
@@ -50,7 +57,7 @@ public class PBOp_d extends PBOpGeneralGS implements Op_d {
 					.get(this.arguments.size() - 2);
 			if (array instanceof COSArray) {
 				List<CosArray> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-				list.add(new PBCosArray((COSArray) array));
+				list.add(new PBCosArray((COSArray) array, this.document, this.flavour));
 				return Collections.unmodifiableList(list);
 			}
         }

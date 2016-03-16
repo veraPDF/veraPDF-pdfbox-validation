@@ -25,7 +25,7 @@ public class PBoxPDShadingTest extends PBoxPDPatternTest {
 		setUp(FILE_RELATIVE_PATH);
 		PDResources resources = document.getPage(0).getResources();
 		COSName patternName = COSName.getPDFName("SH0");
-		actual = new PBoxPDShading(resources.getShading(patternName));
+		actual = new PBoxPDShading(resources.getShading(patternName), document, null);
 	}
 
 	@Test

@@ -1,11 +1,13 @@
 package org.verapdf.model.impl.pb.operator.shading;
 
 import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.impl.pb.operator.base.PBOperator;
 import org.verapdf.model.impl.pb.pd.pattern.PBoxPDShading;
 import org.verapdf.model.operator.Op_sh;
 import org.verapdf.model.pdlayer.PDShading;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,10 +29,15 @@ public class PBOp_sh extends PBOperator implements Op_sh {
 
     private org.apache.pdfbox.pdmodel.graphics.shading.PDShading shading;
 
+    private final PDDocument document;
+    private final PDFAFlavour flavour;
+
     public PBOp_sh(List<COSBase> arguments,
-            org.apache.pdfbox.pdmodel.graphics.shading.PDShading shading) {
+            org.apache.pdfbox.pdmodel.graphics.shading.PDShading shading, PDDocument document, PDFAFlavour flavour) {
         super(arguments, OP_SH_TYPE);
         this.shading = shading;
+        this.document = document;
+        this.flavour = flavour;
     }
 
     @Override
@@ -46,7 +53,7 @@ public class PBOp_sh extends PBOperator implements Op_sh {
         if (this.shading != null) {
 			List<PDShading> list =
 					new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			list.add(new PBoxPDShading(this.shading));
+			list.add(new PBoxPDShading(this.shading, this.document, this.flavour));
 			return Collections.unmodifiableList(list);
         }
         return Collections.emptyList();

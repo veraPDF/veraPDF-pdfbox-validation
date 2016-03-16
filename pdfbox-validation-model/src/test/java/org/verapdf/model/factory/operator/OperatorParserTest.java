@@ -151,7 +151,7 @@ public class OperatorParserTest {
 			List<Object> operator = new ArrayList<>(1);
 			operator.add(this.operator);
 			final org.verapdf.model.operator.Operator veraOperator =
-					OperatorFactory.operatorsFromTokens(operator, RESOURCES).get(0);
+					OperatorFactory.operatorsFromTokens(operator, RESOURCES, null, null).get(0);
 			Assert.assertEquals(this.expectedType, veraOperator.getObjectType());
 		}
 	}
@@ -163,7 +163,7 @@ public class OperatorParserTest {
 		pdfBoxOperator.setImageParameters(new COSDictionary());
 		operator.add(pdfBoxOperator);
 		List<org.verapdf.model.operator.Operator> operators =
-				OperatorFactory.operatorsFromTokens(operator, RESOURCES);
+				OperatorFactory.operatorsFromTokens(operator, RESOURCES, null, null);
 		Assert.assertEquals(PBOp_BI.OP_BI_TYPE, operators.get(0).getObjectType());
 		Assert.assertEquals(PBOp_ID.OP_ID_TYPE, operators.get(1).getObjectType());
 		Assert.assertEquals(PBOp_EI.OP_EI_TYPE, operators.get(2).getObjectType());

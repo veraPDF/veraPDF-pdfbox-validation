@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSString;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.apache.pdfbox.preflight.font.container.FontContainer;
@@ -17,6 +18,7 @@ import org.verapdf.model.pdlayer.PDColorSpace;
 import org.verapdf.model.pdlayer.PDFont;
 import org.verapdf.model.tools.FontHelper;
 import org.verapdf.model.tools.resources.PDInheritableResources;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -46,11 +48,16 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
     protected final GraphicState state;
 	private final PDInheritableResources resources;
 
+	protected final PDDocument document;
+	protected final PDFAFlavour flavour;
+
     protected PBOpTextShow(List<COSBase> arguments,
-            GraphicState state, PDInheritableResources resources, final String opType) {
+            GraphicState state, PDInheritableResources resources, final String opType, PDDocument document, PDFAFlavour flavour) {
         super(arguments, opType);
         this.state = state;
 		this.resources = resources;
+		this.document = document;
+		this.flavour = flavour;
     }
 
 	@Override
@@ -74,7 +81,7 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 			return Collections.emptyList();
 		}
 
-        PDFont font = FontFactory.parseFont(this.state.getFont(), this.resources);
+        PDFont font = FontFactory.parseFont(this.state.getFont(), this.resources, this.document, this.flavour);
 		if (font != null) {
 			List<PDFont> result = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 			result.add(font);
@@ -141,7 +148,7 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 
 	private List<PDColorSpace> getColorSpace(org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace fillColorSpace) {
 		PDColorSpace colorSpace = ColorSpaceFactory.getColorSpace(
-				fillColorSpace, this.state.getPattern(), this.resources);
+				fillColorSpace, this.state.getPattern(), this.resources, this.document, this.flavour);
 		if (colorSpace != null) {
 			List<PDColorSpace> colorSpaces = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 			colorSpaces.add(colorSpace);

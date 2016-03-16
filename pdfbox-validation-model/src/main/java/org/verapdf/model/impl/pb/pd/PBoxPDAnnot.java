@@ -1,6 +1,7 @@
 package org.verapdf.model.impl.pb.pd;
 
 import org.apache.pdfbox.cos.*;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.action.PDActionFactory;
 import org.apache.pdfbox.pdmodel.interactive.action.PDAnnotationAdditionalActions;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
@@ -15,6 +16,7 @@ import org.verapdf.model.pdlayer.PDAction;
 import org.verapdf.model.pdlayer.PDAnnot;
 import org.verapdf.model.pdlayer.PDContentStream;
 import org.verapdf.model.tools.resources.PDInheritableResources;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,7 +55,10 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	private final Double width;
 	private final Double height;
 
-	public PBoxPDAnnot(PDAnnotation annot, PDInheritableResources resources) {
+	private final PDDocument document;
+	private final PDFAFlavour flavour;
+
+	public PBoxPDAnnot(PDAnnotation annot, PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
 		super(annot, ANNOTATION_TYPE);
 		this.resources = resources;
 		this.subtype = annot.getSubtype();
@@ -68,6 +73,8 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		this.ft = this.getFT(annot);
 		this.width = this.getWidth(annot);
 		this.height = this.getHeight(annot);
+		this.document = document;
+		this.flavour = flavour;
 	}
 
 	private String getAP(PDAnnotation annot) {
@@ -289,7 +296,7 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 				List<PDContentStream> appearances =
 						new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 				PDAppearanceStream stream = normalAppearance.getAppearanceStream();
-				appearances.add(new PBoxPDContentStream(stream, this.resources));
+				appearances.add(new PBoxPDContentStream(stream, this.resources, this.document, this.flavour));
 				return Collections.unmodifiableList(appearances);
             }
         }

@@ -26,7 +26,7 @@ public class PBoxPDDeviceNTest extends PBoxPDColorSpaceTest {
 
 		setUp(FILE_RELATIVE_PATH);
 		PDColorSpace deviceN = document.getPage(0).getResources().getColorSpace(COSName.getPDFName(COLOR_SPACE_NAME));
-		actual = new PBoxPDDeviceN((PDDeviceN) deviceN);
+		actual = new PBoxPDDeviceN((PDDeviceN) deviceN, document, null);
 	}
 
 	@Test

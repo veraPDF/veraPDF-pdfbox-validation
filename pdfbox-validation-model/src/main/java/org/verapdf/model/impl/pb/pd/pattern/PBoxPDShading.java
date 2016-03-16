@@ -1,11 +1,13 @@
 package org.verapdf.model.impl.pb.pd.pattern;
 
 import org.apache.log4j.Logger;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.factory.colors.ColorSpaceFactory;
 import org.verapdf.model.impl.pb.pd.PBoxPDResources;
 import org.verapdf.model.pdlayer.PDColorSpace;
 import org.verapdf.model.pdlayer.PDShading;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,9 +25,14 @@ public class PBoxPDShading extends PBoxPDResources implements PDShading {
 
     public static final String COLOR_SPACE = "colorSpace";
 
+    private final PDDocument document;
+    private final PDFAFlavour flavour;
+
     public PBoxPDShading(
-            org.apache.pdfbox.pdmodel.graphics.shading.PDShading simplePDObject) {
+            org.apache.pdfbox.pdmodel.graphics.shading.PDShading simplePDObject, PDDocument document, PDFAFlavour flavour) {
         super(simplePDObject, SHADING_TYPE);
+        this.document = document;
+        this.flavour = flavour;
     }
 
     @Override
@@ -44,7 +51,7 @@ public class PBoxPDShading extends PBoxPDResources implements PDShading {
             if (cs != null) {
 				List<PDColorSpace> colorSpaces =
 						new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-				colorSpaces.add(ColorSpaceFactory.getColorSpace(cs));
+				colorSpaces.add(ColorSpaceFactory.getColorSpace(cs, this.document, this.flavour));
 				return Collections.unmodifiableList(colorSpaces);
             }
         } catch (IOException e) {

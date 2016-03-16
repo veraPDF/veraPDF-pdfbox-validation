@@ -1,12 +1,14 @@
 package org.verapdf.model.visitor.cos.pb;
 
 import org.apache.pdfbox.cos.*;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.impl.pb.cos.*;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
 
 /**
- * Implementation of {@link ICOSVisitor} which realize Visitor pattern. Implements singleton pattern.
+ * Implementation of {@link ICOSVisitor} which realize Visitor pattern.
  * Current implementation create objects of abstract model implementation for corresponding objects
  * of pdf box. Methods call from {@code <? extends COSBase>} objects using accept() method.
  *
@@ -14,14 +16,16 @@ import java.io.IOException;
  */
 public final class PBCosVisitor implements ICOSVisitor {
 
-    private static final PBCosVisitor visitor = new PBCosVisitor();
+    private final PDDocument document;
+    private final PDFAFlavour flavour;
 
-    private PBCosVisitor() {
-        // Disable default constructor
+    private PBCosVisitor(PDDocument document, PDFAFlavour flavour) {
+        this.document = document;
+        this.flavour = flavour;
     }
 
-    public static PBCosVisitor getInstance() {
-        return visitor;
+    public static PBCosVisitor getInstance(PDDocument document, PDFAFlavour flavour) {
+        return new PBCosVisitor(document, flavour);
     }
 
     /** {@inheritDoc} Create a PBCosArray for corresponding COSArray.
@@ -30,7 +34,7 @@ public final class PBCosVisitor implements ICOSVisitor {
      */
     @Override
     public Object visitFromArray(COSArray obj) throws IOException {
-        return new PBCosArray(obj);
+        return new PBCosArray(obj, document, flavour);
     }
 
     /** {@inheritDoc} Create a PBCosBool for corresponding COSBoolean.
@@ -53,7 +57,7 @@ public final class PBCosVisitor implements ICOSVisitor {
     public Object visitFromDictionary(COSDictionary obj) throws IOException {
 		COSName type = obj.getCOSName(COSName.TYPE);
 		boolean isFileSpec = type != null && COSName.FILESPEC.equals(type);
-		return isFileSpec ? new PBCosFileSpecification(obj) : new PBCosDict(obj);
+		return isFileSpec ? new PBCosFileSpecification(obj, document, flavour) : new PBCosDict(obj, document, flavour);
     }
 
     /** {@inheritDoc} Create a PBCosDocument for corresponding COSDocument.
@@ -62,7 +66,7 @@ public final class PBCosVisitor implements ICOSVisitor {
      */
     @Override
     public Object visitFromDocument(COSDocument obj) throws IOException {
-        return new PBCosDocument(obj);
+        return new PBCosDocument(obj, flavour);
     }
 
     /** {@inheritDoc} Create a PBCosReal for corresponding COSFloat.
@@ -107,7 +111,7 @@ public final class PBCosVisitor implements ICOSVisitor {
      */
     @Override
     public Object visitFromStream(COSStream obj) throws IOException {
-        return new PBCosStream(obj);
+        return new PBCosStream(obj, document, flavour);
     }
 
     /** {@inheritDoc} Create a PBCosString for corresponding COSString.
@@ -126,7 +130,7 @@ public final class PBCosVisitor implements ICOSVisitor {
      * @see PBCosIndirect
      * @see COSObject#accept(ICOSVisitor)
      */
-    public static Object visitFromObject(COSObject obj) {
-        return new PBCosIndirect(obj);
+    public static Object visitFromObject(COSObject obj, PDDocument document, PDFAFlavour flavour) {
+        return new PBCosIndirect(obj, document, flavour);
     }
 }

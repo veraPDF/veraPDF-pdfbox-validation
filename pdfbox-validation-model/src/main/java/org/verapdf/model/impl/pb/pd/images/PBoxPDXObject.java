@@ -5,6 +5,7 @@ import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.COSObjectable;
 import org.apache.pdfbox.pdmodel.graphics.PDPostScriptXObject;
@@ -16,6 +17,7 @@ import org.verapdf.model.impl.pb.cos.PBCosDict;
 import org.verapdf.model.impl.pb.pd.PBoxPDResources;
 import org.verapdf.model.pdlayer.PDXObject;
 import org.verapdf.model.tools.resources.PDInheritableResources;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,6 +31,9 @@ public class PBoxPDXObject extends PBoxPDResources implements PDXObject {
 
     private static final Logger LOGGER = Logger.getLogger(PBoxPDXObject.class);
 
+    protected final PDDocument document;
+    protected final PDFAFlavour flavour;
+
     public static final String X_OBJECT_TYPE = "PDXObject";
 
     public static final String OPI = "OPI";
@@ -38,14 +43,16 @@ public class PBoxPDXObject extends PBoxPDResources implements PDXObject {
 	private final String subtype;
 
     public PBoxPDXObject(
-            org.apache.pdfbox.pdmodel.graphics.PDXObject simplePDObject) {
-        this(simplePDObject, PDInheritableResources.EMPTY_EXTENDED_RESOURCES, X_OBJECT_TYPE);
+            org.apache.pdfbox.pdmodel.graphics.PDXObject simplePDObject, PDDocument document, PDFAFlavour flavour) {
+        this(simplePDObject, PDInheritableResources.EMPTY_EXTENDED_RESOURCES, X_OBJECT_TYPE, document, flavour);
     }
 
-	protected PBoxPDXObject(COSObjectable simplePDObject, PDInheritableResources resources, final String type) {
+	protected PBoxPDXObject(COSObjectable simplePDObject, PDInheritableResources resources, final String type, PDDocument document, PDFAFlavour flavour) {
 		super(simplePDObject, type);
 		this.resources = resources;
 		this.subtype = this.getSubtype((org.apache.pdfbox.pdmodel.graphics.PDXObject) this.simplePDObject);
+        this.document = document;
+        this.flavour = flavour;
 	}
 
 	private String getSubtype(org.apache.pdfbox.pdmodel.graphics.PDXObject object) {
@@ -101,21 +108,23 @@ public class PBoxPDXObject extends PBoxPDResources implements PDXObject {
         org.apache.pdfbox.pdmodel.graphics.PDXObject pbObject =
 				org.apache.pdfbox.pdmodel.graphics.PDXObject.createXObject(
 						smaskDictionary, nameAsString, resourcesLocal);
-        return getTypedPDXObject(pbObject, this.resources);
+        return getTypedPDXObject(pbObject, this.resources, this.document, this.flavour);
     }
 
     public static PDXObject getTypedPDXObject(
             org.apache.pdfbox.pdmodel.graphics.PDXObject pbObject,
-			PDInheritableResources extendedResources) {
+			PDInheritableResources extendedResources,
+            PDDocument document,
+            PDFAFlavour flavour) {
         if (pbObject instanceof PDFormXObject) {
 			PDFormXObject object = (PDFormXObject) pbObject;
 			PDInheritableResources resources = extendedResources
 					.getExtendedResources(object.getResources());
-			return new PBoxPDXForm(object, resources);
+			return new PBoxPDXForm(object, resources, document, flavour);
         } else if (pbObject instanceof PDImageXObject) {
-            return new PBoxPDXImage((PDImageXObject) pbObject);
+            return new PBoxPDXImage((PDImageXObject) pbObject, document, flavour);
         } else if (pbObject instanceof PDPostScriptXObject) {
-            return new PBoxPDXObject(pbObject);
+            return new PBoxPDXObject(pbObject, document, flavour);
         } else {
             return null;
         }
@@ -131,7 +140,7 @@ public class PBoxPDXObject extends PBoxPDResources implements PDXObject {
         COSBase item = object.getDictionaryObject(COSName.getPDFName(key));
         if (item instanceof COSDictionary) {
 			List<CosDict> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			list.add(new PBCosDict((COSDictionary) item));
+			list.add(new PBCosDict((COSDictionary) item, this.document, this.flavour));
 			return Collections.unmodifiableList(list);
         }
         return Collections.emptyList();

@@ -38,7 +38,7 @@ public class OperatorFactoryTest {
 	public void testOperatorsFromTokensMethod() {
 		List<Object> input = new ArrayList<>(1);
 		input.add(fInput);
-		Assert.assertEquals(fExpected, OperatorFactory.operatorsFromTokens(input, null).size());
+		Assert.assertEquals(fExpected, OperatorFactory.operatorsFromTokens(input, null, null, null).size());
 	}
 
 }

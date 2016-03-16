@@ -26,7 +26,7 @@ public class PBCosStreamTest extends BaseTest {
 
         COSStream stream = getCosStream();
 
-        actual = new PBCosStream(stream);
+        actual = new PBCosStream(stream, document, null);
     }
 
     private static COSStream getCosStream() throws IOException {

@@ -9,11 +9,12 @@ import org.verapdf.model.impl.BaseTest;
 import org.verapdf.model.impl.pb.operator.base.PBOperator;
 import org.verapdf.model.tools.resources.PDInheritableResources;
 
-import static org.verapdf.model.impl.pb.pd.PBoxPDContentStream.*;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+
+import static org.verapdf.model.impl.pb.pd.PBoxPDContentStream.CONTENT_STREAM_TYPE;
+import static org.verapdf.model.impl.pb.pd.PBoxPDContentStream.OPERATORS;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -29,7 +30,7 @@ public class PBoxPDContentStreamTest extends BaseTest {
 
 		setUp(FILE_RELATIVE_PATH);
 		PDPage page = document.getPage(0);
-		actual = new PBoxPDContentStream(page, PDInheritableResources.getInstance(page.getResources()));
+		actual = new PBoxPDContentStream(page, PDInheritableResources.getInstance(page.getResources()), document, null);
 	}
 
 	@Test

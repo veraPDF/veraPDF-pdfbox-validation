@@ -26,7 +26,7 @@ public class PBoxPDIndexedTest extends PBoxPDColorSpaceTest {
 
 		setUp(FILE_RELATIVE_PATH);
 		PDColorSpace indexed = document.getPage(0).getResources().getColorSpace(COSName.getPDFName(COLOR_SPACE_NAME));
-		actual = new PBoxPDIndexed((PDIndexed) indexed);
+		actual = new PBoxPDIndexed((PDIndexed) indexed, document, null);
 	}
 
 	@Test

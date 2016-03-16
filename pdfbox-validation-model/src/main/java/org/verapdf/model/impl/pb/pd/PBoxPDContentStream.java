@@ -3,11 +3,13 @@ package org.verapdf.model.impl.pb.pd;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdfparser.PDFStreamParser;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.factory.operator.OperatorFactory;
 import org.verapdf.model.operator.Operator;
 import org.verapdf.model.pdlayer.PDContentStream;
 import org.verapdf.model.tools.resources.PDInheritableResources;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -28,11 +30,16 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 
 	private final PDInheritableResources resources;
 
+    private final PDDocument document;
+    private final PDFAFlavour flavour;
+
 	public PBoxPDContentStream(
 			org.apache.pdfbox.contentstream.PDContentStream contentStream,
-			PDInheritableResources resources) {
+			PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
 		super(contentStream, CONTENT_STREAM_TYPE);
 		this.resources = resources;
+        this.document = document;
+        this.flavour = flavour;
 	}
 
     @Override
@@ -52,7 +59,7 @@ public class PBoxPDContentStream extends PBoxPDObject implements
                 streamParser.parse();
                 List<Operator> result = OperatorFactory.operatorsFromTokens(
                         streamParser.getTokens(),
-                        this.resources);
+                        this.resources, this.document, this.flavour);
                 return Collections.unmodifiableList(result);
             }
         } catch (IOException e) {

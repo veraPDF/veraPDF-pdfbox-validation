@@ -1,19 +1,21 @@
 package org.verapdf.model.impl.pb.cos;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.List;
-
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosDocument;
 import org.verapdf.model.coslayer.CosTrailer;
 import org.verapdf.model.coslayer.CosXRef;
 import org.verapdf.model.impl.BaseTest;
 
-import static org.verapdf.model.impl.pb.cos.PBCosDocument.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.List;
+
+import static org.verapdf.model.impl.pb.cos.PBCosDocument.COS_DOCUMENT_TYPE;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -37,7 +39,7 @@ public class PBCosDocumentTest extends BaseTest {
         String fileAbsolutePath = getSystemIndependentPath(FILE_RELATIVE_PATH);
         final File file = new File(fileAbsolutePath);
         try (PDDocument doc = PDDocument.load(file, false, true)) {
-            actual = new PBCosDocument(doc, file.length());
+            actual = new PBCosDocument(doc, null);
         }
     }
 
@@ -51,12 +53,6 @@ public class PBCosDocumentTest extends BaseTest {
 		double actualVersion = ((CosDocument) actual).getversion().doubleValue();
 		Assert.assertEquals(expectedDocumentVersion, actualVersion, 0.01);
 	}
-
-    @Test
-    public void testSizeMethod() {
-		Long actual = ((CosDocument) BaseTest.actual).getsize();
-		Assert.assertEquals(expectedSizeOfDocument, actual);
-    }
 
 	@Test
 	public void testHeaderOffset() {

@@ -3,10 +3,11 @@ package org.verapdf.model.impl.pb.cos;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSObject;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.GenericModelObject;
 import org.verapdf.model.coslayer.CosObject;
-import org.verapdf.model.tools.IDGenerator;
 import org.verapdf.model.visitor.cos.pb.PBCosVisitor;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
 
@@ -40,13 +41,13 @@ public class PBCosObject extends GenericModelObject implements CosObject {
      * @return object of abstract model implementation, transformed from
      *         {@code base}
      */
-    public static CosObject getFromValue(COSBase base) {
+    public static CosObject getFromValue(COSBase base, PDDocument document, PDFAFlavour flavour) {
         try {
             if (base != null) {
-                PBCosVisitor visitor = PBCosVisitor.getInstance();
+                PBCosVisitor visitor = PBCosVisitor.getInstance(document, flavour);
                 if (base instanceof COSObject) {
                     return (CosObject) PBCosVisitor
-                            .visitFromObject((COSObject) base);
+                            .visitFromObject((COSObject) base, document, flavour);
                 }
                 return (CosObject) base.accept(visitor);
             }
