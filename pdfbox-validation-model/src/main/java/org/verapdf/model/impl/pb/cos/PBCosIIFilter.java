@@ -15,7 +15,7 @@ public class PBCosIIFilter extends PBCosName implements CosIIFilter {
 	}
 
 	public PBCosIIFilter(final String filter) {
-		super(COSName.getPDFName(filter));
+		this(COSName.getPDFName(filter));
 	}
 
 }
