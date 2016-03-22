@@ -5,19 +5,16 @@ import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.pdmodel.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.COSObjectable;
 import org.apache.pdfbox.pdmodel.interactive.action.PDPageAdditionalActions;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosBBox;
-import org.verapdf.model.coslayer.CosDict;
 import org.verapdf.model.impl.pb.cos.PBCosBBox;
-import org.verapdf.model.impl.pb.cos.PBCosDict;
 import org.verapdf.model.pdlayer.*;
-import org.verapdf.model.pdlayer.PDPage;
 import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
@@ -77,6 +74,16 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 	}
 
 	@Override
+	public Boolean getcontainsPresSteps() {
+		COSBase presSteps = ((org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject)
+				.getCOSObject().getDictionaryObject(COSName.getPDFName(PRESENTATION_STEPS));
+		if (presSteps != null) {
+			return Boolean.TRUE;
+		}
+		return Boolean.FALSE;
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 			case GROUP:
@@ -97,8 +104,6 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 				return this.getTrimBox();
 			case ART_BOX:
 				return this.getArtBox();
-			case PRESENTATION_STEPS:
-				return this.getPresentationSteps();
 			default:
 				return super.getLinkedObjects(link);
 		}
@@ -210,14 +215,4 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 		return Collections.emptyList();
 	}
 
-	private List<CosDict> getPresentationSteps() {
-		COSBase presSteps = ((org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject)
-				.getCOSObject().getDictionaryObject(COSName.getPDFName(PRESENTATION_STEPS));
-		if (presSteps instanceof COSDictionary) {
-			ArrayList<CosDict> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			list.add(new PBCosDict((COSDictionary) presSteps, this.document, this.flavour));
-			return Collections.unmodifiableList(list);
-		}
-		return Collections.emptyList();
-	}
 }
