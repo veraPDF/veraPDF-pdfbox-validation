@@ -6,7 +6,10 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDEmbeddedFilesNameTreeNode;
 import org.apache.pdfbox.pdmodel.common.filespecification.PDComplexFileSpecification;
 import org.verapdf.model.baselayer.Object;
-import org.verapdf.model.coslayer.*;
+import org.verapdf.model.coslayer.CosDocument;
+import org.verapdf.model.coslayer.CosIndirect;
+import org.verapdf.model.coslayer.CosTrailer;
+import org.verapdf.model.coslayer.CosXRef;
 import org.verapdf.model.impl.pb.pd.PBoxPDDocument;
 import org.verapdf.model.tools.XMPChecker;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
@@ -228,9 +231,35 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 		}
 	}
 
+	@Override
+	public String getRequirements() {
+		if (this.catalog != null) {
+
+			COSBase reqArray = this.catalog.getDictionaryObject(COSName.getPDFName(REQUIREMENTS));
+
+			if (reqArray instanceof COSArray) {
+				return this.getRequirementsString(reqArray);
+			}
+		}
+		return null;
+	}
+
+	private String getRequirementsString(COSBase reqArray) {
+		String result = "";
+		for (COSBase element : (COSArray) reqArray) {
+			if (element instanceof COSDictionary) {
+				String sKey = ((COSDictionary) element).getString(COSName.S);
+				result += sKey;
+				result += " ";
+			}
+		}
+		return result;
+	}
+
 	/**
 	 * @return true if {@code NeedsRendering} entry contains {@code true} value
 	 */
+	@Override
 	public Boolean getNeedsRendering() {
 		return Boolean.valueOf(this.needsRendering);
 	}
@@ -248,8 +277,6 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 				return this.getXRefs();
 			case EMBEDDED_FILES:
 				return this.getEmbeddedFiles();
-			case REQUIREMENTS:
-				return this.getRequirements();
 			default:
 				return super.getLinkedObjects(link);
 		}
@@ -339,27 +366,6 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
                 cosDocument.isXrefEOLMarkersComplyPDFA()));
         return Collections.unmodifiableList(list);
     }
-
-	private List<CosDict> getRequirements() {
-		if (this.catalog != null) {
-			COSName requirementsName = COSName.getPDFName(REQUIREMENTS);
-			COSBase reqArray = this.catalog.getDictionaryObject(requirementsName);
-			if (reqArray instanceof COSArray) {
-				return this.getRequirementsList(reqArray);
-			}
-		}
-		return Collections.emptyList();
-	}
-
-	private List<CosDict> getRequirementsList(COSBase reqArray) {
-		ArrayList<CosDict> list = new ArrayList<>(((COSArray) reqArray).size());
-		for (COSBase element : (COSArray) reqArray) {
-			if (element instanceof COSDictionary) {
-				list.add(new PBCosDict((COSDictionary) element, this.pdDocument, this.flavour));
-			}
-		}
-		return Collections.unmodifiableList(list);
-	}
 
 	private boolean getNeedsRenderingValue() {
 		COSName needsRenderingLocal = COSName.getPDFName("NeedsRendering");

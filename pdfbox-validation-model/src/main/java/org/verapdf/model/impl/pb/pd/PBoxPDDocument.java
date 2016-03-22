@@ -1,15 +1,16 @@
 package org.verapdf.model.impl.pb.pd;
 
 import org.apache.log4j.Logger;
-import org.apache.pdfbox.cos.*;
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.common.PDDestinationOrAction;
 import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureTreeRoot;
+import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentProperties;
 import org.apache.pdfbox.pdmodel.interactive.action.PDDocumentCatalogAdditionalActions;
 import org.verapdf.model.baselayer.Object;
-import org.verapdf.model.coslayer.CosDict;
-import org.verapdf.model.impl.pb.cos.PBCosDict;
 import org.verapdf.model.pdlayer.*;
 import org.verapdf.model.tools.OutlinesHelper;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
@@ -99,8 +100,6 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 				return this.getAcroForms();
 			case STRUCTURE_TREE_ROOT:
 				return this.getStructureTreeRoot();
-			case ALTERNATE_PRESENTATIONS:
-				return this.getAlternatePresentations();
 			case OC_PROPERTIES:
 				return this.getOCProperties();
 			default:
@@ -227,52 +226,35 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 		return Collections.emptyList();
 	}
 
-	private List<CosDict> getAlternatePresentations() {
+	@Override
+	public Boolean getcontainsAlternatePresentations() {
 		if (this.catalog != null) {
-			COSDictionary buffer = this.catalog.getCOSObject();
-			buffer = (COSDictionary) buffer.getDictionaryObject(
-					COSName.NAMES);
-			if (buffer != null) {
-				COSName key = COSName.getPDFName(ALTERNATE_PRESENTATIONS);
-				COSBase base = buffer.getDictionaryObject(key);
-				if (base instanceof COSDictionary) {
-					List<CosDict> presentations = new ArrayList<>();
-					this.getAlternatePresentations(presentations, (COSDictionary) base);
-					return Collections.unmodifiableList(presentations);
+			COSDictionary rawCatalog = this.catalog.getCOSObject();
+
+			COSDictionary namesDictionary = (COSDictionary) rawCatalog.getDictionaryObject(COSName.NAMES);
+			if (namesDictionary != null) {
+
+				COSBase alternatePresentations = namesDictionary.getDictionaryObject(COSName.getPDFName(ALTERNATE_PRESENTATIONS));
+
+				if (alternatePresentations != null) {
+					return Boolean.TRUE;
 				}
 			}
 		}
-		return Collections.emptyList();
+		return Boolean.FALSE;
 	}
 
 	private List<PDOCProperties> getOCProperties() {
-		//TODO : implement
-		return Collections.emptyList();
-	}
+		PDOptionalContentProperties pBoxOCProperties = this.catalog.getOCProperties();
+		if (pBoxOCProperties != null) {
+			List<PDOCProperties> result = new ArrayList<>();
 
-	private void getAlternatePresentations(List<CosDict> presentations, COSDictionary base) {
-		COSBase tmp = base.getDictionaryObject(COSName.NAMES);
-		this.getAlternatesDictionaries(presentations, tmp);
-		tmp = base.getDictionaryObject(COSName.RESOURCES);
-		if (tmp instanceof COSDictionary) {
-			this.getAlternatesDictionaries(presentations,
-					((COSDictionary) tmp).getDictionaryObject(COSName.NAMES));
-		}
-	}
+			PDOCProperties ocProperties = new PBoxPDOCProperties(pBoxOCProperties);
+			result.add(ocProperties);
 
-	private void getAlternatesDictionaries(List<CosDict> presentations, COSBase names) {
-		if (names instanceof COSArray) {
-			COSArray array = (COSArray) names;
-			for (int i = 1; i < array.size(); i += 2) {
-				COSBase element = array.get(i);
-				if (element instanceof COSObject) {
-					element = ((COSObject) element).getObject();
-				}
-				if (element instanceof COSDictionary) {
-					presentations.add(new PBCosDict((COSDictionary) element, this.document, flavour));
-					this.getAlternatePresentations(presentations, (COSDictionary) element);
-				}
-			}
+			return result;
+		} else {
+			return Collections.emptyList();
 		}
 	}
 
