@@ -6,6 +6,7 @@ import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.common.PDDestinationOrAction;
 import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureTreeRoot;
+import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentProperties;
 import org.apache.pdfbox.pdmodel.interactive.action.PDDocumentCatalogAdditionalActions;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosDict;
@@ -246,8 +247,17 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 	}
 
 	private List<PDOCProperties> getOCProperties() {
-		//TODO : implement
-		return Collections.emptyList();
+		PDOptionalContentProperties pBoxOCProperties = this.catalog.getOCProperties();
+		if (pBoxOCProperties != null) {
+			List<PDOCProperties> result = new ArrayList<>();
+
+			PDOCProperties ocProperties = new PBoxPDOCProperties(pBoxOCProperties);
+			result.add(ocProperties);
+
+			return result;
+		} else {
+			return Collections.emptyList();
+		}
 	}
 
 	private void getAlternatePresentations(List<CosDict> presentations, COSDictionary base) {
