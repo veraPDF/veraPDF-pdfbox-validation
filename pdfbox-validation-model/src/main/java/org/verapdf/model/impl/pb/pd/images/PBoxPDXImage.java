@@ -151,7 +151,7 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 					filters.contains(COSName.JBIG2_DECODE) || filters.contains(COSName.JPX_DECODE))) {
 				InputStream image = stream.getStream().getUnfilteredStream();
 				ArrayList<JPEG2000> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-				list.add(new PBoxJPEG2000(image));
+				list.add(PBoxJPEG2000.fromStream(image));
 				return Collections.unmodifiableList(list);
 			}
 		} catch (IOException e) {
