@@ -70,6 +70,18 @@ public class MetadataImpl implements Metadata {
                 LOGGER.warn("Problems with setting filter for stream.");
                 LOGGER.warn(e);
             }
+        } else {
+            COSBase filters = stream.getFilters();
+            if (filters instanceof COSName
+                    || (filters instanceof COSArray && ((COSArray) filters).size() != 0)) {
+                try {
+                    stream.setFilters(null);
+                    stream.setNeedToBeUpdated(true);
+                    resultBuilder.addFix("Metadata streams unfiltered");
+                } catch (IOException e) {
+                    LOGGER.warn("Problems with unfilter stream.", e);
+                }
+            }
         }
         this.setRequiredDictionaryValue(COSName.METADATA, COSName.TYPE,
                 resultBuilder);

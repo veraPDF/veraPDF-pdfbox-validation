@@ -132,9 +132,6 @@ public abstract class MetadataFixerImpl implements MetadataFixer {
 
     private static void executeInvalidMetadataCase(FixerConfig config,
                                                    Metadata metadata, MetadataFixerResultImpl.Builder resultBuilder) {
-        if (config.getValidationResult().getPDFAFlavour().getPart() == PDFAFlavour.Specification.ISO_19005_1) {
-            config.getDocument().removeFiltersForAllMetadataObjects(resultBuilder);
-        }
         fixMetadata(resultBuilder, config);
         if (config.isFixIdentification()) {
             metadata.addPDFIdentificationSchema(resultBuilder,
