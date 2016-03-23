@@ -2,7 +2,7 @@ package org.verapdf.model.impl.pb.pd.images;
 
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.graphics.PDXObject;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObjectProxy;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,7 +29,7 @@ public class PBoxPDXImageTest extends PBoxPDAbstractXObjectTest {
 
 		setUp(FILE_RELATIVE_PATH);
 		PDXObject xObject = document.getPage(0).getResources().getXObject(COSName.getPDFName(IMAGE_NAME));
-		actual = new PBoxPDXImage((PDImageXObject) xObject, document, null);
+		actual = new PBoxPDXImage((PDImageXObjectProxy) xObject, document, null);
 	}
 
 	@Override

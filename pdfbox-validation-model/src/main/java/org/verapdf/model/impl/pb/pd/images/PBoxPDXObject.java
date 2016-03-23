@@ -10,7 +10,7 @@ import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.COSObjectable;
 import org.apache.pdfbox.pdmodel.graphics.PDPostScriptXObject;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObjectProxy;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosDict;
 import org.verapdf.model.impl.pb.cos.PBCosDict;
@@ -121,8 +121,8 @@ public class PBoxPDXObject extends PBoxPDResources implements PDXObject {
 			PDInheritableResources resources = extendedResources
 					.getExtendedResources(object.getResources());
 			return new PBoxPDXForm(object, resources, document, flavour);
-        } else if (pbObject instanceof PDImageXObject) {
-            return new PBoxPDXImage((PDImageXObject) pbObject, document, flavour);
+        } else if (pbObject instanceof PDImageXObjectProxy) {
+            return new PBoxPDXImage((PDImageXObjectProxy) pbObject, document, flavour);
         } else if (pbObject instanceof PDPostScriptXObject) {
             return new PBoxPDXObject(pbObject, document, flavour);
         } else {
