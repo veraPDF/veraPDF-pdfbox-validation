@@ -5,8 +5,6 @@ import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDStream;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObjectProxy;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosRenderingIntent;
@@ -93,9 +91,7 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
                     return Collections.unmodifiableList(colorSpaces);
                 }
             } catch (IOException e) {
-                LOGGER.error(
-                        "Problems with color space obtaining from Image XObject. "
-                                + e.getMessage(), e);
+                LOGGER.warn("Could not obtain Image XObject color space. " + e.getMessage(), e);
             }
         }
         return Collections.emptyList();
@@ -103,11 +99,11 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 
     private List<? extends PDXImage> getAlternates() {
         final List<PDXImage> alternates = new ArrayList<>();
-        final COSStream imageStream = ((PDImageXObject) this.simplePDObject)
+        final COSStream imageStream = ((PDImageXObjectProxy) this.simplePDObject)
                 .getCOSStream();
         final COSBase buffer = imageStream.getDictionaryObject(COSName
                 .getPDFName(ALTERNATES));
-        this.addAlternates(alternates, buffer, ((PDImageXObject) this.simplePDObject)
+        this.addAlternates(alternates, buffer, ((PDImageXObjectProxy) this.simplePDObject)
                 .getResources());
         return alternates;
     }
@@ -133,18 +129,18 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
         if (alternatesImages instanceof COSStream) {
 
             final PDStream stream = new PDStream((COSStream) alternatesImages);
-            PDImageXObjectProxy imageXObject = new PDImageXObjectProxy(stream, resources, null);
+            PDImageXObjectProxy imageXObject = new PDImageXObjectProxy(stream, resources);
             alternates.add(new PBoxPDXImage(imageXObject, this.document, this.flavour));
         }
     }
 
     private List<JPEG2000> getJPXStream() {
         try {
-            PDStream stream = ((PDImage) (this.simplePDObject)).getStream();
+            PDStream stream = ((PDImageXObjectProxy) (this.simplePDObject)).getPDStream();
             List<COSName> filters = stream.getFilters();
-            if (filters != null && (
-                    filters.contains(COSName.JBIG2_DECODE) || filters.contains(COSName.JPX_DECODE))) {
-                InputStream image = stream.getStream().getUnfilteredStream();
+            if (filters != null && filters.contains(COSName.JPX_DECODE)) {
+                // TODO: handle the case when jpx stream is additionally hex encoded
+                InputStream image = stream.getStream().getFilteredStream();
                 ArrayList<JPEG2000> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
                 list.add(PBoxJPEG2000.fromStream(image));
                 return Collections.unmodifiableList(list);
