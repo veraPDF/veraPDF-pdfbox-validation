@@ -7,6 +7,7 @@ import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObjectProxy;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosRenderingIntent;
 import org.verapdf.model.external.JPEG2000;
@@ -31,18 +32,18 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 
     private static final Logger LOGGER = Logger.getLogger(PBoxPDXImage.class);
 
-	public static final String X_IMAGE_TYPE = "PDXImage";
+    public static final String X_IMAGE_TYPE = "PDXImage";
 
     public static final String IMAGE_CS = "imageCS";
     public static final String ALTERNATES = "Alternates";
     public static final String INTENT = "Intent";
-	public static final String JPX_STREAM = "jpxStream";
+    public static final String JPX_STREAM = "jpxStream";
 
-	private final boolean interpolate;
+    private final boolean interpolate;
 
-    public PBoxPDXImage(PDImage simplePDObject, PDDocument document, PDFAFlavour flavour) {
+    public PBoxPDXImage(PDImageXObjectProxy simplePDObject, PDDocument document, PDFAFlavour flavour) {
         super(simplePDObject, PDInheritableResources.EMPTY_EXTENDED_RESOURCES, X_IMAGE_TYPE, document, flavour);
-		this.interpolate = simplePDObject.getInterpolate();
+        this.interpolate = simplePDObject.getInterpolate();
     }
 
     @Override
@@ -50,114 +51,108 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
         return Boolean.valueOf(this.interpolate);
     }
 
-	@Override
-	public List<? extends Object> getLinkedObjects(String link) {
-		switch (link) {
-			case INTENT:
-				return this.getIntent();
-			case IMAGE_CS:
-				return this.getImageCS();
-			case ALTERNATES:
-				return this.getAlternates();
-			case JPX_STREAM:
-				return this.getJPXStream();
-			default:
-				return super.getLinkedObjects(link);
-		}
-	}
+    @Override
+    public List<? extends Object> getLinkedObjects(String link) {
+        switch (link) {
+            case INTENT:
+                return this.getIntent();
+            case IMAGE_CS:
+                return this.getImageCS();
+            case ALTERNATES:
+                return this.getAlternates();
+            case JPX_STREAM:
+                return this.getJPXStream();
+            default:
+                return super.getLinkedObjects(link);
+        }
+    }
 
-	private List<CosRenderingIntent> getIntent() {
+    private List<CosRenderingIntent> getIntent() {
         COSDictionary imageStream = (COSDictionary) this.simplePDObject
-				.getCOSObject();
+                .getCOSObject();
         COSName intent = imageStream.getCOSName(COSName.getPDFName(INTENT));
         if (intent != null) {
-			List<CosRenderingIntent> intents = new ArrayList<>(
-					MAX_NUMBER_OF_ELEMENTS);
-			intents.add(new PBCosRenderingIntent(intent));
-			return Collections.unmodifiableList(intents);
+            List<CosRenderingIntent> intents = new ArrayList<>(
+                    MAX_NUMBER_OF_ELEMENTS);
+            intents.add(new PBCosRenderingIntent(intent));
+            return Collections.unmodifiableList(intents);
         }
         return Collections.emptyList();
     }
 
-	private List<PDColorSpace> getImageCS() {
-		PDImage image = (PDImage) this.simplePDObject;
-		if (!image.isStencil()) {
-			try {
-				PDColorSpace buffer = ColorSpaceFactory
-						.getColorSpace(image.getColorSpace(), this.document, this.flavour);
-				if (buffer != null) {
-					List<PDColorSpace> colorSpaces =
-							new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-					colorSpaces.add(buffer);
-					return Collections.unmodifiableList(colorSpaces);
-				}
-			} catch (IOException e) {
-				LOGGER.error(
-						"Problems with color space obtaining from Image XObject. "
-								+ e.getMessage(), e);
-			}
-		}
-		return Collections.emptyList();
-	}
+    private List<PDColorSpace> getImageCS() {
+        PDImageXObjectProxy image = (PDImageXObjectProxy) this.simplePDObject;
+        if (!image.isStencil()) {
+            try {
+                PDColorSpace buffer = ColorSpaceFactory
+                        .getColorSpace(image.getColorSpace(), this.document, this.flavour);
+                if (buffer != null) {
+                    List<PDColorSpace> colorSpaces =
+                            new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+                    colorSpaces.add(buffer);
+                    return Collections.unmodifiableList(colorSpaces);
+                }
+            } catch (IOException e) {
+                LOGGER.error(
+                        "Problems with color space obtaining from Image XObject. "
+                                + e.getMessage(), e);
+            }
+        }
+        return Collections.emptyList();
+    }
 
     private List<? extends PDXImage> getAlternates() {
         final List<PDXImage> alternates = new ArrayList<>();
         final COSStream imageStream = ((PDImageXObject) this.simplePDObject)
                 .getCOSStream();
         final COSBase buffer = imageStream.getDictionaryObject(COSName
-				.getPDFName(ALTERNATES));
+                .getPDFName(ALTERNATES));
         this.addAlternates(alternates, buffer, ((PDImageXObject) this.simplePDObject)
-				.getResources());
+                .getResources());
         return alternates;
     }
 
     private void addAlternates(List<PDXImage> alternates, COSBase buffer,
-							   PDResources resources) {
+                               PDResources resources) {
         if (buffer instanceof COSArray) {
             for (COSBase element : (COSArray) buffer) {
-				if (element instanceof COSObject) {
-					element = ((COSObject) element).getObject();
-				}
-				if (element instanceof COSDictionary) {
-					this.addAlternate(alternates, (COSDictionary) element,
-							resources);
-				}
+                if (element instanceof COSObject) {
+                    element = ((COSObject) element).getObject();
+                }
+                if (element instanceof COSDictionary) {
+                    this.addAlternate(alternates, (COSDictionary) element,
+                            resources);
+                }
             }
         }
     }
 
-	private void addAlternate(List<PDXImage> alternates, COSDictionary buffer,
-							  PDResources resources) {
-		COSBase alternatesImages = buffer.getDictionaryObject(COSName.IMAGE);
-		if (alternatesImages instanceof COSStream) {
-			try {
-				final PDStream stream = new PDStream((COSStream) alternatesImages);
-				PDImageXObject imageXObject = new PDImageXObject(stream,
-						resources);
-				alternates.add(new PBoxPDXImage(imageXObject, this.document, this.flavour));
-			} catch (IOException e) {
-				LOGGER.error(
-						"Error in creating Alternate XObject. "
-								+ e.getMessage(), e);
-			}
-		}
-	}
+    private void addAlternate(List<PDXImage> alternates, COSDictionary buffer,
+                              PDResources resources) {
+        COSBase alternatesImages = buffer.getDictionaryObject(COSName.IMAGE);
+        if (alternatesImages instanceof COSStream) {
 
-	private List<JPEG2000> getJPXStream() {
-		try {
-			PDStream stream = ((PDImage) (this.simplePDObject)).getStream();
-			List<COSName> filters = stream.getFilters();
-			if (filters != null && (
-					filters.contains(COSName.JBIG2_DECODE) || filters.contains(COSName.JPX_DECODE))) {
-				InputStream image = stream.getStream().getUnfilteredStream();
-				ArrayList<JPEG2000> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-				list.add(PBoxJPEG2000.fromStream(image));
-				return Collections.unmodifiableList(list);
-			}
-		} catch (IOException e) {
-			LOGGER.warn("Problems with stream obtain.", e);
-		}
-		return Collections.emptyList();
-	}
+            final PDStream stream = new PDStream((COSStream) alternatesImages);
+            PDImageXObjectProxy imageXObject = new PDImageXObjectProxy(stream, resources, null);
+            alternates.add(new PBoxPDXImage(imageXObject, this.document, this.flavour));
+        }
+    }
+
+    private List<JPEG2000> getJPXStream() {
+        try {
+            PDStream stream = ((PDImage) (this.simplePDObject)).getStream();
+            List<COSName> filters = stream.getFilters();
+            if (filters != null && (
+                    filters.contains(COSName.JBIG2_DECODE) || filters.contains(COSName.JPX_DECODE))) {
+                InputStream image = stream.getStream().getUnfilteredStream();
+                ArrayList<JPEG2000> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+                list.add(PBoxJPEG2000.fromStream(image));
+                return Collections.unmodifiableList(list);
+            }
+        } catch (IOException e) {
+            LOGGER.warn("Problems with stream obtain.", e);
+        }
+        return Collections.emptyList();
+    }
 
 }
