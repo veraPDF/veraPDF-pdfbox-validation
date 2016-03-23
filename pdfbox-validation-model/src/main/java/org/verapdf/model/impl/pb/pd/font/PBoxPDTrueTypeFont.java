@@ -26,7 +26,13 @@ public class PBoxPDTrueTypeFont extends PBoxPDSimpleFont implements PDTrueTypeFo
 
 		if (encoding != null && encoding instanceof DictionaryEncoding) {
 			GlyphList glyphList = GlyphList.getAdobeGlyphList();
-			for (Map.Entry<Integer, String> entry : ((DictionaryEncoding) encoding).getDifferences().entrySet()) {
+
+			Map<Integer, String> differences = ((DictionaryEncoding) encoding).getDifferences();
+			if (differences == null || differences.isEmpty()) {
+				return Boolean.TRUE;
+			}
+
+			for (Map.Entry<Integer, String> entry : differences.entrySet()) {
 				if (!glyphList.containsGlyphName(entry.getValue())) {
 					return Boolean.FALSE;
 				}
