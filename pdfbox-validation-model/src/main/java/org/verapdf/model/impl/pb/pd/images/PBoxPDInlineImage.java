@@ -52,6 +52,12 @@ public class PBoxPDInlineImage extends PBoxPDObject implements PDInlineImage {
 		return null;
 	}
 
+	//TODO : implement
+	@Override
+	public Boolean getisInherited() {
+		return Boolean.FALSE;
+	}
+
 	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
