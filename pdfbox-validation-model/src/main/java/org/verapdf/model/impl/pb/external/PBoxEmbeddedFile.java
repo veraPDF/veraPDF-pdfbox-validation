@@ -56,12 +56,15 @@ public class PBoxEmbeddedFile extends PBoxExternal implements EmbeddedFile {
 				PDFAValidator validator1b = Validators.createValidator(PDFAFlavour.PDFA_1_B, false, 1);
 				ValidationResult result1b = validator1b.validate(parser1b);
 				if (result1b.isCompliant()) {
+					parser1b.close();
 					return Boolean.TRUE;
 				}
 				unfilteredStream.reset();
 				ModelParser parser2b = new ModelParser(unfilteredStream, PDFAFlavour.PDFA_2_B);
 				PDFAValidator validator2b = Validators.createValidator(PDFAFlavour.PDFA_2_B, false, 1);
-				ValidationResult result2b = validator1b.validate(parser2b);
+				ValidationResult result2b = validator2b.validate(parser2b);
+				parser1b.close();
+				parser2b.close();
 				return Boolean.valueOf(result2b.isCompliant());
 			} catch (Exception e) {
 				LOGGER.debug("Exception during validation of embedded file", e);
