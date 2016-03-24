@@ -1,7 +1,7 @@
 package org.verapdf.model.factory.operator;
 
 import org.apache.log4j.Logger;
-import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace;
 import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceGray;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDAbstractPattern;
@@ -25,7 +25,7 @@ public class GraphicState implements Cloneable {
     private PDColorSpace strokeColorSpace = PDDeviceGray.INSTANCE;
     private PDAbstractPattern pattern = null;
     private RenderingMode renderingMode = RenderingMode.FILL;
-    private PDFont font;
+    private COSName fontName;
 
 	/**
 	 * @return fill color space of current state
@@ -83,18 +83,18 @@ public class GraphicState implements Cloneable {
         this.renderingMode = renderingMode;
     }
 
-	/**
-	 * @return font of current state
-	 */
-    public PDFont getFont() {
-        return font;
+    /**
+     * @return name of the current font
+     */
+    public COSName getFontName() {
+        return fontName;
     }
 
-	/**
-	 * @param font set font to current state
-	 */
-    public void setFont(PDFont font) {
-        this.font = font;
+    /**
+     * @param fontName set name of the current font
+     */
+    public void setFontName(COSName fontName) {
+        this.fontName = fontName;
     }
 
     /**
@@ -109,7 +109,7 @@ public class GraphicState implements Cloneable {
         this.strokeColorSpace = graphicState.getStrokeColorSpace();
         this.pattern = graphicState.getPattern();
         this.renderingMode = graphicState.getRenderingMode();
-        this.font = graphicState.getFont();
+        this.fontName = graphicState.getFontName();
     }
 
 	/**
@@ -121,7 +121,7 @@ public class GraphicState implements Cloneable {
         if (extGState != null) {
             try {
                 if (extGState.getFontSetting() != null) {
-                    this.font = extGState.getFontSetting().getFont();
+                    this.fontName = COSName.getPDFName(extGState.getFontSetting().getFont().getName());
                 }
             } catch (IOException e) {
                 LOGGER.error(e);
@@ -142,7 +142,7 @@ public class GraphicState implements Cloneable {
         graphicState.strokeColorSpace = this.strokeColorSpace;
         graphicState.pattern = this.pattern;
         graphicState.renderingMode = this.renderingMode;
-        graphicState.font = this.font;
+        graphicState.fontName = this.fontName;
         return graphicState;
     }
 

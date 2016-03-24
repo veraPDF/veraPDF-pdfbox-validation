@@ -36,6 +36,8 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 
     private static final Logger LOGGER = Logger.getLogger(PBOpTextShow.class);
 
+	private static final String MSG_PROBLEM_OBTAINING_RESOURCE = "Problem encountered while obtaining resources for ";
+
 	/** Name of link to the used font */
     public static final String FONT = "font";
 	/** Name of link to the used glyphs */
@@ -81,7 +83,7 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 			return Collections.emptyList();
 		}
 
-        PDFont font = FontFactory.parseFont(this.state.getFont(), this.resources, this.document, this.flavour);
+        PDFont font = FontFactory.parseFont(getFontFromResources(), this.resources, this.document, this.flavour);
 		if (font != null) {
 			List<PDFont> result = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 			result.add(font);
@@ -95,7 +97,7 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 			return Collections.emptyList();
 		}
 
-		org.apache.pdfbox.pdmodel.font.PDFont font = this.state.getFont();
+		org.apache.pdfbox.pdmodel.font.PDFont font = getFontFromResources();
 		FontContainer fontContainer = FontHelper.getFontContainer(font);
 
 		if (fontContainer == null) {
@@ -158,7 +160,7 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 	}
 
     private Boolean checkWidths(int glyphCode) throws IOException {
-		org.apache.pdfbox.pdmodel.font.PDFont font = this.state.getFont();
+		org.apache.pdfbox.pdmodel.font.PDFont font = getFontFromResources();
 		float expectedWidth = font.getWidth(glyphCode);
         float foundWidth = font.getWidthFromFont(glyphCode);
         // consistent is defined to be a difference of no more than 1/1000 unit.
@@ -187,6 +189,20 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 			if (element instanceof COSString) {
 				res.add(((COSString) element).getBytes());
 			}
+		}
+	}
+
+	private org.apache.pdfbox.pdmodel.font.PDFont getFontFromResources() {
+		if (resources == null) {
+			return null;
+		}
+		try {
+			return resources.getFont(this.state.getFontName());
+		} catch (IOException e) {
+			LOGGER.debug(
+					MSG_PROBLEM_OBTAINING_RESOURCE + this.state.getFontName().getName() + ". "
+							+ e.getMessage(), e);
+			return null;
 		}
 	}
 
