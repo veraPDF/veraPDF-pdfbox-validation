@@ -17,4 +17,10 @@ public class PBoxPDResources extends PBoxPDObject implements PDResource {
 		super(pdFontLike, type);
 	}
 
+	//TODO : implement
+	@Override
+	public Boolean isInherited() {
+		return Boolean.FALSE;
+	}
+
 }
