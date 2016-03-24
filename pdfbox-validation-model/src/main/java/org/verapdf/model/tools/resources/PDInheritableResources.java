@@ -11,6 +11,7 @@ import org.apache.pdfbox.pdmodel.graphics.shading.PDShading;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -24,6 +25,8 @@ public class PDInheritableResources {
 
 	private final PDResources currentResources;
 	private final PDResources pageResources;
+
+	private final HashMap<COSName, PDFont> fontCache = new HashMap<>();
 
 	protected PDInheritableResources(PDResources pageResources, PDResources currentResources) {
 		this.pageResources = pageResources;
@@ -43,8 +46,16 @@ public class PDInheritableResources {
 	}
 
 	public PDFont getFont(COSName name) throws IOException {
-		PDFont font = this.currentResources.getFont(name);
-		return font != null ? font : this.pageResources.getFont(name);
+		PDFont ret = fontCache.get(name);
+		if (ret == null) {
+			PDFont font = this.currentResources.getFont(name);
+			if (font == null) {
+				font = this.pageResources.getFont(name);
+			}
+			fontCache.put(name, font);
+			ret = font;
+		}
+		return ret;
 	}
 
 	public PDColorSpace getColorSpace(COSName name) throws IOException {

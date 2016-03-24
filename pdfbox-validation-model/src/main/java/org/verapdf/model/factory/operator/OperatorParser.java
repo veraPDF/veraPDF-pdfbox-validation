@@ -8,7 +8,6 @@ import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSInteger;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.graphics.PDXObject;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace;
 import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceCMYK;
@@ -253,8 +252,7 @@ class OperatorParser {
                 operators.add(new PBOp_Tr(arguments));
                 break;
             case Operators.TF:
-                this.graphicState.setFont(getFontFromResources(resources,
-                        getFirstCOSName(arguments)));
+                this.graphicState.setFontName(getFirstCOSName(arguments));
                 operators.add(new PBOp_Tf(arguments));
                 break;
             case Operators.TC:
@@ -486,21 +484,6 @@ class OperatorParser {
     private static PDExtendedGraphicsState getExtGStateFromResources(
             PDInheritableResources resources, COSName extGState) {
         return resources == null ? null : resources.getExtGState(extGState);
-    }
-
-    private static PDFont getFontFromResources(PDInheritableResources resources,
-                                               COSName font) {
-        if (resources == null) {
-            return null;
-        }
-        try {
-            return resources.getFont(font);
-        } catch (IOException e) {
-            LOGGER.debug(
-                    MSG_PROBLEM_OBTAINING_RESOURCE + font + ". "
-                            + e.getMessage(), e);
-            return null;
-        }
     }
 
     private static RenderingMode getRenderingMode(List<COSBase> arguments) {
