@@ -76,7 +76,8 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 					this.document.getDocument().getCatalog().getObject();
 			return new PDDocumentCatalog(this.document, object);
 		} catch (IOException e) {
-			LOGGER.warn("Problems with catalog obtain.", e);
+			LOGGER.warn("Catalog cannot be found.");
+			LOGGER.debug(e);
 		}
 		return null;
 	}

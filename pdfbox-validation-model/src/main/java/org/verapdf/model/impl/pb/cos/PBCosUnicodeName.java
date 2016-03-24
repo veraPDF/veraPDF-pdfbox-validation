@@ -6,9 +6,11 @@ import org.verapdf.model.coslayer.CosUnicodeName;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
 
 /**
  * Implementation of Unicode name
@@ -36,15 +38,20 @@ public class PBCosUnicodeName extends PBCosName implements CosUnicodeName {
 	// TODO : check implementation correctness
 	@Override
 	public Boolean getisValidUtf8() {
-		String name = ((COSName) this.baseObject).getName();
-		CharsetDecoder charsetDecoder = Charset.forName("UTF-8").newDecoder();
-		ByteBuffer wrap = ByteBuffer.wrap(name.getBytes());
+		CharsetDecoder decoder = Charset.forName("UTF-8").newDecoder();
+		CharsetEncoder encoder = Charset.forName("Windows-1252").newEncoder();
+		ByteBuffer tmp;
 		try {
-			charsetDecoder.decode(wrap);
-			return Boolean.TRUE;
+			tmp = encoder.encode(CharBuffer.wrap(((COSName) this.baseObject).getName()));
 		} catch (CharacterCodingException e) {
-			LOGGER.info("Name is not valid utf-8 string", e);
-			return Boolean.FALSE;
+			return false;
+		}
+
+		try {
+			decoder.decode(tmp);
+			return true;
+		} catch (CharacterCodingException e){
+			return false;
 		}
 	}
 
