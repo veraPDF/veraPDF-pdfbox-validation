@@ -113,19 +113,19 @@ public class PBCosDict extends PBCosObject implements CosDict {
      * Get XMP metadata if it is present
      */
     private List<PDMetadata> getMetadata() {
-        if (this.flavour == null || this.flavour.getPart() == null || this.flavour.getPart().getPartNumber() != 1) {
-            COSDictionary dictionary = (COSDictionary) this.baseObject;
-            COSBase meta = dictionary.getDictionaryObject(COSName.METADATA);
-            COSName type = dictionary.getCOSName(COSName.TYPE);
-            if (meta != null && meta instanceof COSStream
-                    && type != COSName.CATALOG) {
-                ArrayList<PDMetadata> pdMetadatas = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-                org.apache.pdfbox.pdmodel.common.PDMetadata md = new org.apache.pdfbox.pdmodel.common.PDMetadata(
-                        (COSStream) meta);
-                pdMetadatas.add(new PBoxPDMetadata(md, Boolean.FALSE, document, flavour));
-                return pdMetadatas;
-            }
+
+        COSDictionary dictionary = (COSDictionary) this.baseObject;
+        COSBase meta = dictionary.getDictionaryObject(COSName.METADATA);
+        COSName type = dictionary.getCOSName(COSName.TYPE);
+        if (meta != null && meta instanceof COSStream
+                && type != COSName.CATALOG) {
+            ArrayList<PDMetadata> pdMetadatas = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+            org.apache.pdfbox.pdmodel.common.PDMetadata md = new org.apache.pdfbox.pdmodel.common.PDMetadata(
+                    (COSStream) meta);
+            pdMetadatas.add(new PBoxPDMetadata(md, Boolean.FALSE, document, flavour));
+            return pdMetadatas;
         }
+
         return Collections.emptyList();
     }
 }

@@ -87,7 +87,7 @@ public class PBoxPDMetadata extends PBoxPDObject implements PDMetadata {
                 VeraPDFMeta metadata = VeraPDFMeta.parse(stream.getUnfilteredStream());
                 if (isMainMetadata) {
                     xmp.add(new AXLMainXMPPackage(metadata, true, this.flavour));
-                } else {
+                } else if (this.flavour == null || this.flavour.getPart() == null || this.flavour.getPart().getPartNumber() != 1) {
                     COSStream mainStream = mainMetadata.getStream();
                     VeraPDFXMPNode mainExtensionNode = null;
                     if (mainStream != null) {
@@ -99,7 +99,11 @@ public class PBoxPDMetadata extends PBoxPDObject implements PDMetadata {
             }
         } catch (XMPException | IOException e) {
             LOGGER.debug("Problems with parsing metadata. " + e.getMessage(), e);
-            xmp.add(new AXLXMPPackage(null, false, null, this.flavour));
+            if (isMainMetadata) {
+                xmp.add(new AXLMainXMPPackage(null, false, this.flavour));
+            } else if (this.flavour == null || this.flavour.getPart() == null || this.flavour.getPart().getPartNumber() != 1) {
+                xmp.add(new AXLXMPPackage(null, false, null, this.flavour));
+            }
         }
         return xmp;
     }
