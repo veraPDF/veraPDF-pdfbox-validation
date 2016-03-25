@@ -3,10 +3,7 @@ package org.verapdf.metadata.fixer.impl.pb.model;
 import com.adobe.xmp.XMPException;
 import com.adobe.xmp.impl.VeraPDFMeta;
 import org.apache.log4j.Logger;
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSStream;
+import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
@@ -19,6 +16,8 @@ import org.verapdf.pdfa.results.MetadataFixerResultImpl;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.verapdf.pdfa.results.MetadataFixerResult.RepairStatus.*;
 
@@ -133,6 +132,41 @@ public class PDFDocumentImpl implements PDFDocument {
             builder.status(FIX_ERROR).addFix("Problems with document save. " + e.getMessage());
         }
         return builder.build();
+    }
+
+    @Override
+    public int removeFiltersForAllMetadataObjects() {
+        int res = 0;
+        try {
+            List<COSObject> objects = this.document.getDocument().getObjectsByType(COSName.METADATA);
+
+            List<COSStream> metas = new ArrayList<>();
+            for (COSObject obj : objects) {
+                COSBase base = obj.getObject();
+                if (base instanceof COSStream) {
+                    metas.add((COSStream) base);
+                } else {
+                    LOGGER.warn("Founded non-stream Metadata dictionary.");
+                }
+            }
+            for (COSStream stream : metas) {
+                COSBase filters = stream.getFilters();
+                if (filters instanceof COSName
+                        || (filters instanceof COSArray && ((COSArray) filters).size() != 0)) {
+                    try {
+                        stream.setFilters(null);
+                        stream.setNeedToBeUpdated(true);
+                        ++res;
+                    } catch (IOException e) {
+                        LOGGER.warn("Problems with unfilter stream.", e);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            LOGGER.warn("Can not obtain Metadata objects", e);
+        }
+
+        return res;
     }
 
     private static MetadataFixerResultImpl.RepairStatus getStatus(final MetadataFixerResultImpl.RepairStatus status) {
