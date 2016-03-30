@@ -66,10 +66,6 @@ public class PBoxPDOCConfig extends PBoxPDObject implements PDOCConfig {
 			} else {
 				LOGGER.warn("Invalid object type of Order entry. Ignoring the Order entry.");
 			}
-		} else {
-			if (groupNames.size() > 0) {
-				return Boolean.FALSE;
-			}
 		}
 		return Boolean.TRUE;
 	}
