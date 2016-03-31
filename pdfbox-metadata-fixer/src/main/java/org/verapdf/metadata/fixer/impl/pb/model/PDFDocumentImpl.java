@@ -31,6 +31,7 @@ public class PDFDocumentImpl implements PDFDocument {
     private final PDDocument document;
     private MetadataImpl metadata;
     private InfoDictionaryImpl info;
+    private boolean isUnfiltered = false;
 
     /**
      * @param document
@@ -103,7 +104,7 @@ public class PDFDocumentImpl implements PDFDocument {
     public boolean isNeedToBeUpdated() {
         boolean metaUpd = this.metadata != null && this.metadata.isNeedToBeUpdated();
         boolean infoUpd = this.info != null && this.info.isNeedToBeUpdated();
-        return metaUpd || infoUpd;
+        return metaUpd || infoUpd || this.isUnfiltered;
     }
 
     /**
@@ -165,6 +166,8 @@ public class PDFDocumentImpl implements PDFDocument {
         } catch (IOException e) {
             LOGGER.warn("Can not obtain Metadata objects", e);
         }
+
+        isUnfiltered = res > 0;
 
         return res;
     }
