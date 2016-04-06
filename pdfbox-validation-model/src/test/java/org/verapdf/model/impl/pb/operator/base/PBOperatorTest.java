@@ -40,7 +40,7 @@ public abstract class PBOperatorTest extends BaseTest {
 		PDFStreamParser parser = new PDFStreamParser(stream, true);
 		parser.parse();
 
-		List<Operator> operators = OperatorFactory.operatorsFromTokens(parser.getTokens(),
+		List<Operator> operators = new OperatorFactory().operatorsFromTokens(parser.getTokens(),
 				PDInheritableResources.getInstance(resources), document, null);
 		actual = getActual(operators, expectedType);
 

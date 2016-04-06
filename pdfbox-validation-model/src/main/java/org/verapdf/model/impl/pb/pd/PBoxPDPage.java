@@ -66,6 +66,9 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 	/** Maximal number of actions in page dictionary */
 	public static final int MAX_NUMBER_OF_ACTIONS = 2;
 
+	private boolean containsTransparency = false;
+	private List<PDContentStream> contentStreams = null;
+
 	private final org.apache.pdfbox.pdmodel.PDDocument document;
 	private final PDFAFlavour flavour;
 
@@ -92,8 +95,10 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 
 	@Override
 	public Boolean getcontainsTransparency() {
-		// TODO: implement me
-		return Boolean.FALSE;
+		if (this.contentStreams == null) {
+			parseContentStream();
+		}
+		return this.containsTransparency;
 	}
 
 	@Override
@@ -163,13 +168,21 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 	}
 
 	private List<PDContentStream> getContentStream() {
-		List<PDContentStream> contentStreams = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+		if (this.contentStreams == null) {
+			parseContentStream();
+		}
+		return this.contentStreams;
+	}
+
+	private void parseContentStream() {
+		this.contentStreams = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 		org.apache.pdfbox.pdmodel.PDPage stream =
 				(org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject;
 		PDInheritableResources resources = PDInheritableResources
 				.getInstance(stream.getResources(), PDInheritableResources.EMPTY_RESOURCES);
-		contentStreams.add(new PBoxPDContentStream(stream, resources, this.document, this.flavour));
-		return contentStreams;
+		PBoxPDContentStream contentStream = new PBoxPDContentStream(stream, resources, this.document, this.flavour);
+		contentStreams.add(contentStream);
+		this.containsTransparency = contentStream.isContainsTransparentOperators();
 	}
 
 	private List<PDAction> getActions() {

@@ -27,7 +27,7 @@ public class PBOp_d1Test extends PBOpType3FontTest {
 			objects.add(COSInteger.get(random.nextInt()));
 		}
 		objects.add(Operator.getOperator("d1"));
-		actual = OperatorFactory.operatorsFromTokens(objects, null, document, null).get(0);
+		actual = new OperatorFactory().operatorsFromTokens(objects, null, document, null).get(0);
 	}
 
 	@Test
