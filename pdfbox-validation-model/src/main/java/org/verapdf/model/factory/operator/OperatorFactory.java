@@ -88,7 +88,7 @@ public final class OperatorFactory {
 					GraphicState graphicState = parser.getGraphicState();
 					if (PAINT_OPERATORS_WITHOUT_TEXT.contains(parsedOperatorType)
 							|| (PAINT_OPERATORS_TEXT.contains(parsedOperatorType) && graphicState.getRenderingMode() != RenderingMode.NEITHER)) {
-						isLastParsedContainsTransparency &= containsTransparency(graphicState);
+						isLastParsedContainsTransparency |= containsTransparency(graphicState);
 					}
                 } catch (CloneNotSupportedException e) {
 					LOGGER.debug("GraphicsState clone issues for pdfBoxToken:" + pdfBoxToken);
