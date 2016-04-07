@@ -2,7 +2,9 @@ package org.verapdf.model.factory.operator;
 
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSNumber;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace;
 import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceGray;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDAbstractPattern;
@@ -166,10 +168,23 @@ public class GraphicState implements Cloneable {
                 if (extGState.getFontSetting() != null) {
                     this.fontName = COSName.getPDFName(extGState.getFontSetting().getFont().getName());
                 }
-				this.sMask = extGState.getCOSObject().getItem(COSName.SMASK);
-				this.ca_ns = extGState.getCOSObject().getFloat(COSName.CA, 1);
-				this.ca = extGState.getCOSObject().getFloat(COSName.CA_NS, 1);
-				this.bm = extGState.getCOSObject().getItem(COSName.BM);
+				COSDictionary cosObject = extGState.getCOSObject();
+				COSBase smask = cosObject.getItem(COSName.SMASK);
+				if (smask != null) {
+					this.sMask = smask;
+				}
+				COSBase bm = cosObject.getItem(COSName.BM);
+				if (bm != null) {
+					this.bm = bm;
+				}
+				COSBase ca_ns_base = cosObject.getItem(COSName.CA_NS);
+				if (ca_ns_base instanceof COSNumber) {
+					this.ca_ns = ((COSNumber) ca_ns_base).floatValue();
+				}
+				COSBase ca_base = cosObject.getItem(COSName.CA);
+				if (ca_base instanceof COSNumber) {
+					this.ca = ((COSNumber) ca_base).floatValue();
+				}
             } catch (IOException e) {
                 LOGGER.error(e);
             }
