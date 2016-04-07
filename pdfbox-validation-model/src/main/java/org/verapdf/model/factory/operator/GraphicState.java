@@ -34,7 +34,7 @@ public class GraphicState implements Cloneable {
 	private COSBase sMask = null;
 	private float ca = 1;
 	private float ca_ns = 1;
-	private COSBase bm = COSName.getPDFName("Normal");
+	private COSBase bm = null;
 
 	/**
 	 * @return fill color space of current state
@@ -169,19 +169,19 @@ public class GraphicState implements Cloneable {
                     this.fontName = COSName.getPDFName(extGState.getFontSetting().getFont().getName());
                 }
 				COSDictionary cosObject = extGState.getCOSObject();
-				COSBase smask = cosObject.getItem(COSName.SMASK);
+				COSBase smask = cosObject.getDictionaryObject(COSName.SMASK);
 				if (smask != null) {
 					this.sMask = smask;
 				}
-				COSBase bm = cosObject.getItem(COSName.BM);
+				COSBase bm = cosObject.getDictionaryObject(COSName.BM);
 				if (bm != null) {
 					this.bm = bm;
 				}
-				COSBase ca_ns_base = cosObject.getItem(COSName.CA_NS);
+				COSBase ca_ns_base = cosObject.getDictionaryObject(COSName.CA_NS);
 				if (ca_ns_base instanceof COSNumber) {
 					this.ca_ns = ((COSNumber) ca_ns_base).floatValue();
 				}
-				COSBase ca_base = cosObject.getItem(COSName.CA);
+				COSBase ca_base = cosObject.getDictionaryObject(COSName.CA);
 				if (ca_base instanceof COSNumber) {
 					this.ca = ((COSNumber) ca_base).floatValue();
 				}
