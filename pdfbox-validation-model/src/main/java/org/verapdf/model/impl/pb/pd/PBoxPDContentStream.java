@@ -29,6 +29,8 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 	public static final String OPERATORS = "operators";
 
 	private final PDInheritableResources resources;
+	private List<Operator> operators = null;
+	private boolean containsTransparentOperators = false;
 
     private final PDDocument document;
     private final PDFAFlavour flavour;
@@ -51,21 +53,38 @@ public class PBoxPDContentStream extends PBoxPDObject implements
     }
 
     private List<Operator> getOperators() {
-        try {
-            COSStream cStream = this.contentStream.getContentStream();
-            if (cStream != null) {
-                PDFStreamParser streamParser = new PDFStreamParser(
-                        cStream, true);
-                streamParser.parse();
-                List<Operator> result = OperatorFactory.operatorsFromTokens(
-                        streamParser.getTokens(),
-                        this.resources, this.document, this.flavour);
-                return Collections.unmodifiableList(result);
-            }
-        } catch (IOException e) {
-            LOGGER.error(
-                    "Error while parsing content stream. " + e.getMessage(), e);
-        }
-        return Collections.emptyList();
+		if (this.operators == null) {
+			parseOperators();
+		}
+		return this.operators;
     }
+
+	boolean isContainsTransparentOperators() {
+		if (this.operators == null) {
+			parseOperators();
+		}
+		return containsTransparentOperators;
+	}
+
+	private void parseOperators() {
+		try {
+			COSStream cStream = this.contentStream.getContentStream();
+			if (cStream != null) {
+				PDFStreamParser streamParser = new PDFStreamParser(
+						cStream, true);
+				streamParser.parse();
+				OperatorFactory operatorFactory = new OperatorFactory();
+				List<Operator> result = operatorFactory.operatorsFromTokens(
+						streamParser.getTokens(),
+						this.resources, this.document, this.flavour);
+
+				this.containsTransparentOperators = operatorFactory.isLastParsedContainsTransparency();
+				this.operators = Collections.unmodifiableList(result);
+			}
+		} catch (IOException e) {
+			LOGGER.error(
+					"Error while parsing content stream. " + e.getMessage(), e);
+			this.operators = Collections.emptyList();
+		}
+	}
 }

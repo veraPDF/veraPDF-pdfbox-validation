@@ -1,7 +1,10 @@
 package org.verapdf.model.factory.operator;
 
 import org.apache.log4j.Logger;
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSNumber;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace;
 import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceGray;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDAbstractPattern;
@@ -26,6 +29,12 @@ public class GraphicState implements Cloneable {
     private PDAbstractPattern pattern = null;
     private RenderingMode renderingMode = RenderingMode.FILL;
     private COSName fontName;
+
+	// fields for transparency checks
+	private COSBase sMask = null;
+	private float ca = 1;
+	private float ca_ns = 1;
+	private COSBase bm = null;
 
 	/**
 	 * @return fill color space of current state
@@ -97,7 +106,39 @@ public class GraphicState implements Cloneable {
         this.fontName = fontName;
     }
 
-    /**
+	public COSBase getSMask() {
+		return sMask;
+	}
+
+	public void setSMask(COSBase sMask) {
+		this.sMask = sMask;
+	}
+
+	public float getCa() {
+		return ca;
+	}
+
+	public void setCa(float ca) {
+		this.ca = ca;
+	}
+
+	public float getCa_ns() {
+		return ca_ns;
+	}
+
+	public void setCa_ns(float ca_ns) {
+		this.ca_ns = ca_ns;
+	}
+
+	public COSBase getBm() {
+		return bm;
+	}
+
+	public void setBm(COSBase bm) {
+		this.bm = bm;
+	}
+
+	/**
      * This method will copy properties from passed graphic state to current
      * object
      * 
@@ -110,6 +151,10 @@ public class GraphicState implements Cloneable {
         this.pattern = graphicState.getPattern();
         this.renderingMode = graphicState.getRenderingMode();
         this.fontName = graphicState.getFontName();
+		this.sMask = graphicState.getSMask();
+		this.ca_ns = graphicState.getCa_ns();
+		this.ca = graphicState.getCa();
+		this.bm = graphicState.getBm();
     }
 
 	/**
@@ -123,6 +168,23 @@ public class GraphicState implements Cloneable {
                 if (extGState.getFontSetting() != null) {
                     this.fontName = COSName.getPDFName(extGState.getFontSetting().getFont().getName());
                 }
+				COSDictionary cosObject = extGState.getCOSObject();
+				COSBase smask = cosObject.getDictionaryObject(COSName.SMASK);
+				if (smask != null) {
+					this.sMask = smask;
+				}
+				COSBase bm = cosObject.getDictionaryObject(COSName.BM);
+				if (bm != null) {
+					this.bm = bm;
+				}
+				COSBase ca_ns_base = cosObject.getDictionaryObject(COSName.CA_NS);
+				if (ca_ns_base instanceof COSNumber) {
+					this.ca_ns = ((COSNumber) ca_ns_base).floatValue();
+				}
+				COSBase ca_base = cosObject.getDictionaryObject(COSName.CA);
+				if (ca_base instanceof COSNumber) {
+					this.ca = ((COSNumber) ca_base).floatValue();
+				}
             } catch (IOException e) {
                 LOGGER.error(e);
             }
@@ -143,6 +205,10 @@ public class GraphicState implements Cloneable {
         graphicState.pattern = this.pattern;
         graphicState.renderingMode = this.renderingMode;
         graphicState.fontName = this.fontName;
+		graphicState.sMask = this.sMask;
+		graphicState.ca_ns = this.ca_ns;
+		graphicState.ca = this.ca;
+		graphicState.bm = this.bm;
         return graphicState;
     }
 
