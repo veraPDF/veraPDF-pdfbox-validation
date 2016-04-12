@@ -1,10 +1,7 @@
 package org.verapdf.model.tools;
 
 import org.apache.log4j.Logger;
-import org.apache.pdfbox.cos.COSArray;
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.*;
 import org.verapdf.model.impl.pb.pd.PBoxPDStructElem;
 import org.verapdf.model.pdlayer.PDStructElem;
 
@@ -63,11 +60,17 @@ public class TaggedPDFHelper {
 			for (COSBase element : children) {
 				if (element instanceof COSDictionary) {
 					list.add(new PBoxPDStructElem((COSDictionary) element));
-				} else {
-					logger.warn("Children type of Structure Tree Root or Structure Element " +
-							"in array must be 'COSDictionary' but got: "
-							+ children.getClass().getSimpleName());
+					continue;
+				} else if (element instanceof COSObject) {
+					COSBase directElement = ((COSObject) element).getObject();
+					if (directElement instanceof COSDictionary) {
+						list.add(new PBoxPDStructElem((COSDictionary) directElement));
+						continue;
+					}
 				}
+				logger.warn("Children type of Structure Tree Root or Structure Element " +
+						"in array must be 'COSDictionary' but got: "
+						+ children.getClass().getSimpleName());
 			}
 			return Collections.unmodifiableList(list);
 		} else {
