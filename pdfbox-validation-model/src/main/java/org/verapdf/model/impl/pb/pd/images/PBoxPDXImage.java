@@ -151,4 +151,24 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
         return Collections.emptyList();
     }
 
+    public boolean containsTransparency() {
+        if (this.simplePDObject == null) {
+            return false;
+        }
+
+        COSBase base = this.simplePDObject.getCOSObject();
+        if (base instanceof COSStream) {
+            COSStream stream = (COSStream) base;
+            if (stream.getDictionaryObject(COSName.SMASK) instanceof COSStream) {
+                return true;
+            }
+
+            COSBase sMaskInData = stream.getDictionaryObject(COSName.getPDFName("SMaskInData"));
+            if (sMaskInData instanceof COSNumber) {
+                return ((COSNumber) sMaskInData).doubleValue() > 0;
+            }
+        }
+
+        return false;
+    }
 }

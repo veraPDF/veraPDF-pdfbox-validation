@@ -9,7 +9,16 @@ import org.verapdf.model.factory.operator.GraphicState;
 /**
  * @author Maksim Bezrukov
  */
-public class NeitherGSTransparencyBehaviour implements GSTransparencyBehaviour {
+public class NeitherTransparencyBehaviour implements TransparencyBehaviour {
+
+    private static final NeitherTransparencyBehaviour INSTANCE = new NeitherTransparencyBehaviour();
+
+    private NeitherTransparencyBehaviour() {
+    }
+
+    public static NeitherTransparencyBehaviour getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     public boolean containsTransparency(GraphicState graphicState) {

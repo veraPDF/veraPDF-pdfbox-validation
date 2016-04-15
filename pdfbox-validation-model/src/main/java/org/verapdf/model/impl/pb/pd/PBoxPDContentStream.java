@@ -30,7 +30,7 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 
 	private final PDInheritableResources resources;
 	private List<Operator> operators = null;
-	private boolean containsTransparentOperators = false;
+	private boolean containsTransparency = false;
 
     private final PDDocument document;
     private final PDFAFlavour flavour;
@@ -59,11 +59,11 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 		return this.operators;
     }
 
-	boolean isContainsTransparentOperators() {
+	public boolean isContainsTransparency() {
 		if (this.operators == null) {
 			parseOperators();
 		}
-		return containsTransparentOperators;
+		return containsTransparency;
 	}
 
 	private void parseOperators() {
@@ -78,7 +78,7 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 						streamParser.getTokens(),
 						this.resources, this.document, this.flavour);
 
-				this.containsTransparentOperators = operatorFactory.isLastParsedContainsTransparency();
+				this.containsTransparency = operatorFactory.isLastParsedContainsTransparency();
 				this.operators = Collections.unmodifiableList(result);
 			}
 		} catch (IOException e) {

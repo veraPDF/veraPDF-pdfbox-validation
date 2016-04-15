@@ -7,10 +7,7 @@ import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.verapdf.model.operator.Operator;
 import org.verapdf.model.tools.constants.Operators;
 import org.verapdf.model.tools.resources.PDInheritableResources;
-import org.verapdf.model.tools.transparency.FillGSTransparencyBehaviour;
-import org.verapdf.model.tools.transparency.FillStrokeGSTransparencyBehaviour;
-import org.verapdf.model.tools.transparency.GSTransparencyBehaviour;
-import org.verapdf.model.tools.transparency.StrokeGSTransparencyBehaviour;
+import org.verapdf.model.tools.transparency.*;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
@@ -30,12 +27,13 @@ public final class OperatorFactory {
 
     private boolean isLastParsedContainsTransparency = false;
 
-    private static final Map<String, GSTransparencyBehaviour> PAINT_OPERATORS_WITHOUT_TEXT;
+    private static final Map<String, TransparencyBehaviour> PAINT_OPERATORS_WITHOUT_TEXT;
     static {
-        Map<String, GSTransparencyBehaviour> aMap = new HashMap<>();
-        GSTransparencyBehaviour stroke = new StrokeGSTransparencyBehaviour();
-        GSTransparencyBehaviour fill = new FillGSTransparencyBehaviour();
-        GSTransparencyBehaviour fillStroke = new FillStrokeGSTransparencyBehaviour();
+        Map<String, TransparencyBehaviour> aMap = new HashMap<>();
+        TransparencyBehaviour stroke = StrokeTransparencyBehaviour.getInstance();
+        TransparencyBehaviour fill = FillTransparencyBehaviour.getInstance();
+        TransparencyBehaviour fillStroke = FillStrokeTransparencyBehaviour.getInstance();
+        TransparencyBehaviour fillXObject = FillXObjectTransparencyBehaviour.getInstance();
         aMap.put(Operators.S_STROKE, stroke);
         aMap.put(Operators.S_CLOSE_STROKE, stroke);
         aMap.put(Operators.F_FILL, fill);
@@ -46,7 +44,7 @@ public final class OperatorFactory {
         aMap.put(Operators.B_CLOSEPATH_FILL_STROKE, fillStroke);
         aMap.put(Operators.B_STAR_CLOSEPATH_EOFILL_STROKE, fillStroke);
         aMap.put(Operators.SH, fill);
-        aMap.put(Operators.DO, fill);
+        aMap.put(Operators.DO, fillXObject);
         aMap.put(Operators.EI, fill);
         PAINT_OPERATORS_WITHOUT_TEXT = Collections.unmodifiableMap(aMap);
     }
@@ -58,12 +56,12 @@ public final class OperatorFactory {
             Operators.TJ_SHOW_POS
     }));
 
-    private static final Map<RenderingMode, GSTransparencyBehaviour> RENDERING_MODE;
+    private static final Map<RenderingMode, TransparencyBehaviour> RENDERING_MODE;
     static {
-        Map<RenderingMode, GSTransparencyBehaviour> aMap = new HashMap<>();
-        GSTransparencyBehaviour stroke = new StrokeGSTransparencyBehaviour();
-        GSTransparencyBehaviour fill = new FillGSTransparencyBehaviour();
-        GSTransparencyBehaviour fillStroke = new FillStrokeGSTransparencyBehaviour();
+        Map<RenderingMode, TransparencyBehaviour> aMap = new HashMap<>();
+        TransparencyBehaviour stroke = StrokeTransparencyBehaviour.getInstance();
+        TransparencyBehaviour fill = FillTransparencyBehaviour.getInstance();
+        TransparencyBehaviour fillStroke = FillStrokeTransparencyBehaviour.getInstance();
         aMap.put(RenderingMode.FILL, fill);
         aMap.put(RenderingMode.STROKE, stroke);
         aMap.put(RenderingMode.FILL_STROKE, fillStroke);

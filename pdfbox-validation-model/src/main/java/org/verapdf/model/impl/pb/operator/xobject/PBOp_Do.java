@@ -27,6 +27,8 @@ public class PBOp_Do extends PBOperator implements Op_Do {
 	/** Name of link to the XObject */
     public static final String X_OBJECT = "xObject";
 
+	private List<PDXObject> xObjects = null;
+
 	private final PDDocument document;
 	private final PDFAFlavour flavour;
 
@@ -53,15 +55,19 @@ public class PBOp_Do extends PBOperator implements Op_Do {
         return super.getLinkedObjects(link);
     }
 
-	private List<PDXObject> getXObject() {
-		PDXObject typedPDXObject = PBoxPDXObject.getTypedPDXObject(
-				this.pbXObject, this.resources, this.document, this.flavour);
-		if (typedPDXObject != null) {
-			List<PDXObject> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			list.add(typedPDXObject);
-			return Collections.unmodifiableList(list);
+	public List<PDXObject> getXObject() {
+		if (this.xObjects == null) {
+			PDXObject typedPDXObject = PBoxPDXObject.getTypedPDXObject(
+					this.pbXObject, this.resources, this.document, this.flavour);
+			if (typedPDXObject != null) {
+				List<PDXObject> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+				list.add(typedPDXObject);
+				this.xObjects = Collections.unmodifiableList(list);
+			} else {
+				this.xObjects = Collections.emptyList();
+			}
 		}
-		return Collections.emptyList();
+		return this.xObjects;
 	}
 
 }

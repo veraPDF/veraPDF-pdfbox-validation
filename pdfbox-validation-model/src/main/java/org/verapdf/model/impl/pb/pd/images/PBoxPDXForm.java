@@ -33,6 +33,11 @@ public class PBoxPDXForm extends PBoxPDXObject implements PDXForm {
     public static final String REF = "Ref";
     public static final String CONTENT_STREAM = "contentStream";
 
+	private List<PDContentStream> contentStreams = null;
+	private List<PDGroup> groups = null;
+	private boolean groupContainsTransparency = false;
+	private boolean contentStreamContainsTransparency = false;
+
 	public PBoxPDXForm(PDFormXObject simplePDObject, PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
 		super(simplePDObject, resources, X_FORM_TYPE, document, flavour);
 	}
@@ -61,14 +66,10 @@ public class PBoxPDXForm extends PBoxPDXObject implements PDXForm {
 	}
 
     private List<PDGroup> getGroup() {
-        org.apache.pdfbox.pdmodel.graphics.form.PDGroup group = ((PDFormXObject) this.simplePDObject)
-                .getGroup();
-        if (group != null) {
-			List<PDGroup> groups = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			groups.add(new PBoxPDGroup(group, this.document, this.flavour));
-			return Collections.unmodifiableList(groups);
-        }
-        return Collections.emptyList();
+        if (this.groups == null) {
+			initializeGroups();
+		}
+		return this.groups;
     }
 
     private List<CosStream> getPS() {
@@ -88,9 +89,41 @@ public class PBoxPDXForm extends PBoxPDXObject implements PDXForm {
     }
 
     private List<PDContentStream> getContentStream() {
-        List<PDContentStream> streams = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-        streams.add(new PBoxPDContentStream(
-				(PDFormXObject) this.simplePDObject, this.resources, this.document, this.flavour));
-        return streams;
+		if (this.contentStreams == null) {
+			parseContentStream();
+		}
+		return this.contentStreams;
     }
+
+	private void initializeGroups() {
+		org.apache.pdfbox.pdmodel.graphics.form.PDGroup group = ((PDFormXObject) this.simplePDObject)
+				.getGroup();
+		if (group != null) {
+			this.groupContainsTransparency = COSName.TRANSPARENCY.equals(group.getSubType());
+			List<PDGroup> groups = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+			groups.add(new PBoxPDGroup(group, this.document, this.flavour));
+			this.groups = Collections.unmodifiableList(groups);
+		}
+		this.groups = Collections.emptyList();
+	}
+
+	private void parseContentStream() {
+		List<PDContentStream> streams = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+		PBoxPDContentStream pdContentStream = new PBoxPDContentStream(
+				(PDFormXObject) this.simplePDObject, this.resources, this.document, this.flavour);
+		this.contentStreamContainsTransparency = pdContentStream.isContainsTransparency();
+		streams.add(pdContentStream);
+		this.contentStreams = streams;
+	}
+
+	public boolean containsTransparency() {
+		if (groups == null) {
+			initializeGroups();
+		}
+		if (contentStreams == null) {
+			parseContentStream();
+		}
+
+		return groupContainsTransparency || contentStreamContainsTransparency;
+	}
 }

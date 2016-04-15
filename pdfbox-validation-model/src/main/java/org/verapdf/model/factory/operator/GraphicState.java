@@ -10,6 +10,7 @@ import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceGray;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDAbstractPattern;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
+import org.verapdf.model.impl.pb.pd.images.PBoxPDXObject;
 
 import java.io.IOException;
 
@@ -35,6 +36,9 @@ public class GraphicState implements Cloneable {
 	private float ca = 1;
 	private float ca_ns = 1;
 	private COSBase bm = null;
+
+	// field for transparency checks. This is veraPDF implementation of XObject
+	private PBoxPDXObject xObject = null;
 
 	/**
 	 * @return fill color space of current state
@@ -138,6 +142,14 @@ public class GraphicState implements Cloneable {
 		this.bm = bm;
 	}
 
+	public PBoxPDXObject getXObject() {
+		return xObject;
+	}
+
+	public void setXObject(PBoxPDXObject xObject) {
+		this.xObject = xObject;
+	}
+
 	/**
      * This method will copy properties from passed graphic state to current
      * object
@@ -155,6 +167,7 @@ public class GraphicState implements Cloneable {
 		this.ca_ns = graphicState.getCa_ns();
 		this.ca = graphicState.getCa();
 		this.bm = graphicState.getBm();
+		this.xObject = graphicState.getXObject();
     }
 
 	/**
@@ -209,6 +222,7 @@ public class GraphicState implements Cloneable {
 		graphicState.ca_ns = this.ca_ns;
 		graphicState.ca = this.ca;
 		graphicState.bm = this.bm;
+		graphicState.xObject = this.xObject;
         return graphicState;
     }
 
