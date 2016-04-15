@@ -48,6 +48,7 @@ import org.verapdf.model.impl.pb.operator.textstate.*;
 import org.verapdf.model.impl.pb.operator.type3font.PBOp_d0;
 import org.verapdf.model.impl.pb.operator.type3font.PBOp_d1;
 import org.verapdf.model.impl.pb.operator.xobject.PBOp_Do;
+import org.verapdf.model.impl.pb.pd.images.PBoxPDXObject;
 import org.verapdf.model.operator.Operator;
 import org.verapdf.model.tools.constants.Operators;
 import org.verapdf.model.tools.resources.PDInheritableResources;
@@ -382,8 +383,14 @@ class OperatorParser {
 
 			// XOBJECT
 			case Operators.DO:
-				operators.add(new PBOp_Do(arguments, getXObjectFromResources(resources,
-						getLastCOSName(arguments)), resources, document, flavour));
+				PBOp_Do op = new PBOp_Do(arguments, getXObjectFromResources(resources,
+						getLastCOSName(arguments)), resources, document, flavour);
+				List<org.verapdf.model.pdlayer.PDXObject> pdxObjects = op.getXObject();
+				if (!pdxObjects.isEmpty()) {
+					PBoxPDXObject xobj = (PBoxPDXObject) pdxObjects.get(0);
+					this.graphicState.setXObject(xobj);
+				}
+				operators.add(op);
 				break;
 			default:
 				operators.add(new PBOp_Undefined(arguments));

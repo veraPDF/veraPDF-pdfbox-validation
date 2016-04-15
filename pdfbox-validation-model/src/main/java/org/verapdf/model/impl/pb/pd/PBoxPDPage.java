@@ -8,7 +8,6 @@ import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.COSObjectable;
-import org.apache.pdfbox.pdmodel.graphics.color.*;
 import org.apache.pdfbox.pdmodel.interactive.action.PDPageAdditionalActions;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
@@ -16,8 +15,6 @@ import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosBBox;
 import org.verapdf.model.factory.colors.ColorSpaceFactory;
 import org.verapdf.model.impl.pb.cos.PBCosBBox;
-import org.verapdf.model.impl.pb.pd.colors.PBoxPDColorSpace;
-import org.verapdf.model.impl.pb.pd.colors.PBoxPDDeviceCMYK;
 import org.verapdf.model.pdlayer.*;
 import org.verapdf.model.pdlayer.PDColorSpace;
 import org.verapdf.model.tools.resources.PDInheritableResources;
@@ -182,7 +179,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 				.getInstance(stream.getResources(), PDInheritableResources.EMPTY_RESOURCES);
 		PBoxPDContentStream contentStream = new PBoxPDContentStream(stream, resources, this.document, this.flavour);
 		contentStreams.add(contentStream);
-		this.containsTransparency = contentStream.isContainsTransparentOperators();
+		this.containsTransparency = contentStream.isContainsTransparency();
 	}
 
 	private List<PDAction> getActions() {
