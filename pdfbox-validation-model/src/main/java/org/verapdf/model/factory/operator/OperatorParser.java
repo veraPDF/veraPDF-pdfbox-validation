@@ -202,11 +202,11 @@ class OperatorParser {
 				operators.add(new PBOpColor(arguments));
 				break;
 			case Operators.SCN_STROKE:
-				this.setPatternColorSpace(operators, graphicState.getStrokeColorSpace(),
+				this.setStrokePatternColorSpace(operators, graphicState.getStrokeColorSpace(),
 						resources, arguments);
 				break;
 			case Operators.SCN_FILL:
-				this.setPatternColorSpace(operators, graphicState.getFillColorSpace(),
+				this.setFillPatternColorSpace(operators, graphicState.getFillColorSpace(),
 						resources, arguments);
 				break;
 			case Operators.SC_STROKE:
@@ -398,11 +398,21 @@ class OperatorParser {
 		}
 	}
 
-	private void setPatternColorSpace(List<Operator> operators, PDColorSpace colorSpace,
+	private void setFillPatternColorSpace(List<Operator> operators, PDColorSpace colorSpace,
 									  PDInheritableResources resources, List<COSBase> arguments) {
 		if (colorSpace != null &&
 				ColorSpaceFactory.PATTERN.equals(colorSpace.getName())) {
-			graphicState.setPattern(getPatternFromResources(resources,
+			graphicState.setFillPattern(getPatternFromResources(resources,
+					getLastCOSName(arguments)));
+		}
+		operators.add(new PBOpColor(arguments));
+	}
+
+	private void setStrokePatternColorSpace(List<Operator> operators, PDColorSpace colorSpace,
+										  PDInheritableResources resources, List<COSBase> arguments) {
+		if (colorSpace != null &&
+				ColorSpaceFactory.PATTERN.equals(colorSpace.getName())) {
+			graphicState.setStrokePattern(getPatternFromResources(resources,
 					getLastCOSName(arguments)));
 		}
 		operators.add(new PBOpColor(arguments));

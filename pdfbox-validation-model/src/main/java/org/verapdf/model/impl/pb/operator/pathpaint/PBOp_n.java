@@ -26,7 +26,7 @@ public class PBOp_n extends PBOpPathPaint implements Op_n {
 	 * @param arguments arguments for current operator, must be empty.
 	 */
 	public PBOp_n(List<COSBase> arguments, PDDocument document, PDFAFlavour flavour) {
-		super(arguments, null, null, null, null, OP_N_TYPE, document, flavour);
+		super(arguments, null, null, null, null, null, OP_N_TYPE, document, flavour);
 	}
 
 }

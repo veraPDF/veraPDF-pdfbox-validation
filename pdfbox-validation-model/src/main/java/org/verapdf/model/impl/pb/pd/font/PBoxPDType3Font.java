@@ -83,7 +83,8 @@ public class PBoxPDType3Font extends PBoxPDSimpleFont implements PDType3Font {
 				list.add(contentStream);
 			}
 			this.charStrings = Collections.unmodifiableList(list);
+		} else {
+			this.charStrings = Collections.emptyList();
 		}
-		this.charStrings = Collections.emptyList();
 	}
 }
