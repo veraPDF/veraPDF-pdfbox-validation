@@ -25,6 +25,9 @@ public class PBoxPDTilingPattern extends PBoxPDPattern implements
     private final PDDocument document;
     private final PDFAFlavour flavour;
 
+	private List<PDContentStream> contentStreams = null;
+	private boolean containsTransparency = false;
+
 	public PBoxPDTilingPattern(
 			org.apache.pdfbox.pdmodel.graphics.pattern.PDTilingPattern simplePDObject,
 			PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
@@ -44,9 +47,25 @@ public class PBoxPDTilingPattern extends PBoxPDPattern implements
     }
 
     private List<PDContentStream> getContentStream() {
-        List<PDContentStream> contentStreams = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-        contentStreams.add(new PBoxPDContentStream(
-				(org.apache.pdfbox.contentstream.PDContentStream) this.simplePDObject, this.resources, this.document, this.flavour));
-        return contentStreams;
+        if (this.contentStreams == null) {
+			parseContentStream();
+		}
+		return this.contentStreams;
     }
+
+	public boolean isContainsTransparency() {
+		if (this.contentStreams == null) {
+			parseContentStream();
+		}
+		return this.containsTransparency;
+	}
+
+	private void parseContentStream() {
+		List<PDContentStream> contentStreams = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+		PBoxPDContentStream contentStream = new PBoxPDContentStream(
+				(org.apache.pdfbox.contentstream.PDContentStream) this.simplePDObject, this.resources, this.document, this.flavour);
+		this.containsTransparency |= contentStream.isContainsTransparency();
+		contentStreams.add(contentStream);
+		this.contentStreams = contentStreams;
+	}
 }
