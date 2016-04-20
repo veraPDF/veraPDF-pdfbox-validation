@@ -37,6 +37,9 @@ public abstract class PBOpPathPaint extends PBOperator implements OpPathPaint {
 	private final PDDocument document;
 	private final PDFAFlavour flavour;
 
+	private List<org.verapdf.model.pdlayer.PDColorSpace> fillCS = null;
+	private List<org.verapdf.model.pdlayer.PDColorSpace> strokeCS = null;
+
 	/**
 	 * Default constructor
 	 *
@@ -64,11 +67,31 @@ public abstract class PBOpPathPaint extends PBOperator implements OpPathPaint {
 	}
 
 	protected List<org.verapdf.model.pdlayer.PDColorSpace> getFillCS() {
-		return this.getColorSpace(this.pbFillColorSpace, this.fillPattern);
+		if (this.fillCS == null) {
+			this.fillCS = getColorSpace(this.pbFillColorSpace, this.fillPattern);
+		}
+		return this.fillCS;
+	}
+
+	public org.verapdf.model.pdlayer.PDColorSpace getVeraModelFillCS() {
+		if (this.fillCS == null) {
+			this.fillCS = getColorSpace(this.pbFillColorSpace, this.fillPattern);
+		}
+		return this.fillCS.isEmpty() ? null : this.fillCS.get(0);
 	}
 
 	protected List<org.verapdf.model.pdlayer.PDColorSpace> getStrokeCS() {
-		return this.getColorSpace(this.pbStrokeColorSpace, this.strokePattern);
+		if (this.strokeCS == null) {
+			this.strokeCS = this.getColorSpace(this.pbStrokeColorSpace, this.strokePattern);
+		}
+		return this.strokeCS;
+	}
+
+	public org.verapdf.model.pdlayer.PDColorSpace getVeraModelStrokeCS() {
+		if (this.strokeCS == null) {
+			this.strokeCS = this.getColorSpace(this.pbStrokeColorSpace, this.strokePattern);
+		}
+		return this.strokeCS.isEmpty() ? null : this.strokeCS.get(0);
 	}
 
 	private List<org.verapdf.model.pdlayer.PDColorSpace> getColorSpace(

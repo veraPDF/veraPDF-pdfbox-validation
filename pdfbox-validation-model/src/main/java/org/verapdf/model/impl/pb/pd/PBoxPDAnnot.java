@@ -2,6 +2,7 @@ package org.verapdf.model.impl.pb.pd;
 
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.interactive.action.PDActionFactory;
 import org.apache.pdfbox.pdmodel.interactive.action.PDAnnotationAdditionalActions;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
@@ -15,6 +16,7 @@ import org.verapdf.model.impl.pb.pd.actions.PBoxPDAction;
 import org.verapdf.model.pdlayer.PDAction;
 import org.verapdf.model.pdlayer.PDAnnot;
 import org.verapdf.model.pdlayer.PDContentStream;
+import org.verapdf.model.pdlayer.PDGroup;
 import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
@@ -28,18 +30,18 @@ import java.util.Map;
  */
 public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 
-    public static final String ANNOTATION_TYPE = "PDAnnot";
+	public static final String ANNOTATION_TYPE = "PDAnnot";
 
-    public static final String DICT = "Dict";
-    public static final String STREAM = "Stream";
+	public static final String DICT = "Dict";
+	public static final String STREAM = "Stream";
 
-    public static final String APPEARANCE = "appearance";
-    public static final String C = "C";
-    public static final String IC = "IC";
-    public static final String A = "A";
-    public static final String ADDITIONAL_ACTION = "AA";
+	public static final String APPEARANCE = "appearance";
+	public static final String C = "C";
+	public static final String IC = "IC";
+	public static final String A = "A";
+	public static final String ADDITIONAL_ACTION = "AA";
 
-    public static final int MAX_COUNT_OF_ACTIONS = 10;
+	public static final int MAX_COUNT_OF_ACTIONS = 10;
 	public static final int X_AXIS = 0;
 	public static final int Y_AXIS = 1;
 
@@ -146,34 +148,34 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	}
 
 	@Override
-    public String getSubtype() {
-        return this.subtype;
-    }
+	public String getSubtype() {
+		return this.subtype;
+	}
 
-    @Override
-    public String getAP() {
-        return this.ap;
-    }
+	@Override
+	public String getAP() {
+		return this.ap;
+	}
 
-    @Override
-    public Long getF() {
+	@Override
+	public Long getF() {
 		return isFKeyPresent ? Long.valueOf(this.annotationFlag) : null;
-    }
+	}
 
-    @Override
-    public Double getCA() {
-        return this.ca;
-    }
+	@Override
+	public Double getCA() {
+		return this.ca;
+	}
 
-    @Override
-    public String getN_type() {
+	@Override
+	public String getN_type() {
 		return this.nType;
-    }
+	}
 
-    @Override
-    public String getFT() {
-        return this.ft;
-    }
+	@Override
+	public String getFT() {
+		return this.ft;
+	}
 
 	public Double getwidth() {
 		return this.width;
@@ -183,7 +185,7 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		return this.height;
 	}
 
-    @Override
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 			case ADDITIONAL_ACTION:
@@ -201,50 +203,50 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		}
 	}
 
-    private List<PDAction> getAdditionalActions() {
-        COSBase actionDictionary = ((PDAnnotation) simplePDObject)
-                .getCOSObject().getDictionaryObject(COSName.AA);
-        if (actionDictionary instanceof COSDictionary) {
+	private List<PDAction> getAdditionalActions() {
+		COSBase actionDictionary = ((PDAnnotation) simplePDObject)
+				.getCOSObject().getDictionaryObject(COSName.AA);
+		if (actionDictionary instanceof COSDictionary) {
 			List<PDAction> actions = new ArrayList<>(MAX_COUNT_OF_ACTIONS);
 
 			PDAnnotationAdditionalActions additionalActions = new PDAnnotationAdditionalActions(
-                    (COSDictionary) actionDictionary);
-            org.apache.pdfbox.pdmodel.interactive.action.PDAction buffer;
+					(COSDictionary) actionDictionary);
+			org.apache.pdfbox.pdmodel.interactive.action.PDAction buffer;
 
-            buffer = additionalActions.getBl();
-            this.addAction(actions, buffer);
+			buffer = additionalActions.getBl();
+			this.addAction(actions, buffer);
 
-            buffer = additionalActions.getD();
-            this.addAction(actions, buffer);
+			buffer = additionalActions.getD();
+			this.addAction(actions, buffer);
 
-            buffer = additionalActions.getE();
-            this.addAction(actions, buffer);
+			buffer = additionalActions.getE();
+			this.addAction(actions, buffer);
 
-            buffer = additionalActions.getFo();
-            this.addAction(actions, buffer);
+			buffer = additionalActions.getFo();
+			this.addAction(actions, buffer);
 
-            buffer = additionalActions.getPC();
-            this.addAction(actions, buffer);
+			buffer = additionalActions.getPC();
+			this.addAction(actions, buffer);
 
-            buffer = additionalActions.getPI();
-            this.addAction(actions, buffer);
+			buffer = additionalActions.getPI();
+			this.addAction(actions, buffer);
 
-            buffer = additionalActions.getPO();
-            this.addAction(actions, buffer);
+			buffer = additionalActions.getPO();
+			this.addAction(actions, buffer);
 
-            buffer = additionalActions.getPV();
-            this.addAction(actions, buffer);
+			buffer = additionalActions.getPV();
+			this.addAction(actions, buffer);
 
-            buffer = additionalActions.getU();
-            this.addAction(actions, buffer);
+			buffer = additionalActions.getU();
+			this.addAction(actions, buffer);
 
-            buffer = additionalActions.getX();
-            this.addAction(actions, buffer);
+			buffer = additionalActions.getX();
+			this.addAction(actions, buffer);
 
 			return Collections.unmodifiableList(actions);
-        }
-        return Collections.emptyList();
-    }
+		}
+		return Collections.emptyList();
+	}
 
 	private List<PDAction> getA() {
 		COSBase actionDictionary = ((PDAnnotation) this.simplePDObject)
@@ -263,39 +265,39 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		return Collections.emptyList();
 	}
 
-    private List<CosReal> getIC() {
-        return this.getRealsFromArray(COSName.IC);
-    }
+	private List<CosReal> getIC() {
+		return this.getRealsFromArray(COSName.IC);
+	}
 
-    private List<CosReal> getC() {
-        return this.getRealsFromArray(COSName.C);
-    }
+	private List<CosReal> getC() {
+		return this.getRealsFromArray(COSName.C);
+	}
 
-    private List<CosReal> getRealsFromArray(COSName arrayName) {
-        COSBase colorArray = ((PDAnnotation) this.simplePDObject).getCOSObject()
-                .getDictionaryObject(arrayName);
-        if (colorArray instanceof COSArray) {
+	private List<CosReal> getRealsFromArray(COSName arrayName) {
+		COSBase colorArray = ((PDAnnotation) this.simplePDObject).getCOSObject()
+				.getDictionaryObject(arrayName);
+		if (colorArray instanceof COSArray) {
 			List<CosReal> color = new ArrayList<>(((COSArray) colorArray).size());
 			for (COSBase colorValue : (COSArray) colorArray) {
-                if (colorValue instanceof COSNumber) {
-                    color.add(new PBCosReal((COSNumber) colorValue));
-                }
-            }
+				if (colorValue instanceof COSNumber) {
+					color.add(new PBCosReal((COSNumber) colorValue));
+				}
+			}
 			return Collections.unmodifiableList(color);
-        }
-        return Collections.emptyList();
-    }
+		}
+		return Collections.emptyList();
+	}
 
-    /**
-     * @return normal appearance stream (N key in the appearance dictionary) of
-     *         the annotation
-     */
-    private List<PDContentStream> getAppearance() {
-        if (this.appearance == null) {
+	/**
+	 * @return normal appearance stream (N key in the appearance dictionary) of
+	 * the annotation
+	 */
+	private List<PDContentStream> getAppearance() {
+		if (this.appearance == null) {
 			parseAppearance();
 		}
 		return this.appearance;
-    }
+	}
 
 	public boolean isContainsTransparency() {
 		if (this.appearance == null) {
@@ -332,6 +334,8 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	private void addAppearance(List<PDContentStream> list, PDAppearanceStream toAdd) {
 		PBoxPDContentStream stream = new PBoxPDContentStream(toAdd, this.resources, this.document, this.flavour);
 		this.containsTransparency |= stream.isContainsTransparency();
+		org.apache.pdfbox.pdmodel.graphics.form.PDGroup group = toAdd.getGroup();
+		this.containsTransparency |= group != null && COSName.TRANSPARENCY.equals(group.getSubType());
 		list.add(stream);
 	}
 }

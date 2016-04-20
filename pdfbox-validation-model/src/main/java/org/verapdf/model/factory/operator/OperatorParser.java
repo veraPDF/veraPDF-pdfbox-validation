@@ -40,16 +40,17 @@ import org.verapdf.model.impl.pb.operator.textposition.PBOpTextPosition;
 import org.verapdf.model.impl.pb.operator.textposition.PBOp_TD_Big;
 import org.verapdf.model.impl.pb.operator.textposition.PBOp_Td;
 import org.verapdf.model.impl.pb.operator.textposition.PBOp_Tm;
-import org.verapdf.model.impl.pb.operator.textshow.PBOp_DoubleQuote;
-import org.verapdf.model.impl.pb.operator.textshow.PBOp_Quote;
-import org.verapdf.model.impl.pb.operator.textshow.PBOp_TJ_Big;
-import org.verapdf.model.impl.pb.operator.textshow.PBOp_Tj;
+import org.verapdf.model.impl.pb.operator.textshow.*;
 import org.verapdf.model.impl.pb.operator.textstate.*;
 import org.verapdf.model.impl.pb.operator.type3font.PBOp_d0;
 import org.verapdf.model.impl.pb.operator.type3font.PBOp_d1;
 import org.verapdf.model.impl.pb.operator.xobject.PBOp_Do;
+import org.verapdf.model.impl.pb.pd.colors.PBoxPDColorSpace;
+import org.verapdf.model.impl.pb.pd.font.PBoxPDFont;
 import org.verapdf.model.impl.pb.pd.images.PBoxPDXObject;
+import org.verapdf.model.operator.Op_TJ_Big;
 import org.verapdf.model.operator.Operator;
+import org.verapdf.model.pdlayer.PDFont;
 import org.verapdf.model.tools.constants.Operators;
 import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
@@ -238,16 +239,24 @@ class OperatorParser {
 
 			// TEXT SHOW
 			case Operators.TJ_SHOW:
-				operators.add(new PBOp_Tj(arguments, this.graphicState.clone(), resources, this.document, this.flavour));
+				PBOp_Tj tj = new PBOp_Tj(arguments, this.graphicState.clone(), resources, this.document, this.flavour);
+				addFontAndColorSpace(tj);
+				operators.add(tj);
 				break;
 			case Operators.TJ_SHOW_POS:
-				operators.add(new PBOp_TJ_Big(arguments, this.graphicState.clone(), resources, this.document, this.flavour));
+				PBOp_TJ_Big tj_big = new PBOp_TJ_Big(arguments, this.graphicState.clone(), resources, this.document, this.flavour);
+				addFontAndColorSpace(tj_big);
+				operators.add(tj_big);
 				break;
 			case Operators.QUOTE:
-				operators.add(new PBOp_Quote(arguments, this.graphicState.clone(), resources, this.document, this.flavour));
+				PBOp_Quote quote = new PBOp_Quote(arguments, this.graphicState.clone(), resources, this.document, this.flavour);
+				addFontAndColorSpace(quote);
+				operators.add(quote);
 				break;
 			case Operators.DOUBLE_QUOTE:
-				operators.add(new PBOp_DoubleQuote(arguments, this.graphicState.clone(), resources, this.document, this.flavour));
+				PBOp_DoubleQuote doubleQuote = new PBOp_DoubleQuote(arguments, this.graphicState.clone(), resources, this.document, this.flavour);
+				addFontAndColorSpace(doubleQuote);
+				operators.add(doubleQuote);
 				break;
 
 			// TEXT STATE
@@ -321,43 +330,63 @@ class OperatorParser {
 
 			// PATH PAINT
 			case Operators.B_CLOSEPATH_FILL_STROKE:
-				operators.add(new PBOp_b_closepath_fill_stroke(arguments,
-						this.graphicState, resources, document, flavour));
+				PBOp_b_closepath_fill_stroke b_closepath_fill_stroke = new PBOp_b_closepath_fill_stroke(arguments,
+						this.graphicState, resources, document, flavour);
+				addColorSpace(b_closepath_fill_stroke);
+				operators.add(b_closepath_fill_stroke);
 				break;
 			case Operators.B_FILL_STROKE:
-				operators.add(new PBOp_B_fill_stroke(arguments,
-						this.graphicState, resources, document, flavour));
+				PBOp_B_fill_stroke b_fill_stroke = new PBOp_B_fill_stroke(arguments,
+						this.graphicState, resources, document, flavour);
+				addColorSpace(b_fill_stroke);
+				operators.add(b_fill_stroke);
 				break;
 			case Operators.B_STAR_CLOSEPATH_EOFILL_STROKE:
-				operators.add(new PBOp_bstar_closepath_eofill_stroke(arguments,
-						this.graphicState, resources, document, flavour));
+				PBOp_bstar_closepath_eofill_stroke bstar_closepath_eofill_stroke = new PBOp_bstar_closepath_eofill_stroke(arguments,
+						this.graphicState, resources, document, flavour);
+				addColorSpace(bstar_closepath_eofill_stroke);
+				operators.add(bstar_closepath_eofill_stroke);
 				break;
 			case Operators.B_STAR_EOFILL_STROKE:
-				operators.add(new PBOp_BStar_eofill_stroke(arguments,
-						this.graphicState, resources, document, flavour));
+				PBOp_BStar_eofill_stroke bStar_eofill_stroke = new PBOp_BStar_eofill_stroke(arguments,
+						this.graphicState, resources, document, flavour);
+				addColorSpace(bStar_eofill_stroke);
+				operators.add(bStar_eofill_stroke);
 				break;
 			case Operators.F_FILL:
-				operators.add(new PBOp_f_fill(arguments,
-						this.graphicState, resources, document, flavour));
+				PBOp_f_fill f_fill = new PBOp_f_fill(arguments,
+						this.graphicState, resources, document, flavour);
+				addColorSpace(f_fill);
+				operators.add(f_fill);
 				break;
 			case Operators.F_FILL_OBSOLETE:
-				operators.add(new PBOp_F_fill_obsolete(arguments,
-						this.graphicState, resources, document, flavour));
+				PBOp_F_fill_obsolete f_fill_obsolete = new PBOp_F_fill_obsolete(arguments,
+						this.graphicState, resources, document, flavour);
+				addColorSpace(f_fill_obsolete);
+				operators.add(f_fill_obsolete);
 				break;
 			case Operators.F_STAR_FILL:
-				operators.add(new PBOp_FStar(arguments,
-						this.graphicState, resources, document, flavour));
+				PBOp_FStar fStar = new PBOp_FStar(arguments,
+						this.graphicState, resources, document, flavour);
+				addColorSpace(fStar);
+				operators.add(fStar);
 				break;
 			case Operators.N:
-				operators.add(new PBOp_n(arguments, document, flavour));
+				PBOp_n op_n = new PBOp_n(arguments, document, flavour);
+				addColorSpace(op_n);
+				operators.add(op_n);
 				break;
 			case Operators.S_CLOSE_STROKE:
-				operators.add(new PBOp_s_close_stroke(arguments,
-						this.graphicState, resources, document, flavour));
+				PBOp_s_close_stroke s_close_stroke = new PBOp_s_close_stroke(arguments,
+						this.graphicState, resources, document, flavour);
+				addColorSpace(s_close_stroke);
+				operators.add(s_close_stroke);
 				break;
 			case Operators.S_STROKE:
-				operators.add(new PBOp_S_stroke(arguments,
-						this.graphicState, resources, document, flavour));
+				PBOp_S_stroke s_stroke = new PBOp_S_stroke(arguments,
+						this.graphicState, resources, document, flavour);
+				addColorSpace(s_stroke);
+				operators.add(s_stroke);
 				break;
 
 			// SHADING
@@ -388,7 +417,7 @@ class OperatorParser {
 				List<org.verapdf.model.pdlayer.PDXObject> pdxObjects = op.getXObject();
 				if (!pdxObjects.isEmpty()) {
 					PBoxPDXObject xobj = (PBoxPDXObject) pdxObjects.get(0);
-					this.graphicState.setXObject(xobj);
+					this.graphicState.setVeraXObject(xobj);
 				}
 				operators.add(op);
 				break;
@@ -399,7 +428,7 @@ class OperatorParser {
 	}
 
 	private void setFillPatternColorSpace(List<Operator> operators, PDColorSpace colorSpace,
-									  PDInheritableResources resources, List<COSBase> arguments) {
+										  PDInheritableResources resources, List<COSBase> arguments) {
 		if (colorSpace != null &&
 				ColorSpaceFactory.PATTERN.equals(colorSpace.getName())) {
 			graphicState.setFillPattern(getPatternFromResources(resources,
@@ -409,7 +438,7 @@ class OperatorParser {
 	}
 
 	private void setStrokePatternColorSpace(List<Operator> operators, PDColorSpace colorSpace,
-										  PDInheritableResources resources, List<COSBase> arguments) {
+											PDInheritableResources resources, List<COSBase> arguments) {
 		if (colorSpace != null &&
 				ColorSpaceFactory.PATTERN.equals(colorSpace.getName())) {
 			graphicState.setStrokePattern(getPatternFromResources(resources,
@@ -538,4 +567,19 @@ class OperatorParser {
 		}
 	}
 
+	private void addFontAndColorSpace(PBOpTextShow op) {
+		PBoxPDFont font = (PBoxPDFont) op.getVeraModelFont();
+		this.graphicState.setVeraFont(font);
+		PBoxPDColorSpace fillCS = (PBoxPDColorSpace) op.getVeraModelFillColorSpace();
+		this.graphicState.setVeraFillColorSpace(fillCS);
+		PBoxPDColorSpace strokeCS = (PBoxPDColorSpace) op.getVeraModelStrokeColorSpace();
+		this.graphicState.setVeraStrokeColorSpace(strokeCS);
+	}
+
+	private void addColorSpace(PBOpPathPaint op) {
+		PBoxPDColorSpace fillCS = (PBoxPDColorSpace) op.getVeraModelFillCS();
+		this.graphicState.setVeraFillColorSpace(fillCS);
+		PBoxPDColorSpace strokeCS = (PBoxPDColorSpace) op.getVeraModelStrokeCS();
+		this.graphicState.setVeraStrokeColorSpace(strokeCS);
+	}
 }
