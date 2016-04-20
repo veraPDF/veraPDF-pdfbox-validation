@@ -14,6 +14,7 @@ import org.verapdf.model.factory.colors.ColorSpaceFactory;
 import org.verapdf.model.factory.font.FontFactory;
 import org.verapdf.model.factory.operator.GraphicState;
 import org.verapdf.model.impl.pb.operator.base.PBOperator;
+import org.verapdf.model.impl.pb.pd.font.PBoxPDFont;
 import org.verapdf.model.operator.OpTextShow;
 import org.verapdf.model.pdlayer.PDColorSpace;
 import org.verapdf.model.pdlayer.PDFont;
@@ -54,6 +55,10 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 	protected final PDDocument document;
 	protected final PDFAFlavour flavour;
 
+	private List<PDFont> fonts = null;
+	private List<PDColorSpace> fillCS = null;
+	private List<PDColorSpace> strokeCS = null;
+
     protected PBOpTextShow(List<COSBase> arguments,
             GraphicState state, PDInheritableResources resources, final String opType, PDDocument document, PDFAFlavour flavour) {
         super(arguments, opType);
@@ -80,18 +85,32 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 	}
 
     private List<PDFont> getFont() {
+		if (this.fonts == null) {
+			this.fonts = parseFont();
+		}
+		return this.fonts;
+    }
+
+	public PDFont getVeraModelFont() {
+		if (this.fonts == null) {
+			this.fonts = parseFont();
+		}
+		return this.fonts.isEmpty() ? null : this.fonts.get(0);
+	}
+
+	private List<PDFont> parseFont() {
 		if (this.state.getRenderingMode().equals(RenderingMode.NEITHER)) {
 			return Collections.emptyList();
 		}
 
-        PDFont font = FontFactory.parseFont(getFontFromResources(), this.resources, this.document, this.flavour);
+		PDFont font = FontFactory.parseFont(getFontFromResources(), this.resources, this.document, this.flavour);
 		if (font != null) {
 			List<PDFont> result = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 			result.add(font);
 			return Collections.unmodifiableList(result);
 		}
-        return Collections.emptyList();
-    }
+		return Collections.emptyList();
+	}
 
     private List<PBGlyph> getUsedGlyphs() {
 		if (this.state.getRenderingMode().equals(RenderingMode.NEITHER)) {
@@ -134,20 +153,48 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
     }
 
     private List<PDColorSpace> getFillColorSpace() {
+		if (this.fillCS == null) {
+			this.fillCS = parseFillColorSpace();
+		}
+		return this.fillCS;
+    }
+
+	public PDColorSpace getVeraModelFillColorSpace() {
+		if (this.fillCS == null) {
+			this.fillCS = parseFillColorSpace();
+		}
+		return this.fillCS.isEmpty() ? null : this.fillCS.get(0);
+	}
+
+	private List<PDColorSpace> getStrokeColorSpace() {
+		if (this.strokeCS == null) {
+			this.strokeCS = parseStrokeColorSpace();
+		}
+		return this.strokeCS;
+    }
+
+	public PDColorSpace getVeraModelStrokeColorSpace() {
+		if (this.strokeCS == null) {
+			this.strokeCS = parseStrokeColorSpace();
+		}
+		return this.strokeCS.isEmpty() ? null : this.strokeCS.get(0);
+	}
+
+	private List<PDColorSpace> parseFillColorSpace() {
 		if (this.state.getRenderingMode().isFill()) {
 			return this.getColorSpace(this.state.getFillColorSpace(), this.state.getFillPattern());
 		} else {
 			return Collections.emptyList();
 		}
-    }
+	}
 
-	private List<PDColorSpace> getStrokeColorSpace() {
+	private List<PDColorSpace> parseStrokeColorSpace() {
 		if (this.state.getRenderingMode().isStroke()) {
 			return this.getColorSpace(this.state.getStrokeColorSpace(), this.state.getStrokePattern());
 		} else {
 			return Collections.emptyList();
 		}
-    }
+	}
 
 	private List<PDColorSpace> getColorSpace(org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace usedColorSpace, PDAbstractPattern pattern) {
 		PDColorSpace colorSpace = ColorSpaceFactory.getColorSpace(

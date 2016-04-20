@@ -30,19 +30,20 @@ public final class OperatorFactory {
     private static final Map<String, TransparencyBehaviour> PAINT_OPERATORS_WITHOUT_TEXT;
     static {
         Map<String, TransparencyBehaviour> aMap = new HashMap<>();
-        TransparencyBehaviour stroke = StrokeTransparencyBehaviour.getInstance();
-        TransparencyBehaviour fill = FillTransparencyBehaviour.getInstance();
-        TransparencyBehaviour fillStroke = FillStrokeTransparencyBehaviour.getInstance();
-        TransparencyBehaviour fillXObject = FillXObjectTransparencyBehaviour.getInstance();
-        aMap.put(Operators.S_STROKE, stroke);
-        aMap.put(Operators.S_CLOSE_STROKE, stroke);
-        aMap.put(Operators.F_FILL, fill);
-        aMap.put(Operators.F_FILL_OBSOLETE, fill);
-        aMap.put(Operators.F_STAR_FILL, fill);
-        aMap.put(Operators.B_FILL_STROKE, fillStroke);
-        aMap.put(Operators.B_STAR_EOFILL_STROKE, fillStroke);
-        aMap.put(Operators.B_CLOSEPATH_FILL_STROKE, fillStroke);
-        aMap.put(Operators.B_STAR_CLOSEPATH_EOFILL_STROKE, fillStroke);
+        TransparencyBehaviour fill = TransparencyBehaviour.createFillInstance();
+        TransparencyBehaviour fillXObject = TransparencyBehaviour.createFillXObjectInstance();
+        TransparencyBehaviour fillCS = TransparencyBehaviour.createFillColorSpaceInstance();
+        TransparencyBehaviour strokeCS = TransparencyBehaviour.createStrokeColorSpaceInstance();
+        TransparencyBehaviour fillStrokeCS = TransparencyBehaviour.createFillStrokeColorSpaceInstance();
+        aMap.put(Operators.S_STROKE, strokeCS);
+        aMap.put(Operators.S_CLOSE_STROKE, strokeCS);
+        aMap.put(Operators.F_FILL, fillCS);
+        aMap.put(Operators.F_FILL_OBSOLETE, fillCS);
+        aMap.put(Operators.F_STAR_FILL, fillCS);
+        aMap.put(Operators.B_FILL_STROKE, fillStrokeCS);
+        aMap.put(Operators.B_STAR_EOFILL_STROKE, fillStrokeCS);
+        aMap.put(Operators.B_CLOSEPATH_FILL_STROKE, fillStrokeCS);
+        aMap.put(Operators.B_STAR_CLOSEPATH_EOFILL_STROKE, fillStrokeCS);
         aMap.put(Operators.SH, fill);
         aMap.put(Operators.DO, fillXObject);
         aMap.put(Operators.EI, fill);
@@ -59,15 +60,15 @@ public final class OperatorFactory {
     private static final Map<RenderingMode, TransparencyBehaviour> RENDERING_MODE;
     static {
         Map<RenderingMode, TransparencyBehaviour> aMap = new HashMap<>();
-        TransparencyBehaviour stroke = StrokeTransparencyBehaviour.getInstance();
-        TransparencyBehaviour fill = FillTransparencyBehaviour.getInstance();
-        TransparencyBehaviour fillStroke = FillStrokeTransparencyBehaviour.getInstance();
-        aMap.put(RenderingMode.FILL, fill);
-        aMap.put(RenderingMode.STROKE, stroke);
-        aMap.put(RenderingMode.FILL_STROKE, fillStroke);
-        aMap.put(RenderingMode.FILL_CLIP, fill);
-        aMap.put(RenderingMode.STROKE_CLIP, stroke);
-        aMap.put(RenderingMode.FILL_STROKE_CLIP, fillStroke);
+        TransparencyBehaviour strokeCSFont = TransparencyBehaviour.createStrokeColorSpaceFontInstance();
+        TransparencyBehaviour fillCSFont = TransparencyBehaviour.createFillColorSpaceFontInstance();
+        TransparencyBehaviour fillStrokeCSFont = TransparencyBehaviour.createFillStrokeColorSpaceFontInstance();
+        aMap.put(RenderingMode.FILL, fillCSFont);
+        aMap.put(RenderingMode.STROKE, strokeCSFont);
+        aMap.put(RenderingMode.FILL_STROKE, fillStrokeCSFont);
+        aMap.put(RenderingMode.FILL_CLIP, fillCSFont);
+        aMap.put(RenderingMode.STROKE_CLIP, strokeCSFont);
+        aMap.put(RenderingMode.FILL_STROKE_CLIP, fillStrokeCSFont);
         RENDERING_MODE = Collections.unmodifiableMap(aMap);
     }
 

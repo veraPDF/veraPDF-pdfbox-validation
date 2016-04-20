@@ -70,4 +70,14 @@ public final class ModelParser implements ValidationModelParser, Closeable {
             LOGGER.error("Problems with document close.", e);
         }
 	}
+
+    public static void main(String[] args) {
+        try {
+            ModelParser p = new ModelParser(new FileInputStream(new File("/home/bezrukov/Downloads/veraPDF-corpus-PDFA-1b-PDF-A-2/PDF_A-2b/6.2 Graphics/6.2.10 Transparency/veraPDF test suite 6-2-10-t05-fail-i.pdf")), PDFAFlavour.PDFA_2_B);
+            PBoxPDPage page = (PBoxPDPage) p.getRoot().getLinkedObjects(PBCosDocument.DOCUMENT).get(0).getLinkedObjects(PBoxPDDocument.PAGES).get(0);
+            System.out.println(page.getcontainsTransparency());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -65,6 +65,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 
 	private boolean containsTransparency = false;
 	private List<PDContentStream> contentStreams = null;
+	private List<PDAnnot> annotations = null;
 
 	private final org.apache.pdfbox.pdmodel.PDDocument document;
 	private final PDFAFlavour flavour;
@@ -94,6 +95,9 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 	public Boolean getcontainsTransparency() {
 		if (this.contentStreams == null) {
 			parseContentStream();
+		}
+		if (this.annotations == null) {
+			this.annotations = parseAnnotataions();
 		}
 		return this.containsTransparency;
 	}
@@ -202,6 +206,14 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 	}
 
 	private List<PDAnnot> getAnnotations() {
+		if (this.annotations == null) {
+			this.annotations = parseAnnotataions();
+		}
+
+		return this.annotations;
+	}
+
+	private List<PDAnnot> parseAnnotataions() {
 		try {
 			List<PDAnnotation> pdfboxAnnotations = ((org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject)
 					.getAnnotations();
@@ -227,7 +239,9 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 				PDAppearanceStream stream = annotation.getNormalAppearanceStream();
 				PDResources resources = stream != null ? stream.getResources() : PDInheritableResources.EMPTY_RESOURCES;
 				PDInheritableResources extRes = PDInheritableResources.getInstance(pageResources, resources);
-				annotations.add(new PBoxPDAnnot(annotation, extRes, this.document, this.flavour));
+				PBoxPDAnnot annot = new PBoxPDAnnot(annotation, extRes, this.document, this.flavour);
+				this.containsTransparency |= annot.isContainsTransparency();
+				annotations.add(annot);
 			}
 		}
 	}
