@@ -74,42 +74,72 @@ public class GraphicState implements Cloneable {
         this.strokeColorSpace = strokeColorSpace;
     }
 
+	/**
+	 * @return fill pattern of current state
+	 */
 	public PDAbstractPattern getFillPattern() {
 		return fillPattern;
 	}
 
+	/**
+	 * @param fillPattern set fill pattern to current state
+	 */
 	public void setFillPattern(PDAbstractPattern fillPattern) {
 		this.fillPattern = fillPattern;
 	}
 
+	/**
+	 * @return stroke pattern of current state
+	 */
 	public PDAbstractPattern getStrokePattern() {
 		return strokePattern;
 	}
 
+	/**
+	 * @param strokePattern set stroke pattern to current state
+	 */
 	public void setStrokePattern(PDAbstractPattern strokePattern) {
 		this.strokePattern = strokePattern;
 	}
 
+	/**
+	 * @return fill color space object of veraPDF model implementation of current state
+	 */
 	public PBoxPDColorSpace getVeraFillColorSpace() {
 		return veraFillColorSpace;
 	}
 
+	/**
+	 * @param veraFillColorSpace set fill color space object of veraPDF model implementation to current state
+	 */
 	public void setVeraFillColorSpace(PBoxPDColorSpace veraFillColorSpace) {
 		this.veraFillColorSpace = veraFillColorSpace;
 	}
 
+	/**
+	 * @return stroke color space object of veraPDF model implementation of current state
+	 */
 	public PBoxPDColorSpace getVeraStrokeColorSpace() {
 		return veraStrokeColorSpace;
 	}
 
+	/**
+	 * @param veraStrokeColorSpace set stroke color space object of veraPDF model implementation to current state
+	 */
 	public void setVeraStrokeColorSpace(PBoxPDColorSpace veraStrokeColorSpace) {
 		this.veraStrokeColorSpace = veraStrokeColorSpace;
 	}
 
+	/**
+	 * @return font object of veraPDF model implementation of current state
+	 */
 	public PBoxPDFont getVeraFont() {
 		return veraFont;
 	}
 
+	/**
+	 * @param veraFont setfont object of veraPDF model implementation to current state
+	 */
 	public void setVeraFont(PBoxPDFont veraFont) {
 		this.veraFont = veraFont;
 	}
@@ -142,42 +172,72 @@ public class GraphicState implements Cloneable {
         this.fontName = fontName;
     }
 
+	/**
+	 * @return SMask base object of current state
+	 */
 	public COSBase getSMask() {
 		return sMask;
 	}
 
+	/**
+	 * @param sMask set SMask base object to current state
+	 */
 	public void setSMask(COSBase sMask) {
 		this.sMask = sMask;
 	}
 
+	/**
+	 * @return CA value of current state
+	 */
 	public float getCa() {
 		return ca;
 	}
 
+	/**
+	 * @param ca set CA value to current state
+	 */
 	public void setCa(float ca) {
 		this.ca = ca;
 	}
 
+	/**
+	 * @return ca value of current state
+	 */
 	public float getCa_ns() {
 		return ca_ns;
 	}
 
+	/**
+	 * @param ca_ns set ca value to current state
+	 */
 	public void setCa_ns(float ca_ns) {
 		this.ca_ns = ca_ns;
 	}
 
+	/**
+	 * @return BM object of current state
+	 */
 	public COSBase getBm() {
 		return bm;
 	}
 
+	/**
+	 * @param bm set BM object to current state
+	 */
 	public void setBm(COSBase bm) {
 		this.bm = bm;
 	}
 
+	/**
+	 * @return XObject object of veraPDF model implementation of current state
+	 */
 	public PBoxPDXObject getVeraXObject() {
 		return veraXObject;
 	}
 
+	/**
+	 * @param veraXObject set XObject object of veraPDF model to current state
+	 */
 	public void setVeraXObject(PBoxPDXObject veraXObject) {
 		this.veraXObject = veraXObject;
 	}

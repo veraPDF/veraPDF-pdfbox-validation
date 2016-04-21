@@ -33,10 +33,16 @@ public class PDInheritableResources {
 		this.currentResources = currentResources;
 	}
 
+	/**
+	 * @return page resources
+	 */
 	public PDResources getPageResources() {
 		return this.pageResources;
 	}
 
+	/**
+	 * @return current resources
+	 */
 	public PDResources getCurrentResources(){
 		return this.currentResources;
 	}

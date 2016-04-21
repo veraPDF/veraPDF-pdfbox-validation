@@ -73,6 +73,9 @@ public abstract class PBOpPathPaint extends PBOperator implements OpPathPaint {
 		return this.fillCS;
 	}
 
+	/**
+	 * @return fill color space object from veraPDF model of current operator
+	 */
 	public org.verapdf.model.pdlayer.PDColorSpace getVeraModelFillCS() {
 		if (this.fillCS == null) {
 			this.fillCS = getColorSpace(this.pbFillColorSpace, this.fillPattern);
@@ -86,7 +89,9 @@ public abstract class PBOpPathPaint extends PBOperator implements OpPathPaint {
 		}
 		return this.strokeCS;
 	}
-
+	/**
+	 * @return stroke color space object from veraPDF model of current operator
+	 */
 	public org.verapdf.model.pdlayer.PDColorSpace getVeraModelStrokeCS() {
 		if (this.strokeCS == null) {
 			this.strokeCS = this.getColorSpace(this.pbStrokeColorSpace, this.strokePattern);

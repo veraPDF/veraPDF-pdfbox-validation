@@ -55,6 +55,9 @@ public class PBOp_Do extends PBOperator implements Op_Do {
         return super.getLinkedObjects(link);
     }
 
+	/**
+	 * @return XObject object from veraPDF model used in current operator
+	 */
 	public List<PDXObject> getXObject() {
 		if (this.xObjects == null) {
 			PDXObject typedPDXObject = PBoxPDXObject.getTypedPDXObject(

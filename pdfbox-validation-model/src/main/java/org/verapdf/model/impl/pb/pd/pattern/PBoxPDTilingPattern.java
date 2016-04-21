@@ -53,6 +53,9 @@ public class PBoxPDTilingPattern extends PBoxPDPattern implements
 		return this.contentStreams;
     }
 
+	/**
+	 * @return true if content stream of the pattern contains transparency
+	 */
 	public boolean isContainsTransparency() {
 		if (this.contentStreams == null) {
 			parseContentStream();

@@ -299,7 +299,7 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		return this.appearance;
 	}
 
-	public boolean isContainsTransparency() {
+	boolean isContainsTransparency() {
 		if (this.appearance == null) {
 			parseAppearance();
 		}

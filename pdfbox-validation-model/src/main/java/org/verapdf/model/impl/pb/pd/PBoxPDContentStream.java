@@ -59,6 +59,9 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 		return this.operators;
     }
 
+	/**
+	 * @return true if this content stream contains transparency
+	 */
 	public boolean isContainsTransparency() {
 		if (this.operators == null) {
 			parseOperators();
