@@ -10,6 +10,8 @@ import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceGray;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDAbstractPattern;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
+import org.verapdf.model.impl.pb.pd.colors.PBoxPDColorSpace;
+import org.verapdf.model.impl.pb.pd.font.PBoxPDFont;
 import org.verapdf.model.impl.pb.pd.images.PBoxPDXObject;
 
 import java.io.IOException;
@@ -27,7 +29,8 @@ public class GraphicState implements Cloneable {
 
     private PDColorSpace fillColorSpace = PDDeviceGray.INSTANCE;
     private PDColorSpace strokeColorSpace = PDDeviceGray.INSTANCE;
-    private PDAbstractPattern pattern = null;
+    private PDAbstractPattern fillPattern = null;
+	private PDAbstractPattern strokePattern = null;
     private RenderingMode renderingMode = RenderingMode.FILL;
     private COSName fontName;
 
@@ -37,8 +40,11 @@ public class GraphicState implements Cloneable {
 	private float ca_ns = 1;
 	private COSBase bm = null;
 
-	// field for transparency checks. This is veraPDF implementation of XObject
-	private PBoxPDXObject xObject = null;
+	// fields for transparency checks. This is veraPDF implementation of XObject
+	private PBoxPDXObject veraXObject = null;
+	private PBoxPDColorSpace veraFillColorSpace = null;
+	private PBoxPDColorSpace veraStrokeColorSpace = null;
+	private PBoxPDFont veraFont = null;
 
 	/**
 	 * @return fill color space of current state
@@ -68,19 +74,45 @@ public class GraphicState implements Cloneable {
         this.strokeColorSpace = strokeColorSpace;
     }
 
-	/**
-	 * @return pattern of current state
-	 */
-    public PDAbstractPattern getPattern() {
-        return pattern;
-    }
+	public PDAbstractPattern getFillPattern() {
+		return fillPattern;
+	}
 
-	/**
-	 * @param pattern set pattern to current state
-	 */
-    public void setPattern(PDAbstractPattern pattern) {
-        this.pattern = pattern;
-    }
+	public void setFillPattern(PDAbstractPattern fillPattern) {
+		this.fillPattern = fillPattern;
+	}
+
+	public PDAbstractPattern getStrokePattern() {
+		return strokePattern;
+	}
+
+	public void setStrokePattern(PDAbstractPattern strokePattern) {
+		this.strokePattern = strokePattern;
+	}
+
+	public PBoxPDColorSpace getVeraFillColorSpace() {
+		return veraFillColorSpace;
+	}
+
+	public void setVeraFillColorSpace(PBoxPDColorSpace veraFillColorSpace) {
+		this.veraFillColorSpace = veraFillColorSpace;
+	}
+
+	public PBoxPDColorSpace getVeraStrokeColorSpace() {
+		return veraStrokeColorSpace;
+	}
+
+	public void setVeraStrokeColorSpace(PBoxPDColorSpace veraStrokeColorSpace) {
+		this.veraStrokeColorSpace = veraStrokeColorSpace;
+	}
+
+	public PBoxPDFont getVeraFont() {
+		return veraFont;
+	}
+
+	public void setVeraFont(PBoxPDFont veraFont) {
+		this.veraFont = veraFont;
+	}
 
 	/**
 	 * @return rendering mode of current state
@@ -142,12 +174,12 @@ public class GraphicState implements Cloneable {
 		this.bm = bm;
 	}
 
-	public PBoxPDXObject getXObject() {
-		return xObject;
+	public PBoxPDXObject getVeraXObject() {
+		return veraXObject;
 	}
 
-	public void setXObject(PBoxPDXObject xObject) {
-		this.xObject = xObject;
+	public void setVeraXObject(PBoxPDXObject veraXObject) {
+		this.veraXObject = veraXObject;
 	}
 
 	/**
@@ -160,14 +192,18 @@ public class GraphicState implements Cloneable {
     public void copyProperties(GraphicState graphicState) {
         this.fillColorSpace = graphicState.getFillColorSpace();
         this.strokeColorSpace = graphicState.getStrokeColorSpace();
-        this.pattern = graphicState.getPattern();
+        this.fillPattern = graphicState.getFillPattern();
+		this.strokePattern = graphicState.getStrokePattern();
         this.renderingMode = graphicState.getRenderingMode();
         this.fontName = graphicState.getFontName();
 		this.sMask = graphicState.getSMask();
 		this.ca_ns = graphicState.getCa_ns();
 		this.ca = graphicState.getCa();
 		this.bm = graphicState.getBm();
-		this.xObject = graphicState.getXObject();
+		this.veraXObject = graphicState.getVeraXObject();
+		this.veraFillColorSpace = graphicState.getVeraFillColorSpace();
+		this.veraStrokeColorSpace = graphicState.getVeraStrokeColorSpace();
+		this.veraFont = graphicState.getVeraFont();
     }
 
 	/**
@@ -215,14 +251,18 @@ public class GraphicState implements Cloneable {
         GraphicState graphicState = (GraphicState) super.clone();
         graphicState.fillColorSpace = this.fillColorSpace;
         graphicState.strokeColorSpace = this.strokeColorSpace;
-        graphicState.pattern = this.pattern;
+        graphicState.fillPattern = this.fillPattern;
+		graphicState.strokePattern = this.strokePattern;
         graphicState.renderingMode = this.renderingMode;
         graphicState.fontName = this.fontName;
 		graphicState.sMask = this.sMask;
 		graphicState.ca_ns = this.ca_ns;
 		graphicState.ca = this.ca;
 		graphicState.bm = this.bm;
-		graphicState.xObject = this.xObject;
+		graphicState.veraXObject = this.veraXObject;
+		graphicState.veraFillColorSpace = this.veraFillColorSpace;
+		graphicState.veraStrokeColorSpace = this.veraStrokeColorSpace;
+		graphicState.veraFont = this.veraFont;
         return graphicState;
     }
 

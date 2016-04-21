@@ -31,6 +31,9 @@ public class PBoxPDType3Font extends PBoxPDSimpleFont implements PDType3Font {
 	private final PDDocument document;
 	private final PDFAFlavour flavour;
 
+	private List<PDContentStream> charStrings = null;
+	private boolean containsTransparency = false;
+
 	public PBoxPDType3Font(PDFontLike font, PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
 		super(font, TYPE3_FONT_TYPE);
 		this.resources = resources;
@@ -52,19 +55,36 @@ public class PBoxPDType3Font extends PBoxPDSimpleFont implements PDType3Font {
     }
 
     private List<PDContentStream> getCharStrings() {
-        COSDictionary charProcDict = ((org.apache.pdfbox.pdmodel.font.PDType3Font) this.pdFontLike)
-                .getCharProcs();
+        if (this.charStrings == null) {
+			parseCharStrings();
+		}
+		return this.charStrings;
+    }
+
+	public boolean isContainsTransparency() {
+		if (this.charStrings == null) {
+			parseCharStrings();
+		}
+		return this.containsTransparency;
+	}
+
+	private void parseCharStrings() {
+		COSDictionary charProcDict = ((org.apache.pdfbox.pdmodel.font.PDType3Font) this.pdFontLike)
+				.getCharProcs();
 		if (charProcDict != null) {
 			Set<COSName> keySet = charProcDict.keySet();
 			List<PDContentStream> list = new ArrayList<>(keySet.size());
 			for (COSName cosName : keySet) {
 				PDType3CharProc charProc = ((org.apache.pdfbox.pdmodel.font.PDType3Font) this.pdFontLike)
 						.getCharProc(cosName);
-				list.add(new PBoxPDContentStream(charProc, this.resources, this.document, this.flavour));
+				PBoxPDContentStream contentStream =
+						new PBoxPDContentStream(charProc, this.resources, this.document, this.flavour);
+				this.containsTransparency |= contentStream.isContainsTransparency();
+				list.add(contentStream);
 			}
-			return Collections.unmodifiableList(list);
+			this.charStrings = Collections.unmodifiableList(list);
+		} else {
+			this.charStrings = Collections.emptyList();
 		}
-		return Collections.emptyList();
-    }
-
+	}
 }

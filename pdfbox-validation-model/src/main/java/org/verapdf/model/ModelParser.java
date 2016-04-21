@@ -3,12 +3,12 @@ package org.verapdf.model;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.impl.pb.cos.PBCosDocument;
+import org.verapdf.model.impl.pb.pd.PBoxPDDocument;
+import org.verapdf.model.impl.pb.pd.PBoxPDPage;
 import org.verapdf.pdfa.ValidationModelParser;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * Current class is entry point to model implementation.
