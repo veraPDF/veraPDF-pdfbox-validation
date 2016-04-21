@@ -116,6 +116,9 @@ public class PBoxPDXForm extends PBoxPDXObject implements PDXForm {
 		this.contentStreams = streams;
 	}
 
+	/**
+	 * @return true if current form object contains transparency group or transparency in its content stream
+	 */
 	public boolean containsTransparency() {
 		if (groups == null) {
 			initializeGroups();

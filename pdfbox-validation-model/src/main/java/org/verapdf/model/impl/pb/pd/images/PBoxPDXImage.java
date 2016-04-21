@@ -151,6 +151,9 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
         return Collections.emptyList();
     }
 
+	/**
+     * @return true if current image contains SMask value of type stream or SMaskInData value greater then 0
+     */
     public boolean containsTransparency() {
         if (this.simplePDObject == null) {
             return false;

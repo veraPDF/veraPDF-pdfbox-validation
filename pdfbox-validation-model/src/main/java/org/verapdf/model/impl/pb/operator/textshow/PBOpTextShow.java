@@ -159,6 +159,9 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 		return this.fillCS;
     }
 
+	/**
+	 * @return fill color space object from veraPDF model of current operator
+	 */
 	public PDColorSpace getVeraModelFillColorSpace() {
 		if (this.fillCS == null) {
 			this.fillCS = parseFillColorSpace();
@@ -173,6 +176,9 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 		return this.strokeCS;
     }
 
+	/**
+	 * @return stroke color space object from veraPDF model of current operator
+	 */
 	public PDColorSpace getVeraModelStrokeColorSpace() {
 		if (this.strokeCS == null) {
 			this.strokeCS = parseStrokeColorSpace();

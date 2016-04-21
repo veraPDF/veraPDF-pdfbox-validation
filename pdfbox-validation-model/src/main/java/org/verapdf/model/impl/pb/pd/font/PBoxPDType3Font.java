@@ -61,6 +61,9 @@ public class PBoxPDType3Font extends PBoxPDSimpleFont implements PDType3Font {
 		return this.charStrings;
     }
 
+	/**
+	 * @return true if any of charproc content streams contains transparency
+	 */
 	public boolean isContainsTransparency() {
 		if (this.charStrings == null) {
 			parseCharStrings();

@@ -72,10 +72,9 @@ public final class OperatorFactory {
         RENDERING_MODE = Collections.unmodifiableMap(aMap);
     }
 
-    public OperatorFactory() {
-        // Disable default constructor
-    }
-
+	/**
+     * @return true if during the last call of parsing method there was any transparency
+     */
     public boolean isLastParsedContainsTransparency() {
         return isLastParsedContainsTransparency;
     }

@@ -14,6 +14,8 @@ import org.verapdf.model.impl.pb.pd.images.PBoxPDXObject;
 import org.verapdf.model.impl.pb.pd.pattern.PBoxPDTilingPattern;
 
 /**
+ * Transparency checker class
+ *
  * @author Maksim Bezrukov
  */
 public class TransparencyBehaviour {
@@ -27,30 +29,45 @@ public class TransparencyBehaviour {
     private TransparencyBehaviour() {
     }
 
+	/**
+     * @return an instance of TransparencyBehaviour class with fill checks
+     */
     public static TransparencyBehaviour createFillInstance() {
         TransparencyBehaviour tb = new TransparencyBehaviour();
         tb.isFillCheck = true;
         return tb;
     }
 
+    /**
+     * @return an instance of TransparencyBehaviour class with fill and XObjects checks
+     */
     public static TransparencyBehaviour createFillXObjectInstance() {
         TransparencyBehaviour tb = createFillInstance();
         tb.isXObjectCheck = true;
         return tb;
     }
 
+    /**
+     * @return an instance of TransparencyBehaviour class with fill and patterns checks
+     */
     public static TransparencyBehaviour createFillColorSpaceInstance() {
         TransparencyBehaviour tb = createFillInstance();
         tb.isColorSpaceCheck = true;
         return tb;
     }
 
+    /**
+     * @return an instance of TransparencyBehaviour class with fill, patterns and font checks
+     */
     public static TransparencyBehaviour createFillColorSpaceFontInstance() {
         TransparencyBehaviour tb = createFillColorSpaceInstance();
         tb.isFontCheck = true;
         return tb;
     }
 
+    /**
+     * @return an instance of TransparencyBehaviour class with stroke and patterns checks
+     */
     public static TransparencyBehaviour createStrokeColorSpaceInstance() {
         TransparencyBehaviour tb = new TransparencyBehaviour();
         tb.isStrokeCheck = true;
@@ -58,12 +75,18 @@ public class TransparencyBehaviour {
         return tb;
     }
 
+    /**
+     * @return an instance of TransparencyBehaviour class with stroke, patterns and font checks
+     */
     public static TransparencyBehaviour createStrokeColorSpaceFontInstance() {
         TransparencyBehaviour tb = createStrokeColorSpaceInstance();
         tb.isFontCheck = true;
         return tb;
     }
 
+    /**
+     * @return an instance of TransparencyBehaviour class with fill, stroke and patterns checks
+     */
     public static TransparencyBehaviour createFillStrokeColorSpaceInstance() {
         TransparencyBehaviour tb = new TransparencyBehaviour();
         tb.isFillCheck = true;
@@ -72,12 +95,20 @@ public class TransparencyBehaviour {
         return tb;
     }
 
+    /**
+     * @return an instance of TransparencyBehaviour class with fill, stroke, patterns and font checks
+     */
     public static TransparencyBehaviour createFillStrokeColorSpaceFontInstance() {
         TransparencyBehaviour tb = createFillStrokeColorSpaceInstance();
         tb.isFontCheck = true;
         return tb;
     }
 
+	/**
+     * Checks the given graphic state for the transparency depends on created object type
+     * @param graphicState graphicState object for check
+     * @return true if the given argument object contains transparency depends on created object type
+     */
     public boolean containsTransparency(GraphicState graphicState) {
         if (baseCheck(graphicState)) {
             return true;
