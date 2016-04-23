@@ -19,7 +19,7 @@ public class ModelParserTest {
 	@Test
 	public void testExistingFile() throws URISyntaxException, IOException {
 		String path = getSystemIndependentPath("/model/impl/pb/pd/Fonts.pdf");
-		try (ModelParser loader = new ModelParser(new FileInputStream(path), null)) {
+		try (ModelParser loader = ModelParser.createModelWithFlavour(new FileInputStream(path), null)) {
 			Assert.assertNotNull(loader.getPDDocument());
 			Assert.assertNotNull(loader.getRoot());
 		}

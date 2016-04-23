@@ -52,7 +52,7 @@ public class PBoxEmbeddedFile extends PBoxExternal implements EmbeddedFile {
 			try {
 				InputStream unfilteredStream = stream.getUnfilteredStream();
 				unfilteredStream.mark(Integer.MAX_VALUE);
-				ModelParser parser1b = new ModelParser(unfilteredStream, PDFAFlavour.PDFA_1_B);
+				ModelParser parser1b = ModelParser.createModelWithFlavour(unfilteredStream, PDFAFlavour.PDFA_1_B);
 				PDFAValidator validator1b = Validators.createValidator(PDFAFlavour.PDFA_1_B, false, 1);
 				ValidationResult result1b = validator1b.validate(parser1b);
 				if (result1b.isCompliant()) {
@@ -60,7 +60,7 @@ public class PBoxEmbeddedFile extends PBoxExternal implements EmbeddedFile {
 					return Boolean.TRUE;
 				}
 				unfilteredStream.reset();
-				ModelParser parser2b = new ModelParser(unfilteredStream, PDFAFlavour.PDFA_2_B);
+				ModelParser parser2b = ModelParser.createModelWithFlavour(unfilteredStream, PDFAFlavour.PDFA_2_B);
 				PDFAValidator validator2b = Validators.createValidator(PDFAFlavour.PDFA_2_B, false, 1);
 				ValidationResult result2b = validator2b.validate(parser2b);
 				parser1b.close();
