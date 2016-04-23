@@ -30,7 +30,7 @@ public class PBFeatureParserTest {
 	public static void before() throws URISyntaxException, IOException {
 		File pdf = new File(TestNodeGenerator.getSystemIndependentPath("/FR.pdf"));
 		PDDocument document = PDDocument.load(pdf, false, true);
-		collection = PBFeatureParser.getFeaturesCollection(document);
+		collection = PBFeatureParser.getFeaturesCollection(document, false, null);
 	}
 
 	@Test

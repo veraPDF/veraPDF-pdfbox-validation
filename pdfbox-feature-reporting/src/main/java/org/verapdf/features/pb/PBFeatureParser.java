@@ -34,6 +34,7 @@ import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 
 /**
@@ -196,9 +197,9 @@ public final class PBFeatureParser {
 	 * @return FeaturesCollection class with information about all featurereport
 	 */
 	public static FeaturesCollection getFeaturesCollection(
-			final PDDocument document) {
+			final PDDocument document, final boolean isPluginsEnabled, final Path pluginsFolder) {
 
-		FeaturesReporter reporter = new FeaturesReporter();
+		FeaturesReporter reporter = new FeaturesReporter(isPluginsEnabled, pluginsFolder);
 
 		if (document != null) {
 			PBFeatureParser parser = new PBFeatureParser(reporter);
