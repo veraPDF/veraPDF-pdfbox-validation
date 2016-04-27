@@ -103,8 +103,9 @@ public class PBoxPDXForm extends PBoxPDXObject implements PDXForm {
 			List<PDGroup> groups = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 			groups.add(new PBoxPDGroup(group, this.document, this.flavour));
 			this.groups = Collections.unmodifiableList(groups);
+		} else {
+			this.groups = Collections.emptyList();
 		}
-		this.groups = Collections.emptyList();
 	}
 
 	private void parseContentStream() {
