@@ -63,7 +63,7 @@ public class PBGlyph extends GenericModelObject implements Glyph {
 
 	@Override
 	public String gettoUnicode() {
-		return null;
+		return this.toUnicode;
 	}
 
 	@Override
