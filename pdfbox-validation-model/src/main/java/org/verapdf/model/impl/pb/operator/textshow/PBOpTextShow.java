@@ -14,7 +14,6 @@ import org.verapdf.model.factory.colors.ColorSpaceFactory;
 import org.verapdf.model.factory.font.FontFactory;
 import org.verapdf.model.factory.operator.GraphicState;
 import org.verapdf.model.impl.pb.operator.base.PBOperator;
-import org.verapdf.model.impl.pb.pd.font.PBoxPDFont;
 import org.verapdf.model.operator.OpTextShow;
 import org.verapdf.model.pdlayer.PDColorSpace;
 import org.verapdf.model.pdlayer.PDFont;
@@ -113,10 +112,6 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 	}
 
     private List<PBGlyph> getUsedGlyphs() {
-		if (this.state.getRenderingMode().equals(RenderingMode.NEITHER)) {
-			return Collections.emptyList();
-		}
-
 		org.apache.pdfbox.pdmodel.font.PDFont font = getFontFromResources();
 		FontContainer fontContainer = FontHelper.getFontContainer(font);
 
@@ -139,7 +134,7 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 								font, code, CID);
 					} else {
 						glyph = new PBGlyph(glyphPresent, widthsConsistent,
-								font, code);
+								font, code, this.state.getRenderingMode().intValue());
 					}
 					res.add(glyph);
                 }

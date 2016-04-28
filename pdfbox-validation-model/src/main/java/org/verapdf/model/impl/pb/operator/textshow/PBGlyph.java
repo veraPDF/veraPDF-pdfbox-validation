@@ -25,15 +25,17 @@ public class PBGlyph extends GenericModelObject implements Glyph {
 	private Boolean widthsConsistent;
 	private String name;
 	private String toUnicode;
+	private Long renderingMode;
 
-	public PBGlyph(Boolean glyphPresent, Boolean widthsConsistent, PDFont font, int glyphCode) {
-		this(glyphPresent, widthsConsistent, font, glyphCode, GLYPH_TYPE);
+	public PBGlyph(Boolean glyphPresent, Boolean widthsConsistent, PDFont font, int glyphCode, int renderingMode) {
+		this(glyphPresent, widthsConsistent, font, glyphCode, GLYPH_TYPE, renderingMode);
 	}
 
-	public PBGlyph(Boolean glyphPresent, Boolean widthsConsistent, PDFont font, int glyphCode, String type) {
+	public PBGlyph(Boolean glyphPresent, Boolean widthsConsistent, PDFont font, int glyphCode, String type, int renderingMode) {
 		super(type);
 		this.glyphPresent = glyphPresent;
 		this.widthsConsistent = widthsConsistent;
+		this.renderingMode = Long.valueOf(renderingMode);
 
 		if (font instanceof PDSimpleFont) {
 			Encoding encoding = ((PDSimpleFont) font).getEncoding();
@@ -48,7 +50,7 @@ public class PBGlyph extends GenericModelObject implements Glyph {
 			LOGGER.debug(e);
 			this.toUnicode = null;
 		}
-		this.id = IDGenerator.generateID(font.getCOSObject().hashCode(), font.getName(), glyphCode);
+		this.id = IDGenerator.generateID(font.getCOSObject().hashCode(), font.getName(), glyphCode, renderingMode);
 	}
 
 	@Override
@@ -64,6 +66,11 @@ public class PBGlyph extends GenericModelObject implements Glyph {
 	@Override
 	public String gettoUnicode() {
 		return this.toUnicode;
+	}
+
+	@Override
+	public Long getrenderingMode() {
+		return this.renderingMode;
 	}
 
 	@Override
