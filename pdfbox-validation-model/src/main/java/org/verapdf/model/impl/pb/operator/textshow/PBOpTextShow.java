@@ -131,7 +131,7 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 					if (font.getSubType().equals(FontFactory.TYPE_0)) {
 						int CID = ((PDType0Font) font).codeToCID(code);
 						glyph = new PBCIDGlyph(glyphPresent, widthsConsistent,
-								font, code, CID);
+								font, code, CID, this.state.getRenderingMode().intValue());
 					} else {
 						glyph = new PBGlyph(glyphPresent, widthsConsistent,
 								font, code, this.state.getRenderingMode().intValue());
