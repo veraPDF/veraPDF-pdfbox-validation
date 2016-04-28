@@ -47,8 +47,8 @@ public final class IDGenerator {
      * @param glyphCode code of glyph
      * @return string representation of ID
      */
-    public static String generateID(int hashcode, String fontName, int glyphCode) {
-        return String.valueOf(hashcode) + ' ' + fontName + ' ' + glyphCode;
+    public static String generateID(int hashcode, String fontName, int glyphCode, int renderingMode) {
+        return String.valueOf(hashcode) + ' ' + fontName + ' ' + glyphCode + ' ' + renderingMode;
     }
 
     /**

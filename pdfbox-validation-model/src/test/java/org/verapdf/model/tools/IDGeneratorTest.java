@@ -34,8 +34,8 @@ public class IDGeneratorTest {
 
 	@Test
 	public void testGlyphIDGenerator() {
-		String actualID = IDGenerator.generateID(1298374, "name", 10);
-		String expectedID = "1298374 name 10";
+		String actualID = IDGenerator.generateID(1298374, "name", 10, 3);
+		String expectedID = "1298374 name 10 3";
 		Assert.assertEquals(expectedID, actualID);
 	}
 
