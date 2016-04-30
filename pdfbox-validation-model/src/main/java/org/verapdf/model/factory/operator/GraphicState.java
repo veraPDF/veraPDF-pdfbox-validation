@@ -10,6 +10,7 @@ import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceGray;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDAbstractPattern;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
+import org.bouncycastle.util.Arrays;
 import org.verapdf.model.impl.pb.pd.colors.PBoxPDColorSpace;
 import org.verapdf.model.impl.pb.pd.font.PBoxPDFont;
 import org.verapdf.model.impl.pb.pd.images.PBoxPDXObject;
@@ -45,6 +46,7 @@ public class GraphicState implements Cloneable {
 	private PBoxPDColorSpace veraFillColorSpace = null;
 	private PBoxPDColorSpace veraStrokeColorSpace = null;
 	private PBoxPDFont veraFont = null;
+	private byte[] charCodes = null;
 
 	/**
 	 * @return fill color space of current state
@@ -243,6 +245,20 @@ public class GraphicState implements Cloneable {
 	}
 
 	/**
+	 * @return byte array of char codes from text operator
+     */
+	public byte[] getCharCodes() {
+		return charCodes;
+	}
+
+	/**
+	 * @param charCodes set byte array of char codes from text operator
+     */
+	public void setCharCodes(byte[] charCodes) {
+		this.charCodes = Arrays.clone(charCodes);
+	}
+
+	/**
      * This method will copy properties from passed graphic state to current
      * object
      * 
@@ -264,6 +280,7 @@ public class GraphicState implements Cloneable {
 		this.veraFillColorSpace = graphicState.getVeraFillColorSpace();
 		this.veraStrokeColorSpace = graphicState.getVeraStrokeColorSpace();
 		this.veraFont = graphicState.getVeraFont();
+		this.charCodes = graphicState.getCharCodes();
     }
 
 	/**
@@ -323,6 +340,7 @@ public class GraphicState implements Cloneable {
 		graphicState.veraFillColorSpace = this.veraFillColorSpace;
 		graphicState.veraStrokeColorSpace = this.veraStrokeColorSpace;
 		graphicState.veraFont = this.veraFont;
+		graphicState.charCodes = this.charCodes;
         return graphicState;
     }
 
