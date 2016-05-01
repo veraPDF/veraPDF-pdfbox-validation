@@ -48,9 +48,7 @@ import org.verapdf.model.impl.pb.operator.xobject.PBOp_Do;
 import org.verapdf.model.impl.pb.pd.colors.PBoxPDColorSpace;
 import org.verapdf.model.impl.pb.pd.font.PBoxPDFont;
 import org.verapdf.model.impl.pb.pd.images.PBoxPDXObject;
-import org.verapdf.model.operator.Op_TJ_Big;
 import org.verapdf.model.operator.Operator;
-import org.verapdf.model.pdlayer.PDFont;
 import org.verapdf.model.tools.constants.Operators;
 import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
@@ -570,6 +568,8 @@ class OperatorParser {
 	private void addFontAndColorSpace(PBOpTextShow op) {
 		PBoxPDFont font = (PBoxPDFont) op.getVeraModelFont();
 		this.graphicState.setVeraFont(font);
+		byte[] charCodes = op.getCharCodes();
+		this.graphicState.setCharCodes(charCodes);
 		PBoxPDColorSpace fillCS = (PBoxPDColorSpace) op.getVeraModelFillColorSpace();
 		this.graphicState.setVeraFillColorSpace(fillCS);
 		PBoxPDColorSpace strokeCS = (PBoxPDColorSpace) op.getVeraModelStrokeColorSpace();

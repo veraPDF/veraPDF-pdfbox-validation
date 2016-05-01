@@ -24,9 +24,7 @@ import org.verapdf.pdfa.flavours.PDFAFlavour;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Base class for all text show operators
@@ -153,6 +151,25 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 		}
 		return this.fillCS;
     }
+
+	/**
+	 * @return char codes that has been used by this operator
+     */
+	public byte[] getCharCodes() {
+		List<byte[]> strings = this.getStrings(this.arguments);
+		Set<Byte> resSet = new HashSet<>();
+		for (byte[] string : strings) {
+			for (byte b : string) {
+				resSet.add(b);
+			}
+		}
+		byte[] res = new byte[resSet.size()];
+		int i = 0;
+		for (Byte b : resSet) {
+			res[i++] = b.byteValue();
+		}
+		return res;
+	}
 
 	/**
 	 * @return fill color space object from veraPDF model of current operator
