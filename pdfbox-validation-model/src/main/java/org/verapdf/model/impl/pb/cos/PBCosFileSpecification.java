@@ -30,6 +30,7 @@ public class PBCosFileSpecification extends PBCosDict implements
 
 	private final String f;
 	private final String uf;
+	private final String afrelationship;
 
     /**
      * Default constructor
@@ -39,6 +40,7 @@ public class PBCosFileSpecification extends PBCosDict implements
         super(dictionary, COS_FILE_SPECIFICATION_TYPE, document, flavour);
 		this.f = this.getStringValue(COSName.F);
 		this.uf = this.getStringValue(COSName.UF);
+		this.afrelationship = this.getNameValue(COSName.getPDFName("AFRelationship"));
     }
 
 	@Override
@@ -51,10 +53,9 @@ public class PBCosFileSpecification extends PBCosDict implements
 		return this.uf;
 	}
 
-	// TODO : implement me
 	@Override
 	public String getAFRelationship() {
-		return null;
+		return this.afrelationship;
 	}
 
 	@Override
@@ -79,5 +80,10 @@ public class PBCosFileSpecification extends PBCosDict implements
 	private String getStringValue(COSName key) {
 		COSBase value = ((COSDictionary) this.baseObject).getDictionaryObject(key);
 		return value instanceof COSString ? ((COSString) value).getString() : null;
+	}
+
+	private String getNameValue(COSName key) {
+		COSBase value = ((COSDictionary) this.baseObject).getDictionaryObject(key);
+		return value instanceof COSName ? ((COSName) value).getName() : null;
 	}
 }
