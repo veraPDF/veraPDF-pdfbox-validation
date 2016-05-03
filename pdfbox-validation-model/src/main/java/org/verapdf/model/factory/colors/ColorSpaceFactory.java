@@ -48,7 +48,7 @@ public class ColorSpaceFactory {
 	 */
 	public static PDColorSpace getColorSpace(
 			org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace colorSpace, PDDocument document, PDFAFlavour flavour) {
-		return getColorSpace(colorSpace, null, PDInheritableResources.EMPTY_EXTENDED_RESOURCES, document, flavour);
+		return getColorSpace(colorSpace, null, PDInheritableResources.EMPTY_EXTENDED_RESOURCES, 0, false, document, flavour);
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class ColorSpaceFactory {
 	 */
 	public static PDColorSpace getColorSpace(
 			org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace colorSpace,
-			PDAbstractPattern pattern, PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
+			PDAbstractPattern pattern, PDInheritableResources resources, int opm, boolean overprintingFlag, PDDocument document, PDFAFlavour flavour) {
 		if (colorSpace == null) {
 			return null;
 		}
@@ -83,7 +83,11 @@ public class ColorSpaceFactory {
 			case DEVICE_GRAY:
 				return PBoxPDDeviceGray.getInstance();
 			case ICC_BASED:
-				return new PBoxPDICCBased((PDICCBased) colorSpace);
+				if (colorSpace.getNumberOfComponents() != 4) {
+					return new PBoxPDICCBased((PDICCBased) colorSpace);
+				} else {
+					return new PBoxPDICCBasedCMYK((PDICCBased) colorSpace, opm, overprintingFlag);
+				}
 			case LAB:
 				return new PBoxPDLab((PDLab) colorSpace);
 			case SEPARATION:

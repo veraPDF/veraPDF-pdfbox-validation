@@ -1,11 +1,5 @@
 package org.verapdf.model.impl.pb.pd.colors;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.common.PDStream;
@@ -13,6 +7,12 @@ import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.external.ICCInputProfile;
 import org.verapdf.model.impl.pb.external.PBoxICCInputProfile;
 import org.verapdf.model.pdlayer.PDICCBased;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * ICCBased color space
@@ -30,6 +30,11 @@ public class PBoxPDICCBased extends PBoxPDColorSpace implements PDICCBased {
     public PBoxPDICCBased(
             org.apache.pdfbox.pdmodel.graphics.color.PDICCBased simplePDObject) {
         super(simplePDObject, ICC_BASED_TYPE);
+    }
+
+    protected PBoxPDICCBased(
+            org.apache.pdfbox.pdmodel.graphics.color.PDICCBased simplePDObject, String type) {
+        super(simplePDObject, type);
     }
 
     @Override

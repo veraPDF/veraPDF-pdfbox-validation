@@ -200,7 +200,7 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 
 	private List<PDColorSpace> parseFillColorSpace() {
 		if (this.state.getRenderingMode().isFill()) {
-			return this.getColorSpace(this.state.getFillColorSpace(), this.state.getFillPattern());
+			return this.getColorSpace(this.state.getFillColorSpace(), this.state.getFillPattern(), this.state.isOverprintingFlagNonStroke());
 		} else {
 			return Collections.emptyList();
 		}
@@ -208,15 +208,15 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 
 	private List<PDColorSpace> parseStrokeColorSpace() {
 		if (this.state.getRenderingMode().isStroke()) {
-			return this.getColorSpace(this.state.getStrokeColorSpace(), this.state.getStrokePattern());
+			return this.getColorSpace(this.state.getStrokeColorSpace(), this.state.getStrokePattern(), this.state.isOverprintingFlagStroke());
 		} else {
 			return Collections.emptyList();
 		}
 	}
 
-	private List<PDColorSpace> getColorSpace(org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace usedColorSpace, PDAbstractPattern pattern) {
+	private List<PDColorSpace> getColorSpace(org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace usedColorSpace, PDAbstractPattern pattern, boolean op) {
 		PDColorSpace colorSpace = ColorSpaceFactory.getColorSpace(
-				usedColorSpace, pattern, this.resources, this.document, this.flavour);
+				usedColorSpace, pattern, this.resources, this.state.getOpm(), op, this.document, this.flavour);
 		if (colorSpace != null) {
 			List<PDColorSpace> colorSpaces = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 			colorSpaces.add(colorSpace);

@@ -34,6 +34,9 @@ public class GraphicState implements Cloneable {
 	private PDAbstractPattern strokePattern = null;
     private RenderingMode renderingMode = RenderingMode.FILL;
     private COSName fontName;
+	private boolean overprintingFlagStroke = false;
+	private boolean overprintingFlagNonStroke = false;
+	private int opm = 0;
 
 	// fields for transparency checks
 	private COSBase sMask = null;
@@ -259,6 +262,48 @@ public class GraphicState implements Cloneable {
 	}
 
 	/**
+	 * @return set stroke overprinting flag
+	 */
+	public boolean isOverprintingFlagStroke() {
+		return overprintingFlagStroke;
+	}
+
+	/**
+	 * @param overprintingFlagStroke current stroke overprinting flag
+	 */
+	public void setOverprintingFlagStroke(boolean overprintingFlagStroke) {
+		this.overprintingFlagStroke = overprintingFlagStroke;
+	}
+
+	/**
+	 * @return set non stroke overprinting flag
+	 */
+	public boolean isOverprintingFlagNonStroke() {
+		return overprintingFlagNonStroke;
+	}
+
+	/**
+	 * @param overprintingFlagNonStroke current non stroke overprinting flag
+	 */
+	public void setOverprintingFlagNonStroke(boolean overprintingFlagNonStroke) {
+		this.overprintingFlagNonStroke = overprintingFlagNonStroke;
+	}
+
+	/**
+	 * @return opm value
+	 */
+	public int getOpm() {
+		return opm;
+	}
+
+	/**
+	 * @param opm set opm value
+	 */
+	public void setOpm(int opm) {
+		this.opm = opm;
+	}
+
+	/**
      * This method will copy properties from passed graphic state to current
      * object
      * 
@@ -281,6 +326,9 @@ public class GraphicState implements Cloneable {
 		this.veraStrokeColorSpace = graphicState.getVeraStrokeColorSpace();
 		this.veraFont = graphicState.getVeraFont();
 		this.charCodes = graphicState.getCharCodes();
+		this.overprintingFlagStroke = graphicState.isOverprintingFlagStroke();
+		this.overprintingFlagNonStroke = graphicState.isOverprintingFlagNonStroke();
+		this.opm = graphicState.getOpm();
     }
 
 	/**
@@ -311,6 +359,13 @@ public class GraphicState implements Cloneable {
 				if (ca_base instanceof COSNumber) {
 					this.ca = ((COSNumber) ca_base).floatValue();
 				}
+
+				Float overprintMode = extGState.getOverprintMode();
+				if (overprintMode != null) {
+					this.opm = overprintMode.intValue();
+				}
+				this.overprintingFlagStroke = extGState.getStrokingOverprintControl();
+				this.overprintingFlagNonStroke = extGState.getNonStrokingOverprintControl();
             } catch (IOException e) {
                 LOGGER.error(e);
             }
@@ -341,6 +396,9 @@ public class GraphicState implements Cloneable {
 		graphicState.veraStrokeColorSpace = this.veraStrokeColorSpace;
 		graphicState.veraFont = this.veraFont;
 		graphicState.charCodes = this.charCodes;
+		graphicState.opm = this.opm;
+		graphicState.overprintingFlagStroke = this.overprintingFlagStroke;
+		graphicState.overprintingFlagNonStroke = this.overprintingFlagNonStroke;
         return graphicState;
     }
 

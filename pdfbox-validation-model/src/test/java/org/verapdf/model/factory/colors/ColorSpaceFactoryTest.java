@@ -106,7 +106,7 @@ public class ColorSpaceFactoryTest {
 		PDColorSpace colorSpace = resources.getColorSpace(COSName.getPDFName("PatternCS"));
 		PDAbstractPattern pattern = resources.getPattern(COSName.getPDFName("P0"));
 		PDInheritableResources extRes = PDInheritableResources.getInstance(resources);
-		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace, pattern, extRes, document, null) instanceof PDTilingPattern);
+		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace, pattern, extRes, 0, false, document, null) instanceof PDTilingPattern);
 	}
 
 	@Test
