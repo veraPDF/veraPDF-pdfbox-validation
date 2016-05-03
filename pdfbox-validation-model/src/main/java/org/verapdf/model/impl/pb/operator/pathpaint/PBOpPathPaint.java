@@ -32,6 +32,9 @@ public abstract class PBOpPathPaint extends PBOperator implements OpPathPaint {
 	private final PDAbstractPattern fillPattern;
 	private final PDAbstractPattern strokePattern;
 
+	private final int op;
+	private final boolean overprintingFlagStroke;
+	private final boolean overprintingFlagNonStroke;
 	private final PDInheritableResources resources;
 
 	private final PDDocument document;
@@ -50,25 +53,30 @@ public abstract class PBOpPathPaint extends PBOperator implements OpPathPaint {
     protected PBOpPathPaint(List<COSBase> arguments, final GraphicState state,
 			final PDInheritableResources resources, final String opType, PDDocument document, PDFAFlavour flavour) {
 		this(arguments, state.getFillPattern(), state.getStrokePattern(), state.getStrokeColorSpace(),
-				state.getFillColorSpace(), resources, opType, document, flavour);
+				state.getFillColorSpace(), resources, opType, state.getOpm(), state.isOverprintingFlagStroke(), state.isOverprintingFlagNonStroke(), document, flavour);
     }
 
 	protected PBOpPathPaint(List<COSBase> arguments, PDAbstractPattern fillPattern, PDAbstractPattern strokePattern,
 							PDColorSpace pbStrokeColorSpace, PDColorSpace pbFillColorSpace,
-							PDInheritableResources resources, final String type, PDDocument document, PDFAFlavour flavour) {
+							PDInheritableResources resources, final String type,
+							int op, boolean overprintingFlagStroke, boolean overprintingFlagNonStroke,
+							PDDocument document, PDFAFlavour flavour) {
 		super(arguments, type);
 		this.pbStrokeColorSpace = pbStrokeColorSpace;
 		this.pbFillColorSpace = pbFillColorSpace;
 		this.fillPattern = fillPattern;
 		this.strokePattern = strokePattern;
 		this.resources = resources;
+		this.op = op;
+		this.overprintingFlagStroke = overprintingFlagStroke;
+		this.overprintingFlagNonStroke = overprintingFlagNonStroke;
 		this.document = document;
 		this.flavour = flavour;
 	}
 
 	protected List<org.verapdf.model.pdlayer.PDColorSpace> getFillCS() {
 		if (this.fillCS == null) {
-			this.fillCS = getColorSpace(this.pbFillColorSpace, this.fillPattern);
+			this.fillCS = getColorSpace(this.pbFillColorSpace, this.fillPattern, this.overprintingFlagNonStroke);
 		}
 		return this.fillCS;
 	}
@@ -78,14 +86,14 @@ public abstract class PBOpPathPaint extends PBOperator implements OpPathPaint {
 	 */
 	public org.verapdf.model.pdlayer.PDColorSpace getVeraModelFillCS() {
 		if (this.fillCS == null) {
-			this.fillCS = getColorSpace(this.pbFillColorSpace, this.fillPattern);
+			this.fillCS = getColorSpace(this.pbFillColorSpace, this.fillPattern, this.overprintingFlagNonStroke);
 		}
 		return this.fillCS.isEmpty() ? null : this.fillCS.get(0);
 	}
 
 	protected List<org.verapdf.model.pdlayer.PDColorSpace> getStrokeCS() {
 		if (this.strokeCS == null) {
-			this.strokeCS = this.getColorSpace(this.pbStrokeColorSpace, this.strokePattern);
+			this.strokeCS = this.getColorSpace(this.pbStrokeColorSpace, this.strokePattern, this.overprintingFlagStroke);
 		}
 		return this.strokeCS;
 	}
@@ -94,16 +102,16 @@ public abstract class PBOpPathPaint extends PBOperator implements OpPathPaint {
 	 */
 	public org.verapdf.model.pdlayer.PDColorSpace getVeraModelStrokeCS() {
 		if (this.strokeCS == null) {
-			this.strokeCS = this.getColorSpace(this.pbStrokeColorSpace, this.strokePattern);
+			this.strokeCS = this.getColorSpace(this.pbStrokeColorSpace, this.strokePattern, this.overprintingFlagStroke);
 		}
 		return this.strokeCS.isEmpty() ? null : this.strokeCS.get(0);
 	}
 
 	private List<org.verapdf.model.pdlayer.PDColorSpace> getColorSpace(
-			PDColorSpace colorSpace, PDAbstractPattern pattern) {
+			PDColorSpace colorSpace, PDAbstractPattern pattern, boolean op) {
 		org.verapdf.model.pdlayer.PDColorSpace veraColorSpace =
 				ColorSpaceFactory.getColorSpace(colorSpace,
-						pattern, this.resources, this.document, this.flavour);
+						pattern, this.resources, this.op, op, this.document, this.flavour);
 		if (veraColorSpace != null) {
 			List<org.verapdf.model.pdlayer.PDColorSpace> list =
 					new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
