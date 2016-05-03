@@ -1,6 +1,8 @@
 package org.verapdf.model.impl.pb.pd;
 
 import org.apache.log4j.Logger;
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdfparser.PDFStreamParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -42,6 +44,13 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 		this.resources = resources;
         this.document = document;
         this.flavour = flavour;
+	}
+
+	@Override
+	public Boolean gethasExplicitResources() {
+		COSStream stream = this.contentStream.getContentStream();
+		COSBase resources = stream.getDictionaryObject(COSName.RESOURCES);
+		return resources != null;
 	}
 
     @Override
