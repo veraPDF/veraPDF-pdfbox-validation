@@ -48,4 +48,9 @@ public class PBoxPDStructTreeRoot extends PBoxPDObject implements PDStructTreeRo
 		return TaggedPDFHelper.getChildren(parent, LOGGER);
 	}
 
+	@Override
+	public String gettopLevelFirstElementStandartType() {
+		// TODO: implement me
+		return null;
+	}
 }

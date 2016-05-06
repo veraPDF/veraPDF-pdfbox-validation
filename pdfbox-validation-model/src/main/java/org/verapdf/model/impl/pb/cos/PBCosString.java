@@ -23,7 +23,11 @@ public class PBCosString extends PBCosObject implements CosString {
      * @param cosString pdfbox COSString
      */
     public PBCosString(COSString cosString) {
-        super(cosString, COS_STRING_TYPE);
+        this(cosString, COS_STRING_TYPE);
+    }
+
+    protected PBCosString(COSString cosString, String type) {
+        super(cosString, type);
         this.value = cosString.getASCII();
         this.isHex = cosString.isHex();
         this.containsOnlyHex = cosString.isContainsOnlyHex();

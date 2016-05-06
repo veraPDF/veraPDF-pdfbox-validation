@@ -4,8 +4,11 @@ import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSString;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.coslayer.CosLang;
 import org.verapdf.model.coslayer.CosUnicodeName;
+import org.verapdf.model.impl.pb.cos.PBCosLang;
 import org.verapdf.model.impl.pb.cos.PBCosUnicodeName;
 import org.verapdf.model.pdlayer.PDStructElem;
 import org.verapdf.model.tools.TaggedPDFHelper;
@@ -24,13 +27,23 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 
 	private static final Logger LOGGER = Logger.getLogger(PBoxPDStructElem.class);
 
-	/** Type name for {@code PBoxPDStructElem} */
+	/**
+	 * Type name for {@code PBoxPDStructElem}
+	 */
 	public static final String STRUCTURE_ELEMENT_TYPE = "PDStructElem";
 
-	/** Link name for {@code K} key */
+	/**
+	 * Link name for {@code K} key
+	 */
 	public static final String CHILDREN = "K";
-	/** Link name for {@code S} key */
+	/**
+	 * Link name for {@code S} key
+	 */
 	public static final String STRUCTURE_TYPE = "S";
+	/**
+	 * Link name for {@code Lang} key
+	 */
+	public static final String LANG = "Lang";
 
 	/**
 	 * Default constructor
@@ -57,12 +70,20 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	}
 
 	@Override
+	public String getstandartType() {
+		// TODO: implement me
+		return null;
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 			case CHILDREN:
 				return this.getChildren();
 			case STRUCTURE_TYPE:
 				return this.getStructureType();
+			case LANG:
+				return this.getLang();
 			default:
 				return super.getLinkedObjects(link);
 		}
@@ -79,6 +100,17 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 			list.add(new PBCosUnicodeName((COSName) type));
 			return Collections.unmodifiableList(list);
 		}
+		return Collections.emptyList();
+	}
+
+	private List<CosLang> getLang() {
+		COSBase baseLang = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.LANG);
+		if (baseLang instanceof COSString) {
+			List<CosLang> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+			list.add(new PBCosLang((COSString) baseLang));
+			return Collections.unmodifiableList(list);
+		}
+
 		return Collections.emptyList();
 	}
 }
