@@ -26,6 +26,8 @@ public class PBoxPDStructTreeRoot extends PBoxPDObject implements PDStructTreeRo
 	/** Link name for {@code K} key */
 	public static final String CHILDREN = "K";
 
+	private List<PDStructElem> children = null;
+
 	/**
 	 * Default constructor
 	 *
@@ -44,13 +46,27 @@ public class PBoxPDStructTreeRoot extends PBoxPDObject implements PDStructTreeRo
 	}
 
 	private List<PDStructElem> getChildren() {
+		if (this.children == null) {
+			this.children = parseChildren();
+		}
+		return this.children;
+	}
+
+	private List<PDStructElem> parseChildren() {
 		COSDictionary parent = ((PDStructureTreeRoot) this.simplePDObject).getCOSObject();
 		return TaggedPDFHelper.getChildren(parent, LOGGER);
 	}
 
 	@Override
 	public String gettopLevelFirstElementStandartType() {
-		// TODO: implement me
-		return null;
+		if (this.children == null) {
+			this.children = parseChildren();
+		}
+
+		if (!this.children.isEmpty()) {
+			return this.children.get(0).getstandartType();
+		} else {
+			return null;
+		}
 	}
 }
