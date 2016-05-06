@@ -7,8 +7,12 @@ import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.pdlayer.PDStructElem;
 import org.verapdf.model.pdlayer.PDStructTreeRoot;
 import org.verapdf.model.tools.TaggedPDFHelper;
+import org.verapdf.model.tools.TaggedPDFRoleMapHelper;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Current class is representation of PDF`s logical structure facilities.
@@ -28,13 +32,16 @@ public class PBoxPDStructTreeRoot extends PBoxPDObject implements PDStructTreeRo
 
 	private List<PDStructElem> children = null;
 
+	private PDFAFlavour flavour;
+
 	/**
 	 * Default constructor
 	 *
 	 * @param treeRoot structure tree root implementation
 	 */
-	public PBoxPDStructTreeRoot(PDStructureTreeRoot treeRoot) {
+	public PBoxPDStructTreeRoot(PDStructureTreeRoot treeRoot, PDFAFlavour flavour) {
 		super(treeRoot, STRUCT_TREE_ROOT_TYPE);
+		this.flavour = flavour;
 	}
 
 	@Override
@@ -54,7 +61,16 @@ public class PBoxPDStructTreeRoot extends PBoxPDObject implements PDStructTreeRo
 
 	private List<PDStructElem> parseChildren() {
 		COSDictionary parent = ((PDStructureTreeRoot) this.simplePDObject).getCOSObject();
-		return TaggedPDFHelper.getChildren(parent, LOGGER);
+		return TaggedPDFHelper.getChildren(parent, new TaggedPDFRoleMapHelper(getRoleMap(), this.flavour), LOGGER);
+	}
+
+	private Map<String, String> getRoleMap() {
+		Map<String, java.lang.Object> tempMap = ((PDStructureTreeRoot) this.simplePDObject).getRoleMap();
+		Map<String, String> resMap = new HashMap<>();
+		for (Map.Entry<String, java.lang.Object> entry : tempMap.entrySet()) {
+			resMap.put(entry.getKey(), entry.getValue().toString());
+		}
+		return resMap;
 	}
 
 	@Override

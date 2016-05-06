@@ -88,15 +88,37 @@ public class TaggedPDFRoleMapHelper {
 	}
 
 	private Map<String, String> roleMap;
-	private PDFAFlavour flavour;
+	private Set<String> currentStandartTypes;
 
+	/**
+	 * Creates new TaggedPDFRoleMapHelper
+	 * @param roleMap role map from PDF
+	 * @param flavour current pdfa flavour
+	 */
 	public TaggedPDFRoleMapHelper(Map<String, String> roleMap, PDFAFlavour flavour) {
 		this.roleMap = roleMap == null ? Collections.<String, String>emptyMap() : new HashMap<>(roleMap);
-		this.flavour = flavour;
+		this.currentStandartTypes = flavour.getPart() == PDFAFlavour.Specification.ISO_19005_1 ?
+				Collections.unmodifiableSet(PDF_1_4_STANDART_ROLE_TYPES) :
+				Collections.unmodifiableSet(PDF_1_7_STANDART_ROLE_TYPES);
 	}
 
+	/**
+	 * Obtains standart type for the given one
+	 * @param type the type for obtaining the standart
+	 * @return standart type for the given one or null in cases when there is
+	 * no standart for the given or there is a cycle of the custom types
+	 */
 	public String getStandartType(String type) {
-		// TODO: implement me
+		Set<String> visitedTypes = new HashSet<>();
+		String res = type;
+		while (res != null && !visitedTypes.contains(res)) {
+			if (currentStandartTypes.contains(res)) {
+				return res;
+			} else {
+				visitedTypes.add(res);
+				res = roleMap.get(res);
+			}
+		}
 		return null;
 	}
 }

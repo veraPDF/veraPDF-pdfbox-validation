@@ -254,7 +254,7 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 			PDStructureTreeRoot root = this.catalog.getStructureTreeRoot();
 			if (root != null) {
 				List<PDStructTreeRoot> treeRoot = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-				treeRoot.add(new PBoxPDStructTreeRoot(root));
+				treeRoot.add(new PBoxPDStructTreeRoot(root, this.flavour));
 				return Collections.unmodifiableList(treeRoot);
 			}
 		}
