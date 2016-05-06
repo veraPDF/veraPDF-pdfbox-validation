@@ -3,10 +3,13 @@ package org.verapdf.model.impl.pb.operator.markedcontent;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.coslayer.CosDict;
+import org.verapdf.model.coslayer.CosLang;
 import org.verapdf.model.coslayer.CosName;
 import org.verapdf.model.impl.pb.cos.PBCosDict;
+import org.verapdf.model.impl.pb.cos.PBCosLang;
 import org.verapdf.model.impl.pb.cos.PBCosName;
 import org.verapdf.model.impl.pb.operator.base.PBOperator;
 import org.verapdf.model.operator.OpMarkedContent;
@@ -31,6 +34,8 @@ public abstract class PBOpMarkedContent extends PBOperator implements
     public static final String TAG = "tag";
 	/** Name of link to the properties dictionary */
     public static final String PROPERTIES = "properties";
+	/** Name of link to Lang value from the properties dictionary */
+	public static final String LANG = "Lang";
 
     public PBOpMarkedContent(List<COSBase> arguments, final String opType, PDDocument document, PDFAFlavour flavour) {
         super(arguments, opType);
@@ -66,4 +71,19 @@ public abstract class PBOpMarkedContent extends PBOperator implements
         return Collections.emptyList();
     }
 
+	protected List<CosLang> getLang() {
+		if (!this.arguments.isEmpty()) {
+			COSBase dict = this.arguments
+					.get(this.arguments.size() - 1);
+			if (dict instanceof COSDictionary) {
+				COSBase baseLang = ((COSDictionary) dict).getDictionaryObject(COSName.LANG);
+				if (baseLang instanceof COSString) {
+					List<CosLang> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+					list.add(new PBCosLang((COSString) baseLang));
+					return Collections.unmodifiableList(list);
+				}
+			}
+		}
+		return Collections.emptyList();
+	}
 }

@@ -31,9 +31,10 @@ public class PBOp_BDC extends PBOpMarkedContent implements Op_BDC {
 				return this.getTag();
 			case PROPERTIES:
 				return this.getPropertiesDict();
+			case LANG:
+				return this.getLang();
 			default:
 				return super.getLinkedObjects(link);
 		}
 	}
-
 }
