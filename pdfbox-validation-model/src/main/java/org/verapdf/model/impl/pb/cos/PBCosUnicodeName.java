@@ -44,6 +44,7 @@ public class PBCosUnicodeName extends PBCosName implements CosUnicodeName {
 		try {
 			tmp = encoder.encode(CharBuffer.wrap(((COSName) this.baseObject).getName()));
 		} catch (CharacterCodingException e) {
+			LOGGER.debug(e);
 			return false;
 		}
 
@@ -51,6 +52,7 @@ public class PBCosUnicodeName extends PBCosName implements CosUnicodeName {
 			decoder.decode(tmp);
 			return true;
 		} catch (CharacterCodingException e){
+			LOGGER.debug(e);
 			return false;
 		}
 	}
