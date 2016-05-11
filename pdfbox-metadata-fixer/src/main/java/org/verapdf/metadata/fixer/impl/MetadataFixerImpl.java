@@ -100,6 +100,7 @@ public abstract class MetadataFixerImpl implements MetadataFixer {
 
             return getErrorResult("Problems with metadata obtain. No possibility to fix metadata.");
         } catch (Exception e) {
+            LOGGER.error(e);
             return getErrorResult("Error while fixing metadata: " + e.getMessage());
         }
     }
