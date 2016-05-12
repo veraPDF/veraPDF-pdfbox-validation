@@ -2,7 +2,6 @@ package org.verapdf.model.impl.pb.pd;
 
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.interactive.action.PDActionFactory;
 import org.apache.pdfbox.pdmodel.interactive.action.PDAnnotationAdditionalActions;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
@@ -16,7 +15,6 @@ import org.verapdf.model.impl.pb.pd.actions.PBoxPDAction;
 import org.verapdf.model.pdlayer.PDAction;
 import org.verapdf.model.pdlayer.PDAnnot;
 import org.verapdf.model.pdlayer.PDContentStream;
-import org.verapdf.model.pdlayer.PDGroup;
 import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
@@ -310,24 +308,33 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		PDAppearanceDictionary appearanceDictionary = ((PDAnnotation) this.simplePDObject)
 				.getAppearance();
 		if (appearanceDictionary != null) {
-			PDAppearanceEntry normalAppearance = appearanceDictionary
-					.getNormalAppearance();
-			if (normalAppearance != null) {
-				List<PDContentStream> appearances;
-				if (normalAppearance.isStream()) {
-					appearances = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-					addAppearance(appearances, normalAppearance.getAppearanceStream());
-				} else {
-					Map<COSName, PDAppearanceStream> subDictionary = normalAppearance.getSubDictionary();
-					appearances = new ArrayList<>(subDictionary.size());
-					for (PDAppearanceStream stream : subDictionary.values()) {
-						addAppearance(appearances, stream);
-					}
-				}
+			COSDictionary dictionary = appearanceDictionary.getCOSObject();
+			COSBase normalAppearanceBase = dictionary.getDictionaryObject(COSName.N);
+			COSBase downAppearanceBase = dictionary.getDictionaryObject(COSName.D);
+			COSBase rolloverAppearanceBase = dictionary.getDictionaryObject(COSName.R);
+			if (normalAppearanceBase != null || downAppearanceBase != null || rolloverAppearanceBase != null) {
+				List<PDContentStream> appearances = new ArrayList<>();
+				addContentStreamsFromAppearanceEntry(normalAppearanceBase, appearances);
+				addContentStreamsFromAppearanceEntry(downAppearanceBase, appearances);
+				addContentStreamsFromAppearanceEntry(rolloverAppearanceBase, appearances);
 				this.appearance = Collections.unmodifiableList(appearances);
 			}
 		} else {
 			this.appearance = Collections.emptyList();
+		}
+	}
+
+	private void addContentStreamsFromAppearanceEntry(COSBase appearanceEntry, List<PDContentStream> appearances) {
+		if (appearanceEntry != null) {
+			PDAppearanceEntry appearance = new PDAppearanceEntry(appearanceEntry);
+			if (appearance.isStream()) {
+				addAppearance(appearances, appearance.getAppearanceStream());
+			} else {
+				Map<COSName, PDAppearanceStream> subDictionary = appearance.getSubDictionary();
+				for (PDAppearanceStream stream : subDictionary.values()) {
+					addAppearance(appearances, stream);
+				}
+			}
 		}
 	}
 
