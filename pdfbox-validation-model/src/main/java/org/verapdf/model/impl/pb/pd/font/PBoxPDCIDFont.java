@@ -116,7 +116,9 @@ public class PBoxPDCIDFont extends PBoxPDFont implements PDCIDFont {
 
     private byte[] getCIDsFromCIDSet(InputStream cidSet, int length) throws IOException {
         byte[] cidSetBytes = new byte[length];
-        cidSet.read(cidSetBytes);
+        if (cidSet.read(cidSetBytes) != length) {
+            LOGGER.debug("Did not read necessary number of cid set bytes");
+        }
         return cidSetBytes;
     }
 

@@ -12,6 +12,7 @@ import org.verapdf.model.impl.pb.cos.PBCosLang;
 import org.verapdf.model.impl.pb.cos.PBCosUnicodeName;
 import org.verapdf.model.pdlayer.PDStructElem;
 import org.verapdf.model.tools.TaggedPDFHelper;
+import org.verapdf.model.tools.TaggedPDFRoleMapHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,13 +46,16 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	 */
 	public static final String LANG = "Lang";
 
+	private TaggedPDFRoleMapHelper roleMapHelper;
+
 	/**
 	 * Default constructor
 	 *
 	 * @param structElemDictionary dictionary of structure element
 	 */
-	public PBoxPDStructElem(COSDictionary structElemDictionary) {
+	public PBoxPDStructElem(COSDictionary structElemDictionary, TaggedPDFRoleMapHelper roleMapHelper) {
 		super(structElemDictionary, STRUCTURE_ELEMENT_TYPE);
+		this.roleMapHelper = roleMapHelper;
 	}
 
 	/**
@@ -71,7 +75,10 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 
 	@Override
 	public String getstandartType() {
-		// TODO: implement me
+		COSBase type = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.S);
+		if (type instanceof COSName) {
+			return this.roleMapHelper.getStandartType(((COSName) type).getName());
+		}
 		return null;
 	}
 
@@ -90,7 +97,7 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	}
 
 	private List<PDStructElem> getChildren() {
-		return TaggedPDFHelper.getChildren((COSDictionary) this.simplePDObject, LOGGER);
+		return TaggedPDFHelper.getChildren((COSDictionary) this.simplePDObject, this.roleMapHelper, LOGGER);
 	}
 
 	private List<CosUnicodeName> getStructureType() {

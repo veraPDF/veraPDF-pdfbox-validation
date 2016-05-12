@@ -29,16 +29,16 @@ public class TaggedPDFHelper {
 	 * @param logger for obtain problems report
 	 * @return list of structure elements
 	 */
-	public static List<PDStructElem> getChildren(COSDictionary parent, Logger logger) {
+	public static List<PDStructElem> getChildren(COSDictionary parent, TaggedPDFRoleMapHelper roleMapHelper, Logger logger) {
 		COSBase children = parent.getDictionaryObject(COSName.K);
 		if (children == null) {
 			return Collections.emptyList();
 		} else if (children instanceof COSDictionary) {
 			List<PDStructElem> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			list.add(new PBoxPDStructElem((COSDictionary) children));
+			list.add(new PBoxPDStructElem((COSDictionary) children, roleMapHelper));
 			return Collections.unmodifiableList(list);
 		} else if (children instanceof COSArray) {
-			return getChildrenFromArray((COSArray) children, logger);
+			return getChildrenFromArray((COSArray) children, roleMapHelper, logger);
 		} else {
 			logger.warn("Children type of Structure Tree Root or Structure Element " +
 					"must be 'COSDictionary' or 'COSArray' but got: "
@@ -54,17 +54,17 @@ public class TaggedPDFHelper {
 	 * @param logger for obtain problems report
 	 * @return list of structure elements
 	 */
-	public static List<PDStructElem> getChildrenFromArray(COSArray children, Logger logger) {
+	public static List<PDStructElem> getChildrenFromArray(COSArray children, TaggedPDFRoleMapHelper roleMapHelper, Logger logger) {
 		if (children.size() > 0) {
 			List<PDStructElem> list = new ArrayList<>(children.size());
 			for (COSBase element : children) {
 				if (element instanceof COSDictionary) {
-					list.add(new PBoxPDStructElem((COSDictionary) element));
+					list.add(new PBoxPDStructElem((COSDictionary) element, roleMapHelper));
 					continue;
 				} else if (element instanceof COSObject) {
 					COSBase directElement = ((COSObject) element).getObject();
 					if (directElement instanceof COSDictionary) {
-						list.add(new PBoxPDStructElem((COSDictionary) directElement));
+						list.add(new PBoxPDStructElem((COSDictionary) directElement, roleMapHelper));
 						continue;
 					}
 				}
