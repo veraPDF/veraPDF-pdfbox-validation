@@ -82,6 +82,10 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 	 * Name of link to Lang value from the document catalog dictionary
 	 */
 	public static final String LANG = "Lang";
+	/**
+	 * Name of link to Perms value
+	 */
+	public static final String PERMS = "Perms";
 
 	/**
 	 * Maximal number of additional actions for AA key
@@ -137,6 +141,8 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 				return this.getOCProperties();
 			case LANG:
 				return this.getLang();
+			case PERMS:
+				return this.getPerms();
 			default:
 				return super.getLinkedObjects(link);
 		}
@@ -258,6 +264,11 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 				return Collections.unmodifiableList(treeRoot);
 			}
 		}
+		return Collections.emptyList();
+	}
+
+	private List<PDPerms> getPerms() {
+		// TODO: implement me
 		return Collections.emptyList();
 	}
 
