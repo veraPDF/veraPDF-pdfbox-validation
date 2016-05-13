@@ -83,6 +83,8 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 
 				this.containsTransparency = operatorFactory.isLastParsedContainsTransparency();
 				this.operators = Collections.unmodifiableList(result);
+			} else {
+				this.operators = Collections.emptyList();
 			}
 		} catch (IOException e) {
 			LOGGER.error(
