@@ -319,6 +319,8 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 				addContentStreamsFromAppearanceEntry(downAppearanceBase, appearances);
 				addContentStreamsFromAppearanceEntry(rolloverAppearanceBase, appearances);
 				this.appearance = Collections.unmodifiableList(appearances);
+			} else {
+				this.appearance = Collections.emptyList();
 			}
 		} else {
 			this.appearance = Collections.emptyList();
