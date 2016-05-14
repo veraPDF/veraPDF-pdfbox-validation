@@ -82,9 +82,17 @@ public class PBoxPDType0Font extends PBoxPDFont implements PDType0Font {
 		return Boolean.FALSE;
 	}
 
-	// TODO : implement me
 	@Override
 	public Boolean getisSupplementCompatible() {
+		org.apache.pdfbox.pdmodel.font.PDCIDFont descendantFont =
+				((org.apache.pdfbox.pdmodel.font.PDType0Font) this.pdFontLike).getDescendantFont();
+		if (descendantFont != null) {
+			PDCIDSystemInfo cidSystemInfo = descendantFont.getCIDSystemInfo();
+			CMap currentCMap = ((org.apache.pdfbox.pdmodel.font.PDType0Font) this.pdFontLike).getCMap();
+			if (cidSystemInfo != null && currentCMap != null) {
+				return Boolean.valueOf(cidSystemInfo.getSupplement() >= currentCMap.getSupplement());
+			}
+		}
 		return Boolean.FALSE;
 	}
 
