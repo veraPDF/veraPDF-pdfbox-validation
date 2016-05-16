@@ -1,11 +1,15 @@
 language: java
+sudo: required
+dist: trusty
 
 jdk:
   - openjdk7
+  - openjdk8
   - oraclejdk7
   - oraclejdk8
 
 branches:
   except:
     - /^v|d\d+\.\d+\.\d+$/
+    - /^jenkins-veraPDF-pdfbox-validation-v|d\\d+\\.\\d+\\.\\d+$/
 
