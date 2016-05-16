@@ -26,6 +26,7 @@ public class PBoxPDSignatureField extends PBoxPDFormField implements PDSignature
 	 * object.
 	 * @param contentStream stream with initial PDF file.
 	 * @param document {@link PDDocument} containing representation of initial PDF file.
+	 *
 	 */
 	public PBoxPDSignatureField(org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField pdSignatureField,
 								PDContentStream contentStream, PDDocument document) {
@@ -54,5 +55,4 @@ public class PBoxPDSignatureField extends PBoxPDFormField implements PDSignature
 		}
 		return Collections.emptyList();
 	}
-
 }

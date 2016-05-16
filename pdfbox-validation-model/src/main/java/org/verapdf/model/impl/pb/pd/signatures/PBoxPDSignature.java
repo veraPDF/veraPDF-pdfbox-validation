@@ -25,8 +25,11 @@ public class PBoxPDSignature extends PBoxPDObject implements PDSignature {
 	public static final String SIGNATURE_TYPE = "PDSignature";
 
 	public static final String CONTENTS = "Contents";
+	public static final String REFERENCE = "Reference";
 
 	protected static byte [] contents;
+
+	private static final byte [] eofString = "%%EOF".getBytes();
 
 	/**
 	 * @param pdSignature {@link org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature}
@@ -40,11 +43,10 @@ public class PBoxPDSignature extends PBoxPDObject implements PDSignature {
 		this.contentStream = contentStream;
 		this.document = document;
 		try {
-			this.contents = ((org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature)    //TODO: is contentStream what I need?
+			this.contents = ((org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature)
 					this.simplePDObject).getContents(this.contentStream.getContentStream().getUnfilteredStream());
 		} catch (IOException e) {
 			LOGGER.error("Can't get unfiltered stream from content stream", e);
-
 		}
 	}
 
@@ -53,6 +55,8 @@ public class PBoxPDSignature extends PBoxPDObject implements PDSignature {
 		switch (link) {
 			case CONTENTS:
 				return getContents();
+			case REFERENCE:
+				return null; //TODO: fixme
 			default:
 				return super.getLinkedObjects(link);
 		}
@@ -78,15 +82,9 @@ public class PBoxPDSignature extends PBoxPDObject implements PDSignature {
 	private List<PBoxPKCSDataObject> getContents() {
 		if(contents != null) {
 			List<PBoxPKCSDataObject> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			list.add(new PBoxPKCSDataObject(new COSString(contents), this));
+			list.add(new PBoxPKCSDataObject(new COSString(contents)));
 			return Collections.unmodifiableList(list);
 		}
 		return Collections.emptyList();
 	}
-
-	public String getSubFilter() {
-		return ((org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature)
-				this.simplePDObject).getSubFilter();
-	}
-
 }
