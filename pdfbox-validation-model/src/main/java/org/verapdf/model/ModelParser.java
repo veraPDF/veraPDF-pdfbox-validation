@@ -1,18 +1,20 @@
 package org.verapdf.model;
 
-import com.adobe.xmp.XMPException;
-import com.adobe.xmp.impl.VeraPDFMeta;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
+import org.verapdf.core.ModelParsingException;
 import org.verapdf.model.impl.pb.cos.PBCosDocument;
 import org.verapdf.pdfa.ValidationModelParser;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
+import com.adobe.xmp.XMPException;
+import com.adobe.xmp.impl.VeraPDFMeta;
 
 /**
  * Current class is entry point to model implementation.
@@ -29,28 +31,21 @@ public final class ModelParser implements ValidationModelParser, Closeable {
 
     private final PDFAFlavour flavour;
 
-    private ModelParser(PDDocument document, PDFAFlavour flavour) throws IOException {
-        this.document = document;
-        this.flavour = flavour;
+    private ModelParser(final InputStream docStream, PDFAFlavour flavour) throws IOException {
+        this.document = PDDocument.load(docStream, false, true);
+        this.flavour = (flavour == PDFAFlavour.AUTO) ? obtainFlavour(this.document) : flavour;
     }
 
-    public static ModelParser createModelWithFlavour(InputStream toLoad, PDFAFlavour flavour) throws IOException {
-        PDDocument document = PDDocument.load(toLoad, false, true);
-        PDFAFlavour resultFlavour;
-        if (flavour == PDFAFlavour.AUTO) {
-            resultFlavour = obtainFlavour(document);
-        } else if (flavour == PDFAFlavour.NO_FLAVOUR || flavour == null) {
-            resultFlavour = DEFAULT_FLAVOUR;
-        } else {
-            resultFlavour = flavour;
+    
+    public static ModelParser createModelWithFlavour(InputStream toLoad, PDFAFlavour flavour) throws ModelParsingException {
+        try {
+            return new ModelParser(toLoad, (flavour == PDFAFlavour.NO_FLAVOUR || flavour == null) ? DEFAULT_FLAVOUR : flavour);
+        } catch (IOException excep) {
+            throw new ModelParsingException("Couldn't parse stream", excep);
         }
-        return new ModelParser(document, resultFlavour);
     }
 
     private static PDFAFlavour obtainFlavour(PDDocument document) {
-        if (document == null) {
-            return DEFAULT_FLAVOUR;
-        }
         PDDocumentCatalog documentCatalog = document.getDocumentCatalog();
         if (documentCatalog == null) {
             return DEFAULT_FLAVOUR;
@@ -96,7 +91,7 @@ public final class ModelParser implements ValidationModelParser, Closeable {
      *             object
      */
     @Override
-    public org.verapdf.model.baselayer.Object getRoot() throws IOException {
+    public org.verapdf.model.baselayer.Object getRoot() {
         return new PBCosDocument(this.document, this.flavour);
     }
 
