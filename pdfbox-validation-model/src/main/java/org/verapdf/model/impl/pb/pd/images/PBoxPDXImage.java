@@ -38,6 +38,8 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
     public static final String JPX_STREAM = "jpxStream";
 
     private final boolean interpolate;
+    private List<JPEG2000> jpeg2000List = null;
+    private PDColorSpace colorSpaceFromImage = null;
 
     public PBoxPDXImage(PDImageXObjectProxy simplePDObject, PDDocument document, PDFAFlavour flavour) {
         super(simplePDObject, PDInheritableResources.EMPTY_EXTENDED_RESOURCES, X_IMAGE_TYPE, document, flavour);
@@ -79,11 +81,17 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
     }
 
     private List<PDColorSpace> getImageCS() {
+        if (this.jpeg2000List == null) {
+            this.jpeg2000List = parseJPXStream();
+        }
         PDImageXObjectProxy image = (PDImageXObjectProxy) this.simplePDObject;
         if (!image.isStencil()) {
             try {
                 PDColorSpace buffer = ColorSpaceFactory
                         .getColorSpace(image.getColorSpace(), this.document, this.flavour);
+                if (buffer == null) {
+                    buffer = this.colorSpaceFromImage;
+                }
                 if (buffer != null) {
                     List<PDColorSpace> colorSpaces =
                             new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
@@ -135,6 +143,13 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
     }
 
     private List<JPEG2000> getJPXStream() {
+        if (jpeg2000List == null) {
+            jpeg2000List = parseJPXStream();
+        }
+        return jpeg2000List;
+    }
+
+    private List<JPEG2000> parseJPXStream() {
         try {
             PDStream stream = ((PDImageXObjectProxy) (this.simplePDObject)).getPDStream();
             List<COSName> filters = stream.getFilters();
@@ -142,7 +157,9 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
                 // TODO: handle the case when jpx stream is additionally hex encoded
                 InputStream image = stream.getStream().getFilteredStream();
                 ArrayList<JPEG2000> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-                list.add(PBoxJPEG2000.fromStream(image));
+                PBoxJPEG2000 jpeg2000 = PBoxJPEG2000.fromStream(image, this.document, this.flavour);
+                this.colorSpaceFromImage = jpeg2000.getImageColorSpace();
+                list.add(jpeg2000);
                 return Collections.unmodifiableList(list);
             }
         } catch (IOException e) {
