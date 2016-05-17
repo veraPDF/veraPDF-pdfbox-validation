@@ -22,6 +22,10 @@ public class PBoxPDSigRef extends PBoxPDObject implements PDSigRef{
 		super(dictionary, SIGNATURE_REFERENCE_FIELD_TYPE);
 	}
 
+	/**
+	 * @return true if any of the entries /DigestLocation, /DigestMethod, or
+	 * /DigestValue is present.
+	 */
 	@Override
 	public Boolean getcontainsDigestEntries() {
 		COSDictionary dictionary = ((COSDictionary)this.simplePDObject);
@@ -34,6 +38,9 @@ public class PBoxPDSigRef extends PBoxPDObject implements PDSigRef{
 		}
 	}
 
+	/**
+	 * @return true if the document permissions dictionary contains DocMDP entry.
+	 */
 	@Override
 	public Boolean getpermsContainDocMDP() {
 		COSDictionary dictionary = ((COSDictionary)this.simplePDObject);

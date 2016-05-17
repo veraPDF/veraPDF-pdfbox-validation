@@ -2,7 +2,9 @@ package org.verapdf.model.impl.pb.pd.signatures;
 
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.contentstream.PDContentStream;
+import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.cos.COSString;
+import org.apache.pdfbox.io.RandomAccessRead;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.impl.pb.external.PBoxPKCSDataObject;
@@ -29,8 +31,6 @@ public class PBoxPDSignature extends PBoxPDObject implements PDSignature {
 
 	protected static byte [] contents;
 
-	private static final byte [] eofString = "%%EOF".getBytes();
-
 	/**
 	 * @param pdSignature {@link org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature}
 	 * object.
@@ -43,7 +43,7 @@ public class PBoxPDSignature extends PBoxPDObject implements PDSignature {
 		this.contentStream = contentStream;
 		this.document = document;
 		try {
-			this.contents = ((org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature)
+			contents = ((org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature)
 					this.simplePDObject).getContents(this.contentStream.getContentStream().getUnfilteredStream());
 		} catch (IOException e) {
 			LOGGER.error("Can't get unfiltered stream from content stream", e);
