@@ -1,7 +1,7 @@
 package org.verapdf.features.pb.objects;
 
 import org.apache.pdfbox.cos.*;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObjectProxy;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesData;
 import org.verapdf.features.FeaturesObjectTypesEnum;
@@ -26,7 +26,7 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 
 	private static final String ID = "id";
 
-	private PDImageXObject imageXObject;
+	private PDImageXObjectProxy imageXObject;
 	private String id;
 	private String colorSpaceChild;
 	private String maskChild;
@@ -51,7 +51,7 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 	 * @param xobjectParent   set of xobject ids which contains the given image xobject state as its resources
 	 * @param fontParent      set of font ids which contains the given image xobject state as its resources
 	 */
-	public PBImageXObjectFeaturesObject(PDImageXObject imageXObject, String id, String colorSpaceChild, String maskChild, String sMaskChild, Set<String> alternatesChild, Set<String> pageParent, Set<String> patternParent, Set<String> xobjectParent, Set<String> fontParent) {
+	public PBImageXObjectFeaturesObject(PDImageXObjectProxy imageXObject, String id, String colorSpaceChild, String maskChild, String sMaskChild, Set<String> alternatesChild, Set<String> pageParent, Set<String> patternParent, Set<String> xobjectParent, Set<String> fontParent) {
 		this.imageXObject = imageXObject;
 		this.id = id;
 		this.colorSpaceChild = colorSpaceChild;
