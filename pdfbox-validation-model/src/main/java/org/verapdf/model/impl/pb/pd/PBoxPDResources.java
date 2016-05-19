@@ -2,6 +2,7 @@ package org.verapdf.model.impl.pb.pd;
 
 import org.apache.pdfbox.pdmodel.common.COSObjectable;
 import org.apache.pdfbox.pdmodel.font.PDFontLike;
+import org.apache.pdfbox.pdmodel.graphics.PDInheritableResource;
 import org.verapdf.model.pdlayer.PDResource;
 
 /**
@@ -9,18 +10,23 @@ import org.verapdf.model.pdlayer.PDResource;
  */
 public class PBoxPDResources extends PBoxPDObject implements PDResource {
 
+	private boolean inherited;
+
 	protected PBoxPDResources(COSObjectable simplePDObject, final String type) {
 		super(simplePDObject, type);
+		if (simplePDObject instanceof PDInheritableResource) {
+			this.inherited = ((PDInheritableResource) simplePDObject).isInherited();
+		}
 	}
 
 	protected PBoxPDResources(PDFontLike pdFontLike, final String type) {
 		super(pdFontLike, type);
+		this.inherited = pdFontLike.isInherited();
 	}
 
-	//TODO : implement
 	@Override
 	public Boolean getisInherited() {
-		return Boolean.FALSE;
+		return this.inherited;
 	}
 
 }

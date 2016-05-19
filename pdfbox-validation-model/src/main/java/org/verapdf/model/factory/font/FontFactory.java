@@ -47,6 +47,7 @@ public final class FontFactory {
 	 * @param pdfboxFont Apache PDFBox font representation
 	 * @return VeraPDF font representation
 	 */
+	// this one is used for testing
 	public static PDFont parseFont(
 			org.apache.pdfbox.pdmodel.font.PDFont pdfboxFont, PDDocument document, PDFAFlavour flavour) {
 		return parseFont(pdfboxFont, PDInheritableResources.EMPTY_EXTENDED_RESOURCES, document, flavour);
