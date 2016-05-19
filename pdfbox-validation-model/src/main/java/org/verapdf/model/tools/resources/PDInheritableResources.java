@@ -176,7 +176,7 @@ public class PDInheritableResources {
 
 	public static PDInheritableResources getInstance(
 			PDResources inheritedResources, PDResources currentResources) {
-		inheritedResources = inheritedResources != null ? inheritedResources : EMPTY_RESOURCES;
+		inheritedResources = inheritedResources != null && currentResources == null ? inheritedResources : EMPTY_RESOURCES;
 		currentResources = currentResources != null ? currentResources : EMPTY_RESOURCES;
 		return new PDInheritableResources(inheritedResources, currentResources);
 	}
