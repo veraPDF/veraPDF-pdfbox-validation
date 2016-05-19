@@ -2,12 +2,16 @@ package org.verapdf.model.impl.pb.pd.signatures;
 
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.contentstream.PDContentStream;
-import org.apache.pdfbox.cos.*;
-import org.apache.pdfbox.io.RandomAccessRead;
+import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.external.PKCSDataObject;
 import org.verapdf.model.impl.pb.external.PBoxPKCSDataObject;
 import org.verapdf.model.impl.pb.pd.PBoxPDObject;
+import org.verapdf.model.pdlayer.PDSigRef;
 import org.verapdf.model.pdlayer.PDSignature;
 
 import java.io.IOException;
@@ -72,23 +76,23 @@ public class PBoxPDSignature extends PBoxPDObject implements PDSignature {
 		return this.document.getDocument().getSignaturesWithGoodByteRange().contains(signature);
 	}
 
-	private List<PBoxPKCSDataObject> getContents() {
+	private List<PKCSDataObject> getContents() {
 		if(contents != null) {
-			List<PBoxPKCSDataObject> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+			List<PKCSDataObject> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 			list.add(new PBoxPKCSDataObject(new COSString(contents)));
 			return Collections.unmodifiableList(list);
 		}
 		return Collections.emptyList();
 	}
 
-	private List<PBoxPDSigRef> getSigRefs() {
+	private List<PDSigRef> getSigRefs() {
 		COSArray reference = (COSArray)
 				((org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature)
 				this.simplePDObject).getCOSObject().getDictionaryObject(REFERENCE);
 		if(reference == null || reference.size() == 0) {
 			return Collections.emptyList();
 		}
-		List<PBoxPDSigRef> list = new ArrayList<>();
+		List<PDSigRef> list = new ArrayList<>();
 		for(COSBase sigRef : reference) {
 			list.add(new PBoxPDSigRef((COSDictionary) sigRef, this.document));
 		}
