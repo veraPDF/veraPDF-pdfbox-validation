@@ -1,7 +1,9 @@
 package org.verapdf.model.impl.pb.pd.signatures;
 
+import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.impl.pb.pd.PBoxPDObject;
 import org.verapdf.model.pdlayer.PDSigRef;
 
@@ -10,16 +12,17 @@ import org.verapdf.model.pdlayer.PDSigRef;
  */
 public class PBoxPDSigRef extends PBoxPDObject implements PDSigRef{
 
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDSigRef.class);
+
 	/** Type name for {@code PBoxPDSigRef} */
-	public static final String SIGNATURE_REFERENCE_FIELD_TYPE = "PDSigRef";
-	//public static final COSName DIGEST_LOCATION = new COSName("DigestLocation");
-	//public static final COSName DIGEST_VALUE = new COSName("DigestValue");
+	public static final String SIGNATURE_REFERENCE_TYPE = "PDSigRef";
 
 	/**
 	 * @param dictionary is signature reference dictionary.
 	 */
-	public PBoxPDSigRef(COSDictionary dictionary) { //TODO: should we check validity of passed dictionary?
-		super(dictionary, SIGNATURE_REFERENCE_FIELD_TYPE);
+	public PBoxPDSigRef(COSDictionary dictionary, PDDocument document) {
+		super(dictionary, SIGNATURE_REFERENCE_TYPE);
+		this.document = document;
 	}
 
 	/**
@@ -29,13 +32,9 @@ public class PBoxPDSigRef extends PBoxPDObject implements PDSigRef{
 	@Override
 	public Boolean getcontainsDigestEntries() {
 		COSDictionary dictionary = ((COSDictionary)this.simplePDObject);
-		if(dictionary.containsKey(COSName.DIGEST_LOCATION) ||
+		return dictionary.containsKey(COSName.DIGEST_LOCATION) ||
 				dictionary.containsKey(COSName.DIGEST_VALUE) ||
-				dictionary.containsKey(COSName.DIGEST_METHOD)) {
-			return true;
-		} else {
-			return false;
-		}
+				dictionary.containsKey(COSName.DIGEST_METHOD);
 	}
 
 	/**
@@ -43,12 +42,14 @@ public class PBoxPDSigRef extends PBoxPDObject implements PDSigRef{
 	 */
 	@Override
 	public Boolean getpermsContainDocMDP() {
-		COSDictionary dictionary = ((COSDictionary)this.simplePDObject);
-		if(!dictionary.containsKey(COSName.TRANSFORM_METHOD)) {	// TODO: what to do in such situations?
-			return false;
+		COSDictionary documentCatalog =
+				this.document.getDocumentCatalog().getCOSObject();
+		COSDictionary perms = (COSDictionary)
+				documentCatalog.getDictionaryObject(COSName.PERMS);
+		if (perms == null) {
+			LOGGER.error("Document catalog doesn't contain /Perms entry");
+			return false;	//TODO: do we return false?
 		}
-		COSName transformMethod = (COSName)
-				dictionary.getDictionaryObject(COSName.TRANSFORM_METHOD);
-		return (transformMethod.compareTo(COSName.DOC_MDP) == 0);
+		return perms.containsKey(COSName.DOC_MDP);
 	}
 }

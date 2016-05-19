@@ -2,8 +2,7 @@ package org.verapdf.model.impl.pb.pd.signatures;
 
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.contentstream.PDContentStream;
-import org.apache.pdfbox.cos.COSStream;
-import org.apache.pdfbox.cos.COSString;
+import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.io.RandomAccessRead;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
@@ -56,7 +55,7 @@ public class PBoxPDSignature extends PBoxPDObject implements PDSignature {
 			case CONTENTS:
 				return getContents();
 			case REFERENCE:
-				return null; //TODO: fixme
+				return getSigRefs();
 			default:
 				return super.getLinkedObjects(link);
 		}
@@ -67,16 +66,10 @@ public class PBoxPDSignature extends PBoxPDObject implements PDSignature {
 	 * entry in signature dictionary
 	 */
 	@Override
-	public Boolean getdoesByteRangeCoverEntireDocument() {	//fixme
-		try {
-			List<org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature> signatures
-					= document.getSignatureDictionaries();
-
-		} catch (IOException e) {
-			LOGGER.error("Can't get signature dictionaries from PDDocument", e);
-			return false;
-		}
-		return null;
+	public Boolean getdoesByteRangeCoverEntireDocument() {
+		COSDictionary signature = ((org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature)
+				this.simplePDObject).getCOSObject();
+		return this.document.getDocument().getSignaturesWithGoodByteRange().contains(signature);
 	}
 
 	private List<PBoxPKCSDataObject> getContents() {
@@ -86,5 +79,19 @@ public class PBoxPDSignature extends PBoxPDObject implements PDSignature {
 			return Collections.unmodifiableList(list);
 		}
 		return Collections.emptyList();
+	}
+
+	private List<PBoxPDSigRef> getSigRefs() {
+		COSArray reference = (COSArray)
+				((org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature)
+				this.simplePDObject).getCOSObject().getDictionaryObject(REFERENCE);
+		if(reference == null || reference.size() == 0) {
+			return Collections.emptyList();
+		}
+		List<PBoxPDSigRef> list = new ArrayList<>();
+		for(COSBase sigRef : reference) {
+			list.add(new PBoxPDSigRef((COSDictionary) sigRef, this.document));
+		}
+		return Collections.unmodifiableList(list);
 	}
 }
