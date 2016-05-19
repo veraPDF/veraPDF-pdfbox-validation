@@ -175,11 +175,11 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 
 	private void parseContentStream() {
 		this.contentStreams = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-		org.apache.pdfbox.pdmodel.PDPage stream =
+		org.apache.pdfbox.pdmodel.PDPage page =
 				(org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject;
 		PDInheritableResources resources = PDInheritableResources
-				.getInstance(stream.getResources(), PDInheritableResources.EMPTY_RESOURCES);
-		PBoxPDContentStream contentStream = new PBoxPDContentStream(stream, resources, this.document, this.flavour);
+				.getInstance(page.getInheritedResources(), page.getPageResources());
+		PBoxPDContentStream contentStream = new PBoxPDContentStream(page, resources, this.document, this.flavour);
 		contentStreams.add(contentStream);
 		this.containsTransparency = contentStream.isContainsTransparency();
 	}

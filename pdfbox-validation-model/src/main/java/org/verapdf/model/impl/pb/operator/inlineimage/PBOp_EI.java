@@ -73,7 +73,7 @@ public class PBOp_EI extends PBOpInlineImage implements Op_EI {
 
 	private PDResources getResources(PDInheritableResources resources) {
 		PDResources currRes = resources.getCurrentResources();
-		COSDictionary dictionary = resources.getPageResources().getCOSObject();
+		COSDictionary dictionary = resources.getInheritedResources().getCOSObject();
 		PDResources pageRes = new PDResources(new COSDictionary(dictionary));
 
 		for (COSName name : currRes.getColorSpaceNames()) {
