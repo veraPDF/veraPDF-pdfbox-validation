@@ -16,7 +16,7 @@ import org.apache.pdfbox.pdmodel.graphics.PDXObject;
 import org.apache.pdfbox.pdmodel.graphics.color.*;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.graphics.form.PDGroup;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObjectProxy;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDAbstractPattern;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDShadingPattern;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDTilingPattern;
@@ -134,7 +134,7 @@ public final class PBFeatureParser {
 	private Map<String, Set<String>> shadingXObjectParent = new HashMap<>();
 	private Map<String, Set<String>> shadingFontParent = new HashMap<>();
 
-	private Map<String, PDImageXObject> imageXObjects = new HashMap<>();
+	private Map<String, PDImageXObjectProxy> imageXObjects = new HashMap<>();
 	private Map<String, String> imageXObjectColorSpaceChild = new HashMap<>();
 	private Map<String, String> imageXObjectMaskChild = new HashMap<>();
 	private Map<String, String> imageXObjectSMaskChild = new HashMap<>();
@@ -193,7 +193,7 @@ public final class PBFeatureParser {
 	 * Parses the document and returns Feature collection by using given
 	 * Features Reporter
 	 *
-	 * @param document         the document for parsing
+	 * @param document the document for parsing
 	 * @return FeaturesCollection class with information about all featurereport
 	 */
 	public static FeaturesCollection getFeaturesCollection(
@@ -356,7 +356,7 @@ public final class PBFeatureParser {
 			}
 		}
 
-		for (Map.Entry<String, PDImageXObject> imageXObjectEntry : imageXObjects.entrySet()) {
+		for (Map.Entry<String, PDImageXObjectProxy> imageXObjectEntry : imageXObjects.entrySet()) {
 			if (imageXObjectEntry.getValue() != null) {
 				String id = imageXObjectEntry.getKey();
 				reporter.report(PBFeaturesObjectCreator
@@ -458,14 +458,9 @@ public final class PBFeatureParser {
 				if (!imageXObjects.containsKey(thumbID)) {
 					COSBase base = getBase(baseThumb);
 					if (base instanceof COSStream) {
-						try {
-							PDImageXObject img = new PDImageXObject(new PDStream((COSStream) base), null);
-							imageXObjects.put(thumbID, img);
-							parseImageXObject(img, thumbID);
-						} catch (IOException e) {
-							LOGGER.error(e);
-							xobjectCreationProblem(thumbID, e.getMessage());
-						}
+						PDImageXObjectProxy img = new PDImageXObjectProxy(new PDStream((COSStream) base), null);
+						imageXObjects.put(thumbID, img);
+						parseImageXObject(img, thumbID);
 					} else {
 						xobjectCreationProblem(thumbID, "Thumb is not a stream");
 					}
@@ -877,7 +872,7 @@ public final class PBFeatureParser {
 		parsePropertiesFromResources(resources, parentID, propertiesChildMap, propertiesParentMap);
 	}
 
-	private void parseImageXObject(PDImageXObject xobj, String id) {
+	private void parseImageXObject(PDImageXObjectProxy xobj, String id) {
 		COSBase baseColorSpace = ((COSStream) xobj.getCOSObject()).getItem(COSName.CS);
 		if (baseColorSpace == null) {
 			baseColorSpace = ((COSStream) xobj.getCOSObject()).getItem(COSName.COLORSPACE);
@@ -923,7 +918,7 @@ public final class PBFeatureParser {
 
 			if (!imageXObjects.containsKey(idMask)) {
 				try {
-					PDImageXObject imxobj = xobj.getMask();
+					PDImageXObjectProxy imxobj = xobj.getMask();
 					imageXObjects.put(idMask, imxobj);
 					parseImageXObject(imxobj, idMask);
 				} catch (IOException e) {
@@ -946,7 +941,7 @@ public final class PBFeatureParser {
 
 			if (!imageXObjects.containsKey(idMask)) {
 				try {
-					PDImageXObject imxobj = xobj.getSoftMask();
+					PDImageXObjectProxy imxobj = xobj.getSoftMask();
 					imageXObjects.put(idMask, imxobj);
 					parseImageXObject(imxobj, idMask);
 				} catch (IOException e) {
@@ -970,14 +965,10 @@ public final class PBFeatureParser {
 					if (baseImage instanceof COSStream) {
 						makePairDependence(idImage, id, imageXObjectXObjectParent, imageXObjectAlternatesChild);
 						if (!imageXObjects.containsKey(idImage)) {
-							try {
-								PDImageXObject im = new PDImageXObject(new PDStream((COSStream) baseImage), null);
-								imageXObjects.put(idImage, im);
-								parseImageXObject(im, idImage);
-							} catch (IOException e) {
-								LOGGER.info(e);
-								xobjectCreationProblem(idImage, e.getMessage());
-							}
+
+							PDImageXObjectProxy im = new PDImageXObjectProxy(new PDStream((COSStream) baseImage), null);
+							imageXObjects.put(idImage, im);
+							parseImageXObject(im, idImage);
 						}
 					}
 				}
@@ -1003,12 +994,12 @@ public final class PBFeatureParser {
 			try {
 				PDXObject xobj = resources.getXObject(name);
 
-				if (xobj instanceof PDImageXObject) {
+				if (xobj instanceof PDImageXObjectProxy) {
 					makePairDependence(id, parentID, imageXObjectParentMap, xobjectChildMap);
 					if (!imageXObjects.containsKey(id)) {
-						imageXObjects.put(id, (PDImageXObject) xobj);
+						imageXObjects.put(id, (PDImageXObjectProxy) xobj);
 
-						parseImageXObject((PDImageXObject) xobj, id);
+						parseImageXObject((PDImageXObjectProxy) xobj, id);
 
 					}
 				} else if (xobj instanceof PDFormXObject) {

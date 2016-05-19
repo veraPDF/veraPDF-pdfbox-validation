@@ -2,6 +2,7 @@ package org.verapdf.model;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.verapdf.core.ModelParsingException;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,7 +18,7 @@ import java.nio.file.Paths;
 public class ModelParserTest {
 
 	@Test
-	public void testExistingFile() throws URISyntaxException, IOException {
+	public void testExistingFile() throws URISyntaxException, IOException, ModelParsingException {
 		String path = getSystemIndependentPath("/model/impl/pb/pd/Fonts.pdf");
 		try (ModelParser loader = ModelParser.createModelWithFlavour(new FileInputStream(path), null)) {
 			Assert.assertNotNull(loader.getPDDocument());

@@ -10,13 +10,11 @@ import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.COSObjectable;
 import org.apache.pdfbox.pdmodel.interactive.action.PDPageAdditionalActions;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosBBox;
 import org.verapdf.model.factory.colors.ColorSpaceFactory;
 import org.verapdf.model.impl.pb.cos.PBCosBBox;
 import org.verapdf.model.pdlayer.*;
-import org.verapdf.model.pdlayer.PDColorSpace;
 import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
@@ -236,10 +234,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 				this.simplePDObject).getResources();
 		for (PDAnnotation annotation : pdfboxAnnotations) {
 			if (annotation != null) {
-				PDAppearanceStream stream = annotation.getNormalAppearanceStream();
-				PDResources resources = stream != null ? stream.getResources() : PDInheritableResources.EMPTY_RESOURCES;
-				PDInheritableResources extRes = PDInheritableResources.getInstance(pageResources, resources);
-				PBoxPDAnnot annot = new PBoxPDAnnot(annotation, extRes, this.document, this.flavour);
+				PBoxPDAnnot annot = new PBoxPDAnnot(annotation, pageResources, this.document, this.flavour);
 				this.containsTransparency |= annot.isContainsTransparency();
 				annotations.add(annot);
 			}

@@ -1,9 +1,21 @@
 package org.verapdf.model.impl.pb.external;
 
 import org.apache.log4j.Logger;
+import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.common.PDStream;
+import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceCMYK;
+import org.apache.pdfbox.pdmodel.graphics.color.PDICCBased;
+import org.apache.pdfbox.pdmodel.graphics.color.PDLab;
 import org.verapdf.model.external.JPEG2000;
+import org.verapdf.model.factory.colors.ColorSpaceFactory;
+import org.verapdf.model.pdlayer.PDColorSpace;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Maksim Bezrukov
@@ -21,6 +33,7 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
     private static final Long DEFAULT_COLR_ENUM_CS = null;
     private static final Long DEFAULT_BIT_DEPTH = Long.valueOf(0);
     private static final Boolean DEFAULT_BPCC_BOX_PRESENT = Boolean.FALSE;
+    private static final PDColorSpace DEFAULT_COLOR_SPACE = null;
     private static final byte[] sign = {0x00, 0x00, 0x00, 0x0C, 0x6A, 0x50, 0x20, 0x20, 0x0D, 0x0A, -0x79, 0x0A};
 
     private static final byte[] header = {0x6A, 0x70, 0x32, 0x68};
@@ -35,8 +48,9 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
     private final Long colrEnumCS;
     private final Long bitDepth;
     private final Boolean bpccBoxPresent;
+    private final PDColorSpace colorSpace;
 
-    private PBoxJPEG2000(Long nrColorChannels, Long nrColorSpaceSpecs, Long nrColorSpacesWithApproxField, Long colrMethod, Long colrEnumCS, Long bitDepth, Boolean bpccBoxPresent) {
+    private PBoxJPEG2000(Long nrColorChannels, Long nrColorSpaceSpecs, Long nrColorSpacesWithApproxField, Long colrMethod, Long colrEnumCS, Long bitDepth, Boolean bpccBoxPresent, PDColorSpace colorSpace) {
         super(JPEG_2000_TYPE);
         this.nrColorChannels = nrColorChannels;
         this.nrColorSpaceSpecs = nrColorSpaceSpecs;
@@ -45,6 +59,7 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
         this.colrEnumCS = colrEnumCS;
         this.bitDepth = bitDepth;
         this.bpccBoxPresent = bpccBoxPresent;
+        this.colorSpace = colorSpace;
     }
 
     /**
@@ -53,7 +68,7 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
      * @param stream image stream to parse
      * @return created PBoxJPEG2000 object
      */
-    public static PBoxJPEG2000 fromStream(InputStream stream) {
+    public static PBoxJPEG2000 fromStream(InputStream stream, PDDocument document, PDFAFlavour flavour) {
         Builder builder = new Builder();
 
         byte[] sign = new byte[12];
@@ -67,7 +82,7 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
             long headerLeft = findHeader(stream);
 
             if (headerLeft >= 0) {
-                parseHeader(stream, headerLeft, builder);
+                parseHeader(stream, headerLeft, builder, document, flavour);
             }
 
         } catch (IOException e) {
@@ -76,7 +91,7 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
         return builder.build();
     }
 
-    private static void parseHeader(final InputStream stream, final long headerLeft, final Builder builder) throws IOException {
+    private static void parseHeader(final InputStream stream, final long headerLeft, final Builder builder, PDDocument document, PDFAFlavour flavour) throws IOException {
         long leftInHeader = headerLeft;
         boolean isHeaderReachEnd = leftInHeader == 0;
         Long nrColorSpaceSpecs = null;
@@ -85,6 +100,9 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
         Long firstColrEnumCS = null;
         Long colrMethod = null;
         Long colrEnumCS = null;
+        Boolean doesFirstContainsColorSpace = null;
+        org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace firstColorSpace = null;
+        org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace colorSpace = null;
 
         while (true) {
             byte[] lbox = new byte[4];
@@ -182,9 +200,27 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
                     long enumCSValue = convertArrayToLong(enumCS);
                     if (firstColrEnumCS == null) {
                         firstColrEnumCS = Long.valueOf(enumCSValue);
+                        firstColorSpace = createColorSpaceFromEnumValue(firstColrEnumCS, document);
+                        doesFirstContainsColorSpace = firstColorSpace != null;
                     }
                     if (approxValue == 1 && colrEnumCS == null) {
                         colrEnumCS = Long.valueOf(enumCSValue);
+                        colorSpace = createColorSpaceFromEnumValue(colrEnumCS, document);
+                    }
+                } else if (methValue == 2) {
+                    int profileLength = (int) (leftInBox - read);
+                    byte[] profile = new byte[profileLength];
+                    if (stream.read(profile) != profileLength) {
+                        LOGGER.warn("Can not read Profile");
+                        break;
+                    }
+                    read += profileLength;
+                    if (doesFirstContainsColorSpace == null) {
+                        firstColorSpace = createColorSpaceFromProfile(profile, document);
+                        doesFirstContainsColorSpace = firstColorSpace != null;
+                    }
+                    if (approxValue == 1 && colorSpace == null) {
+                        colorSpace = createColorSpaceFromProfile(profile, document);
                     }
                 }
                 skipBytes(stream, leftInBox - read);
@@ -212,6 +248,9 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
             if (colrEnumCS != null) {
                 builder.setColrEnumCS(colrEnumCS);
             }
+            if (colorSpace != null) {
+                builder.setColorSpace(ColorSpaceFactory.getColorSpace(colorSpace, document, flavour));
+            }
         } else if (Long.valueOf(1L).equals(nrColorSpaceSpecs)) {
             if (firstColrMethod != null) {
                 builder.setColrMethod(firstColrMethod);
@@ -219,7 +258,112 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
             if (firstColrEnumCS != null) {
                 builder.setColrEnumCS(firstColrEnumCS);
             }
+            if (firstColorSpace != null) {
+                builder.setColorSpace(ColorSpaceFactory.getColorSpace(firstColorSpace, document, flavour));
+            }
         }
+    }
+
+    private static org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace createColorSpaceFromEnumValue(long enumCS, PDDocument document) {
+        if (enumCS > Integer.MAX_VALUE) {
+            return null;
+        }
+
+        switch ((int) enumCS) {
+            case 12:
+                return PDDeviceCMYK.INSTANCE;
+            case 14:
+                return new PDLab();
+            case 17:
+                PDICCBased pdiccBased = new PDICCBased(document);
+                pdiccBased.setNumberOfComponents(1);
+                return pdiccBased;
+            case 16:
+            case 18:
+            case 20:
+            case 21:
+            case 24:
+                PDICCBased pdicc = new PDICCBased(document);
+                pdicc.setNumberOfComponents(3);
+                return pdicc;
+            default:
+                return null;
+        }
+    }
+
+    private static PDICCBased createColorSpaceFromProfile(byte[] profile, PDDocument document) throws IOException {
+        if (profile.length < 20) {
+            return null;
+        }
+
+        String type = new String(profile, 16, 4);
+        COSArray array = new COSArray();
+        array.add(COSName.ICCBASED);
+        PDStream stream = new PDStream(document, new ByteArrayInputStream(profile));
+        int nrOfComp;
+        switch (type) {
+            case "GRAY":
+                nrOfComp = 1;
+                break;
+            case "2CLR":
+                nrOfComp = 2;
+                break;
+            case "XYZ ":
+            case "Lab ":
+            case "Luv ":
+            case "YCbr":
+            case "Yxy ":
+            case "RGB ":
+            case "HSV ":
+            case "HLS ":
+            case "CMY ":
+            case "3CLR":
+                nrOfComp = 3;
+                break;
+            case "CMYK":
+            case "4CLR":
+                nrOfComp = 4;
+                break;
+            case "5CLR":
+                nrOfComp = 5;
+                break;
+            case "6CLR":
+                nrOfComp = 6;
+                break;
+            case "7CLR":
+                nrOfComp = 7;
+                break;
+            case "8CLR":
+                nrOfComp = 8;
+                break;
+            case "9CLR":
+                nrOfComp = 9;
+                break;
+            case "ACLR":
+                nrOfComp = 10;
+                break;
+            case "BCLR":
+                nrOfComp = 11;
+                break;
+            case "CCLR":
+                nrOfComp = 12;
+                break;
+            case "DCLR":
+                nrOfComp = 13;
+                break;
+            case "ECLR":
+                nrOfComp = 14;
+                break;
+            case "FCLR":
+                nrOfComp = 15;
+                break;
+            default:
+                LOGGER.warn("Unknown color space signature in ICC Profile of image. Current signature: " + type);
+                return null;
+        }
+        stream.getStream().setInt(COSName.N, nrOfComp);
+        array.add(stream);
+        return new PDICCBased(array);
     }
 
     /**
@@ -299,6 +443,10 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
         return true;
     }
 
+    public PDColorSpace getImageColorSpace() {
+        return this.colorSpace;
+    }
+
     @Override
     public Long getnrColorChannels() {
         return this.nrColorChannels;
@@ -342,9 +490,10 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
         private Long colrEnumCS = DEFAULT_COLR_ENUM_CS;
         private Long bitDepth = DEFAULT_BIT_DEPTH;
         private Boolean bpccBoxPresent = DEFAULT_BPCC_BOX_PRESENT;
+        private PDColorSpace colorSpace = DEFAULT_COLOR_SPACE;
 
         public PBoxJPEG2000 build() {
-            return new PBoxJPEG2000(this.nrColorChannels, this.nrColorSpaceSpecs, this.nrColorSpacesWithApproxField, this.colrMethod, this.colrEnumCS, this.bitDepth, this.bpccBoxPresent);
+            return new PBoxJPEG2000(this.nrColorChannels, this.nrColorSpaceSpecs, this.nrColorSpacesWithApproxField, this.colrMethod, this.colrEnumCS, this.bitDepth, this.bpccBoxPresent, this.colorSpace);
         }
 
         public Long getNrColorChannels() {
@@ -409,5 +558,15 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
             this.bpccBoxPresent = bpccBoxPresent;
             return this;
         }
+
+        public PDColorSpace getColorSpace() {
+            return colorSpace;
+        }
+
+        public Builder setColorSpace(PDColorSpace colorSpace) {
+            this.colorSpace = colorSpace;
+            return this;
+        }
+
     }
 }

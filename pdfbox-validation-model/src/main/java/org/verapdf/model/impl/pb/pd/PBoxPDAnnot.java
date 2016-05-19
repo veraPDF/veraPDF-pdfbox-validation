@@ -2,6 +2,7 @@ package org.verapdf.model.impl.pb.pd;
 
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.interactive.action.PDActionFactory;
 import org.apache.pdfbox.pdmodel.interactive.action.PDAnnotationAdditionalActions;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
@@ -43,7 +44,7 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	public static final int X_AXIS = 0;
 	public static final int Y_AXIS = 1;
 
-	private final PDInheritableResources resources;
+	private final PDResources pageResources;
 
 	private final boolean isFKeyPresent;
 
@@ -62,9 +63,9 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	private List<PDContentStream> appearance = null;
 	private boolean containsTransparency = false;
 
-	public PBoxPDAnnot(PDAnnotation annot, PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
+	public PBoxPDAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour) {
 		super(annot, ANNOTATION_TYPE);
-		this.resources = resources;
+		this.pageResources = pageResources;
 		this.subtype = annot.getSubtype();
 		this.ap = this.getAP(annot);
 
@@ -318,6 +319,8 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 				addContentStreamsFromAppearanceEntry(downAppearanceBase, appearances);
 				addContentStreamsFromAppearanceEntry(rolloverAppearanceBase, appearances);
 				this.appearance = Collections.unmodifiableList(appearances);
+			} else {
+				this.appearance = Collections.emptyList();
 			}
 		} else {
 			this.appearance = Collections.emptyList();
@@ -339,10 +342,13 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	}
 
 	private void addAppearance(List<PDContentStream> list, PDAppearanceStream toAdd) {
-		PBoxPDContentStream stream = new PBoxPDContentStream(toAdd, this.resources, this.document, this.flavour);
-		this.containsTransparency |= stream.isContainsTransparency();
-		org.apache.pdfbox.pdmodel.graphics.form.PDGroup group = toAdd.getGroup();
-		this.containsTransparency |= group != null && COSName.TRANSPARENCY.equals(group.getSubType());
-		list.add(stream);
+		if (toAdd != null) {
+			PDInheritableResources resources = PDInheritableResources.getInstance(this.pageResources, toAdd.getResources());
+			PBoxPDContentStream stream = new PBoxPDContentStream(toAdd, resources, this.document, this.flavour);
+			this.containsTransparency |= stream.isContainsTransparency();
+			org.apache.pdfbox.pdmodel.graphics.form.PDGroup group = toAdd.getGroup();
+			this.containsTransparency |= group != null && COSName.TRANSPARENCY.equals(group.getSubType());
+			list.add(stream);
+		}
 	}
 }
