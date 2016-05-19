@@ -6,6 +6,7 @@ import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.COSObjectable;
 import org.apache.pdfbox.pdmodel.interactive.action.PDPageAdditionalActions;
@@ -175,11 +176,11 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 
 	private void parseContentStream() {
 		this.contentStreams = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-		org.apache.pdfbox.pdmodel.PDPage stream =
+		org.apache.pdfbox.pdmodel.PDPage page =
 				(org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject;
 		PDInheritableResources resources = PDInheritableResources
-				.getInstance(stream.getResources(), PDInheritableResources.EMPTY_RESOURCES);
-		PBoxPDContentStream contentStream = new PBoxPDContentStream(stream, resources, this.document, this.flavour);
+				.getInstance(page.getInheritedResources(), page.getPageResources());
+		PBoxPDContentStream contentStream = new PBoxPDContentStream(page, resources, this.document, this.flavour);
 		contentStreams.add(contentStream);
 		this.containsTransparency = contentStream.isContainsTransparency();
 	}
@@ -262,8 +263,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 	}
 
 	private List<CosBBox> getCosBBox(COSName key) {
-		COSBase array = ((org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject)
-				.getCOSObject().getDictionaryObject(key);
+		COSBase array = PDPageTree.getInheritableAttribute((COSDictionary) this.simplePDObject.getCOSObject(), key);
 		if (array instanceof COSArray) {
 			ArrayList<CosBBox> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 			list.add(new PBCosBBox((COSArray) array, this.document, this.flavour));
