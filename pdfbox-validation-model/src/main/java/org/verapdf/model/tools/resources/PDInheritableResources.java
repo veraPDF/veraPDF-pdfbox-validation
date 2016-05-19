@@ -57,7 +57,9 @@ public class PDInheritableResources {
 			PDFont font = this.currentResources.getFont(name);
 			if (font == null) {
 				font = this.inheritedResources.getFont(name);
-				font.setInherited(true);
+				if (font != null) {
+					font.setInherited(true);
+				}
 			}
 			fontCache.put(name, font);
 			ret = font;
@@ -95,9 +97,13 @@ public class PDInheritableResources {
 			return state;
 		} else {
 			state = this.inheritedResources.getExtGState(name);
-			state.setInherited(true);
-			return state;
+			if (state != null) {
+				state.setInherited(true);
+				return state;
+			}
 		}
+
+		return null;
 	}
 
 	public PDShading getShading(COSName name) throws IOException {
@@ -106,9 +112,13 @@ public class PDInheritableResources {
 			return shading;
 		} else {
 			shading = this.inheritedResources.getShading(name);
-			shading.setInherited(true);
-			return shading;
+			if (shading != null) {
+				shading.setInherited(true);
+				return shading;
+			}
 		}
+
+		return null;
 	}
 
 	public PDAbstractPattern getPattern(COSName name) throws IOException {
@@ -117,9 +127,13 @@ public class PDInheritableResources {
 			return pattern;
 		} else {
 			pattern = this.inheritedResources.getPattern(name);
-			pattern.setInherited(true);
-			return pattern;
+			if (pattern != null) {
+				pattern.setInherited(true);
+				return pattern;
+			}
 		}
+
+		return null;
 	}
 
 	public PDXObject getXObject(COSName name) throws IOException {
@@ -128,9 +142,13 @@ public class PDInheritableResources {
 			return object;
 		} else {
 			object = this.inheritedResources.getXObject(name);
-			object.setInherited(true);
-			return object;
+			if (object != null) {
+				object.setInherited(true);
+				return object;
+			}
 		}
+
+		return null;
 	}
 
 	private boolean isDefaultColorSpaceUsed(COSName name) {
