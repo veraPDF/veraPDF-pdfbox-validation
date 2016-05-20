@@ -47,8 +47,7 @@ public class PBoxPDSigRef extends PBoxPDObject implements PDSigRef{
 		COSDictionary perms = (COSDictionary)
 				documentCatalog.getDictionaryObject(COSName.PERMS);
 		if (perms == null) {
-			LOGGER.error("Document catalog doesn't contain /Perms entry");
-			return false;	//TODO: do we return false?
+			return false;
 		}
 		return perms.containsKey(COSName.DOC_MDP);
 	}
