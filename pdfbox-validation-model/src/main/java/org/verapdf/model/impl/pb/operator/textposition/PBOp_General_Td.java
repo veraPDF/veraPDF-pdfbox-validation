@@ -1,9 +1,12 @@
 package org.verapdf.model.impl.pb.operator.textposition;
 
 import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSFloat;
+import org.apache.pdfbox.cos.COSInteger;
 import org.apache.pdfbox.cos.COSNumber;
 import org.verapdf.model.baselayer.Object;
-import org.verapdf.model.coslayer.CosReal;
+import org.verapdf.model.coslayer.CosNumber;
+import org.verapdf.model.impl.pb.cos.PBCosInteger;
 import org.verapdf.model.impl.pb.cos.PBCosReal;
 
 import java.util.ArrayList;
@@ -39,21 +42,24 @@ public abstract class PBOp_General_Td extends PBOpTextPosition {
 		}
 	}
 
-    private List<CosReal> getHorizontalOffset() {
+    private List<CosNumber> getHorizontalOffset() {
 		if (this.arguments.size() > 1) {
 			COSBase number = this.arguments
 					.get(this.arguments.size() - 2);
 			if (number instanceof COSNumber) {
-				List<CosReal> offset =
-						new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-				offset.add(new PBCosReal((COSNumber) number));
+				List<CosNumber> offset = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+				if (number instanceof COSInteger) {
+					offset.add(new PBCosInteger((COSInteger) number));
+				} else {
+					offset.add(new PBCosReal((COSFloat) number));
+				}
 				return Collections.unmodifiableList(offset);
 			}
 		}
         return Collections.emptyList();
     }
 
-    private List<CosReal> getVerticalOffset() {
-        return this.getLastReal();
+    private List<CosNumber> getVerticalOffset() {
+        return this.getLastNumber();
     }
 }
