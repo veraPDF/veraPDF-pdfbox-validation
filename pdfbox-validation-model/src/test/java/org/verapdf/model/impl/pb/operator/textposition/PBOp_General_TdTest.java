@@ -3,9 +3,8 @@ package org.verapdf.model.impl.pb.operator.textposition;
 import org.junit.Assert;
 import org.junit.Test;
 import org.verapdf.model.baselayer.Object;
-import org.verapdf.model.coslayer.CosReal;
-import org.verapdf.model.impl.pb.cos.PBCosReal;
-import org.verapdf.model.impl.pb.operator.base.PBOperatorTest;
+import org.verapdf.model.coslayer.CosInteger;
+import org.verapdf.model.impl.pb.cos.PBCosInteger;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -26,7 +25,7 @@ public abstract class PBOp_General_TdTest extends PBOpTextPositionTest {
 	}
 
 	private void testOffset(String link, Long value) {
-		Object object = testObject(link, 1, PBCosReal.COS_REAL_TYPE);
-		Assert.assertEquals(value, ((CosReal) object).getintValue());
+		Object object = testObject(link, 1, PBCosInteger.COS_INTEGER_TYPE);
+		Assert.assertEquals(value, ((CosInteger) object).getintValue());
 	}
 }
