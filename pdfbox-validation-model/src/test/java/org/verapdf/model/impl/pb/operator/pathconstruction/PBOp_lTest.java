@@ -2,6 +2,7 @@ package org.verapdf.model.impl.pb.operator.pathconstruction;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.verapdf.model.impl.pb.cos.PBCosInteger;
 import org.verapdf.model.impl.pb.cos.PBCosReal;
 import org.verapdf.model.impl.pb.operator.base.PBOperatorTest;
 
@@ -20,6 +21,6 @@ public class PBOp_lTest extends PBOperatorTest {
 
 	@Test
 	public void testControlPointsTest() {
-		testLinksToReals(PBOp_l.POINT, 2, PBCosReal.COS_REAL_TYPE);
+		testLinksToReals(PBOp_l.POINT, 2, PBCosInteger.COS_INTEGER_TYPE);
 	}
 }

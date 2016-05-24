@@ -3,7 +3,9 @@ package org.verapdf.model.impl.pb.operator.type3font;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSNumber;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.coslayer.CosReal;
+import org.verapdf.model.impl.pb.cos.PBCosNumber;
 import org.verapdf.model.impl.pb.cos.PBCosReal;
 import org.verapdf.model.operator.Op_d0;
 
@@ -37,19 +39,19 @@ public class PBOp_d0 extends PBOpType3Font implements Op_d0 {
 		}
 	}
 
-	private List<CosReal> getHorizontalDisplacement() {
+	private List<CosNumber> getHorizontalDisplacement() {
 		if (this.arguments.size() > 1) {
 			COSBase base = this.arguments.get(this.arguments.size() - 2);
 			if (base instanceof COSNumber) {
-				List<CosReal> real = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-				real.add(new PBCosReal((COSNumber) base));
+				List<CosNumber> real = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+				real.add(PBCosNumber.fromPDFBoxNumber(base));
 				return Collections.unmodifiableList(real);
 			}
 		}
 		return Collections.emptyList();
 	}
 
-	private List<CosReal> getVerticalDisplacement() {
-		return this.getLastReal();
+	private List<CosNumber> getVerticalDisplacement() {
+		return this.getLastNumber();
 	}
 }

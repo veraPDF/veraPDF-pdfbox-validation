@@ -2,6 +2,7 @@ package org.verapdf.model.impl.pb.operator.pathconstruction;
 
 import org.apache.pdfbox.cos.COSBase;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.coslayer.CosReal;
 import org.verapdf.model.operator.Op_m_moveto;
 
@@ -33,8 +34,8 @@ public class PBOp_m_moveto extends PBOpPathConstruction implements Op_m_moveto {
         return super.getLinkedObjects(link);
     }
 
-    private List<CosReal> getPoint() {
-        return this.getListOfReals();
+    private List<CosNumber> getPoint() {
+        return this.getListOfNumbers();
     }
 
 }

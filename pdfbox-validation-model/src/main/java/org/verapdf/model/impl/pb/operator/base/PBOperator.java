@@ -5,6 +5,7 @@ import org.verapdf.model.GenericModelObject;
 import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.coslayer.CosReal;
 import org.verapdf.model.impl.pb.cos.PBCosInteger;
+import org.verapdf.model.impl.pb.cos.PBCosNumber;
 import org.verapdf.model.impl.pb.cos.PBCosReal;
 import org.verapdf.model.operator.Operator;
 
@@ -32,47 +33,60 @@ public abstract class PBOperator extends GenericModelObject implements Operator 
 			COSBase base = this.arguments.get(this.arguments.size() - 1);
 			if (base instanceof COSNumber) {
 				List<CosNumber> cosNumbers = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-				if (base instanceof COSInteger) {
-					cosNumbers.add(new PBCosInteger((COSInteger) base));
-				} else {
-					cosNumbers.add(new PBCosReal((COSFloat) base));
-				}
+				cosNumbers.add(PBCosNumber.fromPDFBoxNumber(base));
 				return Collections.unmodifiableList(cosNumbers);
 			}
 		}
-
         return Collections.emptyList();
     }
 
     protected List<CosReal> getLastReal() {
 		if (!this.arguments.isEmpty()) {
 			COSBase base = this.arguments.get(this.arguments.size() - 1);
-			if (base instanceof COSNumber) {
+			if (base instanceof COSFloat) {
 				List<CosReal> cosReals = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-				cosReals.add(new PBCosReal((COSNumber) base));
+				cosReals.add(new PBCosReal((COSFloat) base));
 				return Collections.unmodifiableList(cosReals);
 			}
 		}
         return Collections.emptyList();
     }
 
-	protected List<CosReal> getListOfReals() {
-		List<CosReal> list = new ArrayList<>();
+	protected List<CosNumber> getListOfNumbers() {
+		List<CosNumber> list = new ArrayList<>();
 		for (COSBase base : this.arguments) {
 			if (base instanceof COSArray) {
-				addArrayElements(list, (COSArray) base);
+				addArrayElementsAsNumbers(list, (COSArray) base);
 			} else if (base instanceof COSNumber) {
-				list.add(new PBCosReal((COSNumber) base));
+				list.add(PBCosNumber.fromPDFBoxNumber(base));
 			}
 		}
 		return Collections.unmodifiableList(list);
 	}
 
-	private static void addArrayElements(List<CosReal> list, COSArray base) {
-		for (COSBase arg : base) {
-			if (arg instanceof COSNumber) {
-				list.add(new PBCosReal((COSNumber) arg));
+	protected List<CosReal> getListOfReals() {
+		List<CosReal> list = new ArrayList<>();
+		for (COSBase base : this.arguments) {
+			if (base instanceof COSArray) {
+				addArrayElementsAsReals(list, (COSArray) base);
+			} else if (base instanceof COSFloat) {
+				list.add(new PBCosReal((COSFloat) base));
 			}
+		}
+		return Collections.unmodifiableList(list);
+	}
+
+	private static void addArrayElementsAsReals(List<CosReal> list, COSArray base) {
+		for (COSBase arg : base) {
+			if (arg instanceof COSFloat) {
+				list.add(new PBCosReal((COSFloat) arg));
+			}
+		}
+	}
+
+	private static void addArrayElementsAsNumbers(List<CosNumber> list, COSArray base) {
+		for (COSBase arg : base) {
+			list.add(PBCosNumber.fromPDFBoxNumber(arg));
 		}
 	}
 

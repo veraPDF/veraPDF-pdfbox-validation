@@ -2,6 +2,7 @@ package org.verapdf.model.impl.pb.operator.generalgs;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.verapdf.model.impl.pb.cos.PBCosInteger;
 import org.verapdf.model.impl.pb.cos.PBCosReal;
 
 import java.io.IOException;
@@ -19,6 +20,6 @@ public class PBOp_M_miter_limitTest extends PBOpGeneralGSTest {
 
 	@Test
 	public void testMiterLimitLink() {
-		testLinkToReal(PBOp_M_miter_limit.MITER_LIMIT, PBCosReal.COS_REAL_TYPE, Long.valueOf(1));
+		testLinkToReal(PBOp_M_miter_limit.MITER_LIMIT, PBCosInteger.COS_INTEGER_TYPE, Long.valueOf(1));
 	}
 }

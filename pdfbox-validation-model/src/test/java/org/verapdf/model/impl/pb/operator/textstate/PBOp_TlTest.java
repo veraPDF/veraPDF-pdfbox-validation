@@ -18,6 +18,6 @@ public class PBOp_TlTest extends PBOpTextStateTest {
 
 	@Test
 	public void testLeadingLink() {
-		testReal(PBOp_Tl.LEADING, 0);
+		testInteger(PBOp_Tl.LEADING, 0);
 	}
 }

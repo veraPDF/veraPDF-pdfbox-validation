@@ -5,6 +5,7 @@ import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosArray;
+import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.coslayer.CosReal;
 import org.verapdf.model.impl.pb.cos.PBCosArray;
 import org.verapdf.model.operator.Op_d;
@@ -64,8 +65,8 @@ public class PBOp_d extends PBOpGeneralGS implements Op_d {
         return Collections.emptyList();
     }
 
-    private List<CosReal> getDashPhase() {
-        return this.getLastReal();
+    private List<CosNumber> getDashPhase() {
+        return this.getLastNumber();
     }
 
 }

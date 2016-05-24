@@ -2,6 +2,7 @@ package org.verapdf.model.impl.pb.operator.generalgs;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.verapdf.model.impl.pb.cos.PBCosInteger;
 import org.verapdf.model.impl.pb.cos.PBCosReal;
 
 import java.io.IOException;
@@ -19,6 +20,6 @@ public class PBOp_w_line_widthTest extends PBOpGeneralGSTest {
 
 	@Test
 	public void testLineWidthLink() {
-		testLinkToReal(PBOp_w_line_width.LINE_WIDTH, PBCosReal.COS_REAL_TYPE, Long.valueOf(10));
+		testLinkToReal(PBOp_w_line_width.LINE_WIDTH, PBCosInteger.COS_INTEGER_TYPE, Long.valueOf(10));
 	}
 }

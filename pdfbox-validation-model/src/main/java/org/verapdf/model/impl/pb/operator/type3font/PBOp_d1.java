@@ -2,6 +2,7 @@ package org.verapdf.model.impl.pb.operator.type3font;
 
 import org.apache.pdfbox.cos.COSBase;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.coslayer.CosReal;
 import org.verapdf.model.operator.Op_d1;
 
@@ -28,7 +29,7 @@ public class PBOp_d1 extends PBOpType3Font implements Op_d1 {
 		return super.getLinkedObjects(link);
 	}
 
-	private List<CosReal> getControlPoints() {
-		return this.getListOfReals();
+	private List<CosNumber> getControlPoints() {
+		return this.getListOfNumbers();
 	}
 }

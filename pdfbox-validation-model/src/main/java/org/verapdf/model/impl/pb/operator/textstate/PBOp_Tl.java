@@ -2,6 +2,7 @@ package org.verapdf.model.impl.pb.operator.textstate;
 
 import org.apache.pdfbox.cos.COSBase;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.coslayer.CosReal;
 import org.verapdf.model.operator.Op_Tl;
 
@@ -28,8 +29,8 @@ public class PBOp_Tl extends PBOpTextState implements Op_Tl {
 		return super.getLinkedObjects(link);
 	}
 
-	private List<CosReal> getLeading() {
-		return this.getLastReal();
+	private List<CosNumber> getLeading() {
+		return this.getLastNumber();
 	}
 
 }

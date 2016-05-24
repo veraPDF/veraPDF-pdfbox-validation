@@ -2,6 +2,7 @@ package org.verapdf.model.impl.pb.operator.pathconstruction;
 
 import org.apache.pdfbox.cos.COSBase;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.coslayer.CosReal;
 import org.verapdf.model.operator.Op_y;
 
@@ -29,8 +30,8 @@ public class PBOp_y extends PBOpPathConstruction implements Op_y {
         return super.getLinkedObjects(link);
     }
 
-    private List<CosReal> getControlPoints() {
-        return this.getListOfReals();
+    private List<CosNumber> getControlPoints() {
+        return this.getListOfNumbers();
     }
 
 }

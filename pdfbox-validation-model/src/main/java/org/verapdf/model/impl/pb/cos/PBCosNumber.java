@@ -1,5 +1,8 @@
 package org.verapdf.model.impl.pb.cos;
 
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSFloat;
+import org.apache.pdfbox.cos.COSInteger;
 import org.apache.pdfbox.cos.COSNumber;
 import org.verapdf.model.coslayer.CosNumber;
 
@@ -21,6 +24,15 @@ public abstract class PBCosNumber extends PBCosObject implements CosNumber {
         super(number, type);
         this.longVal = number.longValue();
         this.doubleVal = number.doubleValue();
+    }
+
+    public static PBCosNumber fromPDFBoxNumber(COSBase number) {
+        if (number instanceof COSInteger) {
+            return new PBCosInteger((COSInteger) number);
+        } else if (number instanceof COSFloat) {
+            return new PBCosReal((COSFloat) number);
+        }
+        return null;
     }
 
     /**
