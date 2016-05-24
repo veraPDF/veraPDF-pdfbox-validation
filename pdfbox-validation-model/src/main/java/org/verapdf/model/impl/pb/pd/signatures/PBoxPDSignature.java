@@ -2,10 +2,8 @@ package org.verapdf.model.impl.pb.pd.signatures;
 
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.contentstream.PDContentStream;
-import org.apache.pdfbox.cos.COSArray;
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSString;
+import org.apache.pdfbox.cos.*;
+import org.apache.pdfbox.pdfparser.SignatureParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.external.PKCSDataObject;
@@ -33,17 +31,16 @@ public class PBoxPDSignature extends PBoxPDObject implements PDSignature {
 	public static final String REFERENCE = "Reference";
 
 	protected static byte [] contents;
+	private boolean isCorrectByteRange;
 
 	/**
 	 * @param pdSignature {@link org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature}
 	 * object.
-	 * @param contentStream stream with initial PDF file.
 	 * @param document {@link PDDocument} containing representation of initial PDF file.
 	 */
 	public PBoxPDSignature(org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature pdSignature,
-						   PDContentStream contentStream, PDDocument document) {
+						   PDDocument document, boolean isCorrectByteRange) {
 		super(pdSignature, SIGNATURE_TYPE);
-		this.contentStream = contentStream;
 		this.document = document;
 		try {
 			contents = ((org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature)
@@ -51,6 +48,7 @@ public class PBoxPDSignature extends PBoxPDObject implements PDSignature {
 		} catch (IOException e) {
 			LOGGER.error("Can't get unfiltered stream from content stream", e);
 		}
+		this.isCorrectByteRange = isCorrectByteRange;
 	}
 
 	@Override
@@ -71,9 +69,7 @@ public class PBoxPDSignature extends PBoxPDObject implements PDSignature {
 	 */
 	@Override
 	public Boolean getdoesByteRangeCoverEntireDocument() {
-		COSDictionary signature = ((org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature)
-				this.simplePDObject).getCOSObject();
-		return this.document.getDocument().getSignaturesWithGoodByteRange().contains(signature);
+		return isCorrectByteRange;
 	}
 
 	private List<PKCSDataObject> getContents() {
