@@ -18,6 +18,6 @@ public class PBOp_TsTest extends PBOpTextStateTest {
 
 	@Test
 	public void testRiseLink() {
-		testReal(PBOp_Ts.RISE, 0);
+		testInteger(PBOp_Ts.RISE, 0);
 	}
 }

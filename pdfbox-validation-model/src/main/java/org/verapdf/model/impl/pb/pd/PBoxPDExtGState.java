@@ -6,9 +6,11 @@ import org.apache.pdfbox.pdmodel.graphics.PDFontSetting;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingIntent;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.coslayer.CosObject;
 import org.verapdf.model.coslayer.CosReal;
 import org.verapdf.model.coslayer.CosRenderingIntent;
+import org.verapdf.model.impl.pb.cos.PBCosNumber;
 import org.verapdf.model.impl.pb.cos.PBCosObject;
 import org.verapdf.model.pdlayer.PDHalftone;
 import org.verapdf.model.impl.pb.cos.PBCosReal;
@@ -126,12 +128,13 @@ public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
         return Collections.emptyList();
     }
 
-    private List<CosReal> getFontSize() {
+    private List<CosNumber> getFontSize() {
         PDFontSetting fontSetting = ((PDExtendedGraphicsState) this.simplePDObject)
                 .getFontSetting();
         if (fontSetting != null) {
-			List<CosReal> result = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			result.add(new PBCosReal(new COSFloat(fontSetting.getFontSize())));
+			List<CosNumber> result = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+			//TODO : patch pdfbox (probably)
+			result.add(PBCosNumber.fromPDFBoxNumber(new COSFloat(fontSetting.getFontSize())));
 			return Collections.unmodifiableList(result);
         }
 

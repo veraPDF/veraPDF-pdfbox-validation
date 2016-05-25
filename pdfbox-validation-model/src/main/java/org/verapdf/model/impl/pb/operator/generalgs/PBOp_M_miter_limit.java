@@ -1,6 +1,7 @@
 package org.verapdf.model.impl.pb.operator.generalgs;
 
 import org.apache.pdfbox.cos.COSBase;
+import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.coslayer.CosReal;
 import org.verapdf.model.operator.Op_M_miter_limit;
 
@@ -33,8 +34,8 @@ public class PBOp_M_miter_limit extends PBOpGeneralGS implements
         return super.getLinkedObjects(link);
     }
 
-    private List<CosReal> getMiterLimit() {
-        return this.getLastReal();
+    private List<CosNumber> getMiterLimit() {
+        return this.getLastNumber();
     }
 
 }

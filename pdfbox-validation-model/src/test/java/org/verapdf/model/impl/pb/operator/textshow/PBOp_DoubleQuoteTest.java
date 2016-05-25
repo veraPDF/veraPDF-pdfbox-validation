@@ -5,6 +5,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosNumber;
+import org.verapdf.model.impl.pb.cos.PBCosInteger;
 import org.verapdf.model.impl.pb.cos.PBCosReal;
 
 import java.io.IOException;
@@ -23,13 +24,13 @@ public class PBOp_DoubleQuoteTest extends PBOpStringTextShowTest {
 
 	@Test
 	public void testWordSpacingLink() {
-		Object object = testObject(PBOp_DoubleQuote.WORD_SPACING, 1, PBCosReal.COS_REAL_TYPE);
+		Object object = testObject(PBOp_DoubleQuote.WORD_SPACING, 1, PBCosInteger.COS_INTEGER_TYPE);
 		Assert.assertEquals(Long.valueOf(50), ((CosNumber) object).getintValue());
 	}
 
 	@Test
 	public void testCharacterSpacingLink() {
-		Object object = testObject(PBOp_DoubleQuote.CHARACTER_SPACING, 1, PBCosReal.COS_REAL_TYPE);
+		Object object = testObject(PBOp_DoubleQuote.CHARACTER_SPACING, 1, PBCosInteger.COS_INTEGER_TYPE);
 		Assert.assertEquals(Long.valueOf(1), ((CosNumber) object).getintValue());
 	}
 

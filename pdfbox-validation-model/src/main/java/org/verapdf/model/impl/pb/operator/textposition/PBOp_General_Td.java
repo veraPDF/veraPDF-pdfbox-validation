@@ -7,6 +7,7 @@ import org.apache.pdfbox.cos.COSNumber;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.impl.pb.cos.PBCosInteger;
+import org.verapdf.model.impl.pb.cos.PBCosNumber;
 import org.verapdf.model.impl.pb.cos.PBCosReal;
 
 import java.util.ArrayList;
@@ -48,11 +49,7 @@ public abstract class PBOp_General_Td extends PBOpTextPosition {
 					.get(this.arguments.size() - 2);
 			if (number instanceof COSNumber) {
 				List<CosNumber> offset = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-				if (number instanceof COSInteger) {
-					offset.add(new PBCosInteger((COSInteger) number));
-				} else {
-					offset.add(new PBCosReal((COSFloat) number));
-				}
+				offset.add(PBCosNumber.fromPDFBoxNumber(number));
 				return Collections.unmodifiableList(offset);
 			}
 		}

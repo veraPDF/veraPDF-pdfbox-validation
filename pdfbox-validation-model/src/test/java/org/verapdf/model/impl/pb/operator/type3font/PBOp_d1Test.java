@@ -5,6 +5,7 @@ import org.apache.pdfbox.cos.COSInteger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.verapdf.model.factory.operator.OperatorFactory;
+import org.verapdf.model.impl.pb.cos.PBCosInteger;
 import org.verapdf.model.impl.pb.cos.PBCosReal;
 
 import java.io.IOException;
@@ -32,6 +33,6 @@ public class PBOp_d1Test extends PBOpType3FontTest {
 
 	@Test
 	public void testControlPointsLink() {
-		testLinksToReals(PBOp_d1.CONTROL_POINTS, 6, PBCosReal.COS_REAL_TYPE);
+		testLinksToReals(PBOp_d1.CONTROL_POINTS, 6, PBCosInteger.COS_INTEGER_TYPE);
 	}
 }

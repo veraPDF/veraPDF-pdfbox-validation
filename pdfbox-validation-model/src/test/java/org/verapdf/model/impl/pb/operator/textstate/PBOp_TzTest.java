@@ -4,7 +4,9 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.coslayer.CosInteger;
 import org.verapdf.model.coslayer.CosReal;
+import org.verapdf.model.impl.pb.cos.PBCosInteger;
 import org.verapdf.model.impl.pb.cos.PBCosReal;
 import org.verapdf.model.impl.pb.operator.base.PBOperatorTest;
 
@@ -23,7 +25,7 @@ public class PBOp_TzTest extends PBOpTextStateTest {
 
 	@Test
 	public void testScaleLink() {
-		Object object = testObject(PBOp_Tz.SCALE, 1, PBCosReal.COS_REAL_TYPE);
-		Assert.assertEquals(Long.valueOf(120), ((CosReal) object).getintValue());
+		Object object = testObject(PBOp_Tz.SCALE, 1, PBCosInteger.COS_INTEGER_TYPE);
+		Assert.assertEquals(Long.valueOf(120), ((CosInteger) object).getintValue());
 	}
 }

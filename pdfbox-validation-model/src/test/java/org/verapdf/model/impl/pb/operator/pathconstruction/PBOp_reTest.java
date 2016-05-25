@@ -2,6 +2,7 @@ package org.verapdf.model.impl.pb.operator.pathconstruction;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.verapdf.model.impl.pb.cos.PBCosInteger;
 import org.verapdf.model.impl.pb.cos.PBCosReal;
 import org.verapdf.model.impl.pb.operator.base.PBOperatorTest;
 
@@ -20,6 +21,6 @@ public class PBOp_reTest extends PBOperatorTest {
 
 	@Test
 	public void testRectangleBoxTest() {
-		testLinksToReals(PBOp_re.RECT_BOX, 4, PBCosReal.COS_REAL_TYPE);
+		testLinksToReals(PBOp_re.RECT_BOX, 4, PBCosInteger.COS_INTEGER_TYPE);
 	}
 }

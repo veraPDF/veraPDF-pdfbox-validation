@@ -2,6 +2,7 @@ package org.verapdf.model.impl.pb.operator.generalgs;
 
 import org.apache.pdfbox.cos.COSBase;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.coslayer.CosReal;
 import org.verapdf.model.operator.Op_w_line_width;
 
@@ -33,8 +34,8 @@ public class PBOp_w_line_width extends PBOpGeneralGS
         return super.getLinkedObjects(link);
     }
 
-    private List<CosReal> getLineWidth() {
-        return this.getLastReal();
+    private List<CosNumber> getLineWidth() {
+        return this.getLastNumber();
     }
 
 }

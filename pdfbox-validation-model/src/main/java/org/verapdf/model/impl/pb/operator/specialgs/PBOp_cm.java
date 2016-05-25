@@ -2,6 +2,7 @@ package org.verapdf.model.impl.pb.operator.specialgs;
 
 import org.apache.pdfbox.cos.COSBase;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.coslayer.CosReal;
 import org.verapdf.model.operator.Op_cm;
 
@@ -33,8 +34,8 @@ public class PBOp_cm extends PBOpSpecialGS implements Op_cm {
         return super.getLinkedObjects(link);
     }
 
-    private List<CosReal> getMatrix() {
-        return this.getListOfReals();
+    private List<CosNumber> getMatrix() {
+        return this.getListOfNumbers();
     }
 
 }

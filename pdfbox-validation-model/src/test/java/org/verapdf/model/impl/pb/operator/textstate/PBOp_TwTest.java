@@ -18,6 +18,6 @@ public class PBOp_TwTest extends PBOpTextStateTest {
 
 	@Test
 	public void testRiseLink() {
-		testReal(PBOp_Tw.WORD_SPACE, 50);
+		testInteger(PBOp_Tw.WORD_SPACE, 50);
 	}
 }

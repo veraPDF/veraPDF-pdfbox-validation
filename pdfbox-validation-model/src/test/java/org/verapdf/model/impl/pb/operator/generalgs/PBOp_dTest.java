@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosArray;
 import org.verapdf.model.impl.pb.cos.PBCosArray;
+import org.verapdf.model.impl.pb.cos.PBCosInteger;
 import org.verapdf.model.impl.pb.cos.PBCosReal;
 
 import java.io.IOException;
@@ -29,6 +30,6 @@ public class PBOp_dTest extends PBOpGeneralGSTest {
 
 	@Test
 	public void testDashPhaseLink() {
-		testLinkToReal(PBOp_d.DASH_PHASE, PBCosReal.COS_REAL_TYPE, Long.valueOf(0));
+		testLinkToReal(PBOp_d.DASH_PHASE, PBCosInteger.COS_INTEGER_TYPE, Long.valueOf(0));
 	}
 }
