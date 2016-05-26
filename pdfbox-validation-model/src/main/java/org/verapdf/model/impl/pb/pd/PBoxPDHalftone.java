@@ -1,9 +1,6 @@
 package org.verapdf.model.impl.pb.pd;
 
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSNumber;
+import org.apache.pdfbox.cos.*;
 import org.verapdf.model.pdlayer.PDHalftone;
 
 /**
@@ -35,7 +32,15 @@ public class PBoxPDHalftone extends PBoxPDObject implements PDHalftone {
 
 	private String getHalftoneName(COSDictionary dict) {
 		COSBase name = dict.getDictionaryObject(COSName.getPDFName("HalftoneName"));
-		return name instanceof COSName ? ((COSName) name).getName() : null;
+		if (name instanceof COSName) {
+			return ((COSName) name).getName();
+		} else if (name instanceof COSString) {
+			return ((COSString) name).getString();
+		} else if (name != null) {
+			return name.toString();
+		} else {
+			return null;
+		}
 	}
 
 	@Override
