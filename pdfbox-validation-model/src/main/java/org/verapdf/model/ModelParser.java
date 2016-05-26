@@ -1,20 +1,20 @@
 package org.verapdf.model;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-
+import com.adobe.xmp.XMPException;
+import com.adobe.xmp.impl.VeraPDFMeta;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.verapdf.core.ModelParsingException;
+import org.verapdf.model.impl.pb.containers.StaticContainers;
 import org.verapdf.model.impl.pb.cos.PBCosDocument;
 import org.verapdf.pdfa.ValidationModelParser;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
-import com.adobe.xmp.XMPException;
-import com.adobe.xmp.impl.VeraPDFMeta;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Current class is entry point to model implementation.
@@ -39,6 +39,7 @@ public final class ModelParser implements ValidationModelParser, Closeable {
     
     public static ModelParser createModelWithFlavour(InputStream toLoad, PDFAFlavour flavour) throws ModelParsingException {
         try {
+            cleanUp();
             return new ModelParser(toLoad, (flavour == PDFAFlavour.NO_FLAVOUR || flavour == null) ? DEFAULT_FLAVOUR : flavour);
         } catch (IOException excep) {
             throw new ModelParsingException("Couldn't parse stream", excep);
@@ -65,6 +66,10 @@ public final class ModelParser implements ValidationModelParser, Closeable {
             LOGGER.error(e);
             return DEFAULT_FLAVOUR;
         }
+    }
+
+    private static void cleanUp() {
+        StaticContainers.clearAllContainers();
     }
 
     /**

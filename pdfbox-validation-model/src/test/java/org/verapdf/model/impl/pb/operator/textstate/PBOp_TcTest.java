@@ -18,6 +18,6 @@ public class PBOp_TcTest extends PBOpTextStateTest {
 
 	@Test
 	public void testCharSpacingLink() {
-		testReal(PBOp_Tc.CHAR_SPACING, 1);
+		testInteger(PBOp_Tc.CHAR_SPACING, 1);
 	}
 }

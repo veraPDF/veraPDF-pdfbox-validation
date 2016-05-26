@@ -4,8 +4,9 @@ import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSNumber;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
-import org.verapdf.model.coslayer.CosReal;
+import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.factory.operator.GraphicState;
+import org.verapdf.model.impl.pb.cos.PBCosNumber;
 import org.verapdf.model.impl.pb.cos.PBCosReal;
 import org.verapdf.model.operator.Op_DoubleQuote;
 import org.verapdf.model.tools.resources.PDInheritableResources;
@@ -56,23 +57,23 @@ public class PBOp_DoubleQuote extends PBOpStringTextShow implements
 		}
 	}
 
-	private List<CosReal> getWordSpacing() {
-		return getSpecialReal(WORD_SPACING_POSITION);
+	private List<CosNumber> getWordSpacing() {
+		return getSpecialNumber(WORD_SPACING_POSITION);
 	}
 
-	private List<CosReal> getCharacterSpacing() {
-		return getSpecialReal(CHARACTER_SPACING_POSITION);
+	private List<CosNumber> getCharacterSpacing() {
+		return getSpecialNumber(CHARACTER_SPACING_POSITION);
 	}
 
-	private List<CosReal> getSpecialReal(int operandNumber) {
+	private List<CosNumber> getSpecialNumber(int operandNumber) {
 		final int size = this.arguments.size();
 		if (size >= COUNT_OF_OPERATOR_OPERANDS) {
 			int index = size - COUNT_OF_OPERATOR_OPERANDS + operandNumber;
 			COSBase base = this.arguments.get(index);
 			if (base instanceof COSNumber) {
-				List<CosReal> real = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-				real.add(new PBCosReal((COSNumber) base));
-				return Collections.unmodifiableList(real);
+				List<CosNumber> number = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+				number.add(PBCosNumber.fromPDFBoxNumber(base));
+				return Collections.unmodifiableList(number);
 			}
 		}
 		return Collections.emptyList();

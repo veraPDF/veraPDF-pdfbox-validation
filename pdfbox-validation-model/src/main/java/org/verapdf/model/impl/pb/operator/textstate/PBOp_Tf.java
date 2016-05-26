@@ -4,6 +4,7 @@ import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosName;
+import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.coslayer.CosReal;
 import org.verapdf.model.impl.pb.cos.PBCosName;
 import org.verapdf.model.operator.Op_Tf;
@@ -38,8 +39,8 @@ public class PBOp_Tf extends PBOpTextState implements Op_Tf {
 		}
 	}
 
-	private List<CosReal> getSize() {
-		return this.getLastReal();
+	private List<CosNumber> getSize() {
+		return this.getLastNumber();
 	}
 
 	private List<CosName> getFontName() {

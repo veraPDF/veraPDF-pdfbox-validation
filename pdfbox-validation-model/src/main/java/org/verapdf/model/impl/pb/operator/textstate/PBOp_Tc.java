@@ -2,6 +2,7 @@ package org.verapdf.model.impl.pb.operator.textstate;
 
 import org.apache.pdfbox.cos.COSBase;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.coslayer.CosReal;
 import org.verapdf.model.operator.Op_Tc;
 
@@ -28,7 +29,7 @@ public class PBOp_Tc extends PBOpTextState implements Op_Tc {
 		return super.getLinkedObjects(link);
 	}
 
-	private List<CosReal> getCharSpacing() {
-		return this.getLastReal();
+	private List<CosNumber> getCharSpacing() {
+		return this.getLastNumber();
 	}
 }

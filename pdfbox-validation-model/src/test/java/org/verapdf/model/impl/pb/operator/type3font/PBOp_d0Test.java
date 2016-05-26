@@ -18,11 +18,11 @@ public class PBOp_d0Test extends PBOpType3FontTest {
 
 	@Test
 	public void testHorizontalDisplacementLink() {
-		testReal(PBOp_d0.HORIZONTAL_DISPLACEMENT, 300);
+		testInteger(PBOp_d0.HORIZONTAL_DISPLACEMENT, 300);
 	}
 
 	@Test
 	public void testVerticalDisplacementLink() {
-		testReal(PBOp_d0.VERTICAL_DISPLACEMENT, 50);
+		testInteger(PBOp_d0.VERTICAL_DISPLACEMENT, 50);
 	}
 }

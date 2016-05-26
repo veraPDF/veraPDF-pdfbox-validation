@@ -21,7 +21,7 @@ public class PBOp_TfTest extends PBOpTextStateTest {
 
 	@Test
 	public void testSizeLink() {
-		testReal(PBOp_Tf.SIZE, 12);
+		testInteger(PBOp_Tf.SIZE, 12);
 	}
 
 	@Test

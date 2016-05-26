@@ -2,6 +2,7 @@ package org.verapdf.model.impl.pb.operator.textposition;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.verapdf.model.impl.pb.cos.PBCosInteger;
 import org.verapdf.model.impl.pb.cos.PBCosReal;
 
 import java.io.IOException;
@@ -19,6 +20,6 @@ public class PBOp_TmTest extends PBOpTextPositionTest {
 
 	@Test
 	public void testControlPointsLink() {
-		testLinksToReals(PBOp_Tm.CONTROL_POINTS, 6, PBCosReal.COS_REAL_TYPE);
+		testLinksToReals(PBOp_Tm.CONTROL_POINTS, 6, PBCosInteger.COS_INTEGER_TYPE);
 	}
 }
