@@ -22,76 +22,94 @@ import java.util.List;
  */
 public class PBoxPDSignature extends PBoxPDObject implements PDSignature {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDSignature.class);
+    private static final Logger LOGGER = Logger.getLogger(PBoxPDSignature.class);
 
-	/** Type name for {@code PBoxPDSignature} */
-	public static final String SIGNATURE_TYPE = "PDSignature";
+    /**
+     * Type name for {@code PBoxPDSignature}
+     */
+    public static final String SIGNATURE_TYPE = "PDSignature";
 
-	public static final String CONTENTS = "Contents";
-	public static final String REFERENCE = "Reference";
+    public static final String CONTENTS = "Contents";
+    public static final String REFERENCE = "Reference";
 
-	protected static byte [] contents;
-	private boolean isCorrectByteRange;
+    protected static byte[] contents;
+    protected long signatureOffset;
 
-	/**
-	 * @param pdSignature {@link org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature}
-	 * object.
-	 * @param document {@link PDDocument} containing representation of initial PDF file.
-	 */
-	public PBoxPDSignature(org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature pdSignature,
-						   PDDocument document, boolean isCorrectByteRange) {
-		super(pdSignature, SIGNATURE_TYPE);
-		this.document = document;
-		try {
-			contents = ((org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature)
-					this.simplePDObject).getContents(this.contentStream.getContentStream().getUnfilteredStream());
-		} catch (IOException e) {
-			LOGGER.error("Can't get unfiltered stream from content stream", e);
-		}
-		this.isCorrectByteRange = isCorrectByteRange;
-	}
+    /**
+     * @param pdSignature {@link org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature}
+     *                    object.
+     * @param document    {@link PDDocument} containing representation of initial PDF file.
+     */
+    public PBoxPDSignature(org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature pdSignature,
+                           PDDocument document, COSObject signatureReference) {
+        super(pdSignature, SIGNATURE_TYPE);
+        this.document = document;
+        signatureOffset = this.document.getDocument().getXrefTable().get(signatureReference);
+        try {
+            contents = ((org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature)
+                    this.simplePDObject).getContents(this.contentStream.getContentStream().getUnfilteredStream());
+        } catch (IOException e) {
+            LOGGER.error("Can't get unfiltered stream from content stream", e);
+        }
+    }
 
-	@Override
-	public List<? extends Object> getLinkedObjects(String link) {
-		switch (link) {
-			case CONTENTS:
-				return getContents();
-			case REFERENCE:
-				return getSigRefs();
-			default:
-				return super.getLinkedObjects(link);
-		}
-	}
+    @Override
+    public List<? extends Object> getLinkedObjects(String link) {
+        switch (link) {
+            case CONTENTS:
+                return getContents();
+            case REFERENCE:
+                return getSigRefs();
+            default:
+                return super.getLinkedObjects(link);
+        }
+    }
 
-	/**
-	 * @return true if byte range covers entire document except for Contents
-	 * entry in signature dictionary
-	 */
-	@Override
-	public Boolean getdoesByteRangeCoverEntireDocument() {
-		return isCorrectByteRange;
-	}
+    /**
+     * @return true if byte range covers entire document except for Contents
+     * entry in signature dictionary
+     */
+    @Override
+    public Boolean getdoesByteRangeCoverEntireDocument() {
+        try {
+            SignatureParser parser = new SignatureParser(this.document.getPdfSource(),
+                    this.document.getDocument());
+            long[] actualByteRange =
+                    parser.getByteRangeBySignatureOffset(signatureOffset);
+            int[] byteRange = ((org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature)
+                    this.simplePDObject).getByteRange();
+            for (int i = 0; i < 3; ++i) {
+                if (byteRange[i] != actualByteRange[i]) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (IOException ex) {
+            LOGGER.error("Can't create parser to process digital signature", ex);
+            return false;
+        }
+    }
 
-	private List<PKCSDataObject> getContents() {
-		if(contents != null) {
-			List<PKCSDataObject> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			list.add(new PBoxPKCSDataObject(new COSString(contents)));
-			return Collections.unmodifiableList(list);
-		}
-		return Collections.emptyList();
-	}
+    private List<PKCSDataObject> getContents() {
+        if (contents != null) {
+            List<PKCSDataObject> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+            list.add(new PBoxPKCSDataObject(new COSString(contents)));
+            return Collections.unmodifiableList(list);
+        }
+        return Collections.emptyList();
+    }
 
-	private List<PDSigRef> getSigRefs() {
-		COSArray reference = (COSArray)
-				((org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature)
-				this.simplePDObject).getCOSObject().getDictionaryObject(REFERENCE);
-		if(reference == null || reference.size() == 0) {
-			return Collections.emptyList();
-		}
-		List<PDSigRef> list = new ArrayList<>();
-		for(COSBase sigRef : reference) {
-			list.add(new PBoxPDSigRef((COSDictionary) sigRef, this.document));
-		}
-		return Collections.unmodifiableList(list);
-	}
+    private List<PDSigRef> getSigRefs() {
+        COSArray reference = (COSArray)
+                ((org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature)
+                        this.simplePDObject).getCOSObject().getDictionaryObject(REFERENCE);
+        if (reference == null || reference.size() == 0) {
+            return Collections.emptyList();
+        }
+        List<PDSigRef> list = new ArrayList<>();
+        for (COSBase sigRef : reference) {
+            list.add(new PBoxPDSigRef((COSDictionary) sigRef, this.document));
+        }
+        return Collections.unmodifiableList(list);
+    }
 }
