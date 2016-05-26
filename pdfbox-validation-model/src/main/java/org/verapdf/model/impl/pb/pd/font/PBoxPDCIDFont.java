@@ -1,11 +1,14 @@
 package org.verapdf.model.impl.pb.pd.font;
 
+import org.apache.fontbox.cff.CFFFont;
+import org.apache.fontbox.ttf.TrueTypeFont;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.common.PDStream;
+import org.apache.pdfbox.pdmodel.font.PDCIDFontType0;
 import org.apache.pdfbox.pdmodel.font.PDCIDFontType2;
 import org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
 import org.apache.pdfbox.pdmodel.font.PDFontLike;
@@ -78,6 +81,22 @@ public class PBoxPDCIDFont extends PBoxPDFont implements PDCIDFont {
                         return Boolean.FALSE;
                     }
                 }
+
+                if (!flavour.equals(PDFAFlavour.PDFA_1_A) || !flavour.equals(PDFAFlavour.PDFA_1_B)) {
+                    //on this levels we need to ensure that all glyphs present in font program are described in cid set
+                    if (cidFont instanceof PDCIDFontType0) {
+                        CFFFont cffFont = ((PDCIDFontType0) cidFont).getCFFFont();
+                        if (bitSet.cardinality() < cffFont.getNumCharStrings()) {
+                            return Boolean.FALSE;
+                        }
+                    } else if (cidFont instanceof PDCIDFontType2) {
+                        TrueTypeFont trueTypeFont = ((PDCIDFontType2) cidFont).getTrueTypeFont();
+                        if (bitSet.cardinality() < trueTypeFont.getNumberOfGlyphs()) {
+                            return Boolean.FALSE;
+                        }
+                    }
+                }
+
             }
         } catch (IOException e) {
             LOGGER.error("Error while parsing embedded font program. " + e.getMessage(), e);
