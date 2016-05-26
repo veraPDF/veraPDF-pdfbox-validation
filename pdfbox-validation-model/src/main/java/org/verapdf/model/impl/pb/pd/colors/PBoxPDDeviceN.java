@@ -153,7 +153,7 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 				org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace colorSpace =
 						org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace.create(value);
 				if (colorSpace instanceof org.apache.pdfbox.pdmodel.graphics.color.PDSeparation) {
-					list.add(new PBoxPDSeparation((org.apache.pdfbox.pdmodel.graphics.color.PDSeparation) colorSpace, this.document, this.flavour));
+					list.add((PBoxPDSeparation) ColorSpaceFactory.getColorSpace(colorSpace, this.document, this.flavour));
 				}
 			} catch (IOException e) {
 				LOGGER.warn("Problems with color space obtain.", e);

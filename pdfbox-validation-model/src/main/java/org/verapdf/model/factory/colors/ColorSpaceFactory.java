@@ -5,6 +5,7 @@ import org.apache.pdfbox.pdmodel.graphics.color.*;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDAbstractPattern;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDShadingPattern;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDTilingPattern;
+import org.verapdf.model.impl.pb.containers.StaticContainers;
 import org.verapdf.model.impl.pb.pd.colors.*;
 import org.verapdf.model.impl.pb.pd.pattern.PBoxPDShadingPattern;
 import org.verapdf.model.impl.pb.pd.pattern.PBoxPDTilingPattern;
@@ -69,13 +70,23 @@ public class ColorSpaceFactory {
 		if (colorSpace == null) {
 			return null;
 		}
+		if (StaticContainers.cachedColorSpaces.containsKey(colorSpace)) {
+			return StaticContainers.cachedColorSpaces.get(colorSpace);
+		}
+		PDColorSpace result;
 		switch (colorSpace.getName()) {
 			case CAL_GRAY:
-				return new PBoxPDCalGray((PDCalGray) colorSpace);
+				result = new PBoxPDCalGray((PDCalGray) colorSpace);
+				StaticContainers.cachedColorSpaces.put(colorSpace, result);
+				return result;
 			case CAL_RGB:
-				return new PBoxPDCalRGB((PDCalRGB) colorSpace);
+				result = new PBoxPDCalRGB((PDCalRGB) colorSpace);
+				StaticContainers.cachedColorSpaces.put(colorSpace, result);
+				return result;
 			case DEVICE_N:
-				return new PBoxPDDeviceN((PDDeviceN) colorSpace, document, flavour);
+				result = new PBoxPDDeviceN((PDDeviceN) colorSpace, document, flavour);
+				StaticContainers.cachedColorSpaces.put(colorSpace, result);
+				return result;
 			case DEVICE_CMYK:
 				return PBoxPDDeviceCMYK.getInstance();
 			case DEVICE_GRB:
@@ -84,16 +95,26 @@ public class ColorSpaceFactory {
 				return PBoxPDDeviceGray.getInstance();
 			case ICC_BASED:
 				if (colorSpace.getNumberOfComponents() != 4) {
-					return new PBoxPDICCBased((PDICCBased) colorSpace);
+					result = new PBoxPDICCBased((PDICCBased) colorSpace);
+					StaticContainers.cachedColorSpaces.put(colorSpace, result);
+					return result;
 				} else {
-					return new PBoxPDICCBasedCMYK((PDICCBased) colorSpace, opm, overprintingFlag);
+					result = new PBoxPDICCBasedCMYK((PDICCBased) colorSpace, opm, overprintingFlag);
+					StaticContainers.cachedColorSpaces.put(colorSpace, result);
+					return result;
 				}
 			case LAB:
-				return new PBoxPDLab((PDLab) colorSpace);
+				result = new PBoxPDLab((PDLab) colorSpace);
+				StaticContainers.cachedColorSpaces.put(colorSpace, result);
+				return result;
 			case SEPARATION:
-				return new PBoxPDSeparation((PDSeparation) colorSpace, document, flavour);
+				result = new PBoxPDSeparation((PDSeparation) colorSpace, document, flavour);
+				StaticContainers.cachedColorSpaces.put(colorSpace, result);
+				return result;
 			case INDEXED:
-				return new PBoxPDIndexed((PDIndexed) colorSpace, document, flavour);
+				result = new PBoxPDIndexed((PDIndexed) colorSpace, document, flavour);
+				StaticContainers.cachedColorSpaces.put(colorSpace, result);
+				return result;
 			case PATTERN:
 				return getPattern(pattern, resources, document, flavour);
 			default:
