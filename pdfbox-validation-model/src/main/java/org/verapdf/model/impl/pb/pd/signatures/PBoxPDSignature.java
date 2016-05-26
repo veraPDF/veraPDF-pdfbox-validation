@@ -11,7 +11,10 @@ import org.verapdf.model.impl.pb.external.PBoxPKCSDataObject;
 import org.verapdf.model.impl.pb.pd.PBoxPDObject;
 import org.verapdf.model.pdlayer.PDSigRef;
 import org.verapdf.model.pdlayer.PDSignature;
+import sun.security.pkcs.PKCS7;
+import sun.security.pkcs.ParsingException;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,13 +47,10 @@ public class PBoxPDSignature extends PBoxPDObject implements PDSignature {
                            PDDocument document, COSObject signatureReference) {
         super(pdSignature, SIGNATURE_TYPE);
         this.document = document;
-        signatureOffset = this.document.getDocument().getXrefTable().get(signatureReference);
-        try {
-            contents = ((org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature)
-                    this.simplePDObject).getContents(this.contentStream.getContentStream().getUnfilteredStream());
-        } catch (IOException e) {
-            LOGGER.error("Can't get unfiltered stream from content stream", e);
-        }
+        COSObjectKey key = new COSObjectKey(signatureReference);
+        signatureOffset = (this.document.getDocument().getXrefTable().get(key)).longValue();
+        contents = ((org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature)
+                this.simplePDObject).getContents();
     }
 
     @Override
