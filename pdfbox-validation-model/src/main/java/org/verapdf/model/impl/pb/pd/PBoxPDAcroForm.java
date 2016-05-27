@@ -6,10 +6,12 @@ import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
+import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosObject;
 import org.verapdf.model.impl.pb.cos.PBCosArray;
 import org.verapdf.model.impl.pb.cos.PBCosStream;
+import org.verapdf.model.impl.pb.pd.signatures.PBoxPDSignatureField;
 import org.verapdf.model.pdlayer.PDAcroForm;
 import org.verapdf.model.pdlayer.PDFormField;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
@@ -66,7 +68,12 @@ public class PBoxPDAcroForm extends PBoxPDObject implements PDAcroForm {
 		List<PDFormField> formFields =
 				new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 		for (PDField field : fields) {
-			formFields.add(new PBoxPDFormField(field));
+			if(field instanceof PDSignatureField) {
+				formFields.add(new PBoxPDSignatureField((PDSignatureField) field,
+						this.document));
+			} else {
+				formFields.add(new PBoxPDFormField(field));
+			}
         }
 		return Collections.unmodifiableList(formFields);
     }

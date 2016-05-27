@@ -25,6 +25,10 @@ public class PBoxPDFormField extends PBoxPDObject implements PDFormField {
         super(simplePDObject, FORM_FIELD_TYPE);
     }
 
+    protected PBoxPDFormField(PDField field, final String type) {
+        super(field, type);
+    }
+
     @Override
     public String getFT() {
         return ((PDField) this.simplePDObject).getFieldType();
