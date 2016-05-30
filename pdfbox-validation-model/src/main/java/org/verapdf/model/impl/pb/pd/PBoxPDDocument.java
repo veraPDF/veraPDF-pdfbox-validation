@@ -1,10 +1,7 @@
 package org.verapdf.model.impl.pb.pd;
 
 import org.apache.log4j.Logger;
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSString;
+import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.common.PDDestinationOrAction;
@@ -275,7 +272,11 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 			if (perms != null) {
 				List<PDPerms> list = new ArrayList<>();
 				for (COSBase perm : perms.getValues()) {
-					list.add(new PBoxPDPerms((COSDictionary) perm));
+					if (perm instanceof COSDictionary) {
+						list.add(new PBoxPDPerms((COSDictionary) perm));
+					} else if (perm instanceof COSObject && ((COSObject) perm).getObject() instanceof COSDictionary) {
+						list.add(new PBoxPDPerms((COSDictionary) ((COSObject) perm).getObject()));
+					}
 				}
 				return Collections.unmodifiableList(list);
 			}
