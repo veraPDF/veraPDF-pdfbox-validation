@@ -177,7 +177,15 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
      */
     @Override
     public String getlastID() {
-        return this.lastID;
+		if (flavour.getPart().equals(PDFAFlavour.Specification.ISO_19005_1)) {
+			return this.lastID;
+		} else {
+			if (this.isLinearised) {
+				return this.firstPageID;
+			} else {
+				return this.lastID;
+			}
+		}
     }
 
     private static String getTrailerID(COSArray ids) {
@@ -187,10 +195,9 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
                 for (byte aByte : ((COSString) id).getBytes()) {
                     builder.append((char) (aByte & 0xFF));
                 }
-                builder.append(' ');
             }
             // need to discard last whitespace
-            return builder.toString().substring(0, builder.length() - 1);
+            return builder.toString();
         }
         return null;
     }
