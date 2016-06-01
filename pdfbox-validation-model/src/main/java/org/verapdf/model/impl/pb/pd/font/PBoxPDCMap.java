@@ -1,6 +1,10 @@
 package org.verapdf.model.impl.pb.pd.font;
 
 import org.apache.fontbox.cmap.CMap;
+import org.apache.fontbox.cmap.CMapParser;
+import org.apache.log4j.Logger;
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.external.CMapFile;
@@ -8,6 +12,7 @@ import org.verapdf.model.impl.pb.external.PBoxCMapFile;
 import org.verapdf.model.impl.pb.pd.PBoxPDObject;
 import org.verapdf.model.pdlayer.PDCMap;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,9 +22,12 @@ import java.util.List;
  */
 public class PBoxPDCMap extends PBoxPDObject implements PDCMap {
 
+    private static final Logger LOGGER = Logger.getLogger(PBoxPDCMap.class);
+
     public static final String CMAP_TYPE = "PDCMap";
 
     public static final String EMBEDDED_FILE = "embeddedFile";
+    public static final String USE_C_MAP = "UseCMap";
 
     public PBoxPDCMap(CMap cMap, COSStream cMapFile) {
         super(cMap, cMapFile, CMAP_TYPE);
@@ -32,10 +40,14 @@ public class PBoxPDCMap extends PBoxPDObject implements PDCMap {
 
     @Override
     public List<? extends Object> getLinkedObjects(String link) {
-        if (EMBEDDED_FILE.equals(link)) {
-            return this.getEmbeddedFile();
+        switch (link) {
+            case EMBEDDED_FILE:
+                return this.getEmbeddedFile();
+            case USE_C_MAP:
+                return this.getUseCMap();
+            default:
+                return super.getLinkedObjects(link);
         }
-        return super.getLinkedObjects(link);
     }
 
     private List<CMapFile> getEmbeddedFile() {
@@ -46,5 +58,48 @@ public class PBoxPDCMap extends PBoxPDObject implements PDCMap {
         }
 		return Collections.emptyList();
     }
+
+    private List<PDCMap> getUseCMap() {
+        if (this.simplePDObject instanceof COSStream) {
+            COSBase useCMap = ((COSStream) this.simplePDObject).getDictionaryObject(USE_C_MAP);
+            PBoxPDCMap pBoxPDCMap = null;
+            if (useCMap instanceof COSName) {
+                CMapParser cMapParser = new CMapParser();
+                try {
+                    CMap pdfboxCMap = cMapParser.parsePredefined(((COSName) useCMap).getName());
+                    pBoxPDCMap = new PBoxPDCMap(pdfboxCMap, null);
+                } catch (IOException e) {
+                    LOGGER.warn("Error while processing cmap", e);
+                }
+            } else if (useCMap instanceof COSStream) {
+                CMapParser cMapParser = new CMapParser();
+                try {
+                    CMap pdfboxCMap = cMapParser.parse(((COSStream) useCMap).getUnfilteredStream());
+                    pBoxPDCMap = new PBoxPDCMap(pdfboxCMap, (COSStream) useCMap);
+                } catch (IOException e) {
+                    LOGGER.warn("Error while processing cmap", e);
+                }
+            }
+            if (pBoxPDCMap != null) {
+                List<PDCMap> result = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+                result.add(pBoxPDCMap);
+                return Collections.unmodifiableList(result);
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    /*
+    private List<PDCMap> getUseCMap() {
+        if (this.cMap != null) {
+            List<PDCMap> useCMap = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+            if (this.cMap.getUsedCMap() != null) {
+                useCMap.add(new PBoxPDCMap(this.cMap.getUsedCMap(), null));
+                return Collections.unmodifiableList(useCMap);
+            }
+        }
+        return Collections.emptyList();
+    }
+    */
 
 }
