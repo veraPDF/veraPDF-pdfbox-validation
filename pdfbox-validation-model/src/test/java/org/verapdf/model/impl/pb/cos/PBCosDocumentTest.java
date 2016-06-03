@@ -9,6 +9,7 @@ import org.verapdf.model.coslayer.CosDocument;
 import org.verapdf.model.coslayer.CosTrailer;
 import org.verapdf.model.coslayer.CosXRef;
 import org.verapdf.model.impl.BaseTest;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,8 +28,7 @@ public class PBCosDocumentTest extends BaseTest {
     private static final Long expectedNumberOfIndirects = Long.valueOf(17);
     private static final Long expectedSizeOfDocument = Long.valueOf(9437);
 	private static final double expectedDocumentVersion = 1.4;
-    private static final String[] expectedIDS = new String[]{"D6CF927DCF82444068EB69A5914F8070",
-            "A2A7539F7C71DEBB6A4A6B418235962D"};
+    private static final String expectedIDS = "D6CF927DCF82444068EB69A5914F8070A2A7539F7C71DEBB6A4A6B418235962D";
 
 
     @BeforeClass
@@ -39,7 +39,7 @@ public class PBCosDocumentTest extends BaseTest {
         String fileAbsolutePath = getSystemIndependentPath(FILE_RELATIVE_PATH);
         final File file = new File(fileAbsolutePath);
         try (PDDocument doc = PDDocument.load(file, false, true)) {
-            actual = new PBCosDocument(doc, null);
+            actual = new PBCosDocument(doc, PDFAFlavour.PDFA_1_B);
         }
     }
 
@@ -102,27 +102,21 @@ public class PBCosDocumentTest extends BaseTest {
 
     @Test
     public void testFirstPageTrailer() {
-        String[] actualIDs = ((CosDocument) actual).getfirstPageID().split(" ");
-        Assert.assertEquals(expectedIDS.length, actualIDs.length);
-        for (int index = 0; index < actualIDs.length; index++) {
-            Assert.assertEquals(getExpectedID(index), actualIDs[index]);
-        }
+        String ids = ((CosDocument) actual).getfirstPageID();
+        Assert.assertEquals(getExpectedID(), ids);
     }
 
     @Test
     public void testLastTrailer() {
-        String[] actualIDs = ((CosDocument) actual).getlastID().split(" ");
-        Assert.assertEquals(expectedIDS.length, actualIDs.length);
-        for (int index = 0; index < actualIDs.length; index++) {
-            Assert.assertEquals(getExpectedID(index), actualIDs[index]);
-        }
+        String ids = ((CosDocument) actual).getlastID();
+        Assert.assertEquals(getExpectedID(), ids);
     }
 
     // problems with code symbols
-    private static String getExpectedID(int index) {
-        StringBuilder builder = new StringBuilder(16);
-        for (int i = 0; i < expectedIDS[index].length(); i += 2) {
-            builder.append((char) Integer.parseInt(expectedIDS[index].substring(i, i + 2), 16));
+    private static String getExpectedID() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < expectedIDS.length(); i += 2) {
+            builder.append((char) Integer.parseInt(expectedIDS.substring(i, i + 2), 16));
         }
         return builder.toString();
     }

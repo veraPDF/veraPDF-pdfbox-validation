@@ -4,12 +4,13 @@ import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.graphics.color.PDSeparation;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosUnicodeName;
 import org.verapdf.model.factory.colors.ColorSpaceFactory;
+import org.verapdf.model.impl.pb.containers.StaticContainers;
 import org.verapdf.model.impl.pb.cos.PBCosUnicodeName;
 import org.verapdf.model.pdlayer.PDColorSpace;
-import org.verapdf.model.pdlayer.PDSeparation;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ import java.util.List;
  *
  * @author Evgeniy Muravitskiy
  */
-public class PBoxPDSeparation extends PBoxPDColorSpace implements PDSeparation {
+public class PBoxPDSeparation extends PBoxPDColorSpace implements org.verapdf.model.pdlayer.PDSeparation {
 
 	public static final String SEPARATION_TYPE = "PDSeparation";
 
@@ -33,17 +34,54 @@ public class PBoxPDSeparation extends PBoxPDColorSpace implements PDSeparation {
 	private final PDDocument document;
 	private final PDFAFlavour flavour;
 
+	private COSArray colorSpace;
+
 	public PBoxPDSeparation(
-			org.apache.pdfbox.pdmodel.graphics.color.PDSeparation simplePDObject, PDDocument document, PDFAFlavour flavour) {
+			PDSeparation simplePDObject, PDDocument document, PDFAFlavour flavour) {
 		super(simplePDObject, SEPARATION_TYPE);
 		this.document = document;
 		this.flavour = flavour;
+
+		this.colorSpace = (COSArray) simplePDObject.getCOSObject();
+
+		if (StaticContainers.separations.containsKey(simplePDObject.getColorantName())) {
+			StaticContainers.separations.get(simplePDObject.getColorantName()).add(this);
+		} else {
+			final List<PBoxPDSeparation> separationList = new ArrayList<>();
+			separationList.add(this);
+			StaticContainers.separations.put(simplePDObject.getColorantName(), separationList);
+		}
 	}
 
-	// TODO : implement me
 	@Override
 	public Boolean getareTintAndAlternateConsistent() {
-		return Boolean.FALSE;
+		String name = ((PDSeparation) simplePDObject).getColorantName();
+
+		if (StaticContainers.inconsistentSeparations.contains(name)) {
+			return Boolean.FALSE;
+		}
+
+		if (StaticContainers.separations.get(name).size() > 1) {
+			for (PBoxPDSeparation pBoxPDSeparation : StaticContainers.separations.get(name)) {
+				if (pBoxPDSeparation.equals(this)) {
+					continue;
+				}
+
+				COSArray toCompare = pBoxPDSeparation.colorSpace;
+				COSBase alternateSpaceToCompare = toCompare.get(2);
+				COSBase tintTransformToCompare = toCompare.get(3);
+
+				COSBase alternateSpaceCurrent = colorSpace.get(2);
+				COSBase tintTransformCurrent = colorSpace.get(3);
+
+				if (!alternateSpaceToCompare.equals(alternateSpaceCurrent) || !tintTransformToCompare.equals(tintTransformCurrent)) {
+					StaticContainers.inconsistentSeparations.add(name);
+					return Boolean.FALSE;
+				}
+			}
+		}
+
+		return Boolean.TRUE;
 	}
 
 	@Override
