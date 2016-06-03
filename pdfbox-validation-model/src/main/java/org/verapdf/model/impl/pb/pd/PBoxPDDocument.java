@@ -291,17 +291,18 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 	}
 
 	private List<PDOCProperties> getOCProperties() {
-		PDOptionalContentProperties pBoxOCProperties = this.catalog.getOCProperties();
-		if (pBoxOCProperties != null) {
-			List<PDOCProperties> result = new ArrayList<>();
+		if (this.catalog != null) {
+			PDOptionalContentProperties pBoxOCProperties = this.catalog.getOCProperties();
+			if (pBoxOCProperties != null) {
+				List<PDOCProperties> result = new ArrayList<>();
 
-			PDOCProperties ocProperties = new PBoxPDOCProperties(pBoxOCProperties);
-			result.add(ocProperties);
+				PDOCProperties ocProperties = new PBoxPDOCProperties(pBoxOCProperties);
+				result.add(ocProperties);
 
-			return result;
-		} else {
-			return Collections.emptyList();
+				return result;
+			}
 		}
+		return Collections.emptyList();
 	}
 
 	private List<CosLang> getLang() {
