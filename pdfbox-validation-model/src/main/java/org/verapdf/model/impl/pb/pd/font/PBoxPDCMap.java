@@ -62,28 +62,26 @@ public class PBoxPDCMap extends PBoxPDObject implements PDCMap {
     private List<PDCMap> getUseCMap() {
         if (this.simplePDObject instanceof COSStream) {
             COSBase useCMap = ((COSStream) this.simplePDObject).getDictionaryObject(USE_C_MAP);
-            PBoxPDCMap pBoxPDCMap = null;
-            if (useCMap instanceof COSName) {
+            try {
                 CMapParser cMapParser = new CMapParser();
-                try {
-                    CMap pdfboxCMap = cMapParser.parsePredefined(((COSName) useCMap).getName());
+                PBoxPDCMap pBoxPDCMap = null;
+                CMap pdfboxCMap;
+
+                if (useCMap instanceof COSName) {
+                    pdfboxCMap = cMapParser.parsePredefined(((COSName) useCMap).getName());
                     pBoxPDCMap = new PBoxPDCMap(pdfboxCMap, null);
-                } catch (IOException e) {
-                    LOGGER.warn("Error while processing cmap", e);
-                }
-            } else if (useCMap instanceof COSStream) {
-                CMapParser cMapParser = new CMapParser();
-                try {
-                    CMap pdfboxCMap = cMapParser.parse(((COSStream) useCMap).getUnfilteredStream());
+                } else if (useCMap instanceof COSStream) {
+                    pdfboxCMap = cMapParser.parse(((COSStream) useCMap).getUnfilteredStream());
                     pBoxPDCMap = new PBoxPDCMap(pdfboxCMap, (COSStream) useCMap);
-                } catch (IOException e) {
-                    LOGGER.warn("Error while processing cmap", e);
                 }
-            }
-            if (pBoxPDCMap != null) {
-                List<PDCMap> result = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-                result.add(pBoxPDCMap);
-                return Collections.unmodifiableList(result);
+
+                if (pBoxPDCMap != null) {
+                    List<PDCMap> result = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+                    result.add(pBoxPDCMap);
+                    return Collections.unmodifiableList(result);
+                }
+            } catch (IOException e) {
+                LOGGER.warn("Error while processing cmap", e);
             }
         }
         return Collections.emptyList();
