@@ -3,6 +3,7 @@ package org.verapdf.model.impl.pb.pd.colors;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.graphics.color.PDSeparation;
 import org.verapdf.model.baselayer.Object;
@@ -68,11 +69,11 @@ public class PBoxPDSeparation extends PBoxPDColorSpace implements org.verapdf.mo
 				}
 
 				COSArray toCompare = pBoxPDSeparation.colorSpace;
-				COSBase alternateSpaceToCompare = toCompare.get(2);
-				COSBase tintTransformToCompare = toCompare.get(3);
+				COSBase alternateSpaceToCompare = unwrapObject(toCompare.get(2));
+				COSBase tintTransformToCompare = unwrapObject(toCompare.get(3));
 
-				COSBase alternateSpaceCurrent = colorSpace.get(2);
-				COSBase tintTransformCurrent = colorSpace.get(3);
+				COSBase alternateSpaceCurrent = unwrapObject(colorSpace.get(2));
+				COSBase tintTransformCurrent = unwrapObject(colorSpace.get(3));
 
 				if (!alternateSpaceToCompare.equals(alternateSpaceCurrent) || !tintTransformToCompare.equals(tintTransformCurrent)) {
 					StaticContainers.inconsistentSeparations.add(name);
@@ -82,6 +83,13 @@ public class PBoxPDSeparation extends PBoxPDColorSpace implements org.verapdf.mo
 		}
 
 		return Boolean.TRUE;
+	}
+
+	private COSBase unwrapObject(COSBase object) {
+		if (object instanceof COSObject) {
+			return ((COSObject) object).getObject();
+		}
+		return object;
 	}
 
 	@Override
