@@ -3,6 +3,7 @@ package org.verapdf.model.impl.pb.pd;
 import org.apache.fontbox.cmap.CMap;
 import org.apache.pdfbox.contentstream.PDContentStream;
 import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDocument;
 import org.apache.pdfbox.cos.COSObjectKey;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -34,10 +35,13 @@ public class PBoxPDObject extends GenericModelObject implements PDObject {
 		this.simplePDObject = simplePDObject;
 
 		if (simplePDObject != null) {
-			COSObjectKey key = simplePDObject.getCOSObject().getKey();
-			id = key != null ?
-					key.getGeneration() + " " + key.getNumber() + " obj " + this.getObjectType()
-					: super.getID();
+			COSBase cosObject = simplePDObject.getCOSObject();
+			if (cosObject != null) {
+				COSObjectKey key = cosObject.getKey();
+				id = key != null ?
+						key.getGeneration() + " " + key.getNumber() + " obj " + this.getObjectType()
+						: super.getID();
+			}
 		}
 	}
 
@@ -46,10 +50,16 @@ public class PBoxPDObject extends GenericModelObject implements PDObject {
 		this.document = document;
 
 		if (document != null) {
-			COSObjectKey key = document.getDocument().getCOSObject().getKey();
-			id = key != null ?
-					key.getGeneration() + " " + key.getNumber() + " obj " + this.getObjectType()
-					: super.getID();
+			COSDocument cosDocument = document.getDocument();
+			if (cosDocument != null) {
+				COSBase cosBase = cosDocument.getCOSObject();
+				if (cosBase != null) {
+					COSObjectKey key = cosBase.getKey();
+					id = key != null ?
+							key.getGeneration() + " " + key.getNumber() + " obj " + this.getObjectType()
+							: super.getID();
+				}
+			}
 		}
 	}
 
@@ -57,10 +67,16 @@ public class PBoxPDObject extends GenericModelObject implements PDObject {
 		super(type);
 		this.contentStream = contentStream;
 		if (contentStream != null) {
-			COSObjectKey key = contentStream.getContentStream().getCOSObject().getKey();
-			id = key != null ?
-					key.getGeneration() + " " + key.getNumber() + " obj " + this.getObjectType()
-					: super.getID();
+			COSStream cosStream = contentStream.getContentStream();
+			if (cosStream != null) {
+				COSBase cosBase = cosStream.getCOSObject();
+				if (cosBase != null) {
+					COSObjectKey key = cosBase.getKey();
+					id = key != null ?
+							key.getGeneration() + " " + key.getNumber() + " obj " + this.getObjectType()
+							: super.getID();
+				}
+			}
 		}
 	}
 
