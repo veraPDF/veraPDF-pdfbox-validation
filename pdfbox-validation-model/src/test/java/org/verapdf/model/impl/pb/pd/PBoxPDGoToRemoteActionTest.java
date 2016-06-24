@@ -21,6 +21,7 @@ public class PBoxPDGoToRemoteActionTest extends PBoxPDGoToActionTest {
 	@BeforeClass
 	public static void setUp() throws URISyntaxException, IOException {
 		actual = new PBoxPDGoToRemoteAction((PDActionRemoteGoTo) setUp(PBoxPDGoToRemoteAction.GOTO_REMOTE_ACTION_TYPE, 68));
+		expectedID = "0 68 obj PDGoToRemoteAction";
 	}
 
 	@Override

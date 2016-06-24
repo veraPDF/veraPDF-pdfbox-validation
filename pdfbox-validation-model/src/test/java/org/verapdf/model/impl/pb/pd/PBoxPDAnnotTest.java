@@ -27,7 +27,7 @@ public class PBoxPDAnnotTest extends BaseTest {
 	@BeforeClass
 	public static void setUp() throws URISyntaxException, IOException {
 		expectedType = TYPES.contains(PBoxPDAnnot.ANNOTATION_TYPE) ? PBoxPDAnnot.ANNOTATION_TYPE : null;
-		expectedID = null;
+		expectedID = "0 11 obj PDAnnot";
 
 		setUp(FILE_RELATIVE_PATH);
 		List<PDAnnotation> annotations = document.getPage(0).getAnnotations();

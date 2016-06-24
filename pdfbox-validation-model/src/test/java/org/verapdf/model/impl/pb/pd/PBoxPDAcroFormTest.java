@@ -21,7 +21,7 @@ public class PBoxPDAcroFormTest extends BaseTest {
 	@BeforeClass
 	public static void setUp() throws URISyntaxException, IOException {
 		expectedType = TYPES.contains(PBoxPDAcroForm.ACRO_FORM_TYPE) ? PBoxPDAcroForm.ACRO_FORM_TYPE : null;
-		expectedID = null;
+		expectedID = "0 2 obj PDAcroForm";
 
 		setUp(FILE_RELATIVE_PATH);
 		actual = new PBoxPDAcroForm(document.getDocumentCatalog().getAcroForm(), document, null);

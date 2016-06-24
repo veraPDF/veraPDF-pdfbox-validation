@@ -17,6 +17,7 @@ public class PBoxPDShadingPatternTest extends PBoxPDPatternTest {
 	@BeforeClass
 	public static void setUp() throws URISyntaxException, IOException {
 		setUp(PBoxPDShadingPattern.SHADING_PATTERN_TYPE, "PSHADE");
+		expectedID = "0 9 obj PDShadingPattern";
 	}
 
 	@Test
