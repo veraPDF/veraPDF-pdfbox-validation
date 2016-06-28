@@ -7,21 +7,25 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.verapdf.core.ModelParsingException;
+import org.verapdf.features.FeaturesExtractor;
+import org.verapdf.features.pb.PBFeatureParser;
+import org.verapdf.features.tools.FeaturesCollection;
 import org.verapdf.model.impl.pb.containers.StaticContainers;
 import org.verapdf.model.impl.pb.cos.PBCosDocument;
-import org.verapdf.pdfa.ValidationModelParser;
+import org.verapdf.pdfa.PDFParser;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Current class is entry point to model implementation.
  *
  * @author Evgeniy Muravitskiy
  */
-public final class ModelParser implements ValidationModelParser, Closeable {
+public final class ModelParser implements PDFParser, Closeable {
 
     private static final Logger LOGGER = Logger.getLogger(ModelParser.class);
 
@@ -103,6 +107,11 @@ public final class ModelParser implements ValidationModelParser, Closeable {
     @Override
     public PDFAFlavour getFlavour() {
         return this.flavour;
+    }
+
+    @Override
+    public FeaturesCollection getFeatures(List<FeaturesExtractor> extractors) {
+        return PBFeatureParser.getFeaturesCollection(this.document, extractors);
     }
 
     @Override

@@ -27,6 +27,7 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceDictionary;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceEntry;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
 import org.verapdf.core.FeatureParsingException;
+import org.verapdf.features.FeaturesExtractor;
 import org.verapdf.features.FeaturesObjectTypesEnum;
 import org.verapdf.features.FeaturesReporter;
 import org.verapdf.features.tools.ErrorsHelper;
@@ -34,7 +35,6 @@ import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.*;
 
 /**
@@ -197,9 +197,9 @@ public final class PBFeatureParser {
 	 * @return FeaturesCollection class with information about all featurereport
 	 */
 	public static FeaturesCollection getFeaturesCollection(
-			final PDDocument document, final boolean isPluginsEnabled, final Path pluginsFolder) {
+			final PDDocument document, final List<FeaturesExtractor> extractors) {
 
-		FeaturesReporter reporter = new FeaturesReporter(isPluginsEnabled, pluginsFolder);
+		FeaturesReporter reporter = new FeaturesReporter(extractors);
 
 		if (document != null) {
 			PBFeatureParser parser = new PBFeatureParser(reporter);
