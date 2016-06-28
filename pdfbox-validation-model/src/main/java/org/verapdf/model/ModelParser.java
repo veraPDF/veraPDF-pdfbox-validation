@@ -110,6 +110,11 @@ public final class ModelParser implements PDFParser, Closeable {
     }
 
     @Override
+    public FeaturesCollection getFeatures() {
+        return PBFeatureParser.getFeaturesCollection(this.document);
+    }
+
+    @Override
     public FeaturesCollection getFeatures(List<FeaturesExtractor> extractors) {
         return PBFeatureParser.getFeaturesCollection(this.document, extractors);
     }

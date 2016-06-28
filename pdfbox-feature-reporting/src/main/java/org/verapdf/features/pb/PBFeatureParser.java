@@ -196,11 +196,27 @@ public final class PBFeatureParser {
 	 * @param document the document for parsing
 	 * @return FeaturesCollection class with information about all featurereport
 	 */
+	public static FeaturesCollection getFeaturesCollection(final PDDocument document) {
+
+		FeaturesReporter reporter = new FeaturesReporter();
+		return getFeatures(document, reporter);
+	}
+
+	/**
+	 * Parses the document and returns Feature collection by using given
+	 * Features Reporter
+	 *
+	 * @param document the document for parsing
+	 * @return FeaturesCollection class with information about all featurereport
+	 */
 	public static FeaturesCollection getFeaturesCollection(
 			final PDDocument document, final List<FeaturesExtractor> extractors) {
 
 		FeaturesReporter reporter = new FeaturesReporter(extractors);
+		return getFeatures(document, reporter);
+	}
 
+	private static FeaturesCollection getFeatures(PDDocument document, FeaturesReporter reporter) {
 		if (document != null) {
 			PBFeatureParser parser = new PBFeatureParser(reporter);
 			parser.parseDocumentFeatures(document);
