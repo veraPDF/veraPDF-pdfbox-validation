@@ -23,7 +23,7 @@ public class PBoxPDOutputIntentTest extends BaseTest {
 	public static void setUp() throws URISyntaxException, IOException {
 		expectedType = TYPES.contains(PBoxPDOutputIntent.OUTPUT_INTENT_TYPE) ?
 															PBoxPDOutputIntent.OUTPUT_INTENT_TYPE : null;
-		expectedID = null;
+		expectedID = "0 3 obj PDOutputIntent";
 
 		setUp(FILE_RELATIVE_PATH);
 		actual = new PBoxPDOutputIntent(document.getDocumentCatalog().getOutputIntents().get(0), document, null);

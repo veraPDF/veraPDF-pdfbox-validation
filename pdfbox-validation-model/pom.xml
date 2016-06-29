@@ -60,6 +60,11 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.verapdf</groupId>
+      <artifactId>pdfbox-feature-reporting</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
   <build>
     <resources>
