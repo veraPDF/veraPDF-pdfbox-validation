@@ -20,8 +20,8 @@
   <inceptionYear>2015</inceptionYear>
 
   <modules>
-    <module>pdfbox-validation-model</module>
     <module>pdfbox-feature-reporting</module>
+    <module>pdfbox-validation-model</module>
     <module>pdfbox-metadata-fixer</module>
   </modules>
 
