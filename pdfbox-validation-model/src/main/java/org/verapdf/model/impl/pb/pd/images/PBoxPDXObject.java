@@ -15,6 +15,7 @@ import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosDict;
 import org.verapdf.model.impl.pb.cos.PBCosDict;
 import org.verapdf.model.impl.pb.pd.PBoxPDResources;
+import org.verapdf.model.pdlayer.PDSMaskImage;
 import org.verapdf.model.pdlayer.PDXObject;
 import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
@@ -77,16 +78,16 @@ public class PBoxPDXObject extends PBoxPDResources implements PDXObject {
 		}
 	}
 
-    protected List<PDXObject> getSMask() {
+    protected List<PDSMaskImage> getSMask() {
         try {
             COSStream cosStream = ((org.apache.pdfbox.pdmodel.graphics.PDXObject) this.simplePDObject)
                     .getCOSStream();
             COSBase smaskDictionary = cosStream
                     .getDictionaryObject(COSName.SMASK);
             if (smaskDictionary instanceof COSDictionary) {
-                PDXObject xObject = this.getXObject(smaskDictionary);
+				PDSMaskImage xObject = this.getXObject(smaskDictionary);
                 if (xObject != null) {
-					List<PDXObject> mask = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+					List<PDSMaskImage> mask = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 					mask.add(xObject);
 					return Collections.unmodifiableList(mask);
                 }
@@ -97,7 +98,7 @@ public class PBoxPDXObject extends PBoxPDResources implements PDXObject {
         return Collections.emptyList();
     }
 
-    private PDXObject getXObject(COSBase smaskDictionary) throws IOException {
+    private PDSMaskImage getXObject(COSBase smaskDictionary) throws IOException {
         COSName name = ((COSDictionary) smaskDictionary)
                 .getCOSName(COSName.NAME);
         String nameAsString = name != null ? name.getName() : null;
@@ -108,7 +109,12 @@ public class PBoxPDXObject extends PBoxPDResources implements PDXObject {
         org.apache.pdfbox.pdmodel.graphics.PDXObject pbObject =
 				org.apache.pdfbox.pdmodel.graphics.PDXObject.createXObject(
 						smaskDictionary, nameAsString, resourcesLocal);
-        return getTypedPDXObject(pbObject, this.resources, this.document, this.flavour);
+		if (pbObject instanceof PDImageXObjectProxy) {
+			return new PBoxPDSMaskImage((PDImageXObjectProxy) pbObject, document, flavour);
+		} else {
+			LOGGER.warn("SMask object is not an Image XObject");
+			return null;
+		}
     }
 
     public static PDXObject getTypedPDXObject(
