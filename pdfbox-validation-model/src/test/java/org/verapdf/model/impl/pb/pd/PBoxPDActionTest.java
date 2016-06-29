@@ -30,7 +30,7 @@ public class PBoxPDActionTest extends BaseTest {
 	protected static org.apache.pdfbox.pdmodel.interactive.action.PDAction setUp(String actionType, int objectNumber)
 			throws URISyntaxException, IOException {
 		expectedType = TYPES.contains(actionType) ? actionType : null;
-		expectedID = null;
+		expectedID = "0 69 obj PDAction";
 
 		setUp(FILE_RELATIVE_PATH);
 		COSDictionary object = (COSDictionary) document.getDocument()
