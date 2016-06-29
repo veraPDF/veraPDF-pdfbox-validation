@@ -42,7 +42,11 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
     private PDColorSpace colorSpaceFromImage = null;
 
     public PBoxPDXImage(PDImageXObjectProxy simplePDObject, PDDocument document, PDFAFlavour flavour) {
-        super(simplePDObject, PDInheritableResources.EMPTY_EXTENDED_RESOURCES, X_IMAGE_TYPE, document, flavour);
+        this(simplePDObject, X_IMAGE_TYPE, document, flavour);
+    }
+
+    protected PBoxPDXImage(PDImageXObjectProxy simplePDObject, String type, PDDocument document, PDFAFlavour flavour) {
+        super(simplePDObject, PDInheritableResources.EMPTY_EXTENDED_RESOURCES, type, document, flavour);
         this.interpolate = simplePDObject.getInterpolate();
     }
 

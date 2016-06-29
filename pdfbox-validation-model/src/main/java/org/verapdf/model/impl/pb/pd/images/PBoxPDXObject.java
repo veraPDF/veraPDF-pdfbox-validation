@@ -77,7 +77,7 @@ public class PBoxPDXObject extends PBoxPDResources implements PDXObject {
 		}
 	}
 
-    protected List<PDXObject> getSMask() {
+    protected List<PDSMaskImage> getSMask() {
         try {
             COSStream cosStream = ((org.apache.pdfbox.pdmodel.graphics.PDXObject) this.simplePDObject)
                     .getCOSStream();
@@ -108,7 +108,12 @@ public class PBoxPDXObject extends PBoxPDResources implements PDXObject {
         org.apache.pdfbox.pdmodel.graphics.PDXObject pbObject =
 				org.apache.pdfbox.pdmodel.graphics.PDXObject.createXObject(
 						smaskDictionary, nameAsString, resourcesLocal);
-        return getTypedPDXObject(pbObject, this.resources, this.document, this.flavour);
+		if (pbObject instanceof PDImageXObjectProxy) {
+			return new PBoxPDSMaskImage((PDImageXObjectProxy) pbObject, document, flavour);
+		} else {
+			LOGGER.warn("SMask object is not an Image XObject");
+			return null;
+		}
     }
 
     public static PDXObject getTypedPDXObject(
