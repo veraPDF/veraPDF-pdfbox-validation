@@ -80,7 +80,7 @@ public class PBoxPDStructTreeRoot extends PBoxPDObject implements PDStructTreeRo
 		}
 
 		if (!this.children.isEmpty()) {
-			return this.children.get(0).getstandartType();
+			return this.children.get(0).getstandardType();
 		} else {
 			return null;
 		}

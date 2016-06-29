@@ -3,6 +3,7 @@ package org.verapdf.model.impl.pb.pd.images;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObjectProxy;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.pdlayer.PDSMaskImage;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.util.Collections;
