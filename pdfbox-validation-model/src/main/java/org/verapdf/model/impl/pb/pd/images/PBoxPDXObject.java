@@ -84,9 +84,9 @@ public class PBoxPDXObject extends PBoxPDResources implements PDXObject {
             COSBase smaskDictionary = cosStream
                     .getDictionaryObject(COSName.SMASK);
             if (smaskDictionary instanceof COSDictionary) {
-                PDXObject xObject = this.getXObject(smaskDictionary);
+				PDSMaskImage xObject = this.getXObject(smaskDictionary);
                 if (xObject != null) {
-					List<PDXObject> mask = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+					List<PDSMaskImage> mask = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 					mask.add(xObject);
 					return Collections.unmodifiableList(mask);
                 }
@@ -97,7 +97,7 @@ public class PBoxPDXObject extends PBoxPDResources implements PDXObject {
         return Collections.emptyList();
     }
 
-    private PDXObject getXObject(COSBase smaskDictionary) throws IOException {
+    private PDSMaskImage getXObject(COSBase smaskDictionary) throws IOException {
         COSName name = ((COSDictionary) smaskDictionary)
                 .getCOSName(COSName.NAME);
         String nameAsString = name != null ? name.getName() : null;
