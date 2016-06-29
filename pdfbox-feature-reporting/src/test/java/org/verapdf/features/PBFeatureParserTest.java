@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +31,7 @@ public class PBFeatureParserTest {
 	public static void before() throws URISyntaxException, IOException {
 		File pdf = new File(TestNodeGenerator.getSystemIndependentPath("/FR.pdf"));
 		PDDocument document = PDDocument.load(pdf, false, true);
-		collection = PBFeatureParser.getFeaturesCollection(document, false, null);
+		collection = PBFeatureParser.getFeaturesCollection(document, Collections.<FeaturesExtractor>emptyList());
 	}
 
 	@Test
