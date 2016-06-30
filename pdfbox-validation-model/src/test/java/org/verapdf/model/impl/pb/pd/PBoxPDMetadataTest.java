@@ -24,7 +24,7 @@ public class PBoxPDMetadataTest extends BaseTest {
 	@BeforeClass
 	public static void setUp() throws URISyntaxException, IOException {
 		expectedType = TYPES.contains(PBoxPDMetadata.METADATA_TYPE) ? PBoxPDMetadata.METADATA_TYPE : null;
-		expectedID = "0 5 obj PDMetadata";
+		expectedID = "5 0 obj PDMetadata";
 
 		setUp(FILE_RELATIVE_PATH);
 		actual = new PBoxPDMetadata(document.getDocumentCatalog().getMetadata(), Boolean.TRUE, document, PDFAFlavour.PDFA_1_B);

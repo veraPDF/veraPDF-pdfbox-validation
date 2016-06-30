@@ -20,7 +20,7 @@ public class PBoxPDShadingTest extends PBoxPDPatternTest {
 	@BeforeClass
 	public static void setUp() throws URISyntaxException, IOException {
 		expectedType = TYPES.contains(PBoxPDShading.SHADING_TYPE) ? PBoxPDShading.SHADING_TYPE : null;
-		expectedID = "0 10 obj PDShading";
+		expectedID = "10 0 obj PDShading";
 
 		setUp(FILE_RELATIVE_PATH);
 		PDResources resources = document.getPage(0).getResources();

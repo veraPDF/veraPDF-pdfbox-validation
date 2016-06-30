@@ -23,7 +23,7 @@ public class PBoxPDNamedActionTest extends PBoxPDActionTest {
 	@BeforeClass
 	public static void setUp() throws URISyntaxException, IOException {
 		actual = new PBoxPDNamedAction((PDActionNamed) setUp(PBoxPDNamedAction.NAMED_ACTION_TYPE, 67));
-		expectedID = "0 67 obj PDNamedAction";
+		expectedID = "67 0 obj PDNamedAction";
 	}
 
 	@Override

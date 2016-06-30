@@ -23,7 +23,7 @@ public class PBoxPDExtGStateTest extends BaseTest {
 	@BeforeClass
 	public static void setUp() throws URISyntaxException, IOException {
 		expectedType = TYPES.contains(PBoxPDExtGState.EXT_G_STATE_TYPE) ? PBoxPDExtGState.EXT_G_STATE_TYPE : null;
-		expectedID = "0 37 obj PDExtGState";
+		expectedID = "37 0 obj PDExtGState";
 
 		setUp(FILE_RELATIVE_PATH);
 		PDResources resources = document.getPage(0).getResources();

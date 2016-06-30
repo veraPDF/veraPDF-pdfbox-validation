@@ -22,7 +22,7 @@ public class PBoxPDPageTest extends BaseTest {
 	@BeforeClass
 	public static void setUp() throws URISyntaxException, IOException {
 		expectedType = TYPES.contains(PBoxPDPage.PAGE_TYPE) ? PBoxPDPage.PAGE_TYPE : null;
-		expectedID = "0 8 obj PDPage";
+		expectedID = "8 0 obj PDPage";
 
 		setUp(FILE_RELATIVE_PATH);
 		actual = new PBoxPDPage(document.getPage(0), document, null);
