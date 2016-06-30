@@ -57,14 +57,14 @@ public class PBoxPDOCConfig extends PBoxPDObject implements PDOCConfig {
 							return Boolean.FALSE;
 						}
 					} else {
-						LOGGER.warn("Invalid object type in order array. Ignoring the object.");
+						LOGGER.debug("Invalid object type in order array. Ignoring the object.");
 					}
 				}
 				if (groupsInOrder < groupNames.size()) {
 					return Boolean.FALSE;
 				}
 			} else {
-				LOGGER.warn("Invalid object type of Order entry. Ignoring the Order entry.");
+				LOGGER.debug("Invalid object type of Order entry. Ignoring the Order entry.");
 			}
 		}
 		return Boolean.TRUE;
@@ -84,12 +84,12 @@ public class PBoxPDOCConfig extends PBoxPDObject implements PDOCConfig {
 							result = result.concat(event);
 						}
 					} else {
-						LOGGER.warn("Invalid object type in the AS array. Ignoring the object.");
+						LOGGER.debug("Invalid object type in the AS array. Ignoring the object.");
 					}
 				}
 				return result;
 			} else {
-				LOGGER.warn("Invalid object type of AS entry. Ignoring the entry.");
+				LOGGER.debug("Invalid object type of AS entry. Ignoring the entry.");
 				return result;
 			}
 		} else {

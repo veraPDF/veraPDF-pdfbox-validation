@@ -137,7 +137,7 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 					res.add(glyph);
                 }
             } catch (IOException e) {
-                LOGGER.error("Error processing text show operator's string argument : "
+                LOGGER.debug("Error processing text show operator's string argument : "
 						+ new String(string));
                 LOGGER.info(e);
             }

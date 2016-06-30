@@ -202,7 +202,7 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 						try {
 							metadata = PBCreateNodeHelper.inputStreamToByteArray(file.getMetadata().getStream().getUnfilteredStream());
 						} catch (IOException e) {
-							LOGGER.error("Can not get metadata stream for font file", e);
+							LOGGER.debug("Can not get metadata stream for font file", e);
 						}
 					}
 					builder.metadata(metadata);
@@ -241,7 +241,7 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 
 					return builder.build();
 				} catch (IOException e) {
-					LOGGER.error("Error in obtaining features data for fonts", e);
+					LOGGER.debug("Error in obtaining features data for fonts", e);
 				}
 			}
 		}

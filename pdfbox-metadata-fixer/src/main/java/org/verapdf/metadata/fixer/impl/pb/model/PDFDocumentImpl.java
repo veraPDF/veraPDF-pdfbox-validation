@@ -65,11 +65,11 @@ public class PDFDocumentImpl implements PDFDocument {
                 return new MetadataImpl(xmp, meta.getStream());
             }
         } catch (IOException e) {
-            LOGGER.error(
+            LOGGER.debug(
                     "Problems with document parsing or structure. "
                             + e.getMessage(), e);
         } catch (XMPException e) {
-            LOGGER.error("Problems with XMP parsing. " + e.getMessage(), e);
+            LOGGER.debug("Problems with XMP parsing. " + e.getMessage(), e);
         }
         return null;
     }
@@ -147,7 +147,7 @@ public class PDFDocumentImpl implements PDFDocument {
                 if (base instanceof COSStream) {
                     metas.add((COSStream) base);
                 } else {
-                    LOGGER.warn("Founded non-stream Metadata dictionary.");
+                    LOGGER.debug("Founded non-stream Metadata dictionary.");
                 }
             }
             for (COSStream stream : metas) {
@@ -159,12 +159,12 @@ public class PDFDocumentImpl implements PDFDocument {
                         stream.setNeedToBeUpdated(true);
                         ++res;
                     } catch (IOException e) {
-                        LOGGER.warn("Problems with unfilter stream.", e);
+                        LOGGER.debug("Problems with unfilter stream.", e);
                     }
                 }
             }
         } catch (IOException e) {
-            LOGGER.warn("Can not obtain Metadata objects", e);
+            LOGGER.debug("Can not obtain Metadata objects", e);
         }
 
         isUnfiltered = res > 0;

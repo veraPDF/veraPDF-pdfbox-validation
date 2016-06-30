@@ -1,7 +1,6 @@
 package org.verapdf.model.impl.pb.pd.signatures;
 
 import org.apache.log4j.Logger;
-import org.apache.pdfbox.contentstream.PDContentStream;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdfparser.SignatureParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -11,10 +10,7 @@ import org.verapdf.model.impl.pb.external.PBoxPKCSDataObject;
 import org.verapdf.model.impl.pb.pd.PBoxPDObject;
 import org.verapdf.model.pdlayer.PDSigRef;
 import org.verapdf.model.pdlayer.PDSignature;
-import sun.security.pkcs.PKCS7;
-import sun.security.pkcs.ParsingException;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,7 +81,7 @@ public class PBoxPDSignature extends PBoxPDObject implements PDSignature {
             }
             return true;
         } catch (IOException ex) {
-            LOGGER.error("Can't create parser to process digital signature", ex);
+            LOGGER.debug("Can't create parser to process digital signature", ex);
             return false;
         }
     }

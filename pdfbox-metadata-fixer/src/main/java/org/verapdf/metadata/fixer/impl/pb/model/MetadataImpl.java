@@ -67,8 +67,8 @@ public class MetadataImpl implements Metadata {
                 this.stream.setNeedToBeUpdated(true);
                 resultBuilder.addFix("Metadata stream filtered with FlateDecode");
             } catch (IOException e) {
-                LOGGER.warn("Problems with setting filter for stream.");
-                LOGGER.warn(e);
+                LOGGER.debug("Problems with setting filter for stream.");
+                LOGGER.debug(e);
             }
         }
         this.setRequiredDictionaryValue(COSName.METADATA, COSName.TYPE,
@@ -109,7 +109,7 @@ public class MetadataImpl implements Metadata {
             }
 
         } catch (XMPException e) {
-            LOGGER.warn("Can not obtain identification part.", e);
+            LOGGER.debug("Can not obtain identification part.", e);
         }
     }
 
@@ -138,7 +138,7 @@ public class MetadataImpl implements Metadata {
             resultBuilder.addFix("Identification schema added");
 
         } catch (XMPException e) {
-            LOGGER.warn("Can not obtain identification fields.", e);
+            LOGGER.debug("Can not obtain identification fields.", e);
         }
     }
 
@@ -180,7 +180,7 @@ public class MetadataImpl implements Metadata {
                 }
             }
         } catch (XMPException e) {
-            LOGGER.warn("Can not obtain identification fields.", e);
+            LOGGER.debug("Can not obtain identification fields.", e);
             throw new IllegalStateException(e);
         }
     }

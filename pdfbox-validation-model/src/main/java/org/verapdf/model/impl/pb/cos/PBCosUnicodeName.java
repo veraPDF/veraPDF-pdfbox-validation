@@ -68,7 +68,7 @@ public class PBCosUnicodeName extends PBCosName implements CosUnicodeName {
 		try {
 			return new String(bytes, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			LOGGER.warn("Can not transform " + name + " to unicode string.", e);
+			LOGGER.debug("Can not transform " + name + " to unicode string.", e);
 			return null;
 		}
 	}

@@ -367,7 +367,7 @@ public class GraphicState implements Cloneable {
 				this.overprintingFlagStroke = extGState.getStrokingOverprintControl();
 				this.overprintingFlagNonStroke = extGState.getNonStrokingOverprintControl();
             } catch (IOException e) {
-                LOGGER.error(e);
+                LOGGER.debug(e);
             }
         }
     }

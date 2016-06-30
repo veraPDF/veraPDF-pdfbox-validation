@@ -222,7 +222,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 				return Collections.unmodifiableList(annotations);
 			}
 		} catch (IOException e) {
-			LOGGER.error(
+			LOGGER.debug(
 					"Problems in obtaining pdfbox PDAnnotations. "
 							+ e.getMessage(), e);
 		}

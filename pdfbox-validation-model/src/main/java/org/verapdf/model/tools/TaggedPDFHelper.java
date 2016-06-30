@@ -40,7 +40,7 @@ public class TaggedPDFHelper {
 		} else if (children instanceof COSArray) {
 			return getChildrenFromArray((COSArray) children, roleMapHelper, logger);
 		} else {
-			logger.warn("Children type of Structure Tree Root or Structure Element " +
+			logger.debug("Children type of Structure Tree Root or Structure Element " +
 					"must be 'COSDictionary' or 'COSArray' but got: "
 					+ children.getClass().getSimpleName());
 			return Collections.emptyList();
@@ -68,7 +68,7 @@ public class TaggedPDFHelper {
 						continue;
 					}
 				}
-				logger.warn("Children type of Structure Tree Root or Structure Element " +
+				logger.debug("Children type of Structure Tree Root or Structure Element " +
 						"in array must be 'COSDictionary' but got: "
 						+ children.getClass().getSimpleName());
 			}

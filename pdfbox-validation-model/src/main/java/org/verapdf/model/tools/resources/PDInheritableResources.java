@@ -83,7 +83,7 @@ public class PDInheritableResources {
 				return colorSpace;
 			}
 		} catch (IOException e) {
-			LOGGER.warn("Problems during color space obtain from current resource dictionary. " +
+			LOGGER.debug("Problems during color space obtain from current resource dictionary. " +
 					"Trying to find it in inherited dictionary", e);
 		}
 		PDColorSpace colorSpace = this.inheritedResources.getColorSpace(name);

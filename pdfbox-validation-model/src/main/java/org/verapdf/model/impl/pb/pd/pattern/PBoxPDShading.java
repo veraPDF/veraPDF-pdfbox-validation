@@ -55,7 +55,7 @@ public class PBoxPDShading extends PBoxPDResources implements PDShading {
 				return Collections.unmodifiableList(colorSpaces);
             }
         } catch (IOException e) {
-            LOGGER.error("Problems with color space obtaining from shading. "
+            LOGGER.debug("Problems with color space obtaining from shading. "
                     + e.getMessage(), e);
         }
         return Collections.emptyList();

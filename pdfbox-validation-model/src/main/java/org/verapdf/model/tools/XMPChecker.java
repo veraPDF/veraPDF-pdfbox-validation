@@ -225,7 +225,7 @@ public final class XMPChecker {
                     return Boolean.valueOf(valueDate != null
                             && valueDate.compareTo((Calendar) value) == 0);
                 } else {
-                    LOGGER.warn("Date format in info dictionary is not complies pdf date format");
+                    LOGGER.debug("Date format in info dictionary is not complies pdf date format");
                 }
             }
         }

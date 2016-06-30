@@ -23,7 +23,7 @@ public class XMPBasicSchemaImpl extends BasicSchemaImpl implements XMPBasic {
 		try {
 			return this.meta.getCreatorTool();
 		} catch (XMPException e) {
-			LOGGER.error("Can not get creator tool.", e);
+			LOGGER.debug("Can not get creator tool.", e);
 			throw new IllegalStateException(e);
 		}
 	}
@@ -33,7 +33,7 @@ public class XMPBasicSchemaImpl extends BasicSchemaImpl implements XMPBasic {
 		try {
 			this.meta.setCreatorTool(creatorTool);
 		} catch (XMPException e) {
-			LOGGER.error("Can not set creator tool.", e);
+			LOGGER.debug("Can not set creator tool.", e);
 			throw new IllegalStateException(e);
 		}
 	}
@@ -43,7 +43,7 @@ public class XMPBasicSchemaImpl extends BasicSchemaImpl implements XMPBasic {
 		try {
 			return DateConverter.toUTCString(this.meta.getCreateDate());
 		} catch (XMPException e) {
-			LOGGER.error("Can not get creation date.", e);
+			LOGGER.debug("Can not get creation date.", e);
 			throw new IllegalStateException(e);
 		}
 	}
@@ -53,7 +53,7 @@ public class XMPBasicSchemaImpl extends BasicSchemaImpl implements XMPBasic {
 		try {
 			this.meta.setCreateDate(DateConverter.toCalendar(creationDate));
 		} catch (XMPException e) {
-			LOGGER.error("Can not set creation date.", e);
+			LOGGER.debug("Can not set creation date.", e);
 			throw new IllegalStateException(e);
 		}
 	}
@@ -63,7 +63,7 @@ public class XMPBasicSchemaImpl extends BasicSchemaImpl implements XMPBasic {
 		try {
 			return DateConverter.toUTCString(this.meta.getModifyDate());
 		} catch (XMPException e) {
-			LOGGER.error("Can not get modification date.", e);
+			LOGGER.debug("Can not get modification date.", e);
 			throw new IllegalStateException(e);
 		}
 	}
@@ -73,7 +73,7 @@ public class XMPBasicSchemaImpl extends BasicSchemaImpl implements XMPBasic {
 		try {
 			this.meta.setModifyDate(DateConverter.toCalendar(modificationDate));
 		} catch (XMPException e) {
-			LOGGER.error("Can not set modification date.", e);
+			LOGGER.debug("Can not set modification date.", e);
 			throw new IllegalStateException(e);
 		}
 	}

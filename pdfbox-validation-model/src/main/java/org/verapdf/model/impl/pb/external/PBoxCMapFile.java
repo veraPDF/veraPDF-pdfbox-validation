@@ -44,7 +44,7 @@ public class PBoxCMapFile extends PBoxExternal implements CMapFile {
             CMap map = new CMapParser().parse(fileStream.getUnfilteredStream());
             return Long.valueOf(map.getWMode());
         } catch (IOException e) {
-            LOGGER.error("Could not parse CMap", e);
+            LOGGER.debug("Could not parse CMap", e);
         }
         return null;
     }

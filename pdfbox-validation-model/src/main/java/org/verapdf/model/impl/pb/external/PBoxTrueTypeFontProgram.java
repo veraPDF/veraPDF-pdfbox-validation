@@ -45,7 +45,7 @@ public class PBoxTrueTypeFontProgram extends PBoxFontProgram implements TrueType
 				return Long.valueOf(nrCmaps);
 			}
 		} catch (IOException e) {
-			LOGGER.error(e);
+			LOGGER.debug(e);
 		}
 		return null;
 	}

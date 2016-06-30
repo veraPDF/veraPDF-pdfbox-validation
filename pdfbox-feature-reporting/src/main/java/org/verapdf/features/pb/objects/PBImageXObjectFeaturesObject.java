@@ -147,7 +147,7 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 				try {
 					metadata = PBCreateNodeHelper.inputStreamToByteArray(imageXObject.getMetadata().getStream().getUnfilteredStream());
 				} catch (IOException e) {
-					LOGGER.error("Can not get metadata stream for image xobject", e);
+					LOGGER.debug("Can not get metadata stream for image xobject", e);
 				}
 			}
 
@@ -185,7 +185,7 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 							break;
 						case "Crypt":
 							if (!(dic != null && COSName.IDENTITY.equals(dic.getCOSName(COSName.NAME)))) {
-								LOGGER.error("An Image has a Crypt filter");
+								LOGGER.debug("An Image has a Crypt filter");
 								return null;
 							}
 						default:
@@ -199,7 +199,7 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 
 			return ImageFeaturesData.newInstance(metadata, stream, width, height, filters);
 		} catch (IOException e) {
-			LOGGER.error("Error in obtaining features data for fonts", e);
+			LOGGER.debug("Error in obtaining features data for fonts", e);
 			return null;
 		}
 	}

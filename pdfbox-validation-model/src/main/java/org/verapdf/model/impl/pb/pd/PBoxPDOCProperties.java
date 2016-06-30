@@ -1,10 +1,12 @@
 package org.verapdf.model.impl.pb.pd;
 
 import org.apache.log4j.Logger;
-import org.apache.pdfbox.cos.*;
+import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.common.COSObjectable;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentProperties;
-import org.verapdf.model.baselayer.*;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.pdlayer.PDOCConfig;
 import org.verapdf.model.pdlayer.PDOCProperties;
@@ -57,7 +59,7 @@ public class PBoxPDOCProperties extends PBoxPDObject implements PDOCProperties {
 			result.add(pdConfig);
 			return result;
 		} else {
-			LOGGER.warn("Invalid object type of the default optional configuration dictionary. Returning empty config.");
+			LOGGER.debug("Invalid object type of the default optional configuration dictionary. Returning empty config.");
 			PDOCConfig config = new PBoxPDOCConfig(new COSDictionary());
 
 			result.add(config);
@@ -83,7 +85,7 @@ public class PBoxPDOCProperties extends PBoxPDObject implements PDOCProperties {
 					PDOCConfig pdConfig = new PBoxPDOCConfig(config, groupNamesList, names.contains(((COSDictionary) config).getString(COSName.NAME)));
 					result.add(pdConfig);
 				} else {
-					LOGGER.warn("Invalid object type of the configuration dictionary. Ignoring config.");
+					LOGGER.debug("Invalid object type of the configuration dictionary. Ignoring config.");
 				}
 			}
 			return result;

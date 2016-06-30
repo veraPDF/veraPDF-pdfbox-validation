@@ -89,7 +89,7 @@ public class PBoxICCProfile extends PBoxExternal implements ICCProfile {
             System.arraycopy(this.profileHeader, start, buffer, 0, length);
             return new String(buffer);
         }
-        LOGGER.error("Length of icc profile less than " + (start + length));
+        LOGGER.debug("Length of icc profile less than " + (start + length));
         return null;
     }
 
@@ -105,7 +105,7 @@ public class PBoxICCProfile extends PBoxExternal implements ICCProfile {
 
             return Double.valueOf(version.toString());
         }
-        LOGGER.error("ICC profile contain less than 10 bytes of data.");
+        LOGGER.debug("ICC profile contain less than 10 bytes of data.");
         return null;
     }
 
