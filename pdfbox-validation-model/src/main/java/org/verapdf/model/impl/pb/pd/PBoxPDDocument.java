@@ -270,14 +270,15 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 			COSDictionary perms = (COSDictionary)
 					this.catalog.getCOSObject().getDictionaryObject(COSName.PERMS);
 			if (perms != null) {
-				List<PDPerms> list = new ArrayList<>();
-				for (COSBase perm : perms.getValues()) {
+				List<PDPerms> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+				list.add(new PBoxPDPerms(perms));
+				/*for (COSBase perm : perms.getValues()) {
 					if (perm instanceof COSDictionary) {
 						list.add(new PBoxPDPerms((COSDictionary) perm));
 					} else if (perm instanceof COSObject && ((COSObject) perm).getObject() instanceof COSDictionary) {
 						list.add(new PBoxPDPerms((COSDictionary) ((COSObject) perm).getObject()));
 					}
-				}
+				}*/
 				return Collections.unmodifiableList(list);
 			}
 		}
