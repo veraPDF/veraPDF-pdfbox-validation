@@ -19,7 +19,7 @@ public class PBoxPDXObjectTest extends PBoxPDAbstractXObjectTest {
 	@BeforeClass
 	public static void setUp() throws IOException, URISyntaxException {
 		expectedType = TYPES.contains(PBoxPDXObject.X_OBJECT_TYPE) ? PBoxPDXObject.X_OBJECT_TYPE : null;
-		expectedID = "0 41 obj PDXObject";
+		expectedID = "41 0 obj PDXObject";
 
 		setUp(FILE_RELATIVE_PATH);
 		PDXObject xObject = document.getPage(0).getResources().getXObject(COSName.getPDFName(POST_SCRIPT_NAME));

@@ -25,7 +25,7 @@ public class PBoxPDXImageTest extends PBoxPDAbstractXObjectTest {
 	@BeforeClass
 	public static void setUp() throws IOException, URISyntaxException {
 		expectedType = TYPES.contains(PBoxPDXImage.X_IMAGE_TYPE) ? PBoxPDXImage.X_IMAGE_TYPE : null;
-		expectedID = "0 65 obj PDXImage";
+		expectedID = "65 0 obj PDXImage";
 
 		setUp(FILE_RELATIVE_PATH);
 		PDXObject xObject = document.getPage(0).getResources().getXObject(COSName.getPDFName(IMAGE_NAME));
