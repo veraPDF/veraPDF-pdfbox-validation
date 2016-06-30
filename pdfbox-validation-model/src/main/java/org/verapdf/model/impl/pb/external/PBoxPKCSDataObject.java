@@ -31,7 +31,7 @@ public class PBoxPKCSDataObject extends PBoxExternal implements PKCSDataObject {
 		try {
 			pkcs7 = new PKCS7(pkcsData.getBytes());
 		} catch (ParsingException e) {    //TODO: what do we do if some problem happens here?
-			LOGGER.error("Passed PKCS7 object can't be read", e);
+			LOGGER.debug("Passed PKCS7 object can't be read", e);
 			pkcs7 = getEmptyPKCS7();
 		}
 	}

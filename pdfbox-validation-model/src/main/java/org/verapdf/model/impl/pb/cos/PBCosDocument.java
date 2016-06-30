@@ -229,7 +229,7 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 				boolean value = ((COSDictionary) markInfo).getBoolean(marked, false);
 				return Boolean.valueOf(value);
 			} else {
-				LOGGER.warn("MarkedInfo must be a 'COSDictionary' but got: "
+				LOGGER.debug("MarkedInfo must be a 'COSDictionary' but got: "
 						+ markInfo.getClass().getSimpleName());
 				return Boolean.FALSE;
 			}
@@ -321,7 +321,7 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.error(
+			LOGGER.debug(
 					"Something wrong with getting embedded files - return empty list. "
 							+ e.getMessage(), e);
 		}

@@ -103,7 +103,7 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
                     return Collections.unmodifiableList(colorSpaces);
                 }
             } catch (IOException e) {
-                LOGGER.warn("Could not obtain Image XObject color space. " + e.getMessage(), e);
+                LOGGER.debug("Could not obtain Image XObject color space. " + e.getMessage(), e);
             }
         }
         return Collections.emptyList();
@@ -167,7 +167,7 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
                 return Collections.unmodifiableList(list);
             }
         } catch (IOException e) {
-            LOGGER.warn("Problems with stream obtain.", e);
+            LOGGER.debug("Problems with stream obtain.", e);
         }
         return Collections.emptyList();
     }

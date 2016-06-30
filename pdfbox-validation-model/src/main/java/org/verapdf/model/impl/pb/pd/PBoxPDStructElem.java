@@ -67,7 +67,7 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 		if (value instanceof COSName) {
 			return ((COSName) value).getName();
 		} else {
-			LOGGER.warn("In struct element type expected 'COSName' but got: "
+			LOGGER.debug("In struct element type expected 'COSName' but got: "
 					+ value.getClass().getSimpleName());
 			return null;
 		}

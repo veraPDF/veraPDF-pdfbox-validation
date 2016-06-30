@@ -7,7 +7,7 @@ import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.verapdf.model.operator.Operator;
 import org.verapdf.model.tools.constants.Operators;
 import org.verapdf.model.tools.resources.PDInheritableResources;
-import org.verapdf.model.tools.transparency.*;
+import org.verapdf.model.tools.transparency.TransparencyBehaviour;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
@@ -123,7 +123,7 @@ public final class OperatorFactory {
                 }
                 arguments = new ArrayList<>();
             } else {
-                LOGGER.error(MSG_UNEXPECTED_OBJECT_TYPE
+                LOGGER.debug(MSG_UNEXPECTED_OBJECT_TYPE
                         + pdfBoxToken.getClass().getName());
             }
         }

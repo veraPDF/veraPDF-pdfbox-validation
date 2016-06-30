@@ -100,7 +100,7 @@ public abstract class MetadataFixerImpl implements MetadataFixer {
 
             return getErrorResult("Problems with metadata obtain. No possibility to fix metadata.");
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.debug(e);
             return getErrorResult("Error while fixing metadata: " + e.getMessage());
         }
     }
@@ -122,12 +122,12 @@ public abstract class MetadataFixerImpl implements MetadataFixer {
                                 config.getParser());
             } catch (IOException | URISyntaxException
                     | ParserConfigurationException | SAXException e) {
-                LOGGER.error("Problem with validation status obtain. Validation status set as Invalid Document.");
-                LOGGER.error(e);
+                LOGGER.debug("Problem with validation status obtain. Validation status set as Invalid Document.");
+                LOGGER.debug(e);
                 return ValidationStatus.INVALID_DOCUMENT;
             }
         }
-        LOGGER.error("Problem with validation status obtain. Validation status set as Invalid Metadata.");
+        LOGGER.debug("Problem with validation status obtain. Validation status set as Invalid Metadata.");
         return ValidationStatus.INVALID_METADATA;
     }
 

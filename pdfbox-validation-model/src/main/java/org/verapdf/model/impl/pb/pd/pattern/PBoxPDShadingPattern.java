@@ -55,7 +55,7 @@ public class PBoxPDShadingPattern extends PBoxPDPattern implements
 				return Collections.unmodifiableList(shadings);
             }
         } catch (IOException e) {
-            LOGGER.error("Can`t get shading pattern. " + e.getMessage(), e);
+            LOGGER.debug("Can`t get shading pattern. " + e.getMessage(), e);
         }
         return Collections.emptyList();
     }

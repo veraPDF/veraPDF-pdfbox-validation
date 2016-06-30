@@ -93,7 +93,7 @@ public class PBoxPDXObject extends PBoxPDResources implements PDXObject {
                 }
             }
         } catch (IOException e) {
-            LOGGER.error("Problems with obtaining SMask. " + e.getMessage(), e);
+            LOGGER.debug("Problems with obtaining SMask. " + e.getMessage(), e);
         }
         return Collections.emptyList();
     }
@@ -112,7 +112,7 @@ public class PBoxPDXObject extends PBoxPDResources implements PDXObject {
 		if (pbObject instanceof PDImageXObjectProxy) {
 			return new PBoxPDSMaskImage((PDImageXObjectProxy) pbObject, document, flavour);
 		} else {
-			LOGGER.warn("SMask object is not an Image XObject");
+			LOGGER.debug("SMask object is not an Image XObject");
 			return null;
 		}
     }

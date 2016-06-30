@@ -127,7 +127,7 @@ public class PBEmbeddedFileFeaturesObject implements IFeaturesObject {
 		try {
 			PDEmbeddedFile ef = embFile.getEmbeddedFile();
 			if (ef == null) {
-				LOGGER.error("Missed embedded file in PDComplexFileSpecification");
+				LOGGER.debug("Missed embedded file in PDComplexFileSpecification");
 				return null;
 			}
 			byte[] stream = PBCreateNodeHelper.inputStreamToByteArray(ef.getStream().getUnfilteredStream());
@@ -156,7 +156,7 @@ public class PBEmbeddedFileFeaturesObject implements IFeaturesObject {
 
 			return builder.build();
 		} catch (IOException e) {
-			LOGGER.error("Can not get embedded file stream", e);
+			LOGGER.debug("Can not get embedded file stream", e);
 			return null;
 		}
 	}

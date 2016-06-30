@@ -52,7 +52,7 @@ public class PBCosObject extends GenericModelObject implements CosObject {
                 return (CosObject) base.accept(visitor);
             }
         } catch (IOException e) {
-            LOGGER.error(
+            LOGGER.debug(
                     "Problems with wrapping pdfbox object \"" + base.toString()
                             + "\". " + e.getMessage(), e);
         }

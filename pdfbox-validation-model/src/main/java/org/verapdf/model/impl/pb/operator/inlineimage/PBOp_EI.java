@@ -66,7 +66,7 @@ public class PBOp_EI extends PBOpInlineImage implements Op_EI {
 			inlineImages.add(new PBoxPDInlineImage(inlineImage, this.document, this.flavour));
 			return Collections.unmodifiableList(inlineImages);
 		} catch (IOException e) {
-			LOGGER.error(e);
+			LOGGER.debug(e);
 		}
 		return Collections.emptyList();
 	}
@@ -80,7 +80,7 @@ public class PBOp_EI extends PBOpInlineImage implements Op_EI {
 			try {
 				pageRes.put(name, currRes.getColorSpace(name));
 			} catch (IOException e) {
-				LOGGER.warn("Problem with color space coping.", e);
+				LOGGER.debug("Problem with color space coping.", e);
 			}
 		}
 

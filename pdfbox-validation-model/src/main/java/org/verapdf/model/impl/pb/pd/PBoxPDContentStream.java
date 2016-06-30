@@ -87,7 +87,7 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 				this.operators = Collections.emptyList();
 			}
 		} catch (IOException e) {
-			LOGGER.error(
+			LOGGER.debug(
 					"Error while parsing content stream. " + e.getMessage(), e);
 			this.operators = Collections.emptyList();
 		}

@@ -61,7 +61,7 @@ public class PBoxPDGroup extends PBoxPDObject implements PDGroup {
 				return Collections.unmodifiableList(colorSpaces);
             }
         } catch (IOException e) {
-            LOGGER.error(
+            LOGGER.debug(
                     "Problems with color space obtaining on group. "
                             + e.getMessage(), e);
         }

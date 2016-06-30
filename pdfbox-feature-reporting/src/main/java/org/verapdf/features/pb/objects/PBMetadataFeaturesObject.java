@@ -73,7 +73,7 @@ public class PBMetadataFeaturesObject implements IFeaturesObject {
 			byte[] meta = metadata.getByteArray();
 			return MetadataFeaturesData.newInstance(meta);
 		} catch (IOException e) {
-			LOGGER.error("Error while obtaining unfiltered metadata stream", e);
+			LOGGER.debug("Error while obtaining unfiltered metadata stream", e);
 			return null;
 		}
 	}

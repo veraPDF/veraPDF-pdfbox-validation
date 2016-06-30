@@ -141,10 +141,10 @@ public class PBCosStream extends PBCosDict implements CosStream {
                             decodeParms = ((COSArray) decodeParms).get(i);
                             result.add(createFilter((COSName) filter, decodeParms));
                         } else {
-                            logger.warn("Invalid decodeParms type. Ignoring decodeParms.");
+                            logger.debug("Invalid decodeParms type. Ignoring decodeParms.");
                         }
                     } else {
-                        logger.warn("Invalid value type in filters array. Skipping the filter");
+                        logger.debug("Invalid value type in filters array. Skipping the filter");
                     }
                 }
             }
@@ -158,7 +158,7 @@ public class PBCosStream extends PBCosDict implements CosStream {
         } else if (decodeParms instanceof COSDictionary) {
             return new PBCosFilter(filter, (COSDictionary) decodeParms);
         } else {
-            logger.warn("Invalid decodeParms type. Ignoring decodeParms.");
+            logger.debug("Invalid decodeParms type. Ignoring decodeParms.");
             return new PBCosFilter(filter, null);
         }
     }
@@ -181,12 +181,12 @@ public class PBCosStream extends PBCosDict implements CosStream {
                 if (filter instanceof COSName) {
                     filters.append(((COSName) filter).getName()).append(" ");
                 } else {
-                    logger.error("Incorrect type for stream filter " +
+                    logger.debug("Incorrect type for stream filter " +
 							filter.getClass().getName());
                 }
             }
         } else {
-			logger.error("Incorrect type for stream filter " +
+			logger.debug("Incorrect type for stream filter " +
 					base.getClass().getName());
 			return null;
         }

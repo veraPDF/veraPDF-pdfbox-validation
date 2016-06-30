@@ -81,7 +81,7 @@ public class PBoxPDCMap extends PBoxPDObject implements PDCMap {
                     return Collections.unmodifiableList(result);
                 }
             } catch (IOException e) {
-                LOGGER.warn("Error while processing cmap", e);
+                LOGGER.debug("Error while processing cmap", e);
             }
         }
         return Collections.emptyList();

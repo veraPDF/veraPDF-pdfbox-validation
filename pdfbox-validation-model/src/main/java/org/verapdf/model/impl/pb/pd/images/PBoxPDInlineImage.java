@@ -100,7 +100,7 @@ public class PBoxPDInlineImage extends PBoxPDObject implements PDInlineImage {
 				return Collections.unmodifiableList(colorSpaces);
 			}
 		} catch (IOException e) {
-			LOGGER.error(
+			LOGGER.debug(
 					"Problems with color space obtaining from InlineImage XObject. "
 							+ e.getMessage(), e);
 		}

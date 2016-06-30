@@ -61,7 +61,7 @@ public class PBoxPDType1Font extends PBoxPDSimpleFont implements PDType1Font {
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.error("Error while parsing embedded font program. " + e.getMessage(), e);
+			LOGGER.debug("Error while parsing embedded font program. " + e.getMessage(), e);
 		}
 		return Boolean.FALSE;
 	}

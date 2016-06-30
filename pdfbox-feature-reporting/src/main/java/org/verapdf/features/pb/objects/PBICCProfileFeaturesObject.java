@@ -136,7 +136,7 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 				try {
 					metadata = PBCreateNodeHelper.inputStreamToByteArray(((COSStream) cosBase).getUnfilteredStream());
 				} catch (IOException e) {
-					LOGGER.error("Can not get metadata stream for iccProfile", e);
+					LOGGER.debug("Can not get metadata stream for iccProfile", e);
 				}
 			}
 
@@ -170,7 +170,7 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 			return ICCProfileFeaturesData.newInstance(metadata, stream, n, range);
 
 		} catch (IOException e) {
-			LOGGER.error("Can not get iccProfile stream", e);
+			LOGGER.debug("Can not get iccProfile stream", e);
 			return null;
 		}
 	}

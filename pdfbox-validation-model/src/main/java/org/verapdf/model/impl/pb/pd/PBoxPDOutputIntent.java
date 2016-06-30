@@ -88,7 +88,7 @@ public class PBoxPDOutputIntent extends PBoxPDObject implements PDOutputIntent {
 				return Collections.unmodifiableList(profile);
 			}
 		} catch (IOException e) {
-			LOGGER.error("Can not read dest output profile. " + e.getMessage(),
+			LOGGER.debug("Can not read dest output profile. " + e.getMessage(),
 					e);
 		}
 		return Collections.emptyList();

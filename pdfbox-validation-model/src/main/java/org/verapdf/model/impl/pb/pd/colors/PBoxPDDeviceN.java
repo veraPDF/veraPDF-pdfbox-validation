@@ -113,7 +113,7 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 				return Collections.unmodifiableList(colorSpace);
 			}
 		} catch (IOException e) {
-			LOGGER.error("Can not get alternate color space from DeviceN. ", e);
+			LOGGER.debug("Can not get alternate color space from DeviceN. ", e);
 		}
 		return Collections.emptyList();
 	}
@@ -156,7 +156,7 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 					list.add((PBoxPDSeparation) ColorSpaceFactory.getColorSpace(colorSpace, this.document, this.flavour));
 				}
 			} catch (IOException e) {
-				LOGGER.warn("Problems with color space obtain.", e);
+				LOGGER.debug("Problems with color space obtain.", e);
 			}
 		}
 		return Collections.unmodifiableList(list);
