@@ -3,6 +3,7 @@ package org.verapdf.model.impl.pb.operator.textshow;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDSimpleFont;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.font.encoding.Encoding;
 import org.verapdf.model.GenericModelObject;
 import org.verapdf.model.operator.Glyph;
@@ -40,8 +41,17 @@ public class PBGlyph extends GenericModelObject implements Glyph {
 		if (font instanceof PDSimpleFont) {
 			Encoding encoding = ((PDSimpleFont) font).getEncoding();
 			this.name = encoding == null ? null : encoding.getName(glyphCode);
-		} else {
-			this.name = null;
+		} else if (font instanceof PDType0Font){
+			try {
+				if (((PDType0Font) font).codeToGID(glyphCode) == 0) {
+					this.name = ".notdef";
+				} else {
+					this.name = null;
+				}
+			} catch (IOException e) {
+				LOGGER.debug("Can't convert code to glyph",e);
+				this.name = null;
+			}
 		}
 
 		try {

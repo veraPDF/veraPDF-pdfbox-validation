@@ -12,7 +12,7 @@ import java.util.Set;
  */
 public class PBoxPDPerms extends PBoxPDObject implements PDPerms{
 
-	/** Type name for {@code PBoxPDSigRef} */
+	/** Type name for {@code PBoxPDPerms} */
 	public static final String PERMS_TYPE = "PDPerms";
 
 	private static COSName UC3 = COSName.getPDFName("UC3");
@@ -33,9 +33,9 @@ public class PBoxPDPerms extends PBoxPDObject implements PDPerms{
 		Set<COSName> names = ((COSDictionary) this.simplePDObject).keySet();
 		for(COSName name : names) {
 			if(name.compareTo(UC3) != 0 && name.compareTo(COSName.DOC_MDP) != 0) {
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 }
