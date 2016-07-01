@@ -25,7 +25,7 @@ public class PBoxPDGroupTest extends BaseTest {
 	@BeforeClass
 	public static void setUp() throws URISyntaxException, IOException {
 		expectedType = TYPES.contains(PBoxPDGroup.GROUP_TYPE) ? PBoxPDGroup.GROUP_TYPE : null;
-		expectedID = "0 42 obj PDGroup";
+		expectedID = "42 0 obj PDGroup";
 
 		setUp(FILE_RELATIVE_PATH);
 		COSBase groupDictionary = document.getPage(0).getCOSObject().getDictionaryObject(COSName.GROUP);

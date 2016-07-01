@@ -26,7 +26,7 @@ public class PBoxPDContentStreamTest extends BaseTest {
 	@BeforeClass
 	public static void setUp() throws URISyntaxException, IOException {
 		expectedType = TYPES.contains(CONTENT_STREAM_TYPE) ? CONTENT_STREAM_TYPE : null;
-		expectedID = "0 11 obj PDContentStream";
+		expectedID = "11 0 obj PDContentStream";
 
 		setUp(FILE_RELATIVE_PATH);
 		PDPage page = document.getPage(0);

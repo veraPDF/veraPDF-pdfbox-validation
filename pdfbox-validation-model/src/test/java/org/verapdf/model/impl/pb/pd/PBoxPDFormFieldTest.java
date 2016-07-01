@@ -24,7 +24,7 @@ public class PBoxPDFormFieldTest extends BaseTest {
 	@BeforeClass
 	public static void setUp() throws URISyntaxException, IOException {
 		expectedType = TYPES.contains(PBoxPDFormField.FORM_FIELD_TYPE) ? PBoxPDFormField.FORM_FIELD_TYPE : null;
-		expectedID = "0 11 obj PDFormField";
+		expectedID = "11 0 obj PDFormField";
 
 		setUp(FILE_RELATIVE_PATH);
 		actual = new PBoxPDFormField(document.getDocumentCatalog().getAcroForm().getFields().get(0));

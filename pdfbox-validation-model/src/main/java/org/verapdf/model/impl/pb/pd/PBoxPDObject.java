@@ -39,7 +39,7 @@ public class PBoxPDObject extends GenericModelObject implements PDObject {
 			if (cosObject != null) {
 				COSObjectKey key = cosObject.getKey();
 				id = key != null ?
-						key.getGeneration() + " " + key.getNumber() + " obj " + this.getObjectType()
+						key.getNumber() + " " + key.getGeneration() + " obj " + this.getObjectType()
 						: super.getID();
 			}
 		}
@@ -56,7 +56,7 @@ public class PBoxPDObject extends GenericModelObject implements PDObject {
 				if (cosBase != null) {
 					COSObjectKey key = cosBase.getKey();
 					id = key != null ?
-							key.getGeneration() + " " + key.getNumber() + " obj " + this.getObjectType()
+							key.getNumber() + " " + key.getGeneration() + " obj " + this.getObjectType()
 							: super.getID();
 				}
 			}
@@ -73,7 +73,7 @@ public class PBoxPDObject extends GenericModelObject implements PDObject {
 				if (cosBase != null) {
 					COSObjectKey key = cosBase.getKey();
 					id = key != null ?
-							key.getGeneration() + " " + key.getNumber() + " obj " + this.getObjectType()
+							key.getNumber() + " " + key.getGeneration() + " obj " + this.getObjectType()
 							: super.getID();
 				}
 			}
@@ -87,7 +87,7 @@ public class PBoxPDObject extends GenericModelObject implements PDObject {
 		if (pdFontLike instanceof COSBase) {
 			COSObjectKey key = ((COSBase) pdFontLike).getKey();
 			id = key != null ?
-					key.getGeneration() + " " + key.getNumber() + " obj " + this.getObjectType()
+					key.getNumber() + " " + key.getGeneration() + " obj " + this.getObjectType()
 					: super.getID();
 		}
 	}
@@ -100,7 +100,7 @@ public class PBoxPDObject extends GenericModelObject implements PDObject {
 		if (this.simplePDObject != null) {
 			COSObjectKey key = this.simplePDObject.getCOSObject().getKey();
 			id = key != null ?
-					key.getGeneration() + " " + key.getNumber() + " obj " + this.getObjectType()
+					key.getNumber() + " " + key.getGeneration() + " obj " + this.getObjectType()
 					: super.getID();
 		}
 	}

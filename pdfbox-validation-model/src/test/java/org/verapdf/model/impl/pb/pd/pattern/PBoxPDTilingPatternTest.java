@@ -18,7 +18,7 @@ public class PBoxPDTilingPatternTest extends PBoxPDPatternTest{
 	@BeforeClass
 	public static void setUp() throws URISyntaxException, IOException {
 		setUp(PBoxPDTilingPattern.TILING_PATTERN_TYPE, "P0");
-		expectedID = "0 8 obj PDTilingPattern";
+		expectedID = "8 0 obj PDTilingPattern";
 	}
 
 	@Test
