@@ -38,7 +38,7 @@ public class PBoxPDType3FontTest extends PBoxPDSimpleFontTest {
 				(org.apache.pdfbox.pdmodel.font.PDType3Font)
 						pageResources.getFont(COSName.getPDFName(TYPE3_FONT_NAME));
 		PDInheritableResources resources = PDInheritableResources.getInstance(pageResources, type3Font.getResources());
-		actual = new PBoxPDType3Font(type3Font, resources, document, null);
+		actual = new PBoxPDType3Font(type3Font, defaultRenderingMode, resources, document, null);
 
 		expectedID = type3Font.getCOSObject().hashCode() + " null";
 	}

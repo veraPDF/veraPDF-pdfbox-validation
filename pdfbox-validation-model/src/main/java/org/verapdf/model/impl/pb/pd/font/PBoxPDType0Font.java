@@ -8,6 +8,7 @@ import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.PDCIDSystemInfo;
 import org.apache.pdfbox.pdmodel.font.PDFontLike;
+import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.pdlayer.PDCIDFont;
 import org.verapdf.model.pdlayer.PDCMap;
@@ -31,8 +32,8 @@ public class PBoxPDType0Font extends PBoxPDFont implements PDType0Font {
 	private final PDDocument document;
 	private final PDFAFlavour flavour;
 
-	public PBoxPDType0Font(PDFontLike font, PDDocument document, PDFAFlavour flavour) {
-	    super(font, TYPE_0_FONT_TYPE);
+	public PBoxPDType0Font(PDFontLike font, RenderingMode renderingMode, PDDocument document, PDFAFlavour flavour) {
+	    super(font, renderingMode, TYPE_0_FONT_TYPE);
 		this.document = document;
 		this.flavour = flavour;
 	}
@@ -120,7 +121,7 @@ public class PBoxPDType0Font extends PBoxPDFont implements PDType0Font {
                 .getDescendantFont();
         if (pdcidFont != null) {
 			List<PDCIDFont> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			list.add(new PBoxPDCIDFont(pdcidFont, this.document, this.flavour));
+			list.add(new PBoxPDCIDFont(pdcidFont, this.renderingMode, this.document, this.flavour));
 			return Collections.unmodifiableList(list);
         }
         return Collections.emptyList();

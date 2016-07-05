@@ -6,6 +6,7 @@ import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
 import org.apache.pdfbox.pdmodel.font.PDType1CFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.PDType3Font;
+import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.verapdf.model.impl.pb.pd.font.PBoxPDTrueTypeFont;
 import org.verapdf.model.impl.pb.pd.font.PBoxPDType0Font;
 import org.verapdf.model.impl.pb.pd.font.PBoxPDType1Font;
@@ -47,37 +48,38 @@ public final class FontFactory {
 	 * @param pdfboxFont Apache PDFBox font representation
 	 * @return VeraPDF font representation
 	 */
-	// this one is used for testing
 	public static PDFont parseFont(
-			org.apache.pdfbox.pdmodel.font.PDFont pdfboxFont, PDDocument document, PDFAFlavour flavour) {
-		return parseFont(pdfboxFont, PDInheritableResources.EMPTY_EXTENDED_RESOURCES, document, flavour);
-	}
-
-	public static PDFont parseFont(
-			org.apache.pdfbox.pdmodel.font.PDFont pdfboxFont,
+			org.apache.pdfbox.pdmodel.font.PDFont pdfboxFont, RenderingMode renderingMode,
 			PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
 		if (pdfboxFont == null) {
 			return null;
 		}
 		switch (pdfboxFont.getSubType()) {
 			case TYPE_0:
-				return new PBoxPDType0Font(pdfboxFont, document, flavour);
+				return new PBoxPDType0Font(pdfboxFont, renderingMode, document, flavour);
 			case TYPE_1:
 				if (pdfboxFont instanceof PDType1Font) {
-					return new PBoxPDType1Font((PDType1Font) pdfboxFont);
+					return new PBoxPDType1Font((PDType1Font) pdfboxFont, renderingMode);
 				} else if (pdfboxFont instanceof PDType1CFont) {
-					return new PBoxPDType1Font((PDType1CFont) pdfboxFont);
+					return new PBoxPDType1Font((PDType1CFont) pdfboxFont, renderingMode);
 				}
 			case TYPE_3: {
 				PDResources fontResources = ((PDType3Font) pdfboxFont).getResources();
 				PDInheritableResources pdResources = resources.getExtendedResources(fontResources);
-				return new PBoxPDType3Font(pdfboxFont, pdResources, document, flavour);
+				return new PBoxPDType3Font(pdfboxFont, renderingMode, pdResources, document, flavour);
 			}
 			case TRUE_TYPE:
-				return new PBoxPDTrueTypeFont((PDTrueTypeFont) pdfboxFont);
+				return new PBoxPDTrueTypeFont((PDTrueTypeFont) pdfboxFont, renderingMode);
 			default:
 				return null;
 		}
+	}
+
+
+	// for testing purposes
+	public static PDFont parseFont(
+			org.apache.pdfbox.pdmodel.font.PDFont pdfboxFont, PDDocument document, PDFAFlavour flavour) {
+		return parseFont(pdfboxFont, RenderingMode.FILL, PDInheritableResources.EMPTY_EXTENDED_RESOURCES, document, flavour);
 	}
 
 }
