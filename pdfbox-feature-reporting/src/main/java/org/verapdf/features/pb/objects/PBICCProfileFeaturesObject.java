@@ -14,6 +14,7 @@ import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -128,13 +129,13 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 	@Override
 	public FeaturesData getData() {
 		try {
-			byte[] stream = PBCreateNodeHelper.inputStreamToByteArray(profile.getUnfilteredStream());
+			InputStream stream = profile.getUnfilteredStream();
 
-			byte[] metadata = null;
+			InputStream metadata = null;
 			COSBase cosBase = profile.getDictionaryObject(COSName.METADATA);
 			if (cosBase instanceof COSStream) {
 				try {
-					metadata = PBCreateNodeHelper.inputStreamToByteArray(((COSStream) cosBase).getUnfilteredStream());
+					metadata = ((COSStream) cosBase).getUnfilteredStream();
 				} catch (IOException e) {
 					LOGGER.debug("Can not get metadata stream for iccProfile", e);
 				}

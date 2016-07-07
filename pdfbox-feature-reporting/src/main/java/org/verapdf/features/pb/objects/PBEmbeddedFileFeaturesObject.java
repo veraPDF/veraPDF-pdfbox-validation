@@ -130,9 +130,8 @@ public class PBEmbeddedFileFeaturesObject implements IFeaturesObject {
 				LOGGER.debug("Missed embedded file in PDComplexFileSpecification");
 				return null;
 			}
-			byte[] stream = PBCreateNodeHelper.inputStreamToByteArray(ef.getStream().getUnfilteredStream());
 
-			EmbeddedFileFeaturesData.Builder builder = new EmbeddedFileFeaturesData.Builder(stream);
+			EmbeddedFileFeaturesData.Builder builder = new EmbeddedFileFeaturesData.Builder(ef.getStream().getUnfilteredStream());
 
 			builder.name(embFile.getFilename());
 			builder.description(embFile.getFileDescription());

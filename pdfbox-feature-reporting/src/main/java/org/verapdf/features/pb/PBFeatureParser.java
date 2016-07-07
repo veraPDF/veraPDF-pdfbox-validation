@@ -26,6 +26,10 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceDictionary;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceEntry;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
+import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.apache.pdfbox.pdmodel.interactive.form.PDField;
+import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesExtractor;
 import org.verapdf.features.FeaturesObjectTypesEnum;
@@ -248,6 +252,11 @@ public final class PBFeatureParser {
 		reporter.report(PBFeaturesObjectCreator
 				.createOutlinesFeaturesObject(catalog.getDocumentOutline()));
 
+		PDAcroForm acroForm = catalog.getAcroForm();
+		if (acroForm != null) {
+			getAcroFormFeatures(acroForm);
+		}
+
 		if (catalog.getNames() != null
 				&& catalog.getNames().getEmbeddedFiles() != null) {
 			reportEmbeddedFiles(catalog);
@@ -289,6 +298,20 @@ public final class PBFeatureParser {
 		}
 
 		getResourcesFeatures();
+	}
+
+	private void getAcroFormFeatures(PDAcroForm acroForm) {
+		List<PDField> fields = acroForm.getFields();
+		if (fields != null) {
+			for (PDField field : fields) {
+				if (field instanceof PDSignatureField) {
+					PDSignature signature = ((PDSignatureField) field).getSignature();
+					if (signature != null) {
+						reporter.report(PBFeaturesObjectCreator.createSignatureFeaturesObject(signature));
+					}
+				}
+			}
+		}
 	}
 
 	private void getResourcesFeatures() {

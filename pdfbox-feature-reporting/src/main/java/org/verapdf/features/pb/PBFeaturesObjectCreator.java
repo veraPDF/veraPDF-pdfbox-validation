@@ -18,6 +18,7 @@ import org.apache.pdfbox.pdmodel.graphics.pattern.PDTilingPattern;
 import org.apache.pdfbox.pdmodel.graphics.shading.PDShading;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
 import org.verapdf.features.pb.objects.*;
 
@@ -387,5 +388,15 @@ public final class PBFeaturesObjectCreator {
 	 */
 	public static PBPostScriptXObjectFeaturesObject createPostScriptXObjectFeaturesObject(String id, Set<String> pageParent, Set<String> patternParent, Set<String> xobjectParent, Set<String> fontParent) {
 		return new PBPostScriptXObjectFeaturesObject(id, pageParent, patternParent, xobjectParent, fontParent);
+	}
+
+	/**
+	 * Constructs new PBSignatureFeaturesObject
+	 *
+	 * @param signature pdfbox signature object
+	 * @return created PBSignatureFeaturesObject
+     */
+	public static PBSignatureFeaturesObject createSignatureFeaturesObject(PDSignature signature) {
+		return new PBSignatureFeaturesObject(signature);
 	}
 }
