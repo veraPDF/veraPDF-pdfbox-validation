@@ -7,6 +7,7 @@ import org.apache.pdfbox.pdmodel.font.PDFontLike;
 import org.apache.pdfbox.pdmodel.font.PDSimpleFont;
 import org.apache.pdfbox.pdmodel.font.PDType3CharProc;
 import org.apache.pdfbox.pdmodel.font.encoding.Encoding;
+import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.impl.pb.pd.PBoxPDContentStream;
 import org.verapdf.model.pdlayer.PDContentStream;
@@ -32,8 +33,8 @@ public class PBoxPDType3Font extends PBoxPDSimpleFont implements PDType3Font {
 
 	private Map<String, PDContentStream> charStrings = null;
 
-	public PBoxPDType3Font(PDFontLike font, PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
-		super(font, TYPE3_FONT_TYPE);
+	public PBoxPDType3Font(PDFontLike font, RenderingMode renderingMode, PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
+		super(font, renderingMode, TYPE3_FONT_TYPE);
 		this.resources = resources;
 		this.document = document;
 		this.flavour = flavour;

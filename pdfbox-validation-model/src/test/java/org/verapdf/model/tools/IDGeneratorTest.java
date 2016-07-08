@@ -4,6 +4,7 @@ import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.junit.Assert;
 import org.junit.Test;
 import org.verapdf.model.impl.pb.pd.font.PBoxPDType1Font;
@@ -44,7 +45,7 @@ public class IDGeneratorTest {
 		COSDictionary dictionary = new COSDictionary();
 		dictionary.setItem(COSName.BASE_FONT, COSName.getPDFName("Arial+MTT"));
 		PDType1Font font = new PDType1Font(dictionary);
-		PBoxPDType1Font actualFont = new PBoxPDType1Font(font);
+		PBoxPDType1Font actualFont = new PBoxPDType1Font(font, RenderingMode.FILL);
 
 		String actualID = actualFont.getID();
 		String expectedID = dictionary.hashCode() + " Arial+MTT";

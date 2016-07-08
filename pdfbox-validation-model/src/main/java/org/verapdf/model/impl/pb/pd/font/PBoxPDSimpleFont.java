@@ -4,6 +4,7 @@ import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.font.PDFontLike;
+import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.verapdf.model.pdlayer.PDSimpleFont;
 
 /**
@@ -13,8 +14,8 @@ public abstract class PBoxPDSimpleFont extends PBoxPDFont implements PDSimpleFon
 
     public static final String CUSTOM_ENCODING = "Custom";
 
-	public PBoxPDSimpleFont(PDFontLike font, final String type) {
-		super(font, type);
+	public PBoxPDSimpleFont(PDFontLike font, RenderingMode renderingMode, final String type) {
+		super(font, renderingMode, type);
 	}
 
     @Override
