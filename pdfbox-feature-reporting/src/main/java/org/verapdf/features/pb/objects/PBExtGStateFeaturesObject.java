@@ -75,7 +75,9 @@ public class PBExtGStateFeaturesObject implements IFeaturesObject {
 		if (exGState != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("graphicsState");
 
-			root.setAttribute(ID, this.id);
+			if (id != null) {
+				root.setAttribute(ID, this.id);
+			}
 
 			parseParents(root);
 

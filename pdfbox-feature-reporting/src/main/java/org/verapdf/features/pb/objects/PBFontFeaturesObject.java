@@ -102,7 +102,9 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
 		if (fontLike != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("font");
-			root.setAttribute(ID, id);
+			if (id != null) {
+				root.setAttribute(ID, id);
+			}
 
 			parseParents(root);
 

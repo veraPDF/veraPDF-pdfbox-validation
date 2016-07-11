@@ -4,6 +4,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.verapdf.core.FeatureParsingException;
+import org.verapdf.features.config.FeaturesConfig;
 import org.verapdf.features.pb.PBFeatureParser;
 import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
@@ -31,7 +32,26 @@ public class PBFeatureParserTest {
 	public static void before() throws URISyntaxException, IOException {
 		File pdf = new File(TestNodeGenerator.getSystemIndependentPath("/FR.pdf"));
 		PDDocument document = PDDocument.load(pdf, false, true);
-		collection = PBFeatureParser.getFeaturesCollection(document, Collections.<FeaturesExtractor>emptyList());
+		FeaturesConfig.Builder configBuilder = new FeaturesConfig.Builder();
+		configBuilder.informationDict(true);
+		configBuilder.metadata(true);
+		configBuilder.documentSecurity(true);
+		configBuilder.signatures(true);
+		configBuilder.lowLevelInfo(true);
+		configBuilder.embeddedFiles(true);
+		configBuilder.iccProfiles(true);
+		configBuilder.outputIntents(true);
+		configBuilder.outlines(true);
+		configBuilder.annotations(true);
+		configBuilder.pages(true);
+		configBuilder.graphicsStates(true);
+		configBuilder.colorSpaces(true);
+		configBuilder.patterns(true);
+		configBuilder.shadings(true);
+		configBuilder.xobjects(true);
+		configBuilder.fonts(true);
+		configBuilder.propertiesDicts(true);
+		collection = PBFeatureParser.getFeaturesCollection(document, Collections.<FeaturesExtractor>emptyList(), configBuilder.build());
 	}
 
 	@Test

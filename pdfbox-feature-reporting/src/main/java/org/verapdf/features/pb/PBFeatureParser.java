@@ -34,6 +34,7 @@ import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesExtractor;
 import org.verapdf.features.FeaturesObjectTypesEnum;
 import org.verapdf.features.FeaturesReporter;
+import org.verapdf.features.config.FeaturesConfig;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
@@ -74,6 +75,7 @@ public final class PBFeatureParser {
 	private static final String DEVICECMYK_ID = "devcmyk";
 
 	private FeaturesReporter reporter;
+	private FeaturesConfig config;
 
 	private Map<String, COSStream> iccProfiles = new HashMap<>();
 	private Map<String, Set<String>> iccProfileOutInts = new HashMap<>();
@@ -189,8 +191,9 @@ public final class PBFeatureParser {
 	private Map<String, Set<String>> postscriptXObjectParent = new HashMap<>();
 	private Map<String, Set<String>> postscriptFontParent = new HashMap<>();
 
-	private PBFeatureParser(FeaturesReporter reporter) {
+	private PBFeatureParser(FeaturesReporter reporter, FeaturesConfig config) {
 		this.reporter = reporter;
+		this.config = config;
 	}
 
 	/**
@@ -200,10 +203,10 @@ public final class PBFeatureParser {
 	 * @param document the document for parsing
 	 * @return FeaturesCollection class with information about all featurereport
 	 */
-	public static FeaturesCollection getFeaturesCollection(final PDDocument document) {
+	public static FeaturesCollection getFeaturesCollection(final PDDocument document, final FeaturesConfig config) {
 
 		FeaturesReporter reporter = new FeaturesReporter();
-		return getFeatures(document, reporter);
+		return getFeatures(document, reporter, config);
 	}
 
 	/**
@@ -214,15 +217,18 @@ public final class PBFeatureParser {
 	 * @return FeaturesCollection class with information about all featurereport
 	 */
 	public static FeaturesCollection getFeaturesCollection(
-			final PDDocument document, final List<FeaturesExtractor> extractors) {
+			final PDDocument document, final List<FeaturesExtractor> extractors, final FeaturesConfig config) {
 
 		FeaturesReporter reporter = new FeaturesReporter(extractors);
-		return getFeatures(document, reporter);
+		return getFeatures(document, reporter, config);
 	}
 
-	private static FeaturesCollection getFeatures(PDDocument document, FeaturesReporter reporter) {
+	private static FeaturesCollection getFeatures(PDDocument document, FeaturesReporter reporter, FeaturesConfig config) {
+		if (config == null) {
+			throw new IllegalArgumentException("Features config can not be null");
+		}
 		if (document != null) {
-			PBFeatureParser parser = new PBFeatureParser(reporter);
+			PBFeatureParser parser = new PBFeatureParser(reporter, config);
 			parser.parseDocumentFeatures(document);
 		}
 
@@ -230,34 +236,45 @@ public final class PBFeatureParser {
 	}
 
 	private void parseDocumentFeatures(PDDocument document) {
-		reporter.report(PBFeaturesObjectCreator
-				.createInfoDictFeaturesObject(document.getDocumentInformation()));
+		if (config.isInformationDictEnabled()) {
+			reporter.report(PBFeaturesObjectCreator
+					.createInfoDictFeaturesObject(document.getDocumentInformation()));
+		}
 
-		reporter.report(PBFeaturesObjectCreator
-				.createDocSecurityFeaturesObject(document.getEncryption()));
+		if (config.isDocumentSecurityEnabled()) {
+			reporter.report(PBFeaturesObjectCreator
+					.createDocSecurityFeaturesObject(document.getEncryption()));
+		}
 
 		PDDocumentCatalog catalog = document.getDocumentCatalog();
 		if (catalog != null) {
 			getCatalogFeatures(catalog);
 		}
 
-		reporter.report(PBFeaturesObjectCreator
-				.createLowLvlInfoFeaturesObject(document.getDocument()));
+		if (config.isLowLevelInfoEnabled()) {
+			reporter.report(PBFeaturesObjectCreator
+					.createLowLvlInfoFeaturesObject(document.getDocument()));
+		}
 
 	}
 
 	private void getCatalogFeatures(PDDocumentCatalog catalog) {
-		reporter.report(PBFeaturesObjectCreator
-				.createMetadataFeaturesObject(catalog.getMetadata()));
-		reporter.report(PBFeaturesObjectCreator
-				.createOutlinesFeaturesObject(catalog.getDocumentOutline()));
+		if (config.isMetadataEnabled()) {
+			reporter.report(PBFeaturesObjectCreator
+					.createMetadataFeaturesObject(catalog.getMetadata()));
+		}
+		if (config.isOutlinesEnabled()) {
+			reporter.report(PBFeaturesObjectCreator
+					.createOutlinesFeaturesObject(catalog.getDocumentOutline()));
+		}
 
 		PDAcroForm acroForm = catalog.getAcroForm();
 		if (acroForm != null) {
 			getAcroFormFeatures(acroForm);
 		}
 
-		if (catalog.getNames() != null
+		if (config.isEmbeddedFilesEnabled()
+				&& catalog.getNames() != null
 				&& catalog.getNames().getEmbeddedFiles() != null) {
 			reportEmbeddedFiles(catalog);
 		}
@@ -304,12 +321,17 @@ public final class PBFeatureParser {
 		List<PDField> fields = acroForm.getFields();
 		if (fields != null) {
 			for (PDField field : fields) {
-				if (field instanceof PDSignatureField) {
-					PDSignature signature = ((PDSignatureField) field).getSignature();
-					if (signature != null) {
-						reporter.report(PBFeaturesObjectCreator.createSignatureFeaturesObject(signature));
-					}
-				}
+				getFieldFeatures(field);
+			}
+		}
+	}
+
+	private void getFieldFeatures(PDField field) {
+		if (config.isSignaturesEnabled()
+				&& field instanceof PDSignatureField) {
+			PDSignature signature = ((PDSignatureField) field).getSignature();
+			if (signature != null) {
+				reporter.report(PBFeaturesObjectCreator.createSignatureFeaturesObject(signature));
 			}
 		}
 	}

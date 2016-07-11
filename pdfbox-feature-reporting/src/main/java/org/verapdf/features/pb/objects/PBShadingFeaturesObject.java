@@ -68,7 +68,9 @@ public class PBShadingFeaturesObject implements IFeaturesObject {
 	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
 		if (shading != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("shading");
-			root.setAttribute(ID, id);
+			if (id != null) {
+				root.setAttribute(ID, id);
+			}
 
 			parseParents(root);
 

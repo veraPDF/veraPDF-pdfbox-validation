@@ -59,7 +59,9 @@ public class PBPostScriptXObjectFeaturesObject implements IFeaturesObject {
 	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
 		FeatureTreeNode root = FeatureTreeNode.createRootNode("xobject");
 		root.setAttribute("type", "postscript");
-		root.setAttribute("id", id);
+		if (id != null) {
+			root.setAttribute("id", id);
+		}
 		parseParents(root);
 
 		collection.addNewFeatureTree(FeaturesObjectTypesEnum.POSTSCRIPT_XOBJECT, root);

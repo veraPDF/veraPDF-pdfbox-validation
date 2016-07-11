@@ -71,7 +71,9 @@ public class PBShadingPatternFeaturesObject implements IFeaturesObject {
 	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
 		if (shadingPattern != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("pattern");
-			root.setAttribute(ID, id);
+			if (id != null) {
+				root.setAttribute(ID, id);
+			}
 			root.setAttribute("type", "shading");
 
 			parseParents(root);
