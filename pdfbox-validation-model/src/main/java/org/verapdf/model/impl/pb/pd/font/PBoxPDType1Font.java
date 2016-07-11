@@ -5,6 +5,7 @@ import org.apache.fontbox.cff.CFFFont;
 import org.apache.fontbox.type1.Type1Font;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
+import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.verapdf.model.pdlayer.PDType1Font;
 
 import java.io.IOException;
@@ -19,12 +20,12 @@ public class PBoxPDType1Font extends PBoxPDSimpleFont implements PDType1Font {
 	public static final String UNDEFINED_GLYPH = ".notdef";
 	public static final String TYPE1_FONT_TYPE = "PDType1Font";
 
-	public PBoxPDType1Font(org.apache.pdfbox.pdmodel.font.PDType1Font font) {
-		super(font, TYPE1_FONT_TYPE);
+	public PBoxPDType1Font(org.apache.pdfbox.pdmodel.font.PDType1Font font, RenderingMode renderingMode) {
+		super(font, renderingMode, TYPE1_FONT_TYPE);
 	}
 
-	public PBoxPDType1Font(org.apache.pdfbox.pdmodel.font.PDType1CFont font) {
-		super(font, TYPE1_FONT_TYPE);
+	public PBoxPDType1Font(org.apache.pdfbox.pdmodel.font.PDType1CFont font, RenderingMode renderingMode) {
+		super(font, renderingMode, TYPE1_FONT_TYPE);
 	}
 
 	@Override

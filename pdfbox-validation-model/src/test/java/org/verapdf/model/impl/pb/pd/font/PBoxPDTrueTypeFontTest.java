@@ -31,7 +31,7 @@ public class PBoxPDTrueTypeFontTest extends PBoxPDSimpleFontTest {
 
 		setUp(FILE_RELATIVE_PATH);
 		PDTrueTypeFont trueTypeFont = (PDTrueTypeFont) document.getPage(0).getResources().getFont(COSName.getPDFName(TRUETYPE_FONT_NAME));
-		actual = new PBoxPDTrueTypeFont(trueTypeFont);
+		actual = new PBoxPDTrueTypeFont(trueTypeFont, defaultRenderingMode);
 
 		expectedID = trueTypeFont.getCOSObject().hashCode() + " CUQUFZ+GillSansMT";
 	}

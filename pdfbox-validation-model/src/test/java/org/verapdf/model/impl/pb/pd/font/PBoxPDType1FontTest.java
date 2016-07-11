@@ -36,7 +36,7 @@ public class PBoxPDType1FontTest extends PBoxPDSimpleFontTest {
 
 		setUp(FILE_RELATIVE_PATH);
 		PDType1CFont type1Font = (PDType1CFont) document.getPage(0).getResources().getFont(COSName.getPDFName(TYPE1_FONT_NAME));
-		actual = new PBoxPDType1Font(type1Font);
+		actual = new PBoxPDType1Font(type1Font, defaultRenderingMode);
 
 		expectedID = type1Font.getCOSObject().hashCode() + " OLXYQW+MyriadPro-Regular";
 	}

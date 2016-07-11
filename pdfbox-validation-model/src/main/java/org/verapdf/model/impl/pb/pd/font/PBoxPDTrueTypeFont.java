@@ -3,6 +3,7 @@ package org.verapdf.model.impl.pb.pd.font;
 import org.apache.pdfbox.pdmodel.font.encoding.DictionaryEncoding;
 import org.apache.pdfbox.pdmodel.font.encoding.Encoding;
 import org.apache.pdfbox.pdmodel.font.encoding.GlyphList;
+import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.verapdf.model.pdlayer.PDTrueTypeFont;
 
 import java.util.Map;
@@ -14,8 +15,8 @@ public class PBoxPDTrueTypeFont extends PBoxPDSimpleFont implements PDTrueTypeFo
 
 	public static final String TRUETYPE_FONT_TYPE = "PDTrueTypeFont";
 
-	public PBoxPDTrueTypeFont(org.apache.pdfbox.pdmodel.font.PDTrueTypeFont font) {
-		super(font, TRUETYPE_FONT_TYPE);
+	public PBoxPDTrueTypeFont(org.apache.pdfbox.pdmodel.font.PDTrueTypeFont font, RenderingMode renderingMode) {
+		super(font, renderingMode, TRUETYPE_FONT_TYPE);
 	}
 
 	//% true if all glyph names in the differences array of the Encoding dictionary are a part of the Adobe Glyph List

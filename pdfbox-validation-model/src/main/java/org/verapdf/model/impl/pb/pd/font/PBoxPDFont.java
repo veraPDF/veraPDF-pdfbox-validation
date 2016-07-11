@@ -3,6 +3,7 @@ package org.verapdf.model.impl.pb.pd.font;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.font.*;
+import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosUnicodeName;
 import org.verapdf.model.external.FontProgram;
@@ -26,10 +27,12 @@ public abstract class PBoxPDFont extends PBoxPDResources implements PDFont {
 	public static final String FONT_FILE = "fontFile";
 	public static final String BASE_FONT = "BaseFont";
 
+	protected final RenderingMode renderingMode;
 	private final String id;
 
-	protected PBoxPDFont(PDFontLike font, final String type) {
+	protected PBoxPDFont(PDFontLike font, RenderingMode renderingMode, final String type) {
 		super(font, type);
+		this.renderingMode = renderingMode;
 		this.id = IDGenerator.generateID(font);
 	}
 
@@ -73,6 +76,11 @@ public abstract class PBoxPDFont extends PBoxPDResources implements PDFont {
 	public Boolean getisSymbolic() {
 		PDFontDescriptor fontDescriptor = this.pdFontLike.getFontDescriptor();
 		return Boolean.valueOf(fontDescriptor.isSymbolic());
+	}
+
+	@Override
+	public Long getrenderingMode() {
+		return Long.valueOf(this.renderingMode.intValue());
 	}
 
 	@Override

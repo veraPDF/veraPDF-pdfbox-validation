@@ -12,6 +12,7 @@ import org.apache.pdfbox.pdmodel.font.PDCIDFontType0;
 import org.apache.pdfbox.pdmodel.font.PDCIDFontType2;
 import org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
 import org.apache.pdfbox.pdmodel.font.PDFontLike;
+import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosStream;
 import org.verapdf.model.impl.pb.cos.PBCosStream;
@@ -42,8 +43,8 @@ public class PBoxPDCIDFont extends PBoxPDFont implements PDCIDFont {
     public static final String IDENTITY = "Identity";
     public static final String CUSTOM = "Custom";
 
-    public PBoxPDCIDFont(PDFontLike font, PDDocument document, PDFAFlavour flavour) {
-        super(font, CID_FONT_TYPE);
+    public PBoxPDCIDFont(PDFontLike font, RenderingMode renderingMode, PDDocument document, PDFAFlavour flavour) {
+        super(font, renderingMode, CID_FONT_TYPE);
         this.document = document;
         this.flavour = flavour;
     }
