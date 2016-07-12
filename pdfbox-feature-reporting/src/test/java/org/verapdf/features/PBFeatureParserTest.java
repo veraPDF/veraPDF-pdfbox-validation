@@ -51,7 +51,7 @@ public class PBFeatureParserTest {
 		configBuilder.xobjects(true);
 		configBuilder.fonts(true);
 		configBuilder.propertiesDicts(true);
-		collection = PBFeatureParser.getFeaturesCollection(document, Collections.<FeaturesExtractor>emptyList(), configBuilder.build());
+		collection = PBFeatureParser.getFeaturesCollection(document, configBuilder.build());
 	}
 
 	@Test
