@@ -11,6 +11,7 @@ import org.verapdf.features.tools.FeaturesCollection;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -75,16 +76,10 @@ public class FeaturesConfigTest {
         FeaturesConfig config = createFullFeaturesConfigBuilder().iccProfiles(false).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.ICCPROFILE).isEmpty());
-
-        for (FeatureTreeNode outInt : collection.getFeatureTreesForType(FeaturesObjectTypesEnum.OUTPUTINTENT)) {
-            FeatureTreeNode destOutputIntent = getFirstChildNodeWithName(outInt, "destOutputIntent");
-            assertNull(destOutputIntent);
-        }
-
-        for (FeatureTreeNode colorSpace : collection.getFeatureTreesForType(FeaturesObjectTypesEnum.COLORSPACE)) {
-            FeatureTreeNode iccProfile = getFirstChildNodeWithName(colorSpace, "iccProfile");
-            assertNull(iccProfile);
-        }
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.OUTPUTINTENT), "destOutputIntent"));
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.COLORSPACE), "iccProfile"));
     }
 
     @Test
@@ -92,12 +87,8 @@ public class FeaturesConfigTest {
         FeaturesConfig config = createFullFeaturesConfigBuilder().outputIntents(false).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.OUTPUTINTENT).isEmpty());
-
-        for (FeatureTreeNode iccProfile : collection.getFeatureTreesForType(FeaturesObjectTypesEnum.ICCPROFILE)) {
-            FeatureTreeNode parents = getFirstChildNodeWithName(iccProfile, "parents");
-            FeatureTreeNode outputIntentParent = getFirstChildNodeWithName(parents, "outputIntent");
-            assertNull(outputIntentParent);
-        }
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.ICCPROFILE), "parents", "outputIntent"));
     }
 
     @Test
@@ -112,17 +103,10 @@ public class FeaturesConfigTest {
         FeaturesConfig config = createFullFeaturesConfigBuilder().annotations(false).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.ANNOTATION).isEmpty());
-
-        for (FeatureTreeNode page : collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PAGE)) {
-            FeatureTreeNode annots = getFirstChildNodeWithName(page, "annotations");
-            assertNull(annots);
-        }
-
-        for (FeatureTreeNode formXObject : collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FORM_XOBJECT)) {
-            FeatureTreeNode parents = getFirstChildNodeWithName(formXObject, "parents");
-            FeatureTreeNode outputIntentParent = getFirstChildNodeWithName(parents, "annotation");
-            assertNull(outputIntentParent);
-        }
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PAGE), "annotations"));
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FORM_XOBJECT), "parents", "annotation"));
     }
 
     @Test
@@ -130,62 +114,28 @@ public class FeaturesConfigTest {
         FeaturesConfig config = createFullFeaturesConfigBuilder().pages(false).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PAGE).isEmpty());
-
-        for (FeatureTreeNode annotations : collection.getFeatureTreesForType(FeaturesObjectTypesEnum.ANNOTATION)) {
-            FeatureTreeNode parents = getFirstChildNodeWithName(annotations, "parents");
-            FeatureTreeNode page = getFirstChildNodeWithName(parents, "page");
-            assertNull(page);
-        }
-        for (FeatureTreeNode exGState : collection.getFeatureTreesForType(FeaturesObjectTypesEnum.EXT_G_STATE)) {
-            FeatureTreeNode parents = getFirstChildNodeWithName(exGState, "parents");
-            FeatureTreeNode page = getFirstChildNodeWithName(parents, "page");
-            assertNull(page);
-        }
-        for (FeatureTreeNode colorSpace : collection.getFeatureTreesForType(FeaturesObjectTypesEnum.COLORSPACE)) {
-            FeatureTreeNode parents = getFirstChildNodeWithName(colorSpace, "parents");
-            FeatureTreeNode page = getFirstChildNodeWithName(parents, "page");
-            assertNull(page);
-        }
-        for (FeatureTreeNode pattern : collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PATTERN)) {
-            FeatureTreeNode parents = getFirstChildNodeWithName(pattern, "parents");
-            FeatureTreeNode page = getFirstChildNodeWithName(parents, "page");
-            assertNull(page);
-        }
-        for (FeatureTreeNode shading : collection.getFeatureTreesForType(FeaturesObjectTypesEnum.SHADING)) {
-            FeatureTreeNode parents = getFirstChildNodeWithName(shading, "parents");
-            FeatureTreeNode page = getFirstChildNodeWithName(parents, "page");
-            assertNull(page);
-        }
-        for (FeatureTreeNode xobject : collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FORM_XOBJECT)) {
-            FeatureTreeNode parents = getFirstChildNodeWithName(xobject, "parents");
-            FeatureTreeNode page = getFirstChildNodeWithName(parents, "page");
-            assertNull(page);
-        }
-        for (FeatureTreeNode xobject : collection.getFeatureTreesForType(FeaturesObjectTypesEnum.IMAGE_XOBJECT)) {
-            FeatureTreeNode parents = getFirstChildNodeWithName(xobject, "parents");
-            FeatureTreeNode page = getFirstChildNodeWithName(parents, "page");
-            assertNull(page);
-        }
-        for (FeatureTreeNode xobject : collection.getFeatureTreesForType(FeaturesObjectTypesEnum.POSTSCRIPT_XOBJECT)) {
-            FeatureTreeNode parents = getFirstChildNodeWithName(xobject, "parents");
-            FeatureTreeNode page = getFirstChildNodeWithName(parents, "page");
-            assertNull(page);
-        }
-        for (FeatureTreeNode xobject : collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FAILED_XOBJECT)) {
-            FeatureTreeNode parents = getFirstChildNodeWithName(xobject, "parents");
-            FeatureTreeNode page = getFirstChildNodeWithName(parents, "page");
-            assertNull(page);
-        }
-        for (FeatureTreeNode font : collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FONT)) {
-            FeatureTreeNode parents = getFirstChildNodeWithName(font, "parents");
-            FeatureTreeNode page = getFirstChildNodeWithName(parents, "page");
-            assertNull(page);
-        }
-        for (FeatureTreeNode property : collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PROPERTIES)) {
-            FeatureTreeNode parents = getFirstChildNodeWithName(property, "parents");
-            FeatureTreeNode page = getFirstChildNodeWithName(parents, "page");
-            assertNull(page);
-        }
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.ANNOTATION), "parents", "page"));
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.EXT_G_STATE), "parents", "page"));
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.COLORSPACE), "parents", "page"));
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PATTERN), "parents", "page"));
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.SHADING), "parents", "page"));
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FORM_XOBJECT), "parents", "page"));
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.IMAGE_XOBJECT), "parents", "page"));
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.POSTSCRIPT_XOBJECT), "parents", "page"));
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FAILED_XOBJECT), "parents", "page"));
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FONT), "parents", "page"));
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PROPERTIES), "parents", "page"));
     }
 
     @Test
@@ -193,32 +143,18 @@ public class FeaturesConfigTest {
         FeaturesConfig config = createFullFeaturesConfigBuilder().graphicsStates(false).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.EXT_G_STATE).isEmpty());
-
-        for (FeatureTreeNode page : collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PAGE)) {
-            FeatureTreeNode resources = getFirstChildNodeWithName(page, "resources");
-            FeatureTreeNode gStates = getFirstChildNodeWithName(resources, "graphicsStates");
-            assertNull(gStates);
-        }
-        for (FeatureTreeNode pattern : collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PATTERN)) {
-            FeatureTreeNode resources = getFirstChildNodeWithName(pattern, "resources");
-            FeatureTreeNode gStates = getFirstChildNodeWithName(resources, "graphicsStates");
-            assertNull(gStates);
-            FeatureTreeNode gState = getFirstChildNodeWithName(pattern, "graphicsState");
-            assertNull(gState);
-        }
-        for (FeatureTreeNode xobject : collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FORM_XOBJECT)) {
-            FeatureTreeNode resources = getFirstChildNodeWithName(xobject, "resources");
-            FeatureTreeNode gStates = getFirstChildNodeWithName(resources, "graphicsStates");
-            assertNull(gStates);
-        }
-        for (FeatureTreeNode font : collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FONT)) {
-            FeatureTreeNode resources = getFirstChildNodeWithName(font, "resources");
-            FeatureTreeNode gStates = getFirstChildNodeWithName(resources, "graphicsStates");
-            assertNull(gStates);
-            FeatureTreeNode parents = getFirstChildNodeWithName(font, "parents");
-            FeatureTreeNode gs = getFirstChildNodeWithName(parents, "graphicsState");
-            assertNull(gs);
-        }
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PAGE), "resources", "graphicsStates"));
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PATTERN), "resources", "graphicsStates"));
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PATTERN), "graphicsState"));
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FORM_XOBJECT), "resources", "graphicsStates"));
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FONT), "resources", "graphicsStates"));
+        assertNull(getFirstNodeFromListWithPath(
+                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FONT), "parents", "graphicsState"));
     }
 
     private FeaturesConfig.Builder createFullFeaturesConfigBuilder() {
@@ -251,6 +187,19 @@ public class FeaturesConfigTest {
         for (FeatureTreeNode child : node.getChildren()) {
             if (child.getName().equals(name)) {
                 return child;
+            }
+        }
+        return null;
+    }
+
+    private static FeatureTreeNode getFirstNodeFromListWithPath(List<FeatureTreeNode> list, String... names) {
+        for (FeatureTreeNode root : list) {
+            FeatureTreeNode result = root;
+            for (String name : names) {
+                result = getFirstChildNodeWithName(result, name);
+            }
+            if (result != null) {
+                return result;
             }
         }
         return null;
