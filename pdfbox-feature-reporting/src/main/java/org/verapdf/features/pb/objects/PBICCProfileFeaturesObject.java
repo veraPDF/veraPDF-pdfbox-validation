@@ -254,8 +254,7 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 		}
 		StringBuilder builder = new StringBuilder();
 		builder.append(header[VERSION_BYTE] & FF_FLAG).append(".");
-		builder.append((header[SUBVERSION_BYTE] & FF_FLAG) >>> REQUIRED_LENGTH).append(".");
-		builder.append(header[SUBVERSION_BYTE] & F_FLAG);
+		builder.append((header[SUBVERSION_BYTE] & FF_FLAG) >>> REQUIRED_LENGTH);
 		return builder.toString();
 	}
 

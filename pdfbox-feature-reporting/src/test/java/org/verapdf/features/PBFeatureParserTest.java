@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -124,12 +123,12 @@ public class PBFeatureParserTest {
 		Set<String> outInts19 = new HashSet<>();
 		outInts19.add("outIntDir0");
 		assertTrue(treeNodes.contains(TestNodeGenerator.getICCProfile("iccProfileIndir19",
-				outInts19, null, "2.1.0", "ADBE", "RGB ", "ADBE", "2000-08-11T19:52:24.000Z", "Perceptual", "Copyright 2000 Adobe Systems Incorporated",
+				outInts19, null, "2.1", "ADBE", "RGB ", "ADBE", "2000-08-11T19:52:24.000Z", "Perceptual", "Copyright 2000 Adobe Systems Incorporated",
 				"Apple RGB", null, null, "none", TestNodeGenerator.getMetadataBytesFromFile("/iccprofile19_metadata_bytes.txt"))));
 		Set<String> iccbsds81 = new HashSet<>();
 		iccbsds81.add("clrspDir10");
 		assertTrue(treeNodes.contains(TestNodeGenerator.getICCProfile("iccProfileIndir81",
-				null, iccbsds81, "2.1.0", "ADBE", "RGB ", "ADBE", "2000-08-11T19:54:18.000Z", "Perceptual", "Copyright 2000 Adobe Systems Incorporated",
+				null, iccbsds81, "2.1", "ADBE", "RGB ", "ADBE", "2000-08-11T19:54:18.000Z", "Perceptual", "Copyright 2000 Adobe Systems Incorporated",
 				"PAL/SECAM", null, null, "none", null)));
 		Set<String> iccbsds84 = new HashSet<>();
 		iccbsds84.add("clrspDir13");
@@ -137,19 +136,19 @@ public class PBFeatureParserTest {
 		iccbsds84.add("clrspDir23");
 		// TODO: return this when image colorspace obtaining will be fixed
 //		assertTrue(treeNodes.contains(TestNodeGenerator.getICCProfile("iccProfileIndir84",
-//				null, iccbsds84, "2.2.0", "appl", "RGB ", "appl", "2000-08-13T16:06:07.000Z", "Media-Relative Colorimetric", "Copyright 1998 - 2003 Apple Computer Inc., all rights reserved.",
+//				null, iccbsds84, "2.2", "appl", "RGB ", "appl", "2000-08-13T16:06:07.000Z", "Media-Relative Colorimetric", "Copyright 1998 - 2003 Apple Computer Inc., all rights reserved.",
 //				"sRGB Profile", null, null, "appl", null)));
 		Set<String> iccbsds85 = new HashSet<>();
 		iccbsds85.add("clrspDir14");
 		assertTrue(treeNodes.contains(TestNodeGenerator.getICCProfile("iccProfileIndir85",
-				null, iccbsds85, "4.2.0", "ADBE", "RGB ", "ADBE", "2007-10-24T00:00:00.000Z", "Media-Relative Colorimetric", "Copyright 2007 Adobe Systems Incorporated",
+				null, iccbsds85, "4.2", "ADBE", "RGB ", "ADBE", "2007-10-24T00:00:00.000Z", "Media-Relative Colorimetric", "Copyright 2007 Adobe Systems Incorporated",
 				"HDTV (Rec. 709)", "t\u001C$ﾦ\u0012\u0017ﾉHQﾃ\uFFEFￋ￨<\uFFE7,", null, null, null)));
 		Set<String> iccbsds77 = new HashSet<>();
 		iccbsds77.add("clrspDir4");
 		iccbsds77.add("clrspDir2");
 		iccbsds77.add("clrspDir5");
 		assertTrue(treeNodes.contains(TestNodeGenerator.getICCProfile("iccProfileIndir77",
-				null, iccbsds77, "2.1.0", "ADBE", "GRAY", "ADBE", "1999-06-03T00:00:00.000Z", "Perceptual", "Copyright 1999 Adobe Systems Incorporated",
+				null, iccbsds77, "2.1", "ADBE", "GRAY", "ADBE", "1999-06-03T00:00:00.000Z", "Perceptual", "Copyright 1999 Adobe Systems Incorporated",
 				"Dot Gain 20%", null, null, "none", null)));
 	}
 
