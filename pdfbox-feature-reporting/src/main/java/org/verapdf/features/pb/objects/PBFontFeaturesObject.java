@@ -15,6 +15,7 @@ import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -101,7 +102,9 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
 		if (fontLike != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("font");
-			root.setAttribute(ID, id);
+			if (id != null) {
+				root.setAttribute(ID, id);
+			}
 
 			parseParents(root);
 
@@ -194,13 +197,12 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 			}
 			if (file != null) {
 				try {
-					byte[] stream = PBCreateNodeHelper.inputStreamToByteArray(file.getStream().getUnfilteredStream());
-					FontFeaturesData.Builder builder = new FontFeaturesData.Builder(stream);
+					FontFeaturesData.Builder builder = new FontFeaturesData.Builder(file.getStream().getUnfilteredStream());
 
-					byte[] metadata = null;
+					InputStream metadata = null;
 					if (file.getMetadata() != null) {
 						try {
-							metadata = PBCreateNodeHelper.inputStreamToByteArray(file.getMetadata().getStream().getUnfilteredStream());
+							metadata = file.getMetadata().getStream().getUnfilteredStream();
 						} catch (IOException e) {
 							LOGGER.debug("Can not get metadata stream for font file", e);
 						}

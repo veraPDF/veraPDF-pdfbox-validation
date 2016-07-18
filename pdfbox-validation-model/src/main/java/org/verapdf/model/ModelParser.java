@@ -8,6 +8,7 @@ import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.verapdf.core.ModelParsingException;
 import org.verapdf.features.FeaturesExtractor;
+import org.verapdf.features.config.FeaturesConfig;
 import org.verapdf.features.pb.PBFeatureParser;
 import org.verapdf.features.tools.FeaturesCollection;
 import org.verapdf.model.impl.pb.containers.StaticContainers;
@@ -110,13 +111,13 @@ public final class ModelParser implements PDFParser, Closeable {
     }
 
     @Override
-    public FeaturesCollection getFeatures() {
-        return PBFeatureParser.getFeaturesCollection(this.document);
+    public FeaturesCollection getFeatures(FeaturesConfig config) {
+        return PBFeatureParser.getFeaturesCollection(this.document, config);
     }
 
     @Override
-    public FeaturesCollection getFeatures(List<FeaturesExtractor> extractors) {
-        return PBFeatureParser.getFeaturesCollection(this.document, extractors);
+    public FeaturesCollection getFeatures(FeaturesConfig config, List<FeaturesExtractor> extractors) {
+        return PBFeatureParser.getFeaturesCollection(this.document, extractors, config);
     }
 
     @Override

@@ -12,6 +12,7 @@ import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -84,7 +85,9 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 		if (imageXObject != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("xobject");
 			root.setAttribute("type", "image");
-			root.setAttribute(ID, id);
+			if (id != null) {
+				root.setAttribute(ID, id);
+			}
 
 			parseParents(root);
 
@@ -141,11 +144,11 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 	@Override
 	public FeaturesData getData() {
 		try {
-			byte[] stream = PBCreateNodeHelper.inputStreamToByteArray(imageXObject.getCOSStream().getFilteredStream());
-			byte[] metadata = null;
+			InputStream stream = imageXObject.getCOSStream().getFilteredStream();
+			InputStream metadata = null;
 			if (imageXObject.getMetadata() != null) {
 				try {
-					metadata = PBCreateNodeHelper.inputStreamToByteArray(imageXObject.getMetadata().getStream().getUnfilteredStream());
+					metadata = imageXObject.getMetadata().getStream().getUnfilteredStream();
 				} catch (IOException e) {
 					LOGGER.debug("Can not get metadata stream for image xobject", e);
 				}
@@ -177,9 +180,9 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 							filters.add(ImageFeaturesData.Filter.newInstance(filter, getDCTFiltersMap(dic), null));
 							break;
 						case "JBIG2Decode":
-							byte[] global = null;
+							InputStream global = null;
 							if (dic != null && dic.getDictionaryObject(COSName.JBIG2_GLOBALS) instanceof COSStream) {
-								global = PBCreateNodeHelper.inputStreamToByteArray(((COSStream) dic.getDictionaryObject(COSName.JBIG2_GLOBALS)).getUnfilteredStream());
+								global = ((COSStream) dic.getDictionaryObject(COSName.JBIG2_GLOBALS)).getUnfilteredStream();
 							}
 							filters.add(ImageFeaturesData.Filter.newInstance(filter, new HashMap<String, String>(), global));
 							break;

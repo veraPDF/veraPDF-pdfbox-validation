@@ -68,7 +68,9 @@ public class PBAnnotationFeaturesObject implements IFeaturesObject {
 	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
 		if (annot != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("annotation");
-			root.setAttribute(ID, id);
+			if (id != null) {
+				root.setAttribute(ID, id);
+			}
 
 			addParents(root);
 

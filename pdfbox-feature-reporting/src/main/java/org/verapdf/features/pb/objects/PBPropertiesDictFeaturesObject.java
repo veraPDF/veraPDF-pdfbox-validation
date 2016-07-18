@@ -63,7 +63,9 @@ public class PBPropertiesDictFeaturesObject implements IFeaturesObject {
 	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
 		if (properties != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("propertiesDict");
-			root.setAttribute("id", id);
+			if (id != null) {
+				root.setAttribute("id", id);
+			}
 
 			parseParents(root);
 

@@ -86,7 +86,9 @@ public class PBTilingPatternFeaturesObject implements IFeaturesObject {
 	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
 		if (tilingPattern != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("pattern");
-			root.setAttribute(ID, id);
+			if (id != null) {
+				root.setAttribute(ID, id);
+			}
 			root.setAttribute("type", "tiling");
 
 			parseParents(root);

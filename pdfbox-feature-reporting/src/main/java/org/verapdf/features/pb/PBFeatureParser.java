@@ -26,10 +26,15 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceDictionary;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceEntry;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
+import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.apache.pdfbox.pdmodel.interactive.form.PDField;
+import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesExtractor;
 import org.verapdf.features.FeaturesObjectTypesEnum;
 import org.verapdf.features.FeaturesReporter;
+import org.verapdf.features.config.FeaturesConfig;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
@@ -70,6 +75,7 @@ public final class PBFeatureParser {
 	private static final String DEVICECMYK_ID = "devcmyk";
 
 	private FeaturesReporter reporter;
+	private FeaturesConfig config;
 
 	private Map<String, COSStream> iccProfiles = new HashMap<>();
 	private Map<String, Set<String>> iccProfileOutInts = new HashMap<>();
@@ -185,8 +191,9 @@ public final class PBFeatureParser {
 	private Map<String, Set<String>> postscriptXObjectParent = new HashMap<>();
 	private Map<String, Set<String>> postscriptFontParent = new HashMap<>();
 
-	private PBFeatureParser(FeaturesReporter reporter) {
+	private PBFeatureParser(FeaturesReporter reporter, FeaturesConfig config) {
 		this.reporter = reporter;
+		this.config = config;
 	}
 
 	/**
@@ -196,10 +203,10 @@ public final class PBFeatureParser {
 	 * @param document the document for parsing
 	 * @return FeaturesCollection class with information about all featurereport
 	 */
-	public static FeaturesCollection getFeaturesCollection(final PDDocument document) {
+	public static FeaturesCollection getFeaturesCollection(final PDDocument document, final FeaturesConfig config) {
 
-		FeaturesReporter reporter = new FeaturesReporter();
-		return getFeatures(document, reporter);
+		FeaturesReporter reporter = new FeaturesReporter(config);
+		return getFeatures(document, reporter, config);
 	}
 
 	/**
@@ -210,15 +217,18 @@ public final class PBFeatureParser {
 	 * @return FeaturesCollection class with information about all featurereport
 	 */
 	public static FeaturesCollection getFeaturesCollection(
-			final PDDocument document, final List<FeaturesExtractor> extractors) {
+			final PDDocument document, final List<FeaturesExtractor> extractors, final FeaturesConfig config) {
 
-		FeaturesReporter reporter = new FeaturesReporter(extractors);
-		return getFeatures(document, reporter);
+		FeaturesReporter reporter = new FeaturesReporter(config, extractors);
+		return getFeatures(document, reporter, config);
 	}
 
-	private static FeaturesCollection getFeatures(PDDocument document, FeaturesReporter reporter) {
+	private static FeaturesCollection getFeatures(PDDocument document, FeaturesReporter reporter, FeaturesConfig config) {
+		if (config == null) {
+			throw new IllegalArgumentException("Features config can not be null");
+		}
 		if (document != null) {
-			PBFeatureParser parser = new PBFeatureParser(reporter);
+			PBFeatureParser parser = new PBFeatureParser(reporter, config);
 			parser.parseDocumentFeatures(document);
 		}
 
@@ -228,7 +238,6 @@ public final class PBFeatureParser {
 	private void parseDocumentFeatures(PDDocument document) {
 		reporter.report(PBFeaturesObjectCreator
 				.createInfoDictFeaturesObject(document.getDocumentInformation()));
-
 		reporter.report(PBFeaturesObjectCreator
 				.createDocSecurityFeaturesObject(document.getEncryption()));
 
@@ -240,6 +249,7 @@ public final class PBFeatureParser {
 		reporter.report(PBFeaturesObjectCreator
 				.createLowLvlInfoFeaturesObject(document.getDocument()));
 
+
 	}
 
 	private void getCatalogFeatures(PDDocumentCatalog catalog) {
@@ -247,6 +257,11 @@ public final class PBFeatureParser {
 				.createMetadataFeaturesObject(catalog.getMetadata()));
 		reporter.report(PBFeaturesObjectCreator
 				.createOutlinesFeaturesObject(catalog.getDocumentOutline()));
+
+		PDAcroForm acroForm = catalog.getAcroForm();
+		if (acroForm != null) {
+			getAcroFormFeatures(acroForm);
+		}
 
 		if (catalog.getNames() != null
 				&& catalog.getNames().getEmbeddedFiles() != null) {
@@ -258,6 +273,9 @@ public final class PBFeatureParser {
 			for (PDOutputIntent outInt : catalog.getOutputIntents()) {
 				String outIntID = getId(outInt.getCOSObject(), OUTINT, outIntNumber++);
 				String iccProfileID = addICCProfileFromOutputIntent(outInt, outIntID);
+				if (!config.isIccProfilesEnabled()) {
+					iccProfileID = null;
+				}
 				reporter.report(PBFeaturesObjectCreator
 						.createOutputIntentFeaturesObject(outInt, outIntID, iccProfileID));
 			}
@@ -271,9 +289,13 @@ public final class PBFeatureParser {
 		for (Map.Entry<String, COSStream> iccProfileEntry : iccProfiles.entrySet()) {
 			if (iccProfileEntry.getValue() != null) {
 				String id = iccProfileEntry.getKey();
+				Set<String> outInts = config.isOutputIntentsEnabled() ?
+						iccProfileOutInts.get(id) : null;
+				Set<String> iccBaseds = config.isColorSpacesEnabled() ?
+						iccProfileICCBased.get(id) : null;
 				reporter.report(PBFeaturesObjectCreator
 						.createICCProfileFeaturesObject(iccProfileEntry.getValue(), id,
-								iccProfileOutInts.get(id), iccProfileICCBased.get(id)));
+								outInts, iccBaseds));
 			}
 		}
 
@@ -281,178 +303,357 @@ public final class PBFeatureParser {
 			if (annotEntry.getValue() != null) {
 				String id = annotEntry.getKey();
 				getAnnotationResourcesDependencies(annotEntry.getValue(), id);
+				Set<String> pages = config.isPagesEnabled() ?
+						annotPagesParent.get(id) : null;
+				String parentId = config.isAnnotationsEnabled() ?
+						annotParent.get(id) : null;
+				String popupId = config.isAnnotationsEnabled() ?
+						annotChild.get(id) : null;
+				Set<String> formXObjects = config.isXobjectsEnabled() ?
+						annotXObjectsChild.get(id) : null;
 				reporter.report(PBFeaturesObjectCreator
 						.createAnnotFeaturesObject(annotEntry.getValue(), id,
-								annotPagesParent.get(id), annotParent.get(id),
-								annotChild.get(id), annotXObjectsChild.get(id)));
+								pages, parentId,
+								popupId, formXObjects));
 			}
 		}
 
 		getResourcesFeatures();
 	}
 
+	private void getAcroFormFeatures(PDAcroForm acroForm) {
+		List<PDField> fields = acroForm.getFields();
+		if (fields != null) {
+			for (PDField field : fields) {
+				getFieldFeatures(field);
+			}
+		}
+	}
+
+	private void getFieldFeatures(PDField field) {
+		if (config.isSignaturesEnabled()
+				&& field instanceof PDSignatureField) {
+			PDSignature signature = ((PDSignatureField) field).getSignature();
+			if (signature != null) {
+				reporter.report(PBFeaturesObjectCreator.createSignatureFeaturesObject(signature));
+			}
+		}
+	}
+
 	private void getResourcesFeatures() {
 		for (Map.Entry<String, PDExtendedGraphicsState> exGStateEntry : exGStates.entrySet()) {
 			if (exGStateEntry.getValue() != null) {
 				String id = exGStateEntry.getKey();
+				String fontChildID = config.isFontsEnabled() ?
+						exGStateFontChild.get(id) : null;
+				Set<String> pageParentsID = config.isPagesEnabled() ?
+						exGStatePageParent.get(id) : null;
+				Set<String> patternParentsID = config.isPatternsEnabled() ?
+						exGStatePatternParent.get(id) : null;
+				Set<String> xobjectParentsID = config.isXobjectsEnabled() ?
+						exGStateXObjectParent.get(id) : null;
+				Set<String> fontParentsID = config.isFontsEnabled() ?
+						exGStateFontParent.get(id) : null;
 				reporter.report(PBFeaturesObjectCreator
 						.createExtGStateFeaturesObject(exGStateEntry.getValue(),
 								id,
-								exGStateFontChild.get(id),
-								exGStatePageParent.get(id),
-								exGStatePatternParent.get(id),
-								exGStateXObjectParent.get(id),
-								exGStateFontParent.get(id)));
+								fontChildID,
+								pageParentsID,
+								patternParentsID,
+								xobjectParentsID,
+								fontParentsID));
 			}
 		}
 
 		for (Map.Entry<String, PDColorSpace> colorSpaceEntry : colorSpaces.entrySet()) {
 			if (colorSpaceEntry.getValue() != null) {
 				String id = colorSpaceEntry.getKey();
+				String iccProfileChild = config.isIccProfilesEnabled() ?
+						colorSpaceIccProfileChild.get(id) : null;
+				String colorSpaceChild = config.isColorSpacesEnabled() ?
+						colorSpaceColorSpaceChild.get(id) : null;
+				Set<String> pageParents = config.isPagesEnabled() ?
+						colorSpacePageParent.get(id) : null;
+				Set<String> colorSpaceParents = config.isColorSpacesEnabled() ?
+						colorSpaceColorSpaceParent.get(id) : null;
+				Set<String> patternParents = config.isPatternsEnabled() ?
+						colorSpacePatternParent.get(id) : null;
+				Set<String> shadingParents = config.isShadingsEnabled() ?
+						colorSpaceShadingParent.get(id) : null;
+				Set<String> xobjectParents = config.isXobjectsEnabled() ?
+						colorSpaceXObjectParent.get(id) : null;
+				Set<String> fontParents = config.isFontsEnabled() ?
+						colorSpaceFontParent.get(id) : null;
 				reporter.report(PBFeaturesObjectCreator
 						.createColorSpaceFeaturesObject(colorSpaceEntry.getValue(),
 								id,
-								colorSpaceIccProfileChild.get(id),
-								colorSpaceColorSpaceChild.get(id),
-								colorSpacePageParent.get(id),
-								colorSpaceColorSpaceParent.get(id),
-								colorSpacePatternParent.get(id),
-								colorSpaceShadingParent.get(id),
-								colorSpaceXObjectParent.get(id),
-								colorSpaceFontParent.get(id)));
+								iccProfileChild,
+								colorSpaceChild,
+								pageParents,
+								colorSpaceParents,
+								patternParents,
+								shadingParents,
+								xobjectParents,
+								fontParents));
 			}
 		}
 
 		for (Map.Entry<String, PDTilingPattern> tilingPatternEntry : tilingPatterns.entrySet()) {
 			if (tilingPatternEntry.getValue() != null) {
 				String id = tilingPatternEntry.getKey();
+				Set<String> extGStateChild = config.isGraphicsStatesEnabled() ?
+						tilingPatternExtGStateChild.get(id) : null;
+				Set<String> colorSpaceChild = config.isColorSpacesEnabled() ?
+						tilingPatternColorSpaceChild.get(id) : null;
+				Set<String> patternChild = config.isPatternsEnabled() ?
+						tilingPatternPatternChild.get(id) : null;
+				Set<String> shadingChild = config.isShadingsEnabled() ?
+						tilingPatternShadingChild.get(id) : null;
+				Set<String> xobjectChild = config.isXobjectsEnabled() ?
+						tilingPatternXObjectChild.get(id) : null;
+				Set<String> fontChild = config.isFontsEnabled() ?
+						tilingPatternFontChild.get(id) : null;
+				Set<String> propertiesChild = config.isPropertiesDictsEnabled() ?
+						tilingPatternPropertiesChild.get(id) : null;
+				Set<String> pageParent = config.isPagesEnabled() ?
+						tilingPatternPageParent.get(id) : null;
+				Set<String> patternParent = config.isPatternsEnabled() ?
+						tilingPatternPatternParent.get(id) : null;
+				Set<String> xobjectParent = config.isXobjectsEnabled() ?
+						tilingPatternXObjectParent.get(id) : null;
+				Set<String> fontParent = config.isFontsEnabled() ?
+						tilingPatternFontParent.get(id) : null;
 				reporter.report(PBFeaturesObjectCreator
 						.createTilingPatternFeaturesObject(tilingPatternEntry.getValue(),
 								id,
-								tilingPatternExtGStateChild.get(id),
-								tilingPatternColorSpaceChild.get(id),
-								tilingPatternPatternChild.get(id),
-								tilingPatternShadingChild.get(id),
-								tilingPatternXObjectChild.get(id),
-								tilingPatternFontChild.get(id),
-								tilingPatternPropertiesChild.get(id),
-								tilingPatternPageParent.get(id),
-								tilingPatternPatternParent.get(id),
-								tilingPatternXObjectParent.get(id),
-								tilingPatternFontParent.get(id)));
+								extGStateChild,
+								colorSpaceChild,
+								patternChild,
+								shadingChild,
+								xobjectChild,
+								fontChild,
+								propertiesChild,
+								pageParent,
+								patternParent,
+								xobjectParent,
+								fontParent));
 			}
 		}
 
 		for (Map.Entry<String, PDShadingPattern> shadingPatternEntry : shadingPatterns.entrySet()) {
 			if (shadingPatternEntry.getValue() != null) {
 				String id = shadingPatternEntry.getKey();
+				String shadingChild = config.isShadingsEnabled() ?
+						shadingPatternShadingChild.get(id) : null;
+				String extGStateChild = config.isGraphicsStatesEnabled() ?
+						shadingPatternExtGStateChild.get(id) : null;
+				Set<String> pageParent = config.isPagesEnabled() ?
+						shadingPatternPageParent.get(id) : null;
+				Set<String> patternParent = config.isPatternsEnabled() ?
+						shadingPatternPatternParent.get(id) : null;
+				Set<String> xobjectParent = config.isXobjectsEnabled() ?
+						shadingPatternXObjectParent.get(id) : null;
+				Set<String> fontParent = config.isFontsEnabled() ?
+						shadingPatternFontParent.get(id) : null;
 				reporter.report(PBFeaturesObjectCreator
 						.createShadingPatternFeaturesObject(shadingPatternEntry.getValue(),
 								id,
-								shadingPatternShadingChild.get(id),
-								shadingPatternExtGStateChild.get(id),
-								shadingPatternPageParent.get(id),
-								shadingPatternPatternParent.get(id),
-								shadingPatternXObjectParent.get(id),
-								shadingPatternFontParent.get(id)));
+								shadingChild,
+								extGStateChild,
+								pageParent,
+								patternParent,
+								xobjectParent,
+								fontParent));
 			}
 		}
 
 		for (Map.Entry<String, PDShading> shadingEntry : shadings.entrySet()) {
 			if (shadingEntry.getValue() != null) {
 				String id = shadingEntry.getKey();
+				String colorSpaceChild = config.isColorSpacesEnabled() ?
+						shadingColorSpaceChild.get(id) : null;
+				Set<String> pageParent = config.isPagesEnabled() ?
+						shadingPageParent.get(id) : null;
+				Set<String> patternParent = config.isPatternsEnabled() ?
+						shadingPatternParent.get(id) : null;
+				Set<String> xobjectParent = config.isXobjectsEnabled() ?
+						shadingXObjectParent.get(id) : null;
+				Set<String> fontParent = config.isFontsEnabled() ?
+						shadingFontParent.get(id) : null;
 				reporter.report(PBFeaturesObjectCreator
 						.createShadingFeaturesObject(shadingEntry.getValue(),
 								id,
-								shadingColorSpaceChild.get(id),
-								shadingPageParent.get(id),
-								shadingPatternParent.get(id),
-								shadingXObjectParent.get(id),
-								shadingFontParent.get(id)));
+								colorSpaceChild,
+								pageParent,
+								patternParent,
+								xobjectParent,
+								fontParent));
 			}
 		}
 
 		for (Map.Entry<String, PDImageXObjectProxy> imageXObjectEntry : imageXObjects.entrySet()) {
 			if (imageXObjectEntry.getValue() != null) {
 				String id = imageXObjectEntry.getKey();
+				String colorSpaceChild = config.isColorSpacesEnabled() ?
+						imageXObjectColorSpaceChild.get(id) : null;
+				String maskChild = config.isXobjectsEnabled() ?
+						imageXObjectMaskChild.get(id) : null;
+				String sMaskChild = config.isXobjectsEnabled() ?
+						imageXObjectSMaskChild.get(id) : null;
+				Set<String> alternatesChild = config.isXobjectsEnabled() ?
+						imageXObjectAlternatesChild.get(id) : null;
+				Set<String> pageParent = config.isPagesEnabled() ?
+						imageXObjectPageParent.get(id) : null;
+				Set<String> patternParent = config.isPatternsEnabled() ?
+						imageXObjectPatternParent.get(id) : null;
+				Set<String> xobjectParent = config.isXobjectsEnabled() ?
+						imageXObjectXObjectParent.get(id) : null;
+				Set<String> fontParent = config.isFontsEnabled() ?
+						imageXObjectFontParent.get(id) : null;
 				reporter.report(PBFeaturesObjectCreator
 						.createImageXObjectFeaturesObject(imageXObjectEntry.getValue(),
 								id,
-								imageXObjectColorSpaceChild.get(id),
-								imageXObjectMaskChild.get(id),
-								imageXObjectSMaskChild.get(id),
-								imageXObjectAlternatesChild.get(id),
-								imageXObjectPageParent.get(id),
-								imageXObjectPatternParent.get(id),
-								imageXObjectXObjectParent.get(id),
-								imageXObjectFontParent.get(id)));
+								colorSpaceChild,
+								maskChild,
+								sMaskChild,
+								alternatesChild,
+								pageParent,
+								patternParent,
+								xobjectParent,
+								fontParent));
 			}
 		}
 
 		for (Map.Entry<String, PDFormXObject> formXObjectEntry : formXObjects.entrySet()) {
 			if (formXObjectEntry.getValue() != null) {
 				String id = formXObjectEntry.getKey();
+				String groupChild = config.isColorSpacesEnabled() ?
+						groupXObjectColorSpaceChild.get(id) : null;
+				Set<String> extGStateChild = config.isGraphicsStatesEnabled() ?
+						formXObjectExtGStateChild.get(id) : null;
+				Set<String> colorSpaceChild = config.isColorSpacesEnabled() ?
+						formXObjectColorSpaceChild.get(id) : null;
+				Set<String> patternChild = config.isPatternsEnabled() ?
+						formXObjectPatternChild.get(id) : null;
+				Set<String> shadingChild = config.isShadingsEnabled() ?
+						formXObjectShadingChild.get(id) : null;
+				Set<String> xobjectChild = config.isXobjectsEnabled() ?
+						formXObjectXObjectChild.get(id) : null;
+				Set<String> fontChild = config.isFontsEnabled() ?
+						formXObjectFontChild.get(id) : null;
+				Set<String> propertiesChild = config.isPropertiesDictsEnabled() ?
+						formXObjectPropertiesChild.get(id) : null;
+				Set<String> pageParent = config.isPagesEnabled() ?
+						formXObjectPageParent.get(id) : null;
+				Set<String> annotationParent = config.isAnnotationsEnabled() ?
+						formXObjectAnnotationParent.get(id) : null;
+				Set<String> patternParent = config.isPatternsEnabled() ?
+						formXObjectPatternParent.get(id) : null;
+				Set<String> xobjectParent = config.isXobjectsEnabled() ?
+						formXObjectXObjectParent.get(id) : null;
+				Set<String> fontParent = config.isFontsEnabled() ?
+						formXObjectFontParent.get(id) : null;
 				reporter.report(PBFeaturesObjectCreator
 						.createFormXObjectFeaturesObject(formXObjectEntry.getValue(),
 								id,
-								groupXObjectColorSpaceChild.get(id),
-								formXObjectExtGStateChild.get(id),
-								formXObjectColorSpaceChild.get(id),
-								formXObjectPatternChild.get(id),
-								formXObjectShadingChild.get(id),
-								formXObjectXObjectChild.get(id),
-								formXObjectFontChild.get(id),
-								formXObjectPropertiesChild.get(id),
-								formXObjectPageParent.get(id),
-								formXObjectAnnotationParent.get(id),
-								formXObjectPatternParent.get(id),
-								formXObjectXObjectParent.get(id),
-								formXObjectFontParent.get(id)));
+								groupChild,
+								extGStateChild,
+								colorSpaceChild,
+								patternChild,
+								shadingChild,
+								xobjectChild,
+								fontChild,
+								propertiesChild,
+								pageParent,
+								annotationParent,
+								patternParent,
+								xobjectParent,
+								fontParent));
 			}
 		}
 
 		for (String postscript : postscripts) {
 			if (postscript != null) {
+				Set<String> pageParent = config.isPagesEnabled() ?
+						postscriptPageParent.get(postscript) : null;
+				Set<String> patternParent = config.isPatternsEnabled() ?
+						postscriptPatternParent.get(postscript) : null;
+				Set<String> xobjectParent = config.isXobjectsEnabled() ?
+						postscriptXObjectParent.get(postscript) : null;
+				Set<String> fontParent = config.isFontsEnabled() ?
+						postscriptFontParent.get(postscript) : null;
 				reporter.report(PBFeaturesObjectCreator
 						.createPostScriptXObjectFeaturesObject(postscript,
-								postscriptPageParent.get(postscript),
-								postscriptPatternParent.get(postscript),
-								postscriptXObjectParent.get(postscript),
-								postscriptFontParent.get(postscript)));
+								pageParent,
+								patternParent,
+								xobjectParent,
+								fontParent));
 			}
 		}
 
 		for (Map.Entry<String, PDFontLike> fontEntry : fonts.entrySet()) {
 			if (fontEntry.getValue() != null) {
 				String id = fontEntry.getKey();
+				Set<String> extGStateChild = config.isGraphicsStatesEnabled() ?
+						fontExtGStateChild.get(id) : null;
+				Set<String> colorSpaceChild = config.isColorSpacesEnabled() ?
+						fontColorSpaceChild.get(id) : null;
+				Set<String> patternChild = config.isPatternsEnabled() ?
+						fontPatternChild.get(id) : null;
+				Set<String> shadingChild = config.isShadingsEnabled() ?
+						fontShadingChild.get(id) : null;
+				Set<String> xobjectChild = config.isXobjectsEnabled() ?
+						fontXObjectChild.get(id) : null;
+				Set<String> fontChild = config.isFontsEnabled() ?
+						fontFontChild.get(id) : null;
+				Set<String> propertiesChild =config.isPropertiesDictsEnabled() ?
+						fontPropertiesChild.get(id) : null;
+				Set<String> extGStateParent = config.isGraphicsStatesEnabled() ?
+						fontExtGStateParent.get(id) : null;
+				Set<String> pageParent = config.isPagesEnabled() ?
+						fontPageParent.get(id) : null;
+				Set<String> patternParent = config.isPatternsEnabled() ?
+						fontPatternParent.get(id) : null;
+				Set<String> xobjectParent = config.isXobjectsEnabled() ?
+						fontXObjectParent.get(id) : null;
+				Set<String> fontParent = config.isFontsEnabled() ?
+						fontFontParent.get(id) : null;
 				reporter.report(PBFeaturesObjectCreator
 						.createFontFeaturesObject(fontEntry.getValue(),
 								id,
-								fontExtGStateChild.get(id),
-								fontColorSpaceChild.get(id),
-								fontPatternChild.get(id),
-								fontShadingChild.get(id),
-								fontXObjectChild.get(id),
-								fontFontChild.get(id),
-								fontPropertiesChild.get(id),
-								fontExtGStateParent.get(id),
-								fontPageParent.get(id),
-								fontPatternParent.get(id),
-								fontXObjectParent.get(id),
-								fontFontParent.get(id)));
+								extGStateChild,
+								colorSpaceChild,
+								patternChild,
+								shadingChild,
+								xobjectChild,
+								fontChild,
+								propertiesChild,
+								extGStateParent,
+								pageParent,
+								patternParent,
+								xobjectParent,
+								fontParent));
 			}
 		}
 
 		for (Map.Entry<String, COSDictionary> propertiesEntry : properties.entrySet()) {
 			if (propertiesEntry.getValue() != null) {
 				String id = propertiesEntry.getKey();
+				Set<String> pageParent = config.isPagesEnabled() ?
+						propertyPageParent.get(id) : null;
+				Set<String> patternParent = config.isPatternsEnabled() ?
+						propertyPatternParent.get(id) : null;
+				Set<String> xobjectParent = config.isXobjectsEnabled() ?
+						propertyXObjectParent.get(id) : null;
+				Set<String> fontParent = config.isFontsEnabled() ?
+						propertyFontParent.get(id) : null;
 				reporter.report(PBFeaturesObjectCreator
 						.createPropertiesDictFeaturesObject(propertiesEntry.getValue(),
 								id,
-								propertyPageParent.get(id),
-								propertyPatternParent.get(id),
-								propertyXObjectParent.get(id),
-								propertyFontParent.get(id)));
+								pageParent,
+								patternParent,
+								xobjectParent,
+								fontParent));
 			}
 		}
 	}
@@ -503,17 +704,38 @@ public final class PBFeatureParser {
 					fontPageParent,
 					propertyPageParent);
 
+			if (!config.isXobjectsEnabled()) {
+				thumbID = null;
+			}
+			if (!config.isAnnotationsEnabled()) {
+				annotsId = null;
+			}
+
+			Set<String> extGStateChild = config.isGraphicsStatesEnabled() ?
+					pageExtGStateChild.get(PAGE + pageIndex) : null;
+			Set<String> colorSpaceChild = config.isColorSpacesEnabled() ?
+					pageColorSpaceChild.get(PAGE + pageIndex) : null;
+			Set<String> patternChild = config.isPatternsEnabled() ?
+					pagePatternChild.get(PAGE + pageIndex) : null;
+			Set<String> shadingChild = config.isShadingsEnabled() ?
+					pageShadingChild.get(PAGE + pageIndex) : null;
+			Set<String> xobjectChild = config.isXobjectsEnabled() ?
+					pageXObjectChild.get(PAGE + pageIndex) : null;
+			Set<String> fontChild = config.isFontsEnabled() ?
+					pageFontChild.get(PAGE + pageIndex) : null;
+			Set<String> propertiesChild = config.isPropertiesDictsEnabled() ?
+					pagePropertiesChild.get(PAGE + pageIndex) : null;
 			reporter.report(PBFeaturesObjectCreator
 					.createPageFeaturesObject(page,
 							thumbID,
 							annotsId,
-							pageExtGStateChild.get(PAGE + pageIndex),
-							pageColorSpaceChild.get(PAGE + pageIndex),
-							pagePatternChild.get(PAGE + pageIndex),
-							pageShadingChild.get(PAGE + pageIndex),
-							pageXObjectChild.get(PAGE + pageIndex),
-							pageFontChild.get(PAGE + pageIndex),
-							pagePropertiesChild.get(PAGE + pageIndex),
+							extGStateChild,
+							colorSpaceChild,
+							patternChild,
+							shadingChild,
+							xobjectChild,
+							fontChild,
+							propertiesChild,
 							PAGE + pageIndex,
 							pageIndex));
 		}
@@ -579,23 +801,24 @@ public final class PBFeatureParser {
 	}
 
 	private void generateUnknownAnnotation(String id) {
-		try {
-			FeatureTreeNode annot = FeatureTreeNode
-					.createRootNode(ANNOTATION);
-			annot.setAttribute(ID, id);
-			ErrorsHelper.addErrorIntoCollection(reporter.getCollection(),
-					annot,
-					"Unknown annotation type");
-			reporter.getCollection().addNewFeatureTree(FeaturesObjectTypesEnum.ANNOTATION,
-					annot);
-		} catch (FeatureParsingException e) {
-			// This exception occurs when wrong node creates for feature tree.
-			// The logic of the method guarantees this doesn't occur.
-			String message = "PBFeatureParser.generateUnknownAnnotation logic failure.";
-			LOGGER.fatal(message, e);
-			throw new IllegalStateException(message, e);
+		if (config.isAnnotationsEnabled()) {
+			try {
+				FeatureTreeNode annot = FeatureTreeNode
+						.createRootNode(ANNOTATION);
+				annot.setAttribute(ID, id);
+				ErrorsHelper.addErrorIntoCollection(reporter.getCollection(),
+						annot,
+						"Unknown annotation type");
+				reporter.getCollection().addNewFeatureTree(FeaturesObjectTypesEnum.ANNOTATION,
+						annot);
+			} catch (FeatureParsingException e) {
+				// This exception occurs when wrong node creates for feature tree.
+				// The logic of the method guarantees this doesn't occur.
+				String message = "PBFeatureParser.generateUnknownAnnotation logic failure.";
+				LOGGER.fatal(message, e);
+				throw new IllegalStateException(message, e);
+			}
 		}
-
 	}
 
 	private void reportEmbeddedFiles(PDDocumentCatalog catalog) {
@@ -604,7 +827,7 @@ public final class PBFeatureParser {
 				.getEmbeddedFiles();
 
 		try {
-			if (efTree.getNames() != null) {
+			if (config.isEmbeddedFilesEnabled() && efTree.getNames() != null) {
 				for (PDComplexFileSpecification file : efTree.getNames()
 						.values()) {
 					reporter.report(PBFeaturesObjectCreator
@@ -632,7 +855,7 @@ public final class PBFeatureParser {
 		int res = index;
 
 		try {
-			if (node.getNames() != null) {
+			if (config.isEmbeddedFilesEnabled() && node.getNames() != null) {
 				for (PDComplexFileSpecification file : node.getNames().values()) {
 					if (file != null) {
 						reporter.report(PBFeaturesObjectCreator
@@ -734,32 +957,34 @@ public final class PBFeatureParser {
 			final FeaturesObjectTypesEnum type,
 			final String loggerMessage,
 			final boolean isTypeError) {
-		try {
-			if (!isTypeError) {
-				FeatureTreeNode node = FeatureTreeNode.createRootNode(nodeName);
-				if (nodeID != null) {
-					node.setAttribute(ID, nodeID);
-				}
-				reporter.getCollection().addNewFeatureTree(type, node);
-				ErrorsHelper.addErrorIntoCollection(reporter.getCollection(),
-						node,
-						errorMessage);
-			} else {
-				String id = ErrorsHelper.addErrorIntoCollection(reporter.getCollection(),
-						null,
-						errorMessage);
-				reporter.getCollection().addNewError(type, id);
+		if (config.isFeaturesEnabledForType(type)) {
+			try {
+				if (!isTypeError) {
+					FeatureTreeNode node = FeatureTreeNode.createRootNode(nodeName);
+					if (nodeID != null) {
+						node.setAttribute(ID, nodeID);
+					}
+					reporter.getCollection().addNewFeatureTree(type, node);
+					ErrorsHelper.addErrorIntoCollection(reporter.getCollection(),
+							node,
+							errorMessage);
+				} else {
+					String id = ErrorsHelper.addErrorIntoCollection(reporter.getCollection(),
+							null,
+							errorMessage);
+					reporter.getCollection().addNewError(type, id);
 
+				}
+			} catch (FeatureParsingException e) {
+				// This exception occurs when wrong node creates for feature
+				// tree.
+				// The logic of the method guarantees this doesn't occur.
+				// In which case we throw an IllegalStateException as if this
+				// occurs
+				// we want to know there's something wrong with our logic
+				LOGGER.fatal(loggerMessage, e);
+				throw new IllegalStateException(loggerMessage, e);
 			}
-		} catch (FeatureParsingException e) {
-			// This exception occurs when wrong node creates for feature
-			// tree.
-			// The logic of the method guarantees this doesn't occur.
-			// In which case we throw an IllegalStateException as if this
-			// occurs
-			// we want to know there's something wrong with our logic
-			LOGGER.fatal(loggerMessage, e);
-			throw new IllegalStateException(loggerMessage, e);
 		}
 	}
 
@@ -1540,5 +1765,9 @@ public final class PBFeatureParser {
 		}
 
 		return prefix + type + numb;
+	}
+
+	private static class FeaturesHashMap<K, V> extends HashMap<K, V> {
+
 	}
 }

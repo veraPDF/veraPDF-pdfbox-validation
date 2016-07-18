@@ -97,7 +97,9 @@ public class PBColorSpaceFeaturesObject implements IFeaturesObject {
 		if (colorSpace != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("colorSpace");
 
-			root.setAttribute(ID, id);
+			if (id != null) {
+				root.setAttribute(ID, id);
+			}
 			root.setAttribute("family", colorSpace.getName());
 
 			parseParents(root);

@@ -12,6 +12,7 @@ import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Feature object for metadata
@@ -70,7 +71,7 @@ public class PBMetadataFeaturesObject implements IFeaturesObject {
 			return null;
 		}
 		try {
-			byte[] meta = metadata.getByteArray();
+			InputStream meta = metadata.getStream().getUnfilteredStream();
 			return MetadataFeaturesData.newInstance(meta);
 		} catch (IOException e) {
 			LOGGER.debug("Error while obtaining unfiltered metadata stream", e);

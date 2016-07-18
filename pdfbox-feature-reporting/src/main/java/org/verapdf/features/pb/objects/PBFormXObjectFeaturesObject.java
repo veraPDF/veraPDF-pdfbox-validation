@@ -97,7 +97,9 @@ public class PBFormXObjectFeaturesObject implements IFeaturesObject {
 		if (formXObject != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("xobject");
 			root.setAttribute("type", "form");
-			root.setAttribute(ID, id);
+			if (id != null) {
+				root.setAttribute(ID, id);
+			}
 
 			parseParents(root);
 

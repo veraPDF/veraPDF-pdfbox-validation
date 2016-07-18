@@ -14,6 +14,7 @@ import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -128,13 +129,13 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 	@Override
 	public FeaturesData getData() {
 		try {
-			byte[] stream = PBCreateNodeHelper.inputStreamToByteArray(profile.getUnfilteredStream());
+			InputStream stream = profile.getUnfilteredStream();
 
-			byte[] metadata = null;
+			InputStream metadata = null;
 			COSBase cosBase = profile.getDictionaryObject(COSName.METADATA);
 			if (cosBase instanceof COSStream) {
 				try {
-					metadata = PBCreateNodeHelper.inputStreamToByteArray(((COSStream) cosBase).getUnfilteredStream());
+					metadata = ((COSStream) cosBase).getUnfilteredStream();
 				} catch (IOException e) {
 					LOGGER.debug("Can not get metadata stream for iccProfile", e);
 				}
@@ -253,8 +254,7 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 		}
 		StringBuilder builder = new StringBuilder();
 		builder.append(header[VERSION_BYTE] & FF_FLAG).append(".");
-		builder.append((header[SUBVERSION_BYTE] & FF_FLAG) >>> REQUIRED_LENGTH).append(".");
-		builder.append(header[SUBVERSION_BYTE] & F_FLAG);
+		builder.append((header[SUBVERSION_BYTE] & FF_FLAG) >>> REQUIRED_LENGTH);
 		return builder.toString();
 	}
 
@@ -306,7 +306,7 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 
 		int curOffset = HEADER_SIZE + REQUIRED_LENGTH;
 
-		while (tagsNumberRemained > 0 && curOffset + TAGINFO_LENGTH <= profileBytes.length) {
+		while (tagsNumberRemained-- > 0 && curOffset + TAGINFO_LENGTH <= profileBytes.length) {
 			String tag = new String(Arrays.copyOfRange(profileBytes, curOffset, curOffset + REQUIRED_LENGTH));
 			if (tag.equals(tagName)) {
 				curOffset += REQUIRED_LENGTH;

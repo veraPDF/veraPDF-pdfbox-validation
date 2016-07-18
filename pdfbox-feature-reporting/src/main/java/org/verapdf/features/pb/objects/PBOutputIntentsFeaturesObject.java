@@ -57,7 +57,9 @@ public class PBOutputIntentsFeaturesObject implements IFeaturesObject {
 	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
 		if (outInt != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("outputIntent");
-			root.setAttribute("id", id);
+			if (id != null) {
+				root.setAttribute("id", id);
+			}
 
 			addSubtype(collection, root);
 
@@ -66,8 +68,10 @@ public class PBOutputIntentsFeaturesObject implements IFeaturesObject {
 			PBCreateNodeHelper.addNotEmptyNode("registryName", outInt.getRegistryName(), root);
 			PBCreateNodeHelper.addNotEmptyNode("info", outInt.getInfo(), root);
 
-			FeatureTreeNode destOutInt = FeatureTreeNode.createChildNode("destOutputIntent", root);
-			destOutInt.setAttribute("id", iccProfileID);
+			if (iccProfileID != null) {
+				FeatureTreeNode destOutInt = FeatureTreeNode.createChildNode("destOutputIntent", root);
+				destOutInt.setAttribute("id", iccProfileID);
+			}
 
 			collection.addNewFeatureTree(FeaturesObjectTypesEnum.OUTPUTINTENT, root);
 

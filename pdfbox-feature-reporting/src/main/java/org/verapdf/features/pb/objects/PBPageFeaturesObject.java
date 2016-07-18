@@ -100,7 +100,9 @@ public class PBPageFeaturesObject implements IFeaturesObject {
 		if (page != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("page");
 
-			root.setAttribute(ID, id);
+			if (id != null) {
+				root.setAttribute(ID, id);
+			}
 			root.setAttribute("orderNumber", Integer.toString(index));
 
 			PBCreateNodeHelper.addBoxFeature("mediaBox", page.getMediaBox(), root);
