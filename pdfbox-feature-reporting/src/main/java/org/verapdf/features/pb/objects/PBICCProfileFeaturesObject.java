@@ -306,7 +306,7 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 
 		int curOffset = HEADER_SIZE + REQUIRED_LENGTH;
 
-		while (tagsNumberRemained > 0 && curOffset + TAGINFO_LENGTH <= profileBytes.length) {
+		while (tagsNumberRemained-- > 0 && curOffset + TAGINFO_LENGTH <= profileBytes.length) {
 			String tag = new String(Arrays.copyOfRange(profileBytes, curOffset, curOffset + REQUIRED_LENGTH));
 			if (tag.equals(tagName)) {
 				curOffset += REQUIRED_LENGTH;
