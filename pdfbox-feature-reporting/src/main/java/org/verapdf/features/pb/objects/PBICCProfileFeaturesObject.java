@@ -61,6 +61,7 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 	private static final int FIRST_RECORD_STRING_LENGTH_IN_TEXTDESCRIPTIONTYPE_END = 12;
 	private static final int NUMBER_OF_RECORDS_IN_MULTILOCALIZEDUNICODETYPE_BEGIN = 8;
 	private static final int NUMBER_OF_RECORDS_IN_MULTILOCALIZEDUNICODETYPE_END = 12;
+	private static final int LENGTH_OF_RECORD_IN_MULTILOCALIZEDUNICODETYPE_END = 12;
 
 	private COSStream profile;
 	private String id;
@@ -334,7 +335,9 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 									recOffset + REQUIRED_LENGTH * 2 + REQUIRED_LENGTH));
 							return new String(Arrays.copyOfRange(profileBytes, offset, offset + length), StandardCharsets.UTF_16BE).trim();
 						}
+						recOffset += LENGTH_OF_RECORD_IN_MULTILOCALIZEDUNICODETYPE_END;
 					}
+					return null;
 				} else if ("desc".equals(type)) {
 					length = byteArrayToInt(Arrays.copyOfRange(profileBytes, offset + FIRST_RECORD_STRING_LENGTH_IN_TEXTDESCRIPTIONTYPE_BEGIN,
 							offset + FIRST_RECORD_STRING_LENGTH_IN_TEXTDESCRIPTIONTYPE_END));
