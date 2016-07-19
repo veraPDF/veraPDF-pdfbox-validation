@@ -337,6 +337,7 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 						}
 						recOffset += LENGTH_OF_RECORD_IN_MULTILOCALIZEDUNICODETYPE_END;
 					}
+					return null;
 				} else if ("desc".equals(type)) {
 					length = byteArrayToInt(Arrays.copyOfRange(profileBytes, offset + FIRST_RECORD_STRING_LENGTH_IN_TEXTDESCRIPTIONTYPE_BEGIN,
 							offset + FIRST_RECORD_STRING_LENGTH_IN_TEXTDESCRIPTIONTYPE_END));
