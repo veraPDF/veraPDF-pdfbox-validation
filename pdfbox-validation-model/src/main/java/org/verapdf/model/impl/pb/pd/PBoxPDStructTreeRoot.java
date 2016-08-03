@@ -61,7 +61,7 @@ public class PBoxPDStructTreeRoot extends PBoxPDObject implements PDStructTreeRo
 
 	private List<PDStructElem> parseChildren() {
 		COSDictionary parent = ((PDStructureTreeRoot) this.simplePDObject).getCOSObject();
-		return TaggedPDFHelper.getChildren(parent, new TaggedPDFRoleMapHelper(getRoleMap(), this.flavour), LOGGER);
+		return TaggedPDFHelper.getStructTreeRootChildren(parent, new TaggedPDFRoleMapHelper(getRoleMap(), this.flavour));
 	}
 
 	private Map<String, String> getRoleMap() {
