@@ -42,11 +42,6 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 	private Set<String> xobjectChild;
 	private Set<String> fontChild;
 	private Set<String> propertiesChild;
-	private Set<String> extGStateParent;
-	private Set<String> pageParent;
-	private Set<String> patternParent;
-	private Set<String> xobjectParent;
-	private Set<String> fontParent;
 
 	/**
 	 * Constructs new font features object
@@ -60,13 +55,10 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 	 * @param xobjectChild    set of XObject id which contains in resource dictionary of this font
 	 * @param fontChild       set of font id which contains in resource dictionary of this font
 	 * @param propertiesChild set of properties id which contains in resource dictionary of this font
-	 * @param pageParent      set of page ids which contains the given font as its resources
-	 * @param extGStateParent set of graphicsState ids which contains the given font as their resource
-	 * @param patternParent   set of pattern ids which contains the given font as its resources
-	 * @param xobjectParent   set of xobject ids which contains the given font as its resources
-	 * @param fontParent      set of font ids which contains the given font as its resources
 	 */
-	public PBFontFeaturesObject(PDFontLike fontLike, String id, Set<String> extGStateChild, Set<String> colorSpaceChild, Set<String> patternChild, Set<String> shadingChild, Set<String> xobjectChild, Set<String> fontChild, Set<String> propertiesChild, Set<String> extGStateParent, Set<String> pageParent, Set<String> patternParent, Set<String> xobjectParent, Set<String> fontParent) {
+	public PBFontFeaturesObject(PDFontLike fontLike, String id, Set<String> extGStateChild,
+								Set<String> colorSpaceChild, Set<String> patternChild, Set<String> shadingChild,
+								Set<String> xobjectChild, Set<String> fontChild, Set<String> propertiesChild) {
 		this.fontLike = fontLike;
 		this.id = id;
 		this.extGStateChild = extGStateChild;
@@ -76,11 +68,6 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 		this.xobjectChild = xobjectChild;
 		this.fontChild = fontChild;
 		this.propertiesChild = propertiesChild;
-		this.extGStateParent = extGStateParent;
-		this.pageParent = pageParent;
-		this.patternParent = patternParent;
-		this.xobjectParent = xobjectParent;
-		this.fontParent = fontParent;
 	}
 
 	/**
@@ -105,8 +92,6 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 			if (id != null) {
 				root.setAttribute(ID, id);
 			}
-
-			parseParents(root);
 
 			if (fontLike instanceof PDFont) {
 				PDFont font = (PDFont) fontLike;
@@ -328,22 +313,6 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 			FeatureTreeNode element = FeatureTreeNode.createChildNode("width", parent);
 			element.setValue(String.valueOf(array.get(i)));
 			element.setAttribute("char", String.valueOf(i + fc));
-		}
-	}
-
-	private void parseParents(FeatureTreeNode root) throws FeatureParsingException {
-		if ((pageParent != null && !pageParent.isEmpty()) ||
-				(extGStateParent != null && !extGStateParent.isEmpty()) ||
-				(patternParent != null && !patternParent.isEmpty()) ||
-				(xobjectParent != null && !xobjectParent.isEmpty()) ||
-				(fontParent != null && !fontParent.isEmpty())) {
-			FeatureTreeNode parents = FeatureTreeNode.createChildNode("parents", root);
-
-			PBCreateNodeHelper.parseIDSet(pageParent, "page", null, parents);
-			PBCreateNodeHelper.parseIDSet(extGStateParent, "graphicsState", null, parents);
-			PBCreateNodeHelper.parseIDSet(patternParent, "pattern", null, parents);
-			PBCreateNodeHelper.parseIDSet(xobjectParent, "xobject", null, parents);
-			PBCreateNodeHelper.parseIDSet(fontParent, "font", null, parents);
 		}
 	}
 

@@ -16,7 +16,6 @@ import org.verapdf.features.tools.FeaturesCollection;
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Features object for ColorSpace
@@ -34,12 +33,6 @@ public class PBColorSpaceFeaturesObject implements IFeaturesObject {
 	private String id;
 	private String iccProfileChild;
 	private String colorSpaceChild;
-	private Set<String> pageParents;
-	private Set<String> colorSpaceParents;
-	private Set<String> patternParents;
-	private Set<String> shadingParents;
-	private Set<String> xobjectParents;
-	private Set<String> fontParents;
 
 	/**
 	 * Constructs new colorspace features object
@@ -48,33 +41,15 @@ public class PBColorSpaceFeaturesObject implements IFeaturesObject {
 	 * @param id                id of the object
 	 * @param iccProfileChild   id of the iccprofile child
 	 * @param colorSpaceChild   id of the colorspace child
-	 * @param pageParents       set of page ids which contains the given colorspace as its resources
-	 * @param colorSpaceParents set of colorspace ids which contains the given colorspace as its resources
-	 * @param patternParents    set of pattern ids which contains the given colorspaceas its resources
-	 * @param shadingParents    set of shading ids which contains the given colorspaceas its resources
-	 * @param xobjectParents    set of xobject ids which contains the given colorspace as its resources
-	 * @param fontParents       set of font ids which contains the given colorspace as its resources
 	 */
 	public PBColorSpaceFeaturesObject(PDColorSpace colorSpace,
 									  String id,
 									  String iccProfileChild,
-									  String colorSpaceChild,
-									  Set<String> pageParents,
-									  Set<String> colorSpaceParents,
-									  Set<String> patternParents,
-									  Set<String> shadingParents,
-									  Set<String> xobjectParents,
-									  Set<String> fontParents) {
+									  String colorSpaceChild) {
 		this.colorSpace = colorSpace;
 		this.id = id;
 		this.iccProfileChild = iccProfileChild;
 		this.colorSpaceChild = colorSpaceChild;
-		this.pageParents = pageParents;
-		this.colorSpaceParents = colorSpaceParents;
-		this.patternParents = patternParents;
-		this.shadingParents = shadingParents;
-		this.xobjectParents = xobjectParents;
-		this.fontParents = fontParents;
 	}
 
 	/**
@@ -101,8 +76,6 @@ public class PBColorSpaceFeaturesObject implements IFeaturesObject {
 				root.setAttribute(ID, id);
 			}
 			root.setAttribute("family", colorSpace.getName());
-
-			parseParents(root);
 
 			if (colorSpace instanceof PDCIEDictionaryBasedColorSpace) {
 				parseCIEDictionaryBased(root);
@@ -250,35 +223,9 @@ public class PBColorSpaceFeaturesObject implements IFeaturesObject {
 		}
 	}
 
-	private void parseStringList(List<String> array, FeatureTreeNode parent) throws FeatureParsingException {
-		for (int i = 0; i < array.size(); ++i) {
-			FeatureTreeNode element = FeatureTreeNode.createChildNode("element", parent);
-			element.setAttribute("number", String.valueOf(i));
-			element.setAttribute("value", String.valueOf(array.get(i)));
-		}
-	}
-
 	private void parseTristimulus(PDTristimulus tris, FeatureTreeNode curNode) {
 		curNode.setAttribute("x", String.valueOf(tris.getX()));
 		curNode.setAttribute("y", String.valueOf(tris.getY()));
 		curNode.setAttribute("z", String.valueOf(tris.getZ()));
-	}
-
-	private void parseParents(FeatureTreeNode root) throws FeatureParsingException {
-		if ((pageParents != null && !pageParents.isEmpty()) ||
-				(colorSpaceParents != null && !colorSpaceParents.isEmpty()) ||
-				(patternParents != null && !patternParents.isEmpty()) ||
-				(xobjectParents != null && !xobjectParents.isEmpty()) ||
-				(shadingParents != null && !shadingParents.isEmpty()) ||
-				(fontParents != null && !fontParents.isEmpty())) {
-			FeatureTreeNode parents = FeatureTreeNode.createChildNode("parents", root);
-
-			PBCreateNodeHelper.parseIDSet(pageParents, "page", null, parents);
-			PBCreateNodeHelper.parseIDSet(colorSpaceParents, "colorSpace", null, parents);
-			PBCreateNodeHelper.parseIDSet(patternParents, "pattern", null, parents);
-			PBCreateNodeHelper.parseIDSet(shadingParents, "shading", null, parents);
-			PBCreateNodeHelper.parseIDSet(xobjectParents, "xobject", null, parents);
-			PBCreateNodeHelper.parseIDSet(fontParents, "font", null, parents);
-		}
 	}
 }

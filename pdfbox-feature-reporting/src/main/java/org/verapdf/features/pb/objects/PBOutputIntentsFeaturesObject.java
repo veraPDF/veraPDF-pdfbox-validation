@@ -22,19 +22,16 @@ import org.verapdf.features.tools.FeaturesCollection;
 public class PBOutputIntentsFeaturesObject implements IFeaturesObject {
 
 	private PDOutputIntent outInt;
-	private String id;
 	private String iccProfileID;
 
 	/**
 	 * Constructs new OutputIntent Feature Object
 	 *
 	 * @param outInt       pdfbox class represents OutputIntent object
-	 * @param id           id of the outputIntent
 	 * @param iccProfileID id of the icc profile which use in this outputIntent
 	 */
-	public PBOutputIntentsFeaturesObject(PDOutputIntent outInt, String id, String iccProfileID) {
+	public PBOutputIntentsFeaturesObject(PDOutputIntent outInt, String iccProfileID) {
 		this.outInt = outInt;
-		this.id = id;
 		this.iccProfileID = iccProfileID;
 	}
 
@@ -57,9 +54,6 @@ public class PBOutputIntentsFeaturesObject implements IFeaturesObject {
 	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
 		if (outInt != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("outputIntent");
-			if (id != null) {
-				root.setAttribute("id", id);
-			}
 
 			addSubtype(collection, root);
 

@@ -5,11 +5,8 @@ import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesData;
 import org.verapdf.features.FeaturesObjectTypesEnum;
 import org.verapdf.features.IFeaturesObject;
-import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
-
-import java.util.Set;
 
 /**
  * Features object for shading pattern
@@ -24,10 +21,6 @@ public class PBShadingPatternFeaturesObject implements IFeaturesObject {
 	private String id;
 	private String shadingChild;
 	private String extGStateChild;
-	private Set<String> pageParent;
-	private Set<String> patternParent;
-	private Set<String> xobjectParent;
-	private Set<String> fontParent;
 
 	/**
 	 * Constructs new tilling pattern features object
@@ -36,20 +29,12 @@ public class PBShadingPatternFeaturesObject implements IFeaturesObject {
 	 * @param id             id of the object
 	 * @param extGStateChild external graphics state id which contains in this shading pattern
 	 * @param shadingChild   shading id which contains in this shading pattern
-	 * @param pageParent     set of page ids which contains the given pattern as its resources
-	 * @param patternParent  set of pattern ids which contains the given pattern as its resources
-	 * @param xobjectParent  set of xobject ids which contains the given pattern as its resources
-	 * @param fontParent     set of font ids which contains the given pattern as its resources
 	 */
-	public PBShadingPatternFeaturesObject(PDShadingPattern shadingPattern, String id, String shadingChild, String extGStateChild, Set<String> pageParent, Set<String> patternParent, Set<String> xobjectParent, Set<String> fontParent) {
+	public PBShadingPatternFeaturesObject(PDShadingPattern shadingPattern, String id, String shadingChild, String extGStateChild) {
 		this.shadingPattern = shadingPattern;
 		this.id = id;
 		this.shadingChild = shadingChild;
 		this.extGStateChild = extGStateChild;
-		this.pageParent = pageParent;
-		this.patternParent = patternParent;
-		this.xobjectParent = xobjectParent;
-		this.fontParent = fontParent;
 	}
 
 	/**
@@ -75,8 +60,6 @@ public class PBShadingPatternFeaturesObject implements IFeaturesObject {
 				root.setAttribute(ID, id);
 			}
 			root.setAttribute("type", "shading");
-
-			parseParents(root);
 
 			if (shadingChild != null) {
 				FeatureTreeNode shading = FeatureTreeNode.createChildNode("shading", root);
@@ -113,20 +96,6 @@ public class PBShadingPatternFeaturesObject implements IFeaturesObject {
 				element.setAttribute("column", String.valueOf(j + 1));
 				element.setAttribute("value", String.valueOf(array[i][j]));
 			}
-		}
-	}
-
-	private void parseParents(FeatureTreeNode root) throws FeatureParsingException {
-		if ((pageParent != null && !pageParent.isEmpty()) ||
-				(patternParent != null && !patternParent.isEmpty()) ||
-				(xobjectParent != null && !xobjectParent.isEmpty()) ||
-				(fontParent != null && !fontParent.isEmpty())) {
-			FeatureTreeNode parents = FeatureTreeNode.createChildNode("parents", root);
-
-			PBCreateNodeHelper.parseIDSet(pageParent, "page", null, parents);
-			PBCreateNodeHelper.parseIDSet(patternParent, "pattern", null, parents);
-			PBCreateNodeHelper.parseIDSet(xobjectParent, "xobject", null, parents);
-			PBCreateNodeHelper.parseIDSet(fontParent, "font", null, parents);
 		}
 	}
 }

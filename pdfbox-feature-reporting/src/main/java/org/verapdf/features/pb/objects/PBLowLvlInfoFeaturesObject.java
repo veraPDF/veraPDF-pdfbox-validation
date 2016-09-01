@@ -1,6 +1,5 @@
 package org.verapdf.features.pb.objects;
 
-import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.*;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesData;
@@ -19,9 +18,6 @@ import java.util.*;
  * @author Maksim Bezrukov
  */
 public class PBLowLvlInfoFeaturesObject implements IFeaturesObject {
-
-	private static final Logger LOGGER = Logger
-			.getLogger(PBEmbeddedFileFeaturesObject.class);
 
 	private COSDocument document;
 	private static final Map<String, String> filtersAbbreviations;

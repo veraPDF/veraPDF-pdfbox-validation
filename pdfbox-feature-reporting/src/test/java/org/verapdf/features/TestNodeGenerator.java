@@ -32,9 +32,6 @@ public final class TestNodeGenerator {
     public static FeatureTreeNode getFont0() throws FeatureParsingException {
         FeatureTreeNode font = FeatureTreeNode.createRootNode("font");
         font.setAttribute("id", "fntIndir90");
-        FeatureTreeNode parents = FeatureTreeNode.createChildNode("parents", font);
-        FeatureTreeNode page = FeatureTreeNode.createChildNode("page", parents);
-        page.setAttribute("id", "page1");
         FeatureTreeNode type = FeatureTreeNode.createChildNode("type", font);
         type.setValue("Type1");
         FeatureTreeNode baseFont = FeatureTreeNode.createChildNode("baseFont", font);
@@ -116,10 +113,7 @@ public final class TestNodeGenerator {
 
     public static FeatureTreeNode getFont1() throws FeatureParsingException {
         FeatureTreeNode font = FeatureTreeNode.createRootNode("font");
-        font.setAttribute("id", "fntDir1");
-        FeatureTreeNode parents = FeatureTreeNode.createChildNode("parents", font);
-        FeatureTreeNode font1 = FeatureTreeNode.createChildNode("font", parents);
-        font1.setAttribute("id", "fntIndir88");
+        font.setAttribute("id", "fntDir32");
         FeatureTreeNode type = FeatureTreeNode.createChildNode("type", font);
         type.setValue("CIDFontType2");
         FeatureTreeNode baseFont = FeatureTreeNode.createChildNode("baseFont", font);
@@ -190,10 +184,7 @@ public final class TestNodeGenerator {
 
     public static FeatureTreeNode getFont2() throws FeatureParsingException {
         FeatureTreeNode font = FeatureTreeNode.createRootNode("font");
-        font.setAttribute("id", "fntDir3");
-        FeatureTreeNode parents = FeatureTreeNode.createChildNode("parents", font);
-        FeatureTreeNode font1 = FeatureTreeNode.createChildNode("font", parents);
-        font1.setAttribute("id", "fntIndir89");
+        font.setAttribute("id", "fntDir64");
         FeatureTreeNode type = FeatureTreeNode.createChildNode("type", font);
         type.setValue("CIDFontType0");
         FeatureTreeNode baseFont = FeatureTreeNode.createChildNode("baseFont", font);
@@ -278,9 +269,6 @@ public final class TestNodeGenerator {
         FeatureTreeNode root = FeatureTreeNode.createRootNode("pattern");
         root.setAttribute(ID, "ptrnIndir49");
         root.setAttribute("type", "tiling");
-        FeatureTreeNode parents = FeatureTreeNode.createChildNode("parents", root);
-        FeatureTreeNode page = FeatureTreeNode.createChildNode("page", parents);
-        page.setAttribute(ID, "page1");
         FeatureTreeNode.createChildNode("paintType", root).setValue("2");
         FeatureTreeNode.createChildNode("tilingType", root).setValue("1");
         FeatureTreeNode bbox = FeatureTreeNode.createChildNode("bbox", root);
@@ -309,11 +297,6 @@ public final class TestNodeGenerator {
         FeatureTreeNode root = FeatureTreeNode.createRootNode("pattern");
         root.setAttribute(ID, "ptrnIndir50");
         root.setAttribute("type", "shading");
-        FeatureTreeNode parents = FeatureTreeNode.createChildNode("parents", root);
-        FeatureTreeNode page = FeatureTreeNode.createChildNode("page", parents);
-        page.setAttribute(ID, "page1");
-        FeatureTreeNode font = FeatureTreeNode.createChildNode("font", parents);
-        font.setAttribute(ID, "fntIndir91");
         FeatureTreeNode shading = FeatureTreeNode.createChildNode("shading", root);
         shading.setAttribute(ID, "shdngIndir52");
         getStandartMatrix(root);
@@ -342,13 +325,6 @@ public final class TestNodeGenerator {
     public static FeatureTreeNode getShading() throws FeatureParsingException {
         FeatureTreeNode root = FeatureTreeNode.createRootNode("shading");
         root.setAttribute(ID, "shdngIndir52");
-        FeatureTreeNode parents = FeatureTreeNode.createChildNode("parents", root);
-        FeatureTreeNode page = FeatureTreeNode.createChildNode("page", parents);
-        page.setAttribute(ID, "page1");
-        FeatureTreeNode pattern = FeatureTreeNode.createChildNode("pattern", parents);
-        pattern.setAttribute(ID, "ptrnIndir50");
-        FeatureTreeNode font = FeatureTreeNode.createChildNode("font", parents);
-        font.setAttribute(ID, "fntIndir91");
         FeatureTreeNode.createChildNode("shadingType", root).setValue("2");
         FeatureTreeNode clr = FeatureTreeNode.createChildNode("colorSpace", root);
         clr.setAttribute(ID, "devrgb");
@@ -370,40 +346,14 @@ public final class TestNodeGenerator {
 
     public static FeatureTreeNode getProperties() throws FeatureParsingException {
         FeatureTreeNode root = FeatureTreeNode.createRootNode("propertiesDict");
-        root.setAttribute(ID, "propDir0");
-        FeatureTreeNode parents = FeatureTreeNode.createChildNode("parents", root);
-        FeatureTreeNode page = FeatureTreeNode.createChildNode("page", parents);
-        page.setAttribute(ID, "page1");
+        root.setAttribute(ID, "propDir84");
         return root;
     }
 
-    public static FeatureTreeNode getGraphicsState(String id, String page, String pattern, String xobject1, String xobject2, String font, String transparency, String strokeAdjustment,
+    public static FeatureTreeNode getGraphicsState(String id, String transparency, String strokeAdjustment,
                                                    String overprintForStroke, String overprintForFill, String fontChild) throws FeatureParsingException {
         FeatureTreeNode root = FeatureTreeNode.createRootNode("graphicsState");
         root.setAttribute(ID, id);
-        FeatureTreeNode parents = FeatureTreeNode.createChildNode("parents", root);
-        if (page != null) {
-            FeatureTreeNode pageNode = FeatureTreeNode.createChildNode("page", parents);
-            pageNode.setAttribute(ID, page);
-        }
-        if (pattern != null) {
-            FeatureTreeNode patternNode = FeatureTreeNode.createChildNode("pattern", parents);
-            patternNode.setAttribute(ID, pattern);
-        }
-        if (xobject1 != null) {
-            FeatureTreeNode xobjectNode = FeatureTreeNode.createChildNode("xobject", parents);
-            xobjectNode.setAttribute(ID, xobject1);
-        }
-        if (xobject2 != null) {
-            FeatureTreeNode xobjectNode = FeatureTreeNode.createChildNode("xobject", parents);
-            xobjectNode.setAttribute(ID, xobject2);
-        }
-        if (font != null) {
-            FeatureTreeNode fontNode = FeatureTreeNode.createChildNode("font", parents);
-            fontNode.setAttribute(ID, font);
-        }
-
-
         FeatureTreeNode.createChildNode("transparency", root).setValue(transparency);
         FeatureTreeNode.createChildNode("strokeAdjustment", root).setValue(strokeAdjustment);
         FeatureTreeNode.createChildNode("overprintForStroke", root).setValue(overprintForStroke);
@@ -524,8 +474,7 @@ public final class TestNodeGenerator {
         box.setAttribute(URY, "499.977");
     }
 
-    public static FeatureTreeNode getAnnotation(String id, String parentPage, String parentAnnotation,
-                                                String subtype, String llx, String lly, String urx, String ury,
+    public static FeatureTreeNode getAnnotation(String id, String subtype, String llx, String lly, String urx, String ury,
                                                 String contents, String annotationName, String modifiedDate, Set<String> xobj,
                                                 String popup, String red, String green, String blue, String kayan,
                                                 String invisible, String hidden, String print, String noZoom,
@@ -533,17 +482,6 @@ public final class TestNodeGenerator {
                                                 String toggleNoView, String lockedContents) throws FeatureParsingException {
         FeatureTreeNode root = FeatureTreeNode.createRootNode("annotation");
         root.setAttribute(ID, id);
-        if (parentPage != null || parentAnnotation != null) {
-            FeatureTreeNode parents = FeatureTreeNode.createChildNode("parents", root);
-            if (parentPage != null) {
-                FeatureTreeNode page = FeatureTreeNode.createChildNode("page", parents);
-                page.setAttribute(ID, parentPage);
-            }
-            if (parentAnnotation != null) {
-                FeatureTreeNode annot = FeatureTreeNode.createChildNode("annotation", parents);
-                annot.setAttribute(ID, parentAnnotation);
-            }
-        }
         PBCreateNodeHelper.addNotEmptyNode("subType", subtype, root);
         FeatureTreeNode rec = FeatureTreeNode.createChildNode("rectangle", root);
         rec.setAttribute(LLX, llx);
@@ -634,7 +572,6 @@ public final class TestNodeGenerator {
 
     public static FeatureTreeNode getOutputIntent() throws FeatureParsingException {
         FeatureTreeNode root = FeatureTreeNode.createRootNode("outputIntent");
-        root.setAttribute(ID, "outIntDir0");
         FeatureTreeNode.createChildNode("subtype", root).setValue("GTS_PDFA1");
         FeatureTreeNode.createChildNode("outputCondition", root).setValue("SomeOutputCondition");
         FeatureTreeNode.createChildNode("outputConditionIdentifier", root).setValue("Apple RGB");
@@ -645,28 +582,12 @@ public final class TestNodeGenerator {
         return root;
     }
 
-    public static FeatureTreeNode getICCProfile(String id, Set<String> outInts, Set<String> iccBaseds, String version,
+    public static FeatureTreeNode getICCProfile(String id, String version,
                                                 String cmmType, String dataColorSpace, String creator, String creationDate,
                                                 String defaultRenderingIntent, String copyright, String description,
                                                 String profileId, String deviceModel, String deviceManufacturer, byte[] metadata) throws FeatureParsingException {
         FeatureTreeNode root = FeatureTreeNode.createRootNode("iccProfile");
         root.setAttribute(ID, id);
-
-        if ((outInts != null && !outInts.isEmpty()) || (iccBaseds != null && !iccBaseds.isEmpty())) {
-            FeatureTreeNode parents = FeatureTreeNode.createChildNode("parents", root);
-            if (outInts != null) {
-                for (String out : outInts) {
-                    FeatureTreeNode outNode = FeatureTreeNode.createChildNode("outputIntent", parents);
-                    outNode.setAttribute(ID, out);
-                }
-            }
-            if (iccBaseds != null) {
-                for (String icc : iccBaseds) {
-                    FeatureTreeNode iccNode = FeatureTreeNode.createChildNode("iccBased", parents);
-                    iccNode.setAttribute(ID, icc);
-                }
-            }
-        }
 
         PBCreateNodeHelper.addNotEmptyNode("version", version, root);
         PBCreateNodeHelper.addNotEmptyNode("cmmType", cmmType, root);

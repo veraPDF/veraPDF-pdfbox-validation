@@ -33,10 +33,6 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 	private String maskChild;
 	private String sMaskChild;
 	private Set<String> alternatesChild;
-	private Set<String> pageParent;
-	private Set<String> patternParent;
-	private Set<String> xobjectParent;
-	private Set<String> fontParent;
 
 	/**
 	 * Constructs new shading features object
@@ -47,22 +43,15 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 	 * @param maskChild       image xobject id which contains in this image xobject as it's mask
 	 * @param sMaskChild      image xobject id which contains in this image xobject as it's smask
 	 * @param alternatesChild set of image xobject ids which contains in this image xobject as alternates
-	 * @param pageParent      set of page ids which contains the given image xobject as its resources
-	 * @param patternParent   set of pattern ids which contains the given image xobject state as its resources
-	 * @param xobjectParent   set of xobject ids which contains the given image xobject state as its resources
-	 * @param fontParent      set of font ids which contains the given image xobject state as its resources
 	 */
-	public PBImageXObjectFeaturesObject(PDImageXObjectProxy imageXObject, String id, String colorSpaceChild, String maskChild, String sMaskChild, Set<String> alternatesChild, Set<String> pageParent, Set<String> patternParent, Set<String> xobjectParent, Set<String> fontParent) {
+	public PBImageXObjectFeaturesObject(PDImageXObjectProxy imageXObject, String id, String colorSpaceChild,
+										String maskChild, String sMaskChild, Set<String> alternatesChild) {
 		this.imageXObject = imageXObject;
 		this.id = id;
 		this.colorSpaceChild = colorSpaceChild;
 		this.maskChild = maskChild;
 		this.sMaskChild = sMaskChild;
 		this.alternatesChild = alternatesChild;
-		this.pageParent = pageParent;
-		this.patternParent = patternParent;
-		this.xobjectParent = xobjectParent;
-		this.fontParent = fontParent;
 	}
 
 	/**
@@ -88,8 +77,6 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 			if (id != null) {
 				root.setAttribute(ID, id);
 			}
-
-			parseParents(root);
 
 			FeatureTreeNode.createChildNode("width", root).setValue(String.valueOf(imageXObject.getWidth()));
 			FeatureTreeNode.createChildNode("height", root).setValue(String.valueOf(imageXObject.getHeight()));
@@ -306,20 +293,6 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 			if (defaultValue != null) {
 				map.put(key, defaultValue.toString());
 			}
-		}
-	}
-
-	private void parseParents(FeatureTreeNode root) throws FeatureParsingException {
-		if ((pageParent != null && !pageParent.isEmpty()) ||
-				(patternParent != null && !patternParent.isEmpty()) ||
-				(xobjectParent != null && !xobjectParent.isEmpty()) ||
-				(fontParent != null && !fontParent.isEmpty())) {
-			FeatureTreeNode parents = FeatureTreeNode.createChildNode("parents", root);
-
-			PBCreateNodeHelper.parseIDSet(pageParent, "page", null, parents);
-			PBCreateNodeHelper.parseIDSet(patternParent, "pattern", null, parents);
-			PBCreateNodeHelper.parseIDSet(xobjectParent, "xobject", null, parents);
-			PBCreateNodeHelper.parseIDSet(fontParent, "font", null, parents);
 		}
 	}
 }

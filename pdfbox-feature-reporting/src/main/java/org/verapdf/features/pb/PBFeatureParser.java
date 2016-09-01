@@ -51,12 +51,10 @@ public final class PBFeatureParser {
 
 	private static final Logger LOGGER = Logger
 			.getLogger(PBFeatureParser.class);
-	private static final String PAGE = "page";
 	private static final String ICCPROFILE = "iccProfile";
 	private static final String ID = "id";
 	private static final String ANNOTATION = "annotation";
 	private static final String ANNOT = "annot";
-	private static final String OUTINT = "outInt";
 	private static final String EMBEDDEDFILE = "embeddedFile";
 	private static final String FONT = "font";
 	private static final String SHADING = "shading";
@@ -76,124 +74,12 @@ public final class PBFeatureParser {
 
 	private FeaturesReporter reporter;
 	private FeaturesConfig config;
-
-	private Map<String, COSStream> iccProfiles = new HashMap<>();
-	private Map<String, Set<String>> iccProfileOutInts = new HashMap<>();
-	private Map<String, Set<String>> iccProfileICCBased = new HashMap<>();
-
-	private Map<String, Set<String>> pageExtGStateChild = new HashMap<>();
-	private Map<String, Set<String>> pageColorSpaceChild = new HashMap<>();
-	private Map<String, Set<String>> pagePatternChild = new HashMap<>();
-	private Map<String, Set<String>> pageShadingChild = new HashMap<>();
-	private Map<String, Set<String>> pageXObjectChild = new HashMap<>();
-	private Map<String, Set<String>> pageFontChild = new HashMap<>();
-	private Map<String, Set<String>> pagePropertiesChild = new HashMap<>();
-
-	private Map<String, PDAnnotation> annots = new HashMap<>();
-	private Map<String, String> annotChild = new HashMap<>();
-	private Map<String, Set<String>> annotXObjectsChild = new HashMap<>();
-	private Map<String, Set<String>> annotPagesParent = new HashMap<>();
-	private Map<String, String> annotParent = new HashMap<>();
-
-	private Map<String, PDExtendedGraphicsState> exGStates = new HashMap<>();
-	private Map<String, String> exGStateFontChild = new HashMap<>();
-	private Map<String, Set<String>> exGStatePageParent = new HashMap<>();
-	private Map<String, Set<String>> exGStatePatternParent = new HashMap<>();
-	private Map<String, Set<String>> exGStateXObjectParent = new HashMap<>();
-	private Map<String, Set<String>> exGStateFontParent = new HashMap<>();
-
-	private Map<String, PDColorSpace> colorSpaces = new HashMap<>();
-	private Map<String, String> colorSpaceIccProfileChild = new HashMap<>();
-	private Map<String, String> colorSpaceColorSpaceChild = new HashMap<>();
-	private Map<String, Set<String>> colorSpacePageParent = new HashMap<>();
-	private Map<String, Set<String>> colorSpaceColorSpaceParent = new HashMap<>();
-	private Map<String, Set<String>> colorSpacePatternParent = new HashMap<>();
-	private Map<String, Set<String>> colorSpaceShadingParent = new HashMap<>();
-	private Map<String, Set<String>> colorSpaceXObjectParent = new HashMap<>();
-	private Map<String, Set<String>> colorSpaceFontParent = new HashMap<>();
-
-	private Map<String, PDTilingPattern> tilingPatterns = new HashMap<>();
-	private Map<String, Set<String>> tilingPatternExtGStateChild = new HashMap<>();
-	private Map<String, Set<String>> tilingPatternColorSpaceChild = new HashMap<>();
-	private Map<String, Set<String>> tilingPatternPatternChild = new HashMap<>();
-	private Map<String, Set<String>> tilingPatternShadingChild = new HashMap<>();
-	private Map<String, Set<String>> tilingPatternXObjectChild = new HashMap<>();
-	private Map<String, Set<String>> tilingPatternFontChild = new HashMap<>();
-	private Map<String, Set<String>> tilingPatternPropertiesChild = new HashMap<>();
-	private Map<String, Set<String>> tilingPatternPageParent = new HashMap<>();
-	private Map<String, Set<String>> tilingPatternPatternParent = new HashMap<>();
-	private Map<String, Set<String>> tilingPatternXObjectParent = new HashMap<>();
-	private Map<String, Set<String>> tilingPatternFontParent = new HashMap<>();
-
-	private Map<String, PDShadingPattern> shadingPatterns = new HashMap<>();
-	private Map<String, String> shadingPatternShadingChild = new HashMap<>();
-	private Map<String, String> shadingPatternExtGStateChild = new HashMap<>();
-	private Map<String, Set<String>> shadingPatternPageParent = new HashMap<>();
-	private Map<String, Set<String>> shadingPatternPatternParent = new HashMap<>();
-	private Map<String, Set<String>> shadingPatternXObjectParent = new HashMap<>();
-	private Map<String, Set<String>> shadingPatternFontParent = new HashMap<>();
-
-	private Map<String, PDShading> shadings = new HashMap<>();
-	private Map<String, String> shadingColorSpaceChild = new HashMap<>();
-	private Map<String, Set<String>> shadingPageParent = new HashMap<>();
-	private Map<String, Set<String>> shadingPatternParent = new HashMap<>();
-	private Map<String, Set<String>> shadingXObjectParent = new HashMap<>();
-	private Map<String, Set<String>> shadingFontParent = new HashMap<>();
-
-	private Map<String, PDImageXObjectProxy> imageXObjects = new HashMap<>();
-	private Map<String, String> imageXObjectColorSpaceChild = new HashMap<>();
-	private Map<String, String> imageXObjectMaskChild = new HashMap<>();
-	private Map<String, String> imageXObjectSMaskChild = new HashMap<>();
-	private Map<String, Set<String>> imageXObjectAlternatesChild = new HashMap<>();
-	private Map<String, Set<String>> imageXObjectPageParent = new HashMap<>();
-	private Map<String, Set<String>> imageXObjectPatternParent = new HashMap<>();
-	private Map<String, Set<String>> imageXObjectXObjectParent = new HashMap<>();
-	private Map<String, Set<String>> imageXObjectFontParent = new HashMap<>();
-
-	private Map<String, PDFormXObject> formXObjects = new HashMap<>();
-	private Map<String, String> groupXObjectColorSpaceChild = new HashMap<>();
-	private Map<String, Set<String>> formXObjectExtGStateChild = new HashMap<>();
-	private Map<String, Set<String>> formXObjectColorSpaceChild = new HashMap<>();
-	private Map<String, Set<String>> formXObjectPatternChild = new HashMap<>();
-	private Map<String, Set<String>> formXObjectShadingChild = new HashMap<>();
-	private Map<String, Set<String>> formXObjectXObjectChild = new HashMap<>();
-	private Map<String, Set<String>> formXObjectFontChild = new HashMap<>();
-	private Map<String, Set<String>> formXObjectPropertiesChild = new HashMap<>();
-	private Map<String, Set<String>> formXObjectPageParent = new HashMap<>();
-	private Map<String, Set<String>> formXObjectAnnotationParent = new HashMap<>();
-	private Map<String, Set<String>> formXObjectPatternParent = new HashMap<>();
-	private Map<String, Set<String>> formXObjectXObjectParent = new HashMap<>();
-	private Map<String, Set<String>> formXObjectFontParent = new HashMap<>();
-
-	private Map<String, PDFontLike> fonts = new HashMap<>();
-	private Map<String, Set<String>> fontExtGStateChild = new HashMap<>();
-	private Map<String, Set<String>> fontColorSpaceChild = new HashMap<>();
-	private Map<String, Set<String>> fontPatternChild = new HashMap<>();
-	private Map<String, Set<String>> fontShadingChild = new HashMap<>();
-	private Map<String, Set<String>> fontXObjectChild = new HashMap<>();
-	private Map<String, Set<String>> fontFontChild = new HashMap<>();
-	private Map<String, Set<String>> fontPropertiesChild = new HashMap<>();
-	private Map<String, Set<String>> fontExtGStateParent = new HashMap<>();
-	private Map<String, Set<String>> fontPageParent = new HashMap<>();
-	private Map<String, Set<String>> fontPatternParent = new HashMap<>();
-	private Map<String, Set<String>> fontXObjectParent = new HashMap<>();
-	private Map<String, Set<String>> fontFontParent = new HashMap<>();
-
-	private Map<String, COSDictionary> properties = new HashMap<>();
-	private Map<String, Set<String>> propertyPageParent = new HashMap<>();
-	private Map<String, Set<String>> propertyPatternParent = new HashMap<>();
-	private Map<String, Set<String>> propertyXObjectParent = new HashMap<>();
-	private Map<String, Set<String>> propertyFontParent = new HashMap<>();
-
-	private Set<String> postscripts = new HashSet<>();
-	private Map<String, Set<String>> postscriptPageParent = new HashMap<>();
-	private Map<String, Set<String>> postscriptPatternParent = new HashMap<>();
-	private Map<String, Set<String>> postscriptXObjectParent = new HashMap<>();
-	private Map<String, Set<String>> postscriptFontParent = new HashMap<>();
+	private Set<String> processedIDs;
 
 	private PBFeatureParser(FeaturesReporter reporter, FeaturesConfig config) {
 		this.reporter = reporter;
 		this.config = config;
+		this.processedIDs = new HashSet<>();
 	}
 
 	/**
@@ -269,15 +155,13 @@ public final class PBFeatureParser {
 		}
 
 		if (catalog.getOutputIntents() != null) {
-			int outIntNumber = 0;
 			for (PDOutputIntent outInt : catalog.getOutputIntents()) {
-				String outIntID = getId(outInt.getCOSObject(), OUTINT, outIntNumber++);
-				String iccProfileID = addICCProfileFromOutputIntent(outInt, outIntID);
+				String iccProfileID = addICCProfileFromOutputIntent(outInt);
 				if (!config.isIccProfilesEnabled()) {
 					iccProfileID = null;
 				}
 				reporter.report(PBFeaturesObjectCreator
-						.createOutputIntentFeaturesObject(outInt, outIntID, iccProfileID));
+						.createOutputIntentFeaturesObject(outInt, iccProfileID));
 			}
 		}
 
@@ -285,40 +169,6 @@ public final class PBFeatureParser {
 		if (pageTree != null) {
 			getPageTreeFeatures(pageTree);
 		}
-
-		for (Map.Entry<String, COSStream> iccProfileEntry : iccProfiles.entrySet()) {
-			if (iccProfileEntry.getValue() != null) {
-				String id = iccProfileEntry.getKey();
-				Set<String> outInts = config.isOutputIntentsEnabled() ?
-						iccProfileOutInts.get(id) : null;
-				Set<String> iccBaseds = config.isColorSpacesEnabled() ?
-						iccProfileICCBased.get(id) : null;
-				reporter.report(PBFeaturesObjectCreator
-						.createICCProfileFeaturesObject(iccProfileEntry.getValue(), id,
-								outInts, iccBaseds));
-			}
-		}
-
-		for (Map.Entry<String, PDAnnotation> annotEntry : annots.entrySet()) {
-			if (annotEntry.getValue() != null) {
-				String id = annotEntry.getKey();
-				getAnnotationResourcesDependencies(annotEntry.getValue(), id);
-				Set<String> pages = config.isPagesEnabled() ?
-						annotPagesParent.get(id) : null;
-				String parentId = config.isAnnotationsEnabled() ?
-						annotParent.get(id) : null;
-				String popupId = config.isAnnotationsEnabled() ?
-						annotChild.get(id) : null;
-				Set<String> formXObjects = config.isXobjectsEnabled() ?
-						annotXObjectsChild.get(id) : null;
-				reporter.report(PBFeaturesObjectCreator
-						.createAnnotFeaturesObject(annotEntry.getValue(), id,
-								pages, parentId,
-								popupId, formXObjects));
-			}
-		}
-
-		getResourcesFeatures();
 	}
 
 	private void getAcroFormFeatures(PDAcroForm acroForm) {
@@ -340,391 +190,48 @@ public final class PBFeatureParser {
 		}
 	}
 
-	private void getResourcesFeatures() {
-		for (Map.Entry<String, PDExtendedGraphicsState> exGStateEntry : exGStates.entrySet()) {
-			if (exGStateEntry.getValue() != null) {
-				String id = exGStateEntry.getKey();
-				String fontChildID = config.isFontsEnabled() ?
-						exGStateFontChild.get(id) : null;
-				Set<String> pageParentsID = config.isPagesEnabled() ?
-						exGStatePageParent.get(id) : null;
-				Set<String> patternParentsID = config.isPatternsEnabled() ?
-						exGStatePatternParent.get(id) : null;
-				Set<String> xobjectParentsID = config.isXobjectsEnabled() ?
-						exGStateXObjectParent.get(id) : null;
-				Set<String> fontParentsID = config.isFontsEnabled() ?
-						exGStateFontParent.get(id) : null;
-				reporter.report(PBFeaturesObjectCreator
-						.createExtGStateFeaturesObject(exGStateEntry.getValue(),
-								id,
-								fontChildID,
-								pageParentsID,
-								patternParentsID,
-								xobjectParentsID,
-								fontParentsID));
-			}
-		}
-
-		for (Map.Entry<String, PDColorSpace> colorSpaceEntry : colorSpaces.entrySet()) {
-			if (colorSpaceEntry.getValue() != null) {
-				String id = colorSpaceEntry.getKey();
-				String iccProfileChild = config.isIccProfilesEnabled() ?
-						colorSpaceIccProfileChild.get(id) : null;
-				String colorSpaceChild = config.isColorSpacesEnabled() ?
-						colorSpaceColorSpaceChild.get(id) : null;
-				Set<String> pageParents = config.isPagesEnabled() ?
-						colorSpacePageParent.get(id) : null;
-				Set<String> colorSpaceParents = config.isColorSpacesEnabled() ?
-						colorSpaceColorSpaceParent.get(id) : null;
-				Set<String> patternParents = config.isPatternsEnabled() ?
-						colorSpacePatternParent.get(id) : null;
-				Set<String> shadingParents = config.isShadingsEnabled() ?
-						colorSpaceShadingParent.get(id) : null;
-				Set<String> xobjectParents = config.isXobjectsEnabled() ?
-						colorSpaceXObjectParent.get(id) : null;
-				Set<String> fontParents = config.isFontsEnabled() ?
-						colorSpaceFontParent.get(id) : null;
-				reporter.report(PBFeaturesObjectCreator
-						.createColorSpaceFeaturesObject(colorSpaceEntry.getValue(),
-								id,
-								iccProfileChild,
-								colorSpaceChild,
-								pageParents,
-								colorSpaceParents,
-								patternParents,
-								shadingParents,
-								xobjectParents,
-								fontParents));
-			}
-		}
-
-		for (Map.Entry<String, PDTilingPattern> tilingPatternEntry : tilingPatterns.entrySet()) {
-			if (tilingPatternEntry.getValue() != null) {
-				String id = tilingPatternEntry.getKey();
-				Set<String> extGStateChild = config.isGraphicsStatesEnabled() ?
-						tilingPatternExtGStateChild.get(id) : null;
-				Set<String> colorSpaceChild = config.isColorSpacesEnabled() ?
-						tilingPatternColorSpaceChild.get(id) : null;
-				Set<String> patternChild = config.isPatternsEnabled() ?
-						tilingPatternPatternChild.get(id) : null;
-				Set<String> shadingChild = config.isShadingsEnabled() ?
-						tilingPatternShadingChild.get(id) : null;
-				Set<String> xobjectChild = config.isXobjectsEnabled() ?
-						tilingPatternXObjectChild.get(id) : null;
-				Set<String> fontChild = config.isFontsEnabled() ?
-						tilingPatternFontChild.get(id) : null;
-				Set<String> propertiesChild = config.isPropertiesDictsEnabled() ?
-						tilingPatternPropertiesChild.get(id) : null;
-				Set<String> pageParent = config.isPagesEnabled() ?
-						tilingPatternPageParent.get(id) : null;
-				Set<String> patternParent = config.isPatternsEnabled() ?
-						tilingPatternPatternParent.get(id) : null;
-				Set<String> xobjectParent = config.isXobjectsEnabled() ?
-						tilingPatternXObjectParent.get(id) : null;
-				Set<String> fontParent = config.isFontsEnabled() ?
-						tilingPatternFontParent.get(id) : null;
-				reporter.report(PBFeaturesObjectCreator
-						.createTilingPatternFeaturesObject(tilingPatternEntry.getValue(),
-								id,
-								extGStateChild,
-								colorSpaceChild,
-								patternChild,
-								shadingChild,
-								xobjectChild,
-								fontChild,
-								propertiesChild,
-								pageParent,
-								patternParent,
-								xobjectParent,
-								fontParent));
-			}
-		}
-
-		for (Map.Entry<String, PDShadingPattern> shadingPatternEntry : shadingPatterns.entrySet()) {
-			if (shadingPatternEntry.getValue() != null) {
-				String id = shadingPatternEntry.getKey();
-				String shadingChild = config.isShadingsEnabled() ?
-						shadingPatternShadingChild.get(id) : null;
-				String extGStateChild = config.isGraphicsStatesEnabled() ?
-						shadingPatternExtGStateChild.get(id) : null;
-				Set<String> pageParent = config.isPagesEnabled() ?
-						shadingPatternPageParent.get(id) : null;
-				Set<String> patternParent = config.isPatternsEnabled() ?
-						shadingPatternPatternParent.get(id) : null;
-				Set<String> xobjectParent = config.isXobjectsEnabled() ?
-						shadingPatternXObjectParent.get(id) : null;
-				Set<String> fontParent = config.isFontsEnabled() ?
-						shadingPatternFontParent.get(id) : null;
-				reporter.report(PBFeaturesObjectCreator
-						.createShadingPatternFeaturesObject(shadingPatternEntry.getValue(),
-								id,
-								shadingChild,
-								extGStateChild,
-								pageParent,
-								patternParent,
-								xobjectParent,
-								fontParent));
-			}
-		}
-
-		for (Map.Entry<String, PDShading> shadingEntry : shadings.entrySet()) {
-			if (shadingEntry.getValue() != null) {
-				String id = shadingEntry.getKey();
-				String colorSpaceChild = config.isColorSpacesEnabled() ?
-						shadingColorSpaceChild.get(id) : null;
-				Set<String> pageParent = config.isPagesEnabled() ?
-						shadingPageParent.get(id) : null;
-				Set<String> patternParent = config.isPatternsEnabled() ?
-						shadingPatternParent.get(id) : null;
-				Set<String> xobjectParent = config.isXobjectsEnabled() ?
-						shadingXObjectParent.get(id) : null;
-				Set<String> fontParent = config.isFontsEnabled() ?
-						shadingFontParent.get(id) : null;
-				reporter.report(PBFeaturesObjectCreator
-						.createShadingFeaturesObject(shadingEntry.getValue(),
-								id,
-								colorSpaceChild,
-								pageParent,
-								patternParent,
-								xobjectParent,
-								fontParent));
-			}
-		}
-
-		for (Map.Entry<String, PDImageXObjectProxy> imageXObjectEntry : imageXObjects.entrySet()) {
-			if (imageXObjectEntry.getValue() != null) {
-				String id = imageXObjectEntry.getKey();
-				String colorSpaceChild = config.isColorSpacesEnabled() ?
-						imageXObjectColorSpaceChild.get(id) : null;
-				String maskChild = config.isXobjectsEnabled() ?
-						imageXObjectMaskChild.get(id) : null;
-				String sMaskChild = config.isXobjectsEnabled() ?
-						imageXObjectSMaskChild.get(id) : null;
-				Set<String> alternatesChild = config.isXobjectsEnabled() ?
-						imageXObjectAlternatesChild.get(id) : null;
-				Set<String> pageParent = config.isPagesEnabled() ?
-						imageXObjectPageParent.get(id) : null;
-				Set<String> patternParent = config.isPatternsEnabled() ?
-						imageXObjectPatternParent.get(id) : null;
-				Set<String> xobjectParent = config.isXobjectsEnabled() ?
-						imageXObjectXObjectParent.get(id) : null;
-				Set<String> fontParent = config.isFontsEnabled() ?
-						imageXObjectFontParent.get(id) : null;
-				reporter.report(PBFeaturesObjectCreator
-						.createImageXObjectFeaturesObject(imageXObjectEntry.getValue(),
-								id,
-								colorSpaceChild,
-								maskChild,
-								sMaskChild,
-								alternatesChild,
-								pageParent,
-								patternParent,
-								xobjectParent,
-								fontParent));
-			}
-		}
-
-		for (Map.Entry<String, PDFormXObject> formXObjectEntry : formXObjects.entrySet()) {
-			if (formXObjectEntry.getValue() != null) {
-				String id = formXObjectEntry.getKey();
-				String groupChild = config.isColorSpacesEnabled() ?
-						groupXObjectColorSpaceChild.get(id) : null;
-				Set<String> extGStateChild = config.isGraphicsStatesEnabled() ?
-						formXObjectExtGStateChild.get(id) : null;
-				Set<String> colorSpaceChild = config.isColorSpacesEnabled() ?
-						formXObjectColorSpaceChild.get(id) : null;
-				Set<String> patternChild = config.isPatternsEnabled() ?
-						formXObjectPatternChild.get(id) : null;
-				Set<String> shadingChild = config.isShadingsEnabled() ?
-						formXObjectShadingChild.get(id) : null;
-				Set<String> xobjectChild = config.isXobjectsEnabled() ?
-						formXObjectXObjectChild.get(id) : null;
-				Set<String> fontChild = config.isFontsEnabled() ?
-						formXObjectFontChild.get(id) : null;
-				Set<String> propertiesChild = config.isPropertiesDictsEnabled() ?
-						formXObjectPropertiesChild.get(id) : null;
-				Set<String> pageParent = config.isPagesEnabled() ?
-						formXObjectPageParent.get(id) : null;
-				Set<String> annotationParent = config.isAnnotationsEnabled() ?
-						formXObjectAnnotationParent.get(id) : null;
-				Set<String> patternParent = config.isPatternsEnabled() ?
-						formXObjectPatternParent.get(id) : null;
-				Set<String> xobjectParent = config.isXobjectsEnabled() ?
-						formXObjectXObjectParent.get(id) : null;
-				Set<String> fontParent = config.isFontsEnabled() ?
-						formXObjectFontParent.get(id) : null;
-				reporter.report(PBFeaturesObjectCreator
-						.createFormXObjectFeaturesObject(formXObjectEntry.getValue(),
-								id,
-								groupChild,
-								extGStateChild,
-								colorSpaceChild,
-								patternChild,
-								shadingChild,
-								xobjectChild,
-								fontChild,
-								propertiesChild,
-								pageParent,
-								annotationParent,
-								patternParent,
-								xobjectParent,
-								fontParent));
-			}
-		}
-
-		for (String postscript : postscripts) {
-			if (postscript != null) {
-				Set<String> pageParent = config.isPagesEnabled() ?
-						postscriptPageParent.get(postscript) : null;
-				Set<String> patternParent = config.isPatternsEnabled() ?
-						postscriptPatternParent.get(postscript) : null;
-				Set<String> xobjectParent = config.isXobjectsEnabled() ?
-						postscriptXObjectParent.get(postscript) : null;
-				Set<String> fontParent = config.isFontsEnabled() ?
-						postscriptFontParent.get(postscript) : null;
-				reporter.report(PBFeaturesObjectCreator
-						.createPostScriptXObjectFeaturesObject(postscript,
-								pageParent,
-								patternParent,
-								xobjectParent,
-								fontParent));
-			}
-		}
-
-		for (Map.Entry<String, PDFontLike> fontEntry : fonts.entrySet()) {
-			if (fontEntry.getValue() != null) {
-				String id = fontEntry.getKey();
-				Set<String> extGStateChild = config.isGraphicsStatesEnabled() ?
-						fontExtGStateChild.get(id) : null;
-				Set<String> colorSpaceChild = config.isColorSpacesEnabled() ?
-						fontColorSpaceChild.get(id) : null;
-				Set<String> patternChild = config.isPatternsEnabled() ?
-						fontPatternChild.get(id) : null;
-				Set<String> shadingChild = config.isShadingsEnabled() ?
-						fontShadingChild.get(id) : null;
-				Set<String> xobjectChild = config.isXobjectsEnabled() ?
-						fontXObjectChild.get(id) : null;
-				Set<String> fontChild = config.isFontsEnabled() ?
-						fontFontChild.get(id) : null;
-				Set<String> propertiesChild =config.isPropertiesDictsEnabled() ?
-						fontPropertiesChild.get(id) : null;
-				Set<String> extGStateParent = config.isGraphicsStatesEnabled() ?
-						fontExtGStateParent.get(id) : null;
-				Set<String> pageParent = config.isPagesEnabled() ?
-						fontPageParent.get(id) : null;
-				Set<String> patternParent = config.isPatternsEnabled() ?
-						fontPatternParent.get(id) : null;
-				Set<String> xobjectParent = config.isXobjectsEnabled() ?
-						fontXObjectParent.get(id) : null;
-				Set<String> fontParent = config.isFontsEnabled() ?
-						fontFontParent.get(id) : null;
-				reporter.report(PBFeaturesObjectCreator
-						.createFontFeaturesObject(fontEntry.getValue(),
-								id,
-								extGStateChild,
-								colorSpaceChild,
-								patternChild,
-								shadingChild,
-								xobjectChild,
-								fontChild,
-								propertiesChild,
-								extGStateParent,
-								pageParent,
-								patternParent,
-								xobjectParent,
-								fontParent));
-			}
-		}
-
-		for (Map.Entry<String, COSDictionary> propertiesEntry : properties.entrySet()) {
-			if (propertiesEntry.getValue() != null) {
-				String id = propertiesEntry.getKey();
-				Set<String> pageParent = config.isPagesEnabled() ?
-						propertyPageParent.get(id) : null;
-				Set<String> patternParent = config.isPatternsEnabled() ?
-						propertyPatternParent.get(id) : null;
-				Set<String> xobjectParent = config.isXobjectsEnabled() ?
-						propertyXObjectParent.get(id) : null;
-				Set<String> fontParent = config.isFontsEnabled() ?
-						propertyFontParent.get(id) : null;
-				reporter.report(PBFeaturesObjectCreator
-						.createPropertiesDictFeaturesObject(propertiesEntry.getValue(),
-								id,
-								pageParent,
-								patternParent,
-								xobjectParent,
-								fontParent));
-			}
-		}
-	}
-
 	private void getPageTreeFeatures(PDPageTree pageTree) {
 		for (PDPage page : pageTree) {
+			Set<String> annotsId = addAnnotsDependencies(page);
+			if (!config.isAnnotationsEnabled()) {
+				annotsId = null;
+			}
 
-			int pageIndex = pageTree.indexOf(page) + 1;
-			Set<String> annotsId = addAnnotsDependencies(page, pageIndex);
 			String thumbID = null;
-
 			if (page.getCOSObject().getDictionaryObject(COSName.getPDFName("Thumb")) != null) {
 				COSBase baseThumb = page.getCOSObject().getItem(COSName.getPDFName("Thumb"));
-				thumbID = getId(baseThumb, XOBJECT_ID, imageXObjects.size() + formXObjects.size() + postscripts.size());
-				if (imageXObjectPageParent.get(thumbID) == null) {
-					imageXObjectPageParent.put(thumbID, new HashSet<String>());
-				}
-				imageXObjectPageParent.get(thumbID).add(PAGE + pageIndex);
-				if (!imageXObjects.containsKey(thumbID)) {
+				thumbID = getId(baseThumb, XOBJECT_ID);
+				if (checkIDBeforeProcess(thumbID)) {
 					COSBase base = getBase(baseThumb);
 					if (base instanceof COSStream) {
 						PDImageXObjectProxy img = new PDImageXObjectProxy(new PDStream((COSStream) base), null);
-						imageXObjects.put(thumbID, img);
 						parseImageXObject(img, thumbID);
 					} else {
 						xobjectCreationProblem(thumbID, "Thumb is not a stream");
 					}
 				}
 			}
-
-			getResourceDictionaryDependencies(page.getResources(),
-					PAGE + pageIndex,
-					pageExtGStateChild,
-					pageColorSpaceChild,
-					pagePatternChild,
-					pageShadingChild,
-					pageXObjectChild,
-					pageFontChild,
-					pagePropertiesChild,
-					exGStatePageParent,
-					colorSpacePageParent,
-					tilingPatternPageParent,
-					shadingPatternPageParent,
-					shadingPageParent,
-					imageXObjectPageParent,
-					formXObjectPageParent,
-					postscriptPageParent,
-					fontPageParent,
-					propertyPageParent);
-
 			if (!config.isXobjectsEnabled()) {
 				thumbID = null;
 			}
-			if (!config.isAnnotationsEnabled()) {
-				annotsId = null;
-			}
 
-			Set<String> extGStateChild = config.isGraphicsStatesEnabled() ?
-					pageExtGStateChild.get(PAGE + pageIndex) : null;
-			Set<String> colorSpaceChild = config.isColorSpacesEnabled() ?
-					pageColorSpaceChild.get(PAGE + pageIndex) : null;
-			Set<String> patternChild = config.isPatternsEnabled() ?
-					pagePatternChild.get(PAGE + pageIndex) : null;
-			Set<String> shadingChild = config.isShadingsEnabled() ?
-					pageShadingChild.get(PAGE + pageIndex) : null;
-			Set<String> xobjectChild = config.isXobjectsEnabled() ?
-					pageXObjectChild.get(PAGE + pageIndex) : null;
-			Set<String> fontChild = config.isFontsEnabled() ?
-					pageFontChild.get(PAGE + pageIndex) : null;
-			Set<String> propertiesChild = config.isPropertiesDictsEnabled() ?
-					pagePropertiesChild.get(PAGE + pageIndex) : null;
+			PDResources resources = page.getResources();
+			Set<String> extGStateChild = parseExGStateFromResource(resources);
+			Set<String> colorSpaceChild = parseColorSpaceFromResources(resources);
+			Set<String> patternChild = parsePatternFromResource(resources);
+			Set<String> shadingChild = parseShadingFromResource(resources);
+			Set<String> xobjectChild = parseXObjectFromResources(resources);
+			Set<String> fontChild = parseFontFromResources(resources);
+			Set<String> propertiesChild = parsePropertiesFromResources(resources);
+
+			extGStateChild = config.isGraphicsStatesEnabled() ? extGStateChild : null;
+			colorSpaceChild = config.isColorSpacesEnabled() ? colorSpaceChild : null;
+			patternChild = config.isPatternsEnabled() ? patternChild : null;
+			shadingChild = config.isShadingsEnabled() ? shadingChild : null;
+			xobjectChild = config.isXobjectsEnabled() ? xobjectChild : null;
+			fontChild = config.isFontsEnabled() ? fontChild : null;
+			propertiesChild = config.isPropertiesDictsEnabled() ? propertiesChild : null;
+
 			reporter.report(PBFeaturesObjectCreator
 					.createPageFeaturesObject(page,
 							thumbID,
@@ -736,12 +243,11 @@ public final class PBFeatureParser {
 							xobjectChild,
 							fontChild,
 							propertiesChild,
-							PAGE + pageIndex,
-							pageIndex));
+							pageTree.indexOf(page) + 1));
 		}
 	}
 
-	private Set<String> addAnnotsDependencies(PDPage page, int pageIndex) {
+	private Set<String> addAnnotsDependencies(PDPage page) {
 
 		COSArray annotsArray = (COSArray) page.getCOSObject()
 				.getDictionaryObject(COSName.ANNOTS);
@@ -754,29 +260,29 @@ public final class PBFeatureParser {
 		for (int i = 0; i < annotsArray.size(); ++i) {
 			COSBase item = annotsArray.get(i);
 			if (item != null) {
-				String id = getId(item, ANNOT, annots.keySet().size());
+				String id = getId(item, ANNOT);
 				annotsId.add(id);
+				if (checkIDBeforeProcess(id)) {
+					COSBase base = getBase(item);
+					try {
+						PDAnnotation annotation = PDAnnotation
+								.createAnnotation(base);
+						COSBase pop = annotation.getCOSObject().getItem(
+								COSName.getPDFName("Popup"));
 
-				if (annotPagesParent.get(id) == null) {
-					annotPagesParent.put(id, new HashSet<String>());
-				}
-				annotPagesParent.get(id).add(PAGE + pageIndex);
+						String popupID = null;
+						if (pop != null) {
+							popupID = addPopup(pop);
+						}
 
-				COSBase base = getBase(item);
-
-				try {
-					PDAnnotation annotation = PDAnnotation
-							.createAnnotation(base);
-					annots.put(id, annotation);
-					COSBase pop = annotation.getCOSObject().getItem(
-							COSName.getPDFName("Popup"));
-
-					if (pop != null) {
-						addPopup(pop, id);
+						Set<String> formsIDs = getAnnotationResourcesDependencies(annotation);
+						popupID = config.isAnnotationsEnabled() ? popupID : null;
+						formsIDs = config.isXobjectsEnabled() ? formsIDs : null;
+						reporter.report(PBFeaturesObjectCreator.createAnnotFeaturesObject(annotation, id, popupID, formsIDs));
+					} catch (IOException e) {
+						LOGGER.debug("Unknown annotation type detected.", e);
+						generateUnknownAnnotation(id);
 					}
-				} catch (IOException e) {
-					LOGGER.debug("Unknown annotation type detected.", e);
-					generateUnknownAnnotation(id);
 				}
 			}
 		}
@@ -784,20 +290,64 @@ public final class PBFeatureParser {
 		return annotsId;
 	}
 
-	private void addPopup(COSBase item, String parentId) {
-		String id = getId(item, ANNOT, annots.keySet().size());
-		COSBase base = getBase(item);
+	private String addPopup(COSBase item) {
+		String id = getId(item, ANNOT);
 
-		annotChild.put(parentId, id);
-		annotParent.put(id, parentId);
-
-		try {
-			PDAnnotation annotation = PDAnnotation.createAnnotation(base);
-			annots.put(id, annotation);
-		} catch (IOException e) {
-			LOGGER.debug("Unknown annotation type detected.", e);
-			generateUnknownAnnotation(id);
+		if (checkIDBeforeProcess(id)) {
+			COSBase base = getBase(item);
+			try {
+				PDAnnotation annotation = PDAnnotation.createAnnotation(base);
+				reporter.report(PBFeaturesObjectCreator.createAnnotFeaturesObject(annotation, id, null, null));
+			} catch (IOException e) {
+				LOGGER.debug("Unknown annotation type detected.", e);
+				generateUnknownAnnotation(id);
+			}
 		}
+		return id;
+	}
+
+	private Set<String> getAnnotationResourcesDependencies(PDAnnotation annot) {
+		PDAppearanceDictionary dic = annot.getAppearance();
+		Set<String> appearances = new HashSet<>();
+
+		if (dic != null) {
+			COSBase baseNormal = dic.getCOSObject().getItem(COSName.N);
+			if (baseNormal != null) {
+				appearances.addAll(getAppearanceEntryDependencies(dic.getNormalAppearance(), baseNormal));
+			}
+
+			COSBase baseRollover = dic.getCOSObject().getItem(COSName.R);
+			if (baseRollover != null) {
+				appearances.addAll(getAppearanceEntryDependencies(dic.getRolloverAppearance(), baseRollover));
+			}
+
+			COSBase baseDown = dic.getCOSObject().getItem(COSName.D);
+			if (baseDown != null) {
+				appearances.addAll(getAppearanceEntryDependencies(dic.getDownAppearance(), baseDown));
+			}
+		}
+		return appearances;
+	}
+
+	private Set<String> getAppearanceEntryDependencies(PDAppearanceEntry entry, COSBase entryLink) {
+		Set<String> res = new HashSet<>();
+		if (entry.isStream()) {
+			res.add(getAppearanceStreamDependencies(entry.getAppearanceStream(), entryLink));
+		} else {
+			for (Map.Entry<COSName, PDAppearanceStream> mapEntry : entry.getSubDictionary().entrySet()) {
+				res.add(getAppearanceStreamDependencies(mapEntry.getValue(),
+						((COSDictionary) entry.getCOSObject()).getItem(mapEntry.getKey())));
+			}
+		}
+		return res;
+	}
+
+	private String getAppearanceStreamDependencies(PDAppearanceStream stream, COSBase entryLink) {
+		String id = getId(entryLink, XOBJECT_ID);
+		if (checkIDBeforeProcess(id)) {
+			parseFormXObject(stream, id);
+		}
+		return id;
 	}
 
 	private void generateUnknownAnnotation(String id) {
@@ -878,27 +428,17 @@ public final class PBFeatureParser {
 		return res;
 	}
 
-	private String addICCProfileFromOutputIntent(PDOutputIntent outInt, String outIntID) {
+	private String addICCProfileFromOutputIntent(PDOutputIntent outInt) {
 		COSBase outIntBase = outInt.getCOSObject();
 
 		if (outIntBase instanceof COSDictionary) {
 			COSDictionary outIntDict = (COSDictionary) outIntBase;
-			String iccProfileID = getId(outIntDict.getItem(COSName.DEST_OUTPUT_PROFILE), ICCPROFILE, iccProfiles.size());
-
-			if (!iccProfiles.containsKey(iccProfileID)) {
-
-				iccProfiles.put(iccProfileID, outInt.getDestOutputIntent());
+			String iccProfileID = getId(outIntDict.getItem(COSName.DEST_OUTPUT_PROFILE), ICCPROFILE);
+			if (checkIDBeforeProcess(iccProfileID)) {
+				reporter.report(PBFeaturesObjectCreator.createICCProfileFeaturesObject(outInt.getDestOutputIntent(), iccProfileID));
 			}
-
-			if (!iccProfileOutInts.containsKey(iccProfileID)) {
-				iccProfileOutInts.put(iccProfileID, new HashSet<String>());
-			}
-
-			iccProfileOutInts.get(iccProfileID).add(outIntID);
-
 			return iccProfileID;
 		}
-
 		return null;
 	}
 
@@ -988,370 +528,99 @@ public final class PBFeatureParser {
 		}
 	}
 
-	private void getAnnotationResourcesDependencies(PDAnnotation annot, String annotationID) {
-		PDAppearanceDictionary dic = annot.getAppearance();
-
-		if (dic != null) {
-			COSBase baseNormal = dic.getCOSObject().getItem(COSName.N);
-			if (baseNormal != null) {
-				getAppearanceEntryDependencies(dic.getNormalAppearance(), baseNormal, annotationID);
-			}
-
-			COSBase baseRollover = dic.getCOSObject().getItem(COSName.R);
-			if (baseRollover != null) {
-				getAppearanceEntryDependencies(dic.getRolloverAppearance(), baseRollover, annotationID);
-			}
-
-			COSBase baseDown = dic.getCOSObject().getItem(COSName.D);
-			if (baseDown != null) {
-				getAppearanceEntryDependencies(dic.getDownAppearance(), baseDown, annotationID);
-			}
-		}
-	}
-
-	private void getAppearanceEntryDependencies(PDAppearanceEntry entry, COSBase entryLink, String annotationID) {
-		if (entry.isStream()) {
-			getAppearanceStreamDependencies(entry.getAppearanceStream(), entryLink, annotationID);
-		} else {
-			for (Map.Entry<COSName, PDAppearanceStream> mapEntry : entry.getSubDictionary().entrySet()) {
-				getAppearanceStreamDependencies(mapEntry.getValue(),
-						((COSDictionary) entry.getCOSObject()).getItem(mapEntry.getKey()), annotationID);
-			}
-		}
-	}
-
-	private void getAppearanceStreamDependencies(PDAppearanceStream stream, COSBase entryLink, String annotationID) {
-		String id = getId(entryLink, XOBJECT_ID, formXObjects.size());
-		makePairDependence(id, annotationID, formXObjectAnnotationParent, annotXObjectsChild);
-
-		if (!formXObjects.containsKey(id)) {
-			formXObjects.put(id, stream);
-			getResourceDictionaryDependencies(stream.getResources(),
-					id,
-					formXObjectExtGStateChild,
-					formXObjectColorSpaceChild,
-					formXObjectPatternChild,
-					formXObjectShadingChild,
-					formXObjectXObjectChild,
-					formXObjectFontChild,
-					formXObjectPropertiesChild,
-					exGStateXObjectParent,
-					colorSpaceXObjectParent,
-					tilingPatternXObjectParent,
-					shadingPatternXObjectParent,
-					shadingXObjectParent,
-					imageXObjectXObjectParent,
-					formXObjectXObjectParent,
-					postscriptXObjectParent,
-					fontXObjectParent,
-					propertyXObjectParent);
-		}
-	}
-
-	private void getResourceDictionaryDependencies(PDResources resources,
-												   String parentID,
-												   Map<String, Set<String>> exGStateChildMap,
-												   Map<String, Set<String>> colorSpaceChildMap,
-												   Map<String, Set<String>> patternChildMap,
-												   Map<String, Set<String>> shadingChildMap,
-												   Map<String, Set<String>> xobjectChildMap,
-												   Map<String, Set<String>> fontChildMap,
-												   Map<String, Set<String>> propertiesChildMap,
-												   Map<String, Set<String>> exGStateParentMap,
-												   Map<String, Set<String>> colorSpaceParentMap,
-												   Map<String, Set<String>> tilingPatternParentMap,
-												   Map<String, Set<String>> shadingPatternParentMap,
-												   Map<String, Set<String>> shadingParentMap,
-												   Map<String, Set<String>> imageXObjectParentMap,
-												   Map<String, Set<String>> formXObjectParentMap,
-												   Map<String, Set<String>> postscriptParentMap,
-												   Map<String, Set<String>> fontParentMap,
-												   Map<String, Set<String>> propertiesParentMap) {
-		parseExGStateFromResource(resources, parentID, exGStateChildMap, exGStateParentMap);
-
-		if (resources == null) {
-			return;
-		}
-
-		if (resources.getColorSpaceNames() != null) {
-			for (COSName name : resources.getColorSpaceNames()) {
-
-				COSDictionary dict = (COSDictionary) resources.getCOSObject().getDictionaryObject(COSName.COLORSPACE);
-				COSBase base = dict.getItem(name);
-				String id = getId(base, COLORSPACE_ID, colorSpaces.size());
-
-				try {
-					PDColorSpace colorSpace = resources.getColorSpace(name);
-
-					id = checkColorSpaceID(id, colorSpace);
-
-					makePairDependence(id, parentID, colorSpaceParentMap, colorSpaceChildMap);
-
-					if (!colorSpaces.containsKey(id)) {
-						colorSpaces.put(id, colorSpace);
-						parseColorSpace(colorSpace, id);
-					}
-				} catch (IOException e) {
-					LOGGER.info(e);
-					if (!xobjectChildMap.containsKey(parentID)) {
-						xobjectChildMap.put(parentID, new HashSet<String>());
-					}
-					xobjectChildMap.get(parentID).add(id);
-					colorSpaceCreationProblem(id, e.getMessage());
-				}
-			}
-		}
-
-		parsePatternFromResource(resources, parentID, patternChildMap, tilingPatternParentMap, shadingPatternParentMap);
-
-		parseShadingFromResource(resources, parentID, shadingChildMap, shadingParentMap);
-
-		parseXObjectFromResources(resources, parentID, xobjectChildMap, imageXObjectParentMap, formXObjectParentMap, postscriptParentMap);
-
-		parseFontFromResources(resources, parentID, fontChildMap, fontParentMap);
-
-		parsePropertiesFromResources(resources, parentID, propertiesChildMap, propertiesParentMap);
-	}
-
-	private void parseImageXObject(PDImageXObjectProxy xobj, String id) {
-		COSBase baseColorSpace = ((COSStream) xobj.getCOSObject()).getItem(COSName.CS);
-		if (baseColorSpace == null) {
-			baseColorSpace = ((COSStream) xobj.getCOSObject()).getItem(COSName.COLORSPACE);
-		}
-
-		String idColorSpace = getId(baseColorSpace, COLORSPACE_ID, colorSpaces.size());
-
-		try {
-			PDColorSpace colorSpace = xobj.getColorSpace();
-
-			idColorSpace = checkColorSpaceID(idColorSpace, colorSpace);
-
-			if (colorSpaceXObjectParent.get(idColorSpace) == null) {
-				colorSpaceXObjectParent.put(idColorSpace, new HashSet<String>());
-			}
-			colorSpaceXObjectParent.get(idColorSpace).add(id);
-			imageXObjectColorSpaceChild.put(id, idColorSpace);
-
-			if (!colorSpaces.containsKey(idColorSpace)) {
-				colorSpaces.put(idColorSpace, colorSpace);
-				parseColorSpace(colorSpace, idColorSpace);
-			}
-		} catch (IOException e) {
-			if (colorSpaceXObjectParent.get(idColorSpace) == null) {
-				colorSpaceXObjectParent.put(idColorSpace, new HashSet<String>());
-			}
-			colorSpaceXObjectParent.get(idColorSpace).add(id);
-			imageXObjectColorSpaceChild.put(id, idColorSpace);
-			LOGGER.info(e);
-			colorSpaceCreationProblem(idColorSpace, e.getMessage());
-		}
-
-		COSBase mask = xobj.getCOSStream().getDictionaryObject(COSName.MASK);
-		if (mask instanceof COSStream) {
-			COSBase maskBase = ((COSStream) xobj.getCOSObject()).getItem(COSName.MASK);
-			String idMask = getId(maskBase, XOBJECT_ID, imageXObjects.size());
-
-			if (imageXObjectXObjectParent.get(idMask) == null) {
-				imageXObjectXObjectParent.put(idMask, new HashSet<String>());
-			}
-			imageXObjectXObjectParent.get(idMask).add(id);
-			imageXObjectMaskChild.put(id, idMask);
-
-			if (!imageXObjects.containsKey(idMask)) {
-				try {
-					PDImageXObjectProxy imxobj = xobj.getMask();
-					imageXObjects.put(idMask, imxobj);
-					parseImageXObject(imxobj, idMask);
-				} catch (IOException e) {
-					LOGGER.info(e);
-					xobjectCreationProblem(idMask, e.getMessage());
-				}
-			}
-		}
-
-		COSBase sMask = xobj.getCOSStream().getDictionaryObject(COSName.SMASK);
-		if (sMask instanceof COSStream) {
-			COSBase sMaskBase = ((COSStream) xobj.getCOSObject()).getItem(COSName.SMASK);
-			String idMask = getId(sMaskBase, XOBJECT_ID, imageXObjects.size());
-
-			if (imageXObjectXObjectParent.get(idMask) == null) {
-				imageXObjectXObjectParent.put(idMask, new HashSet<String>());
-			}
-			imageXObjectXObjectParent.get(idMask).add(id);
-			imageXObjectSMaskChild.put(id, idMask);
-
-			if (!imageXObjects.containsKey(idMask)) {
-				try {
-					PDImageXObjectProxy imxobj = xobj.getSoftMask();
-					imageXObjects.put(idMask, imxobj);
-					parseImageXObject(imxobj, idMask);
-				} catch (IOException e) {
-					LOGGER.info(e);
-					xobjectCreationProblem(idMask, e.getMessage());
-				}
-			}
-		}
-
-		COSBase alternates = xobj.getCOSStream().getDictionaryObject(COSName.getPDFName("Alternates"));
-		alternates = getBase(alternates);
-		if (alternates instanceof COSArray) {
-			COSArray alternatesArray = (COSArray) alternates;
-			for (COSBase entry : alternatesArray) {
-				COSBase base = getBase(entry);
-				if (base instanceof COSDictionary) {
-					COSDictionary altDict = (COSDictionary) base;
-					COSBase baseImage = altDict.getItem(COSName.IMAGE);
-					String idImage = getId(baseImage, XOBJECT_ID, imageXObjects.size());
-					baseImage = getBase(baseImage);
-					if (baseImage instanceof COSStream) {
-						makePairDependence(idImage, id, imageXObjectXObjectParent, imageXObjectAlternatesChild);
-						if (!imageXObjects.containsKey(idImage)) {
-
-							PDImageXObjectProxy im = new PDImageXObjectProxy(new PDStream((COSStream) baseImage), null);
-							imageXObjects.put(idImage, im);
-							parseImageXObject(im, idImage);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	private void parseXObjectFromResources(PDResources resources,
-										   String parentID,
-										   Map<String, Set<String>> xobjectChildMap,
-										   Map<String, Set<String>> imageXObjectParentMap,
-										   Map<String, Set<String>> formXObjectParentMap,
-										   Map<String, Set<String>> postscriptParentMap) {
+	private Set<String> parseColorSpaceFromResources(PDResources resources) {
 		if (resources == null || resources.getXObjectNames() == null) {
-			return;
+			return null;
 		}
 
-		for (COSName name : resources.getXObjectNames()) {
-			COSDictionary dict = (COSDictionary) resources.getCOSObject().getDictionaryObject(COSName.XOBJECT);
+		Set<String> colorSpaceIDs = new HashSet<>();
+		for (COSName name : resources.getColorSpaceNames()) {
+			COSDictionary dict = (COSDictionary) resources.getCOSObject().getDictionaryObject(COSName.COLORSPACE);
 			COSBase base = dict.getItem(name);
-			String id = getId(base, XOBJECT_ID, imageXObjects.size() + formXObjects.size() + postscripts.size());
-
+			String id = getId(base, COLORSPACE_ID);
 			try {
-				PDXObject xobj = resources.getXObject(name);
+				PDColorSpace colorSpace = resources.getColorSpace(name);
+				id = checkColorSpaceID(id, colorSpace);
+				colorSpaceIDs.add(id);
 
-				if (xobj instanceof PDImageXObjectProxy) {
-					makePairDependence(id, parentID, imageXObjectParentMap, xobjectChildMap);
-					if (!imageXObjects.containsKey(id)) {
-						imageXObjects.put(id, (PDImageXObjectProxy) xobj);
-
-						parseImageXObject((PDImageXObjectProxy) xobj, id);
-
-					}
-				} else if (xobj instanceof PDFormXObject) {
-					makePairDependence(id, parentID, formXObjectParentMap, xobjectChildMap);
-					if (!formXObjects.containsKey(id)) {
-						formXObjects.put(id, (PDFormXObject) xobj);
-
-						PDGroup group = ((PDFormXObject) xobj).getGroup();
-						if (group != null && COSName.TRANSPARENCY.equals(group.getSubType())) {
-							COSBase baseColorSpace = group.getCOSObject().getItem(COSName.CS);
-							String idColorSpace = getId(baseColorSpace, COLORSPACE_ID, colorSpaces.size());
-
-							try {
-								PDColorSpace colorSpace = group.getColorSpace();
-
-								idColorSpace = checkColorSpaceID(idColorSpace, colorSpace);
-
-								if (colorSpaceXObjectParent.get(idColorSpace) == null) {
-									colorSpaceXObjectParent.put(idColorSpace, new HashSet<String>());
-								}
-								colorSpaceXObjectParent.get(idColorSpace).add(id);
-								groupXObjectColorSpaceChild.put(id, idColorSpace);
-
-								if (!colorSpaces.containsKey(idColorSpace)) {
-									colorSpaces.put(idColorSpace, colorSpace);
-									parseColorSpace(colorSpace, idColorSpace);
-								}
-							} catch (IOException e) {
-								if (colorSpaceXObjectParent.get(idColorSpace) == null) {
-									colorSpaceXObjectParent.put(idColorSpace, new HashSet<String>());
-								}
-								colorSpaceXObjectParent.get(idColorSpace).add(id);
-								groupXObjectColorSpaceChild.put(id, idColorSpace);
-								LOGGER.info(e);
-								colorSpaceCreationProblem(idColorSpace, e.getMessage());
-							}
-						}
-
-						getResourceDictionaryDependencies(((PDFormXObject) xobj).getResources(),
-								id,
-								formXObjectExtGStateChild,
-								formXObjectColorSpaceChild,
-								formXObjectPatternChild,
-								formXObjectShadingChild,
-								formXObjectXObjectChild,
-								formXObjectFontChild,
-								formXObjectPropertiesChild,
-								exGStateXObjectParent,
-								colorSpaceXObjectParent,
-								tilingPatternXObjectParent,
-								shadingPatternXObjectParent,
-								shadingXObjectParent,
-								imageXObjectXObjectParent,
-								formXObjectXObjectParent,
-								postscriptXObjectParent,
-								fontXObjectParent,
-								propertyXObjectParent);
-
-					}
-				} else if (xobj instanceof PDPostScriptXObject) {
-					makePairDependence(id, parentID, postscriptParentMap, xobjectChildMap);
-					postscripts.add(id);
+				if (checkIDBeforeProcess(id)) {
+					parseColorSpace(colorSpace, id);
 				}
 			} catch (IOException e) {
 				LOGGER.info(e);
-				xobjectCreationProblem(id, e.getMessage());
+				colorSpaceCreationProblem(id, e.getMessage());
 			}
 		}
+		return colorSpaceIDs;
 	}
 
-	private void parsePropertiesFromResources(PDResources resources,
-											  String parentID,
-											  Map<String, Set<String>> propertiesChildMap,
-											  Map<String, Set<String>> propertiesParentMap) {
-		if (resources == null || resources.getPropertiesNames() == null) {
-			return;
+	private Set<String> parseXObjectFromResources(PDResources resources) {
+		if (resources == null || resources.getXObjectNames() == null) {
+			return null;
 		}
 
+		Set<String> xobjectsIDs = new HashSet<>();
+		for (COSName name : resources.getXObjectNames()) {
+			COSDictionary dict = (COSDictionary) resources.getCOSObject().getDictionaryObject(COSName.XOBJECT);
+			COSBase base = dict.getItem(name);
+
+			String id = getId(base, XOBJECT_ID);
+			xobjectsIDs.add(id);
+			if (checkIDBeforeProcess(id)) {
+				try {
+					PDXObject xobj = resources.getXObject(name);
+
+					if (xobj instanceof PDImageXObjectProxy) {
+						parseImageXObject((PDImageXObjectProxy) xobj, id);
+					} else if (xobj instanceof PDFormXObject) {
+						parseFormXObject((PDFormXObject) xobj, id);
+					} else if (xobj instanceof PDPostScriptXObject) {
+						reporter.report(PBFeaturesObjectCreator.createPostScriptXObjectFeaturesObject(id));
+					}
+				} catch (IOException e) {
+					LOGGER.info(e);
+					xobjectCreationProblem(id, e.getMessage());
+				}
+			}
+		}
+		return xobjectsIDs;
+	}
+
+	private Set<String> parsePropertiesFromResources(PDResources resources) {
+		if (resources == null || resources.getPropertiesNames() == null) {
+			return null;
+		}
+
+		Set<String> propertiesIDs = new HashSet<>();
 		for (COSName name : resources.getPropertiesNames()) {
 			COSDictionary dict = (COSDictionary) resources.getCOSObject().getDictionaryObject(COSName.PROPERTIES);
 			COSBase base = dict.getItem(name);
-			String id = getId(base, PROPERTIES_ID, properties.size());
+			String id = getId(base, PROPERTIES_ID);
+			propertiesIDs.add(id);
 
-			makePairDependence(id, parentID, propertiesParentMap, propertiesChildMap);
-
-			if (!properties.containsKey(id)) {
+			if (checkIDBeforeProcess(id)) {
 				PDPropertyList property = resources.getProperties(name);
-				properties.put(id, property.getCOSObject());
+				reporter.report(PBFeaturesObjectCreator.createPropertiesDictFeaturesObject(property.getCOSObject(), id));
 			}
 		}
+		return propertiesIDs;
 	}
 
-	private void parseFontFromResources(PDResources resources,
-										String parentID,
-										Map<String, Set<String>> fontChildMap,
-										Map<String, Set<String>> fontParentMap) {
+	private Set<String> parseFontFromResources(PDResources resources) {
 		if (resources == null || resources.getFontNames() == null) {
-			return;
+			return null;
 		}
 
+		Set<String> fontIDs = new HashSet<>();
 		for (COSName name : resources.getFontNames()) {
 			COSDictionary dict = (COSDictionary) resources.getCOSObject().getDictionaryObject(COSName.FONT);
 			COSBase base = dict.getItem(name);
-			String id = getId(base, FONT_ID, fonts.size());
+			String id = getId(base, FONT_ID);
+			fontIDs.add(id);
 
-			makePairDependence(id, parentID, fontParentMap, fontChildMap);
-
-			if (!fonts.containsKey(id)) {
+			if (checkIDBeforeProcess(id)) {
 				try {
 					PDFont font = resources.getFont(name);
-					fonts.put(id, font);
 					parseFont(font, id);
 				} catch (IOException e) {
 					LOGGER.info(e);
@@ -1360,192 +629,68 @@ public final class PBFeatureParser {
 
 			}
 		}
+		return fontIDs;
 	}
 
-	private void parseExGStateFromResource(PDResources resources,
-										   String parentID,
-										   Map<String, Set<String>> exGStateChildMap,
-										   Map<String, Set<String>> exGStateParentMap) {
+	private Set<String> parseExGStateFromResource(PDResources resources) {
 		if (resources == null || resources.getExtGStateNames() == null) {
-			return;
+			return null;
 		}
 
+		Set<String> gStatesIDs = new HashSet<>();
 		for (COSName name : resources.getExtGStateNames()) {
 			COSDictionary dict = (COSDictionary) resources.getCOSObject().getDictionaryObject(COSName.EXT_G_STATE);
 			COSBase base = dict.getItem(name);
-			String id = getId(base, EXTGSTATE_ID, exGStates.size());
+			String id = getId(base, EXTGSTATE_ID);
+			gStatesIDs.add(id);
 
-			makePairDependence(id, parentID, exGStateParentMap, exGStateChildMap);
-
-			if (!exGStates.containsKey(id)) {
+			if (checkIDBeforeProcess(id)) {
 				PDExtendedGraphicsState exGState = resources.getExtGState(name);
-				exGStates.put(id, exGState);
-
-				if (exGState.getFontSetting() == null || !(exGState.getFontSetting().getCOSObject() instanceof COSArray)) {
-					return;
-				}
-
-				String fontID = getId(((COSArray) exGState.getFontSetting().getCOSObject()).get(0), FONT_ID, fonts.size());
-
-				if (fontExtGStateParent.get(fontID) == null) {
-					fontExtGStateParent.put(fontID, new HashSet<String>());
-				}
-				fontExtGStateParent.get(fontID).add(id);
-				exGStateFontChild.put(id, fontID);
-
-				if (!fonts.containsKey(fontID)) {
-					try {
-						PDFont font = exGState.getFontSetting().getFont();
-						fonts.put(fontID, font);
-						parseFont(font, fontID);
-					} catch (IOException e) {
-						LOGGER.info(e);
-						fontCreationProblem(fontID, e.getMessage());
-					}
-				}
+				parseExGState(exGState, id);
 			}
 		}
+		return gStatesIDs;
 	}
 
-	private void parsePatternFromResource(PDResources resources,
-										  String parentID,
-										  Map<String, Set<String>> patternChildMap,
-										  Map<String, Set<String>> tilingPatternParentMap,
-										  Map<String, Set<String>> shadingPatternParentMap) {
+	private Set<String> parsePatternFromResource(PDResources resources) {
 		if (resources == null || resources.getPatternNames() == null) {
-			return;
+			return null;
 		}
 
+		Set<String> patternIDs = new HashSet<>();
 		for (COSName name : resources.getPatternNames()) {
 			COSDictionary dict = (COSDictionary) resources.getCOSObject().getDictionaryObject(COSName.PATTERN);
 			COSBase base = dict.getItem(name);
 
-			String id = getId(base, PATTERN_ID, shadingPatterns.size() + tilingPatterns.size());
+			String id = getId(base, PATTERN_ID);
+			patternIDs.add(id);
 
-			if (patternChildMap.get(parentID) == null) {
-				patternChildMap.put(parentID, new HashSet<String>());
-			}
-			patternChildMap.get(parentID).add(id);
-
-			try {
-				PDAbstractPattern pattern = resources.getPattern(name);
-
-				if (pattern instanceof PDTilingPattern) {
-					if (tilingPatternParentMap.get(id) == null) {
-						tilingPatternParentMap.put(id, new HashSet<String>());
-					}
-					tilingPatternParentMap.get(id).add(parentID);
-
-					if (!tilingPatterns.containsKey(id)) {
-						PDTilingPattern tilingPattern = (PDTilingPattern) pattern;
-						tilingPatterns.put(id, tilingPattern);
-
-						getResourceDictionaryDependencies(
-								tilingPattern.getResources(),
-								id,
-								tilingPatternExtGStateChild,
-								tilingPatternColorSpaceChild,
-								tilingPatternPatternChild,
-								tilingPatternShadingChild,
-								tilingPatternXObjectChild,
-								tilingPatternFontChild,
-								tilingPatternPropertiesChild,
-								exGStatePatternParent,
-								colorSpacePatternParent,
-								tilingPatternPatternParent,
-								shadingPatternPatternParent,
-								shadingPatternParent,
-								imageXObjectPatternParent,
-								formXObjectPatternParent,
-								postscriptPatternParent,
-								fontPatternParent,
-								propertyPatternParent);
-					}
-				} else {
-					if (shadingPatternParentMap.get(id) == null) {
-						shadingPatternParentMap.put(id, new HashSet<String>());
-					}
-					shadingPatternParentMap.get(id).add(parentID);
-
-					if (!shadingPatterns.containsKey(id)) {
-						PDShadingPattern shadingPattern = (PDShadingPattern) pattern;
-						shadingPatterns.put(id, shadingPattern);
-
-						COSBase baseShading = shadingPattern.getCOSObject().getItem(COSName.SHADING);
-						String shadingID = getId(baseShading, SHADING_ID, shadings.size());
-
-						shadingPatternShadingChild.put(id, shadingID);
-						if (shadingPatternParent.get(shadingID) == null) {
-							shadingPatternParent.put(shadingID, new HashSet<String>());
-						}
-						shadingPatternParent.get(shadingID).add(id);
-
-						if (!shadings.containsKey(shadingID) && shadingPattern.getShading() != null) {
-							shadings.put(shadingID, shadingPattern.getShading());
-
-							parseShading(shadingPattern.getShading(), shadingID);
-						}
-
-						COSBase baseExGState = shadingPattern.getCOSObject().getItem(COSName.EXT_G_STATE);
-						String exGStateID = getId(baseExGState, EXTGSTATE_ID, exGStates.size());
-
-						shadingPatternExtGStateChild.put(id, exGStateID);
-						if (exGStatePatternParent.get(exGStateID) == null) {
-							exGStatePatternParent.put(exGStateID, new HashSet<String>());
-						}
-						exGStatePatternParent.get(exGStateID).add(id);
-
-						if (!exGStates.containsKey(exGStateID) && shadingPattern.getExtendedGraphicsState() != null) {
-							exGStates.put(exGStateID, shadingPattern.getExtendedGraphicsState());
-
-							if (shadingPattern.getExtendedGraphicsState().getFontSetting() == null) {
-								return;
-							}
-
-							String fontID = getId(((COSArray) shadingPattern.getExtendedGraphicsState().getFontSetting().getCOSObject()).get(0), FONT_ID, fonts.size());
-
-							if (fontExtGStateParent.get(fontID) == null) {
-								fontExtGStateParent.put(fontID, new HashSet<String>());
-							}
-							fontExtGStateParent.get(fontID).add(exGStateID);
-							exGStateFontChild.put(exGStateID, fontID);
-
-							if (!fonts.containsKey(fontID)) {
-								try {
-									PDFont font = shadingPattern.getExtendedGraphicsState().getFontSetting().getFont();
-									fonts.put(fontID, font);
-									parseFont(font, fontID);
-								} catch (IOException e) {
-									LOGGER.info(e);
-									fontCreationProblem(fontID, e.getMessage());
-								}
-							}
-						}
-					}
+			if (checkIDBeforeProcess(id)) {
+				try {
+					PDAbstractPattern pattern = resources.getPattern(name);
+					parsePattern(pattern, id);
+				} catch (IOException e) {
+					LOGGER.info(e);
+					patternCreationProblem(id, e.getMessage());
 				}
-			} catch (IOException e) {
-				LOGGER.info(e);
-				patternCreationProblem(id, e.getMessage());
 			}
 		}
+		return patternIDs;
 	}
 
-	private void parseShadingFromResource(PDResources resources,
-										  String parentID,
-										  Map<String, Set<String>> shadingChildMap,
-										  Map<String, Set<String>> shadingParentMap) {
-
+	private Set<String> parseShadingFromResource(PDResources resources) {
 		if (resources == null || resources.getShadingNames() == null) {
-			return;
+			return null;
 		}
 
+		Set<String> shadingIDs = new HashSet<>();
 		for (COSName name : resources.getShadingNames()) {
 			COSDictionary dict = (COSDictionary) resources.getCOSObject().getDictionaryObject(COSName.SHADING);
 			COSBase base = dict.getItem(name);
-			String id = getId(base, SHADING_ID, shadings.size());
-			makePairDependence(id, parentID, shadingParentMap, shadingChildMap);
+			String id = getId(base, SHADING_ID);
+			shadingIDs.add(id);
 
-			if (!shadings.containsKey(id)) {
+			if (checkIDBeforeProcess(id)) {
 				try {
 					PDShading shading = resources.getShading(name);
 					parseShading(shading, id);
@@ -1555,112 +700,307 @@ public final class PBFeatureParser {
 				}
 			}
 		}
+		return shadingIDs;
 	}
 
-	private void parseShading(PDShading shading, String parentID) {
+	private void parseImageXObject(PDImageXObjectProxy xobj, String id) {
+		COSBase baseColorSpace = ((COSStream) xobj.getCOSObject()).getItem(COSName.CS);
+		if (baseColorSpace == null) {
+			baseColorSpace = ((COSStream) xobj.getCOSObject()).getItem(COSName.COLORSPACE);
+		}
+		String idColorSpace = getId(baseColorSpace, COLORSPACE_ID);
+		try {
+			PDColorSpace colorSpace = xobj.getColorSpace();
+			idColorSpace = checkColorSpaceID(idColorSpace, colorSpace);
+			if (checkIDBeforeProcess(idColorSpace)) {
+				parseColorSpace(colorSpace, idColorSpace);
+			}
+		} catch (IOException e) {
+			LOGGER.info(e);
+			colorSpaceCreationProblem(idColorSpace, e.getMessage());
+		}
+
+		String idMask = null;
+		COSBase mask = xobj.getCOSStream().getDictionaryObject(COSName.MASK);
+		if (mask instanceof COSStream) {
+			COSBase maskBase = ((COSStream) xobj.getCOSObject()).getItem(COSName.MASK);
+			idMask = getId(maskBase, XOBJECT_ID);
+			if (checkIDBeforeProcess(idMask)) {
+				try {
+					PDImageXObjectProxy imxobj = xobj.getMask();
+					parseImageXObject(imxobj, idMask);
+				} catch (IOException e) {
+					LOGGER.info(e);
+					xobjectCreationProblem(idMask, e.getMessage());
+				}
+			}
+		}
+
+		String idSMask = null;
+		COSBase sMask = xobj.getCOSStream().getDictionaryObject(COSName.SMASK);
+		if (sMask instanceof COSStream) {
+			COSBase sMaskBase = ((COSStream) xobj.getCOSObject()).getItem(COSName.SMASK);
+			idSMask = getId(sMaskBase, XOBJECT_ID);
+			if (checkIDBeforeProcess(idSMask)) {
+				try {
+					PDImageXObjectProxy imxobj = xobj.getSoftMask();
+					parseImageXObject(imxobj, idSMask);
+				} catch (IOException e) {
+					LOGGER.info(e);
+					xobjectCreationProblem(idSMask, e.getMessage());
+				}
+			}
+		}
+
+		COSBase alternates = xobj.getCOSStream().getDictionaryObject(COSName.getPDFName("Alternates"));
+		alternates = getBase(alternates);
+		Set<String> alternatesIDs = new HashSet<>();
+		if (alternates instanceof COSArray) {
+			COSArray alternatesArray = (COSArray) alternates;
+			for (COSBase entry : alternatesArray) {
+				COSBase base = getBase(entry);
+				if (base instanceof COSDictionary) {
+					COSDictionary altDict = (COSDictionary) base;
+					COSBase baseImage = altDict.getItem(COSName.IMAGE);
+					String idImage = getId(baseImage, XOBJECT_ID);
+					baseImage = getBase(baseImage);
+					if (baseImage instanceof COSStream) {
+						alternatesIDs.add(idImage);
+						if (checkIDBeforeProcess(idImage)) {
+							PDImageXObjectProxy im = new PDImageXObjectProxy(new PDStream((COSStream) baseImage), null);
+							parseImageXObject(im, idImage);
+						}
+					}
+				}
+			}
+		}
+
+		idColorSpace = config.isColorSpacesEnabled() ? idColorSpace : null;
+		if (!config.isXobjectsEnabled()) {
+			idMask = null;
+			idSMask = null;
+			alternatesIDs = null;
+		}
+
+		reporter.report(PBFeaturesObjectCreator.createImageXObjectFeaturesObject(xobj, id, idColorSpace, idMask, idSMask, alternatesIDs));
+	}
+
+	private void parseFormXObject(PDFormXObject xobj, String id) {
+
+		PDGroup group = xobj.getGroup();
+		String idColorSpace = null;
+		if (group != null && COSName.TRANSPARENCY.equals(group.getSubType())) {
+			COSBase baseColorSpace = group.getCOSObject().getItem(COSName.CS);
+			idColorSpace = getId(baseColorSpace, COLORSPACE_ID);
+			try {
+				PDColorSpace colorSpace = group.getColorSpace();
+				idColorSpace = checkColorSpaceID(idColorSpace, colorSpace);
+				if (checkIDBeforeProcess(idColorSpace)) {
+					parseColorSpace(colorSpace, idColorSpace);
+				}
+			} catch (IOException e) {
+				LOGGER.info(e);
+				colorSpaceCreationProblem(idColorSpace, e.getMessage());
+			}
+		}
+
+		PDResources resources = xobj.getResources();
+		Set<String> extGStateChild = parseExGStateFromResource(resources);
+		Set<String> colorSpaceChild = parseColorSpaceFromResources(resources);
+		Set<String> patternChild = parsePatternFromResource(resources);
+		Set<String> shadingChild = parseShadingFromResource(resources);
+		Set<String> xobjectChild = parseXObjectFromResources(resources);
+		Set<String> fontChild = parseFontFromResources(resources);
+		Set<String> propertiesChild = parsePropertiesFromResources(resources);
+
+		extGStateChild = config.isGraphicsStatesEnabled() ? extGStateChild : null;
+		if (!config.isColorSpacesEnabled()) {
+			idColorSpace = null;
+			colorSpaceChild = null;
+		}
+		patternChild = config.isPatternsEnabled() ? patternChild : null;
+		shadingChild = config.isShadingsEnabled() ? shadingChild : null;
+		xobjectChild = config.isXobjectsEnabled() ? xobjectChild : null;
+		fontChild = config.isFontsEnabled() ? fontChild : null;
+		propertiesChild = config.isPropertiesDictsEnabled() ? propertiesChild : null;
+
+		reporter.report(PBFeaturesObjectCreator.createFormXObjectFeaturesObject(
+				xobj,
+				id,
+				idColorSpace,
+				extGStateChild,
+				colorSpaceChild,
+				patternChild,
+				shadingChild,
+				xobjectChild,
+				fontChild,
+				propertiesChild));
+
+	}
+
+	private void parseExGState(PDExtendedGraphicsState exGState, String id) {
+		String childFontID = null;
+		if (exGState.getFontSetting() != null && exGState.getFontSetting().getCOSObject() instanceof COSArray) {
+			childFontID = getId(((COSArray) exGState.getFontSetting().getCOSObject()).get(0), FONT_ID);
+			if (checkIDBeforeProcess(childFontID)) {
+				try {
+					PDFont font = exGState.getFontSetting().getFont();
+					parseFont(font, childFontID);
+				} catch (IOException e) {
+					LOGGER.info(e);
+					fontCreationProblem(childFontID, e.getMessage());
+				}
+			}
+		}
+
+		childFontID = config.isFontsEnabled() ? childFontID : null;
+		reporter.report(PBFeaturesObjectCreator.createExtGStateFeaturesObject(exGState, id, childFontID));
+	}
+
+	private void parsePattern(PDAbstractPattern pattern, String id) throws IOException {
+		if (pattern instanceof PDTilingPattern) {
+			PDTilingPattern tilingPattern = (PDTilingPattern) pattern;
+			PDResources resources = tilingPattern.getResources();
+			Set<String> extGStateChild = parseExGStateFromResource(resources);
+			Set<String> colorSpaceChild = parseColorSpaceFromResources(resources);
+			Set<String> patternChild = parsePatternFromResource(resources);
+			Set<String> shadingChild = parseShadingFromResource(resources);
+			Set<String> xobjectChild = parseXObjectFromResources(resources);
+			Set<String> fontChild = parseFontFromResources(resources);
+			Set<String> propertiesChild = parsePropertiesFromResources(resources);
+
+			extGStateChild = config.isGraphicsStatesEnabled() ? extGStateChild : null;
+			colorSpaceChild = config.isColorSpacesEnabled() ? colorSpaceChild : null;
+			patternChild = config.isPatternsEnabled() ? patternChild : null;
+			shadingChild = config.isShadingsEnabled() ? shadingChild : null;
+			xobjectChild = config.isXobjectsEnabled() ? xobjectChild : null;
+			fontChild = config.isFontsEnabled() ? fontChild : null;
+			propertiesChild = config.isPropertiesDictsEnabled() ? propertiesChild : null;
+
+			reporter.report(PBFeaturesObjectCreator.createTilingPatternFeaturesObject(
+					tilingPattern,
+					id,
+					extGStateChild,
+					colorSpaceChild,
+					patternChild,
+					shadingChild,
+					xobjectChild,
+					fontChild,
+					propertiesChild));
+		} else {
+			PDShadingPattern shadingPattern = (PDShadingPattern) pattern;
+			COSBase baseShading = shadingPattern.getCOSObject().getItem(COSName.SHADING);
+			String shadingID = getId(baseShading, SHADING_ID);
+
+			if (checkIDBeforeProcess(shadingID) && shadingPattern.getShading() != null) {
+				parseShading(shadingPattern.getShading(), shadingID);
+			}
+
+			COSBase baseExGState = shadingPattern.getCOSObject().getItem(COSName.EXT_G_STATE);
+			String exGStateID = getId(baseExGState, EXTGSTATE_ID);
+
+			if (checkIDBeforeProcess(exGStateID) && shadingPattern.getExtendedGraphicsState() != null) {
+				parseExGState(shadingPattern.getExtendedGraphicsState(), exGStateID);
+			}
+
+			shadingID = config.isShadingsEnabled() ? shadingID : null;
+			exGStateID = config.isGraphicsStatesEnabled() ? exGStateID : null;
+			reporter.report(PBFeaturesObjectCreator.createShadingPatternFeaturesObject(shadingPattern, id, shadingID, exGStateID));
+		}
+	}
+
+	private void parseShading(PDShading shading, String id) {
 		COSBase base = shading.getCOSObject().getItem(COSName.CS);
 		if (base == null) {
 			base = shading.getCOSObject().getItem(COSName.COLORSPACE);
 		}
-
-		String id = getId(base, COLORSPACE_ID, colorSpaces.size());
-
+		String colorspaceID = getId(base, COLORSPACE_ID);
 		try {
 			PDColorSpace colorSpace = shading.getColorSpace();
 
-			id = checkColorSpaceID(id, colorSpace);
-
-			if (colorSpaceShadingParent.get(id) == null) {
-				colorSpaceShadingParent.put(id, new HashSet<String>());
-			}
-			colorSpaceShadingParent.get(id).add(parentID);
-			shadingColorSpaceChild.put(parentID, id);
-
-			if (!colorSpaces.containsKey(id)) {
-				colorSpaces.put(id, colorSpace);
-				parseColorSpace(colorSpace, id);
+			colorspaceID = checkColorSpaceID(colorspaceID, colorSpace);
+			if (checkIDBeforeProcess(colorspaceID)) {
+				parseColorSpace(colorSpace, colorspaceID);
 			}
 		} catch (IOException e) {
-			if (colorSpaceShadingParent.get(id) == null) {
-				colorSpaceShadingParent.put(id, new HashSet<String>());
-			}
-			colorSpaceShadingParent.get(id).add(parentID);
-			shadingColorSpaceChild.put(parentID, id);
 			LOGGER.info(e);
-			colorSpaceCreationProblem(id, e.getMessage());
+			colorSpaceCreationProblem(colorspaceID, e.getMessage());
 		}
+		colorspaceID = config.isColorSpacesEnabled() ? colorspaceID : null;
+		reporter.report(PBFeaturesObjectCreator.createShadingFeaturesObject(shading, id, colorspaceID));
 	}
 
-	private void parseFont(PDFont font, String parentID) {
+	private void parseFont(PDFontLike font, String id) {
 		if (font instanceof PDType3Font) {
-			getResourceDictionaryDependencies(
-					((PDType3Font) font).getResources(),
-					parentID,
-					fontExtGStateChild,
-					fontColorSpaceChild,
-					fontPatternChild,
-					fontShadingChild,
-					fontXObjectChild,
-					fontFontChild,
-					fontPropertiesChild,
-					exGStateFontParent,
-					colorSpaceFontParent,
-					tilingPatternFontParent,
-					shadingPatternFontParent,
-					shadingFontParent,
-					imageXObjectFontParent,
-					formXObjectFontParent,
-					postscriptFontParent,
-					fontFontParent,
-					propertyFontParent);
+			PDResources resources = ((PDType3Font) font).getResources();
+			Set<String> extGStateChild = parseExGStateFromResource(resources);
+			Set<String> colorSpaceChild = parseColorSpaceFromResources(resources);
+			Set<String> patternChild = parsePatternFromResource(resources);
+			Set<String> shadingChild = parseShadingFromResource(resources);
+			Set<String> xobjectChild = parseXObjectFromResources(resources);
+			Set<String> fontChild = parseFontFromResources(resources);
+			Set<String> propertiesChild = parsePropertiesFromResources(resources);
+
+			extGStateChild = config.isGraphicsStatesEnabled() ? extGStateChild : null;
+			colorSpaceChild = config.isColorSpacesEnabled() ? colorSpaceChild : null;
+			patternChild = config.isPatternsEnabled() ? patternChild : null;
+			shadingChild = config.isShadingsEnabled() ? shadingChild : null;
+			xobjectChild = config.isXobjectsEnabled() ? xobjectChild : null;
+			fontChild = config.isFontsEnabled() ? fontChild : null;
+			propertiesChild = config.isPropertiesDictsEnabled() ? propertiesChild : null;
+
+			reporter.report(PBFeaturesObjectCreator.createFontFeaturesObject(
+					font,
+					id,
+					extGStateChild,
+					colorSpaceChild,
+					patternChild,
+					shadingChild,
+					xobjectChild,
+					fontChild,
+					propertiesChild));
 		} else if (font instanceof PDType0Font) {
 			PDType0Font type0 = (PDType0Font) font;
 
 			COSBase descendantFontsBase = type0.getCOSObject().getDictionaryObject(COSName.DESCENDANT_FONTS);
 			if (descendantFontsBase instanceof COSArray) {
 				COSBase descendantFontDictionaryBase = ((COSArray) descendantFontsBase).getObject(0);
-				String id = getId(descendantFontDictionaryBase, FONT_ID, fonts.size());
-				makePairDependence(id, parentID, fontFontParent, fontFontChild);
-
-				if (!fonts.containsKey(id)) {
-					fonts.put(id, type0.getDescendantFont());
+				String descendantID = getId(descendantFontDictionaryBase, FONT_ID);
+				if (checkIDBeforeProcess(descendantID)) {
+					parseFont(type0.getDescendantFont(), descendantID);
 				}
+				Set<String> descendant = null;
+				if (config.isFontsEnabled()) {
+					descendant = new HashSet<>();
+					descendant.add(descendantID);
+				}
+				reporter.report(PBFeaturesObjectCreator.createFontFeaturesObject(font, id, null, null, null, null, null, descendant, null));
 			}
+		} else {
+			reporter.report(PBFeaturesObjectCreator.createFontFeaturesObject(font, id, null, null, null, null, null, null, null));
 		}
 	}
 
-	private void parseColorSpace(PDColorSpace colorSpace, String parentID) {
+	private void parseColorSpace(PDColorSpace colorSpace, String id) {
+		String iccProfileID = null;
+		String idAlt = null;
 		if (colorSpace instanceof PDICCBased) {
 			PDICCBased iccBased = (PDICCBased) colorSpace;
 			COSArray array = (COSArray) iccBased.getCOSObject();
 			COSBase base = array.get(1);
-			String id = getId(base, ICCPROFILE, iccProfiles.size());
+			iccProfileID = getId(base, ICCPROFILE);
 
-			if (iccProfileICCBased.get(id) == null) {
-				iccProfileICCBased.put(id, new HashSet<String>());
-			}
-			iccProfileICCBased.get(id).add(parentID);
-			colorSpaceIccProfileChild.put(parentID, id);
-
-			if (!iccProfiles.containsKey(id)) {
-				iccProfiles.put(id, iccBased.getPDStream().getStream());
+			if (checkIDBeforeProcess(iccProfileID)) {
+				reporter.report(PBFeaturesObjectCreator.createICCProfileFeaturesObject(iccBased.getPDStream().getStream(), iccProfileID));
 			}
 
 			COSBase baseAlt = iccBased.getPDStream().getStream().getItem(COSName.ALTERNATE);
-			String idAlt = getId(baseAlt, COLORSPACE_ID, colorSpaces.size());
+			idAlt = getId(baseAlt, COLORSPACE_ID);
 
 			try {
 				PDColorSpace altclr = iccBased.getAlternateColorSpace();
 				idAlt = checkColorSpaceID(idAlt, altclr);
-
-				if (colorSpaceColorSpaceParent.get(idAlt) == null) {
-					colorSpaceColorSpaceParent.put(idAlt, new HashSet<String>());
-				}
-				colorSpaceColorSpaceParent.get(idAlt).add(parentID);
-				colorSpaceColorSpaceChild.put(parentID, idAlt);
-
-				if (!colorSpaces.containsKey(idAlt)) {
-					colorSpaces.put(idAlt, iccBased.getAlternateColorSpace());
+				if (checkIDBeforeProcess(idAlt)) {
 					parseColorSpace(iccBased.getAlternateColorSpace(), idAlt);
 
 				}
@@ -1681,7 +1021,7 @@ public final class PBFeatureParser {
 
 			COSArray array = (COSArray) colorSpace.getCOSObject();
 			COSBase base = array.get(number);
-			String id = getId(base, COLORSPACE_ID, colorSpaces.size());
+			idAlt = getId(base, COLORSPACE_ID);
 
 			try {
 				PDColorSpace alt;
@@ -1693,24 +1033,19 @@ public final class PBFeatureParser {
 					alt = ((PDDeviceN) colorSpace).getAlternateColorSpace();
 				}
 
-				id = checkColorSpaceID(id, alt);
+				idAlt = checkColorSpaceID(idAlt, alt);
 
-				if (colorSpaceColorSpaceParent.get(id) == null) {
-					colorSpaceColorSpaceParent.put(id, new HashSet<String>());
-				}
-				colorSpaceColorSpaceParent.get(id).add(parentID);
-				colorSpaceColorSpaceChild.put(parentID, id);
-
-				if (!colorSpaces.containsKey(id)) {
-					colorSpaces.put(id, alt);
-					parseColorSpace(alt, id);
+				if (checkIDBeforeProcess(idAlt)) {
+					parseColorSpace(alt, idAlt);
 				}
 			} catch (IOException e) {
 				LOGGER.info(e);
-				colorSpaceCreationProblem(id, e.getMessage());
+				colorSpaceCreationProblem(idAlt, e.getMessage());
 			}
-
 		}
+		iccProfileID = config.isIccProfilesEnabled() ? iccProfileID : null;
+		idAlt = config.isColorSpacesEnabled() ? idAlt : null;
+		reporter.report(PBFeaturesObjectCreator.createColorSpaceFeaturesObject(colorSpace, id, iccProfileID, idAlt));
 	}
 
 	private static String checkColorSpaceID(String prevID, PDColorSpace colorSpace) {
@@ -1727,21 +1062,6 @@ public final class PBFeatureParser {
 		return id;
 	}
 
-	private static void makePairDependence(String childID,
-										   String parentID,
-										   Map<String, Set<String>> childParentMap,
-										   Map<String, Set<String>> parentChildMap) {
-		if (parentChildMap.get(parentID) == null) {
-			parentChildMap.put(parentID, new HashSet<String>());
-		}
-		parentChildMap.get(parentID).add(childID);
-
-		if (childParentMap.get(childID) == null) {
-			childParentMap.put(childID, new HashSet<String>());
-		}
-		childParentMap.get(childID).add(parentID);
-	}
-
 	private static COSBase getBase(final COSBase base) {
 		COSBase item = base;
 
@@ -1752,9 +1072,11 @@ public final class PBFeatureParser {
 		return item;
 	}
 
-	private static String getId(final COSBase base, final String prefix,
-								final long number) {
-		long numb = number;
+	private String getId(final COSBase base, final String prefix) {
+		if (base == null) {
+			return null;
+		}
+		long numb = this.processedIDs.size();
 		COSBase item = base;
 		String type = "Dir";
 
@@ -1767,7 +1089,14 @@ public final class PBFeatureParser {
 		return prefix + type + numb;
 	}
 
-	private static class FeaturesHashMap<K, V> extends HashMap<K, V> {
-
+	private boolean checkIDBeforeProcess(String id) {
+		if (id == null) {
+			return false;
+		} else if (this.processedIDs.contains(id)) {
+			return false;
+		} else {
+			this.processedIDs.add(id);
+			return true;
+		}
 	}
 }

@@ -5,11 +5,8 @@ import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesData;
 import org.verapdf.features.FeaturesObjectTypesEnum;
 import org.verapdf.features.IFeaturesObject;
-import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
-
-import java.util.Set;
 
 /**
  * Feature object for extended graphics state
@@ -23,10 +20,6 @@ public class PBExtGStateFeaturesObject implements IFeaturesObject {
 	private PDExtendedGraphicsState exGState;
 	private String id;
 	private String fontChildID;
-	private Set<String> pageParentsID;
-	private Set<String> patternParentsID;
-	private Set<String> xobjectParentsID;
-	private Set<String> fontParentsID;
 
 	/**
 	 * Constructs new extended graphics state feature object
@@ -34,25 +27,13 @@ public class PBExtGStateFeaturesObject implements IFeaturesObject {
 	 * @param exGState         PDExtendedGraphicsState which represents extended graphics state for feature report
 	 * @param id               id of the object
 	 * @param fontChildID      id of the font child
-	 * @param pageParentsID    set of page ids which contains the given extended graphics state as its resources
-	 * @param patternParentsID set of pattern ids which contains the given extended graphics state as its resources
-	 * @param xobjectParentsID set of xobject ids which contains the given extended graphics state as its resources
-	 * @param fontParentsID    set of font ids which contains the given extended graphics state as its resources
 	 */
 	public PBExtGStateFeaturesObject(PDExtendedGraphicsState exGState,
 									 String id,
-									 String fontChildID,
-									 Set<String> pageParentsID,
-									 Set<String> patternParentsID,
-									 Set<String> xobjectParentsID,
-									 Set<String> fontParentsID) {
+									 String fontChildID) {
 		this.exGState = exGState;
 		this.id = id;
 		this.fontChildID = fontChildID;
-		this.pageParentsID = pageParentsID;
-		this.patternParentsID = patternParentsID;
-		this.xobjectParentsID = xobjectParentsID;
-		this.fontParentsID = fontParentsID;
 	}
 
 	/**
@@ -78,8 +59,6 @@ public class PBExtGStateFeaturesObject implements IFeaturesObject {
 			if (id != null) {
 				root.setAttribute(ID, this.id);
 			}
-
-			parseParents(root);
 
 			FeatureTreeNode.createChildNode("transparency", root).setValue(String.valueOf(!exGState.getAlphaSourceFlag()));
 			FeatureTreeNode.createChildNode("strokeAdjustment", root).setValue(String.valueOf(exGState.getAutomaticStrokeAdjustment()));
@@ -108,17 +87,4 @@ public class PBExtGStateFeaturesObject implements IFeaturesObject {
 		return null;
 	}
 
-	private void parseParents(FeatureTreeNode root) throws FeatureParsingException {
-		if ((pageParentsID != null && !pageParentsID.isEmpty()) ||
-				(patternParentsID != null && !patternParentsID.isEmpty()) ||
-				(xobjectParentsID != null && !xobjectParentsID.isEmpty()) ||
-				(fontParentsID != null && !fontParentsID.isEmpty())) {
-			FeatureTreeNode parents = FeatureTreeNode.createChildNode("parents", root);
-
-			PBCreateNodeHelper.parseIDSet(pageParentsID, "page", null, parents);
-			PBCreateNodeHelper.parseIDSet(patternParentsID, "pattern", null, parents);
-			PBCreateNodeHelper.parseIDSet(xobjectParentsID, "xobject", null, parents);
-			PBCreateNodeHelper.parseIDSet(fontParentsID, "font", null, parents);
-		}
-	}
 }
