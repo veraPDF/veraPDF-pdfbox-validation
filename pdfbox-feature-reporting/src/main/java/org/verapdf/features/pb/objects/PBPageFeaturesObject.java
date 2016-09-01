@@ -35,7 +35,6 @@ public class PBPageFeaturesObject implements IFeaturesObject {
 	private Set<String> xobjectChild;
 	private Set<String> fontChild;
 	private Set<String> propertiesChild;
-	private String id;
 	private int index;
 
 	/**
@@ -51,7 +50,6 @@ public class PBPageFeaturesObject implements IFeaturesObject {
 	 * @param xobjectChild    set of XObject id which contains in resource dictionary of this page
 	 * @param fontChild       set of font id which contains in resource dictionary of this page
 	 * @param propertiesChild set of properties id which contains in resource dictionary of this page
-	 * @param id              page id
 	 * @param index           page index
 	 */
 	public PBPageFeaturesObject(PDPage page,
@@ -64,7 +62,6 @@ public class PBPageFeaturesObject implements IFeaturesObject {
 								Set<String> xobjectChild,
 								Set<String> fontChild,
 								Set<String> propertiesChild,
-								String id,
 								int index) {
 		this.page = page;
 		this.thumb = thumb;
@@ -76,7 +73,6 @@ public class PBPageFeaturesObject implements IFeaturesObject {
 		this.xobjectChild = xobjectChild;
 		this.fontChild = fontChild;
 		this.propertiesChild = propertiesChild;
-		this.id = id;
 		this.index = index;
 	}
 
@@ -100,9 +96,6 @@ public class PBPageFeaturesObject implements IFeaturesObject {
 		if (page != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("page");
 
-			if (id != null) {
-				root.setAttribute(ID, id);
-			}
 			root.setAttribute("orderNumber", Integer.toString(index));
 
 			PBCreateNodeHelper.addBoxFeature("mediaBox", page.getMediaBox(), root);

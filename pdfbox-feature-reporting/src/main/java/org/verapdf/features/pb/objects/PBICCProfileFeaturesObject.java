@@ -65,22 +65,16 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 
 	private COSStream profile;
 	private String id;
-	private Set<String> outInts;
-	private Set<String> iccBaseds;
 
 	/**
 	 * Constructs new icc profile feature object
 	 *
 	 * @param profile   COSStream which represents the icc profile for feature report
 	 * @param id        id of the profile
-	 * @param outInts   set of ids of all parent output intents for this icc profile
-	 * @param iccBaseds set of ids of all parent icc based color spaces for this icc profile
 	 */
-	public PBICCProfileFeaturesObject(COSStream profile, String id, Set<String> outInts, Set<String> iccBaseds) {
+	public PBICCProfileFeaturesObject(COSStream profile, String id) {
 		this.profile = profile;
 		this.id = id;
-		this.outInts = outInts;
-		this.iccBaseds = iccBaseds;
 	}
 
 	/**
@@ -107,8 +101,6 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 			if (id != null) {
 				root.setAttribute(ID, id);
 			}
-
-			addParents(root);
 
 			parseProfileHeader(root, collection);
 
@@ -174,30 +166,6 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 		} catch (IOException e) {
 			LOGGER.debug("Can not get iccProfile stream", e);
 			return null;
-		}
-	}
-
-	private void addParents(FeatureTreeNode root) throws FeatureParsingException {
-		if ((outInts != null && !outInts.isEmpty()) || (iccBaseds != null && !iccBaseds.isEmpty())) {
-			FeatureTreeNode parents = FeatureTreeNode.createChildNode("parents", root);
-
-			if (outInts != null) {
-				for (String outInt : outInts) {
-					if (outInt != null) {
-						FeatureTreeNode pageNode = FeatureTreeNode.createChildNode("outputIntent", parents);
-						pageNode.setAttribute(ID, outInt);
-					}
-				}
-			}
-
-			if (iccBaseds != null) {
-				for (String iccBased : iccBaseds) {
-					if (iccBased != null) {
-						FeatureTreeNode pageNode = FeatureTreeNode.createChildNode("iccBased", parents);
-						pageNode.setAttribute(ID, iccBased);
-					}
-				}
-			}
 		}
 	}
 

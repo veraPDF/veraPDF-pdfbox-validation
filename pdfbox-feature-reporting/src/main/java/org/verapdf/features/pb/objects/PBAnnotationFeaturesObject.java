@@ -23,8 +23,6 @@ public class PBAnnotationFeaturesObject implements IFeaturesObject {
 
 	private PDAnnotation annot;
 	private String id;
-	private Set<String> pages;
-	private String annotId;
 	private String popupId;
 	private Set<String> formXObjects;
 
@@ -34,17 +32,13 @@ public class PBAnnotationFeaturesObject implements IFeaturesObject {
 	 *
 	 * @param annot        pdfbox class represents annotation object
 	 * @param id           annotation id
-	 * @param pages        set of ids of all parent pages for this annotation
-	 * @param annotId      ids of a parent annotation for this annotation
 	 * @param popupId      id of the popup annotation
 	 * @param formXObjects set of id of the form XObjects which used in appearance stream of this annotation
 	 */
-	public PBAnnotationFeaturesObject(PDAnnotation annot, String id, Set<String> pages,
-									  String annotId, String popupId, Set<String> formXObjects) {
+	public PBAnnotationFeaturesObject(PDAnnotation annot, String id,
+									  String popupId, Set<String> formXObjects) {
 		this.annot = annot;
 		this.id = id;
-		this.pages = pages;
-		this.annotId = annotId;
 		this.popupId = popupId;
 		this.formXObjects = formXObjects;
 	}
@@ -71,8 +65,6 @@ public class PBAnnotationFeaturesObject implements IFeaturesObject {
 			if (id != null) {
 				root.setAttribute(ID, id);
 			}
-
-			addParents(root);
 
 			PBCreateNodeHelper.addNotEmptyNode("subType", annot.getSubtype(), root);
 			PBCreateNodeHelper.addBoxFeature("rectangle", annot.getRectangle(), root);
@@ -122,25 +114,5 @@ public class PBAnnotationFeaturesObject implements IFeaturesObject {
 	@Override
 	public FeaturesData getData() {
 		return null;
-	}
-
-	private void addParents(FeatureTreeNode root) throws FeatureParsingException {
-		if ((pages != null && !pages.isEmpty()) || annotId != null) {
-			FeatureTreeNode parents = FeatureTreeNode.createChildNode("parents", root);
-
-			if (pages != null) {
-				for (String page : pages) {
-					if (page != null) {
-						FeatureTreeNode pageNode = FeatureTreeNode.createChildNode("page", parents);
-						pageNode.setAttribute(ID, page);
-					}
-				}
-			}
-
-			if (annotId != null) {
-				FeatureTreeNode annotNode = FeatureTreeNode.createChildNode("annotation", parents);
-				annotNode.setAttribute(ID, annotId);
-			}
-		}
 	}
 }

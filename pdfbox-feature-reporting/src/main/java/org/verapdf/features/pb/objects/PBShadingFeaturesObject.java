@@ -9,8 +9,6 @@ import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
 
-import java.util.Set;
-
 /**
  * Features object for shading
  *
@@ -23,10 +21,6 @@ public class PBShadingFeaturesObject implements IFeaturesObject {
 	private PDShading shading;
 	private String id;
 	private String colorSpaceChild;
-	private Set<String> pageParent;
-	private Set<String> patternParent;
-	private Set<String> xobjectParent;
-	private Set<String> fontParent;
 
 	/**
 	 * Constructs new shading features object
@@ -34,19 +28,11 @@ public class PBShadingFeaturesObject implements IFeaturesObject {
 	 * @param shading         PDShading which represents shading for feature report
 	 * @param id              id of the object
 	 * @param colorSpaceChild colorSpace id which contains in this shading
-	 * @param pageParent      set of page ids which contains the given shading as its resources
-	 * @param patternParent   set of pattern ids which contains the given shading as its resources
-	 * @param xobjectParent   set of xobject ids which contains the given shading as its resources
-	 * @param fontParent      set of font ids which contains the given shading as its resources
 	 */
-	public PBShadingFeaturesObject(PDShading shading, String id, String colorSpaceChild, Set<String> pageParent, Set<String> patternParent, Set<String> xobjectParent, Set<String> fontParent) {
+	public PBShadingFeaturesObject(PDShading shading, String id, String colorSpaceChild) {
 		this.shading = shading;
 		this.id = id;
 		this.colorSpaceChild = colorSpaceChild;
-		this.pageParent = pageParent;
-		this.patternParent = patternParent;
-		this.xobjectParent = xobjectParent;
-		this.fontParent = fontParent;
 	}
 
 	/**
@@ -72,8 +58,6 @@ public class PBShadingFeaturesObject implements IFeaturesObject {
 				root.setAttribute(ID, id);
 			}
 
-			parseParents(root);
-
 			FeatureTreeNode.createChildNode("shadingType", root).setValue(String.valueOf(shading.getShadingType()));
 
 			if (colorSpaceChild != null) {
@@ -98,19 +82,5 @@ public class PBShadingFeaturesObject implements IFeaturesObject {
 	@Override
 	public FeaturesData getData() {
 		return null;
-	}
-
-	private void parseParents(FeatureTreeNode root) throws FeatureParsingException {
-		if ((pageParent != null && !pageParent.isEmpty()) ||
-				(patternParent != null && !patternParent.isEmpty()) ||
-				(xobjectParent != null && !xobjectParent.isEmpty()) ||
-				(fontParent != null && !fontParent.isEmpty())) {
-			FeatureTreeNode parents = FeatureTreeNode.createChildNode("parents", root);
-
-			PBCreateNodeHelper.parseIDSet(pageParent, "page", null, parents);
-			PBCreateNodeHelper.parseIDSet(patternParent, "pattern", null, parents);
-			PBCreateNodeHelper.parseIDSet(xobjectParent, "xobject", null, parents);
-			PBCreateNodeHelper.parseIDSet(fontParent, "font", null, parents);
-		}
 	}
 }

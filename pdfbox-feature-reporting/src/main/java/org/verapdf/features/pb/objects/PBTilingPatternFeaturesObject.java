@@ -29,10 +29,6 @@ public class PBTilingPatternFeaturesObject implements IFeaturesObject {
 	private Set<String> xobjectChild;
 	private Set<String> fontChild;
 	private Set<String> propertiesChild;
-	private Set<String> pageParent;
-	private Set<String> patternParent;
-	private Set<String> xobjectParent;
-	private Set<String> fontParent;
 
 	/**
 	 * Constructs new tilling pattern features object
@@ -46,12 +42,10 @@ public class PBTilingPatternFeaturesObject implements IFeaturesObject {
 	 * @param xobjectChild    set of XObject id which contains in resource dictionary of this pattern
 	 * @param fontChild       set of font id which contains in resource dictionary of this pattern
 	 * @param propertiesChild set of properties id which contains in resource dictionary of this pattern
-	 * @param pageParent      set of page ids which contains the given pattern as its resources
-	 * @param patternParent   set of pattern ids which contains the given pattern as its resources
-	 * @param xobjectParent   set of xobject ids which contains the given pattern as its resources
-	 * @param fontParent      set of font ids which contains the given pattern as its resources
 	 */
-	public PBTilingPatternFeaturesObject(PDTilingPattern tilingPattern, String id, Set<String> extGStateChild, Set<String> colorSpaceChild, Set<String> patternChild, Set<String> shadingChild, Set<String> xobjectChild, Set<String> fontChild, Set<String> propertiesChild, Set<String> pageParent, Set<String> patternParent, Set<String> xobjectParent, Set<String> fontParent) {
+	public PBTilingPatternFeaturesObject(PDTilingPattern tilingPattern, String id, Set<String> extGStateChild,
+										 Set<String> colorSpaceChild, Set<String> patternChild, Set<String> shadingChild,
+										 Set<String> xobjectChild, Set<String> fontChild, Set<String> propertiesChild) {
 		this.tilingPattern = tilingPattern;
 		this.id = id;
 		this.extGStateChild = extGStateChild;
@@ -61,10 +55,6 @@ public class PBTilingPatternFeaturesObject implements IFeaturesObject {
 		this.xobjectChild = xobjectChild;
 		this.fontChild = fontChild;
 		this.propertiesChild = propertiesChild;
-		this.pageParent = pageParent;
-		this.patternParent = patternParent;
-		this.xobjectParent = xobjectParent;
-		this.fontParent = fontParent;
 	}
 
 	/**
@@ -90,8 +80,6 @@ public class PBTilingPatternFeaturesObject implements IFeaturesObject {
 				root.setAttribute(ID, id);
 			}
 			root.setAttribute("type", "tiling");
-
-			parseParents(root);
 
 			FeatureTreeNode.createChildNode("paintType", root).setValue(String.valueOf(tilingPattern.getPaintType()));
 			FeatureTreeNode.createChildNode("tilingType", root).setValue(String.valueOf(tilingPattern.getTilingType()));
@@ -128,20 +116,6 @@ public class PBTilingPatternFeaturesObject implements IFeaturesObject {
 				element.setAttribute("column", String.valueOf(j + 1));
 				element.setAttribute("value", String.valueOf(array[i][j]));
 			}
-		}
-	}
-
-	private void parseParents(FeatureTreeNode root) throws FeatureParsingException {
-		if ((pageParent != null && !pageParent.isEmpty()) ||
-				(patternParent != null && !patternParent.isEmpty()) ||
-				(xobjectParent != null && !xobjectParent.isEmpty()) ||
-				(fontParent != null && !fontParent.isEmpty())) {
-			FeatureTreeNode parents = FeatureTreeNode.createChildNode("parents", root);
-
-			PBCreateNodeHelper.parseIDSet(pageParent, "page", null, parents);
-			PBCreateNodeHelper.parseIDSet(patternParent, "pattern", null, parents);
-			PBCreateNodeHelper.parseIDSet(xobjectParent, "xobject", null, parents);
-			PBCreateNodeHelper.parseIDSet(fontParent, "font", null, parents);
 		}
 	}
 

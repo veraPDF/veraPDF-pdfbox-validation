@@ -34,11 +34,6 @@ public class PBFormXObjectFeaturesObject implements IFeaturesObject {
 	private Set<String> xobjectChild;
 	private Set<String> fontChild;
 	private Set<String> propertiesChild;
-	private Set<String> pageParent;
-	private Set<String> annotationParent;
-	private Set<String> patternParent;
-	private Set<String> xobjectParent;
-	private Set<String> fontParent;
 
 	/**
 	 * Constructs new form xobject features object
@@ -53,13 +48,11 @@ public class PBFormXObjectFeaturesObject implements IFeaturesObject {
 	 * @param xobjectChild         set of XObject id which contains in resource dictionary of this xobject
 	 * @param fontChild            set of font id which contains in resource dictionary of this pattern
 	 * @param propertiesChild      set of properties id which contains in resource dictionary of this xobject
-	 * @param pageParent           set of page ids which contains the given xobject as its resources
-	 * @param annotationParent     set of annotation ids which contains the given xobject in its appearance dictionary
-	 * @param patternParent        set of pattern ids which contains the given xobject as its resources
-	 * @param xobjectParent        set of xobject ids which contains the given xobject as its resources
-	 * @param fontParent           set of font ids which contains the given xobject as its resources
 	 */
-	public PBFormXObjectFeaturesObject(PDFormXObject formXObject, String id, String groupColorSpaceChild, Set<String> extGStateChild, Set<String> colorSpaceChild, Set<String> patternChild, Set<String> shadingChild, Set<String> xobjectChild, Set<String> fontChild, Set<String> propertiesChild, Set<String> pageParent, Set<String> annotationParent, Set<String> patternParent, Set<String> xobjectParent, Set<String> fontParent) {
+	public PBFormXObjectFeaturesObject(PDFormXObject formXObject, String id, String groupColorSpaceChild,
+									   Set<String> extGStateChild, Set<String> colorSpaceChild, Set<String> patternChild,
+									   Set<String> shadingChild, Set<String> xobjectChild, Set<String> fontChild,
+									   Set<String> propertiesChild) {
 		this.formXObject = formXObject;
 		this.id = id;
 		this.groupColorSpaceChild = groupColorSpaceChild;
@@ -70,11 +63,6 @@ public class PBFormXObjectFeaturesObject implements IFeaturesObject {
 		this.xobjectChild = xobjectChild;
 		this.fontChild = fontChild;
 		this.propertiesChild = propertiesChild;
-		this.pageParent = pageParent;
-		this.annotationParent = annotationParent;
-		this.patternParent = patternParent;
-		this.xobjectParent = xobjectParent;
-		this.fontParent = fontParent;
 	}
 
 	/**
@@ -100,8 +88,6 @@ public class PBFormXObjectFeaturesObject implements IFeaturesObject {
 			if (id != null) {
 				root.setAttribute(ID, id);
 			}
-
-			parseParents(root);
 
 			PBCreateNodeHelper.addBoxFeature("bbox", formXObject.getBBox(), root);
 			parseFloatMatrix(formXObject.getMatrix().getValues(), FeatureTreeNode.createChildNode("matrix", root));
@@ -159,22 +145,6 @@ public class PBFormXObjectFeaturesObject implements IFeaturesObject {
 				element.setAttribute("column", String.valueOf(j + 1));
 				element.setAttribute("value", String.valueOf(array[i][j]));
 			}
-		}
-	}
-
-	private void parseParents(FeatureTreeNode root) throws FeatureParsingException {
-		if ((pageParent != null && !pageParent.isEmpty()) ||
-				(annotationParent != null && !annotationParent.isEmpty()) ||
-				(patternParent != null && !patternParent.isEmpty()) ||
-				(xobjectParent != null && !xobjectParent.isEmpty()) ||
-				(fontParent != null && !fontParent.isEmpty())) {
-			FeatureTreeNode parents = FeatureTreeNode.createChildNode("parents", root);
-
-			PBCreateNodeHelper.parseIDSet(pageParent, "page", null, parents);
-			PBCreateNodeHelper.parseIDSet(annotationParent, "annotation", null, parents);
-			PBCreateNodeHelper.parseIDSet(patternParent, "pattern", null, parents);
-			PBCreateNodeHelper.parseIDSet(xobjectParent, "xobject", null, parents);
-			PBCreateNodeHelper.parseIDSet(fontParent, "font", null, parents);
 		}
 	}
 
