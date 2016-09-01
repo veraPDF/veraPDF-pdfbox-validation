@@ -99,8 +99,8 @@ public class ColorSpaceFactory {
 					StaticContainers.cachedColorSpaces.put(colorSpace, result);
 					return result;
 				} else {
+					//we don't want to cache ICCBasedCMYK color space because it can be used with different extgstates
 					result = new PBoxPDICCBasedCMYK((PDICCBased) colorSpace, opm, overprintingFlag);
-					StaticContainers.cachedColorSpaces.put(colorSpace, result);
 					return result;
 				}
 			case LAB:
