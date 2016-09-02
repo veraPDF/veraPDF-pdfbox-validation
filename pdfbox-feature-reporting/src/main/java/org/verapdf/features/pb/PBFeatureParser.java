@@ -193,9 +193,7 @@ public final class PBFeatureParser {
 	private void getPageTreeFeatures(PDPageTree pageTree) {
 		for (PDPage page : pageTree) {
 			Set<String> annotsId = addAnnotsDependencies(page);
-			if (!config.isAnnotationsEnabled()) {
-				annotsId = null;
-			}
+			annotsId = config.isAnnotationsEnabled() ? annotsId : null;
 
 			String thumbID = null;
 			if (page.getCOSObject().getDictionaryObject(COSName.getPDFName("Thumb")) != null) {
@@ -211,25 +209,22 @@ public final class PBFeatureParser {
 					}
 				}
 			}
-			if (!config.isXobjectsEnabled()) {
-				thumbID = null;
-			}
+			thumbID = config.isXobjectsEnabled() ? thumbID : null;
 
 			PDResources resources = page.getResources();
 			Set<String> extGStateChild = parseExGStateFromResource(resources);
-			Set<String> colorSpaceChild = parseColorSpaceFromResources(resources);
-			Set<String> patternChild = parsePatternFromResource(resources);
-			Set<String> shadingChild = parseShadingFromResource(resources);
-			Set<String> xobjectChild = parseXObjectFromResources(resources);
-			Set<String> fontChild = parseFontFromResources(resources);
-			Set<String> propertiesChild = parsePropertiesFromResources(resources);
-
 			extGStateChild = config.isGraphicsStatesEnabled() ? extGStateChild : null;
+			Set<String> colorSpaceChild = parseColorSpaceFromResources(resources);
 			colorSpaceChild = config.isColorSpacesEnabled() ? colorSpaceChild : null;
+			Set<String> patternChild = parsePatternFromResource(resources);
 			patternChild = config.isPatternsEnabled() ? patternChild : null;
+			Set<String> shadingChild = parseShadingFromResource(resources);
 			shadingChild = config.isShadingsEnabled() ? shadingChild : null;
+			Set<String> xobjectChild = parseXObjectFromResources(resources);
 			xobjectChild = config.isXobjectsEnabled() ? xobjectChild : null;
+			Set<String> fontChild = parseFontFromResources(resources);
 			fontChild = config.isFontsEnabled() ? fontChild : null;
+			Set<String> propertiesChild = parsePropertiesFromResources(resources);
 			propertiesChild = config.isPropertiesDictsEnabled() ? propertiesChild : null;
 
 			reporter.report(PBFeaturesObjectCreator
@@ -806,22 +801,21 @@ public final class PBFeatureParser {
 
 		PDResources resources = xobj.getResources();
 		Set<String> extGStateChild = parseExGStateFromResource(resources);
-		Set<String> colorSpaceChild = parseColorSpaceFromResources(resources);
-		Set<String> patternChild = parsePatternFromResource(resources);
-		Set<String> shadingChild = parseShadingFromResource(resources);
-		Set<String> xobjectChild = parseXObjectFromResources(resources);
-		Set<String> fontChild = parseFontFromResources(resources);
-		Set<String> propertiesChild = parsePropertiesFromResources(resources);
-
 		extGStateChild = config.isGraphicsStatesEnabled() ? extGStateChild : null;
+		Set<String> colorSpaceChild = parseColorSpaceFromResources(resources);
 		if (!config.isColorSpacesEnabled()) {
 			idColorSpace = null;
 			colorSpaceChild = null;
 		}
+		Set<String> patternChild = parsePatternFromResource(resources);
 		patternChild = config.isPatternsEnabled() ? patternChild : null;
+		Set<String> shadingChild = parseShadingFromResource(resources);
 		shadingChild = config.isShadingsEnabled() ? shadingChild : null;
+		Set<String> xobjectChild = parseXObjectFromResources(resources);
 		xobjectChild = config.isXobjectsEnabled() ? xobjectChild : null;
+		Set<String> fontChild = parseFontFromResources(resources);
 		fontChild = config.isFontsEnabled() ? fontChild : null;
+		Set<String> propertiesChild = parsePropertiesFromResources(resources);
 		propertiesChild = config.isPropertiesDictsEnabled() ? propertiesChild : null;
 
 		reporter.report(PBFeaturesObjectCreator.createFormXObjectFeaturesObject(
@@ -862,19 +856,18 @@ public final class PBFeatureParser {
 			PDTilingPattern tilingPattern = (PDTilingPattern) pattern;
 			PDResources resources = tilingPattern.getResources();
 			Set<String> extGStateChild = parseExGStateFromResource(resources);
-			Set<String> colorSpaceChild = parseColorSpaceFromResources(resources);
-			Set<String> patternChild = parsePatternFromResource(resources);
-			Set<String> shadingChild = parseShadingFromResource(resources);
-			Set<String> xobjectChild = parseXObjectFromResources(resources);
-			Set<String> fontChild = parseFontFromResources(resources);
-			Set<String> propertiesChild = parsePropertiesFromResources(resources);
-
 			extGStateChild = config.isGraphicsStatesEnabled() ? extGStateChild : null;
+			Set<String> colorSpaceChild = parseColorSpaceFromResources(resources);
 			colorSpaceChild = config.isColorSpacesEnabled() ? colorSpaceChild : null;
+			Set<String> patternChild = parsePatternFromResource(resources);
 			patternChild = config.isPatternsEnabled() ? patternChild : null;
+			Set<String> shadingChild = parseShadingFromResource(resources);
 			shadingChild = config.isShadingsEnabled() ? shadingChild : null;
+			Set<String> xobjectChild = parseXObjectFromResources(resources);
 			xobjectChild = config.isXobjectsEnabled() ? xobjectChild : null;
+			Set<String> fontChild = parseFontFromResources(resources);
 			fontChild = config.isFontsEnabled() ? fontChild : null;
+			Set<String> propertiesChild = parsePropertiesFromResources(resources);
 			propertiesChild = config.isPropertiesDictsEnabled() ? propertiesChild : null;
 
 			reporter.report(PBFeaturesObjectCreator.createTilingPatternFeaturesObject(
@@ -934,19 +927,18 @@ public final class PBFeatureParser {
 		if (font instanceof PDType3Font) {
 			PDResources resources = ((PDType3Font) font).getResources();
 			Set<String> extGStateChild = parseExGStateFromResource(resources);
-			Set<String> colorSpaceChild = parseColorSpaceFromResources(resources);
-			Set<String> patternChild = parsePatternFromResource(resources);
-			Set<String> shadingChild = parseShadingFromResource(resources);
-			Set<String> xobjectChild = parseXObjectFromResources(resources);
-			Set<String> fontChild = parseFontFromResources(resources);
-			Set<String> propertiesChild = parsePropertiesFromResources(resources);
-
 			extGStateChild = config.isGraphicsStatesEnabled() ? extGStateChild : null;
+			Set<String> colorSpaceChild = parseColorSpaceFromResources(resources);
 			colorSpaceChild = config.isColorSpacesEnabled() ? colorSpaceChild : null;
+			Set<String> patternChild = parsePatternFromResource(resources);
 			patternChild = config.isPatternsEnabled() ? patternChild : null;
+			Set<String> shadingChild = parseShadingFromResource(resources);
 			shadingChild = config.isShadingsEnabled() ? shadingChild : null;
+			Set<String> xobjectChild = parseXObjectFromResources(resources);
 			xobjectChild = config.isXobjectsEnabled() ? xobjectChild : null;
+			Set<String> fontChild = parseFontFromResources(resources);
 			fontChild = config.isFontsEnabled() ? fontChild : null;
+			Set<String> propertiesChild = parsePropertiesFromResources(resources);
 			propertiesChild = config.isPropertiesDictsEnabled() ? propertiesChild : null;
 
 			reporter.report(PBFeaturesObjectCreator.createFontFeaturesObject(
