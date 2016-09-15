@@ -66,7 +66,7 @@ public class PBoxEmbeddedFile extends PBoxExternal implements EmbeddedFile {
 				parser1b.close();
 				parser2b.close();
 				return Boolean.valueOf(result2b.isCompliant());
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				LOGGER.debug("Exception during validation of embedded file", e);
 				return Boolean.FALSE;
 			}
