@@ -71,6 +71,10 @@ public class PBEmbeddedFileFeaturesObject implements IFeaturesObject {
 
 			PBCreateNodeHelper.addNotEmptyNode("fileName", embFile.getFilename(), root);
 			PBCreateNodeHelper.addNotEmptyNode("description", embFile.getFileDescription(), root);
+			COSDictionary dict = embFile.getCOSObject();
+			if (dict != null) {
+				PBCreateNodeHelper.addNotEmptyNode("afRelationship", dict.getNameAsString(COSName.getPDFName("AFRelationship")), root);
+			}
 
 			PDEmbeddedFile ef = embFile.getEmbeddedFile();
 			if (ef != null) {
