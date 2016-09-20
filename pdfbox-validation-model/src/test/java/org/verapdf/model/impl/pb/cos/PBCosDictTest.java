@@ -14,6 +14,7 @@ import org.verapdf.model.coslayer.CosStream;
 import org.verapdf.model.impl.BaseTest;
 import org.verapdf.model.pdlayer.PDMetadata;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.verapdf.model.impl.pb.cos.PBCosDict.COS_DICT_TYPE;
@@ -35,8 +36,13 @@ public class PBCosDictTest extends BaseTest {
         for (int index = 1; index < 6; index++) {
             dictionary.setInt(COSName.getPDFName(String.valueOf(index)), index);
         }
-        dictionary.setItem(COSName.METADATA, new COSStream(new COSDictionary()));
-
+        try (COSStream cosStream = new COSStream(new COSDictionary())) {
+        	dictionary.setItem(COSName.METADATA, cosStream);
+        } catch (IOException excep) {
+			// TODO Auto-generated catch block
+			excep.printStackTrace();
+		}
+        
         expectedLength = dictionary.size();
 
         actual = new PBCosDict(dictionary, document, null);

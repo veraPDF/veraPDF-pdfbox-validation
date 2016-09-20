@@ -26,8 +26,8 @@ public class PBoxICCOutputProfileTest extends PBoxICCProfileTest {
 
 	@BeforeClass
 	public static void setUp() throws IOException, URISyntaxException {
-		expectedType = TYPES.contains(PBoxICCOutputProfile.ICC_OUTPUT_PROFILE_TYPE) ?
-																PBoxICCOutputProfile.ICC_OUTPUT_PROFILE_TYPE : null;
+		expectedType = TYPES.contains(PBoxICCOutputProfile.ICC_OUTPUT_PROFILE_TYPE)
+				? PBoxICCOutputProfile.ICC_OUTPUT_PROFILE_TYPE : null;
 		expectedID = null;
 
 		setUpActualObject();
@@ -39,9 +39,10 @@ public class PBoxICCOutputProfileTest extends PBoxICCProfileTest {
 
 		doc = PDDocument.load(file, false, true);
 		PDOutputIntent outputIntent = doc.getDocumentCatalog().getOutputIntents().get(0);
-		InputStream unfilteredStream = outputIntent.getDestOutputIntent().getUnfilteredStream();
-		Long N = Long.valueOf(outputIntent.getDestOutputIntent().getLong(COSName.N));
-		actual = new PBoxICCOutputProfile(unfilteredStream, COSName.GTS_PDFA1.getName(), N);
+		try (InputStream unfilteredStream = outputIntent.getDestOutputIntent().getUnfilteredStream()) {
+			Long N = Long.valueOf(outputIntent.getDestOutputIntent().getLong(COSName.N));
+			actual = new PBoxICCOutputProfile(unfilteredStream, COSName.GTS_PDFA1.getName(), N);
+		}
 	}
 
 	@Test

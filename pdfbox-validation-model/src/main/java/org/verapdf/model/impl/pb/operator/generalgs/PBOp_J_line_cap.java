@@ -1,16 +1,11 @@
 package org.verapdf.model.impl.pb.operator.generalgs;
 
+import java.util.List;
+
 import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSInteger;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosInteger;
-import org.verapdf.model.impl.pb.cos.PBCosInteger;
-import org.verapdf.model.baselayer.*;
 import org.verapdf.model.operator.Op_J_line_cap;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Operator defining the line cap style in the graphics state

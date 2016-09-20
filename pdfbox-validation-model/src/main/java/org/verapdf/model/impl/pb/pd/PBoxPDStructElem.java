@@ -19,8 +19,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Current class is representation of node of structure tree root.
- * Implemented by Apache PDFBox.
+ * Current class is representation of node of structure tree root. Implemented
+ * by Apache PDFBox.
  *
  * @author Evgeniy Muravitskiy
  */
@@ -51,7 +51,8 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	/**
 	 * Default constructor
 	 *
-	 * @param structElemDictionary dictionary of structure element
+	 * @param structElemDictionary
+	 *            dictionary of structure element
 	 */
 	public PBoxPDStructElem(COSDictionary structElemDictionary, TaggedPDFRoleMapHelper roleMapHelper) {
 		super(structElemDictionary, STRUCTURE_ELEMENT_TYPE);
@@ -66,11 +67,9 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 		COSBase value = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.TYPE);
 		if (value instanceof COSName) {
 			return ((COSName) value).getName();
-		} else {
-			LOGGER.debug("In struct element type expected 'COSName' but got: "
-					+ value.getClass().getSimpleName());
-			return null;
 		}
+		LOGGER.debug("In struct element type expected 'COSName' but got: " + value.getClass().getSimpleName());
+		return null;
 	}
 
 	@Override
@@ -85,14 +84,14 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
-			case CHILDREN:
-				return this.getChildren();
-			case STRUCTURE_TYPE:
-				return this.getStructureType();
-			case LANG:
-				return this.getLang();
-			default:
-				return super.getLinkedObjects(link);
+		case CHILDREN:
+			return this.getChildren();
+		case STRUCTURE_TYPE:
+			return this.getStructureType();
+		case LANG:
+			return this.getLang();
+		default:
+			return super.getLinkedObjects(link);
 		}
 	}
 

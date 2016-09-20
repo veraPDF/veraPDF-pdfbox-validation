@@ -1,5 +1,7 @@
 package org.verapdf.model.impl.pb.pd;
 
+import java.util.List;
+
 import org.apache.fontbox.cmap.CMap;
 import org.apache.pdfbox.contentstream.PDContentStream;
 import org.apache.pdfbox.cos.COSBase;
@@ -14,8 +16,6 @@ import org.verapdf.model.impl.pb.pd.actions.PBoxPDAction;
 import org.verapdf.model.pdlayer.PDAction;
 import org.verapdf.model.pdlayer.PDObject;
 
-import java.util.List;
-
 /**
  * @author Evgeniy Muravitskiy
  */
@@ -23,11 +23,11 @@ public class PBoxPDObject extends GenericModelObject implements PDObject {
 
 	public static final int MAX_NUMBER_OF_ELEMENTS = 1;
 
-    protected COSObjectable simplePDObject;
-    protected PDDocument document;
-    protected PDContentStream contentStream;
-    protected PDFontLike pdFontLike;
-    protected CMap cMap;
+	protected COSObjectable simplePDObject;
+	protected PDDocument document;
+	protected PDContentStream contentStream;
+	protected PDFontLike pdFontLike;
+	protected CMap cMap;
 	private String id = null;
 
 	protected PBoxPDObject(COSObjectable simplePDObject, final String type) {
@@ -38,8 +38,7 @@ public class PBoxPDObject extends GenericModelObject implements PDObject {
 			COSBase cosObject = simplePDObject.getCOSObject();
 			if (cosObject != null) {
 				COSObjectKey key = cosObject.getKey();
-				id = key != null ?
-						key.getNumber() + " " + key.getGeneration() + " obj " + this.getObjectType()
+				id = key != null ? key.getNumber() + " " + key.getGeneration() + " obj " + this.getObjectType()
 						: super.getID();
 			}
 		}
@@ -48,17 +47,16 @@ public class PBoxPDObject extends GenericModelObject implements PDObject {
 	protected PBoxPDObject(PDDocument document, final String type) {
 		super(type);
 		this.document = document;
+		if (document == null)
+			return;
 
-		if (document != null) {
-			COSDocument cosDocument = document.getDocument();
-			if (cosDocument != null) {
-				COSBase cosBase = cosDocument.getCOSObject();
-				if (cosBase != null) {
-					COSObjectKey key = cosBase.getKey();
-					id = key != null ?
-							key.getNumber() + " " + key.getGeneration() + " obj " + this.getObjectType()
-							: super.getID();
-				}
+		COSDocument cosDocument = document.getDocument();
+		if (cosDocument != null) {
+			COSBase cosBase = cosDocument.getCOSObject();
+			if (cosBase != null) {
+				COSObjectKey key = cosBase.getKey();
+				id = key != null ? key.getNumber() + " " + key.getGeneration() + " obj " + this.getObjectType()
+						: super.getID();
 			}
 		}
 	}
@@ -66,16 +64,16 @@ public class PBoxPDObject extends GenericModelObject implements PDObject {
 	protected PBoxPDObject(PDContentStream contentStream, final String type) {
 		super(type);
 		this.contentStream = contentStream;
-		if (contentStream != null) {
-			COSStream cosStream = contentStream.getContentStream();
-			if (cosStream != null) {
-				COSBase cosBase = cosStream.getCOSObject();
-				if (cosBase != null) {
-					COSObjectKey key = cosBase.getKey();
-					id = key != null ?
-							key.getNumber() + " " + key.getGeneration() + " obj " + this.getObjectType()
-							: super.getID();
-				}
+		if (contentStream == null)
+			return;
+
+		COSStream cosStream = contentStream.getContentStream();
+		if (cosStream != null) {
+			COSBase cosBase = cosStream.getCOSObject();
+			if (cosBase != null) {
+				COSObjectKey key = cosBase.getKey();
+				id = key != null ? key.getNumber() + " " + key.getGeneration() + " obj " + this.getObjectType()
+						: super.getID();
 			}
 		}
 	}
@@ -86,8 +84,7 @@ public class PBoxPDObject extends GenericModelObject implements PDObject {
 
 		if (pdFontLike instanceof COSBase) {
 			COSObjectKey key = ((COSBase) pdFontLike).getKey();
-			id = key != null ?
-					key.getNumber() + " " + key.getGeneration() + " obj " + this.getObjectType()
+			id = key != null ? key.getNumber() + " " + key.getGeneration() + " obj " + this.getObjectType()
 					: super.getID();
 		}
 	}
@@ -99,19 +96,17 @@ public class PBoxPDObject extends GenericModelObject implements PDObject {
 
 		if (this.simplePDObject != null) {
 			COSObjectKey key = this.simplePDObject.getCOSObject().getKey();
-			id = key != null ?
-					key.getNumber() + " " + key.getGeneration() + " obj " + this.getObjectType()
+			id = key != null ? key.getNumber() + " " + key.getGeneration() + " obj " + this.getObjectType()
 					: super.getID();
 		}
 	}
 
-    protected void addAction(List<PDAction> actions,
-            org.apache.pdfbox.pdmodel.interactive.action.PDAction buffer) {
-        PDAction action = PBoxPDAction.getAction(buffer);
+	protected void addAction(List<PDAction> actions, org.apache.pdfbox.pdmodel.interactive.action.PDAction buffer) {
+		PDAction action = PBoxPDAction.getAction(buffer);
 		if (action != null) {
 			actions.add(action);
 		}
-    }
+	}
 
 	@Override
 	public String getID() {

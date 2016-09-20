@@ -20,15 +20,14 @@ import java.util.List;
 public class PBoxPDType1FontTest extends PBoxPDSimpleFontTest {
 
 	private static final String TYPE1_FONT_NAME = "T1_0";
-	private static final String TYPE1_BASE_FONT = "OLXYQW+MyriadPro-Regular";
 	private static final String TYPE1_SUBTYPE = "Type1";
 
 	private static final String CHAR_SET = "/space/one/E/T/b/d/e/f/m/n/o/p/t/y";
 	private static final String ENCODING = "WinAnsiEncoding";
 
-	private static final Long WIDTHS_SIZE = 90l;
-	private static final Long FIRST_CHAR = 32l;
-	private static final Long LAST_CHAR = 121l;
+	private static final Long WIDTHS_SIZE = new Long(90l);
+	private static final Long FIRST_CHAR = new Long(32l);
+	private static final Long LAST_CHAR = new Long(121l);
 
 	@BeforeClass
 	public static void setUp() throws IOException, URISyntaxException {
@@ -43,7 +42,7 @@ public class PBoxPDType1FontTest extends PBoxPDSimpleFontTest {
 
 	@Override
 	public void testBaseFont() {
-		List<? extends Object> baseFonts = actual.getLinkedObjects(PBoxPDType1Font.BASE_FONT);
+		List<? extends Object> baseFonts = actual.getLinkedObjects(PBoxPDFont.BASE_FONT);
 		Object object = baseFonts.get(0);
 		Assert.assertEquals("CosUnicodeName", object.getObjectType());
 		Assert.assertEquals("OLXYQW+MyriadPro-Regular", ((CosName) object).getinternalRepresentation());
@@ -71,7 +70,7 @@ public class PBoxPDType1FontTest extends PBoxPDSimpleFontTest {
 
 	@Override
 	public void testIsStandard() {
-		Assert.assertFalse(((PDSimpleFont) actual).getisStandard());
+		Assert.assertFalse(((PDSimpleFont) actual).getisStandard().booleanValue());
 	}
 
 	@Override

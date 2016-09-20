@@ -1,6 +1,9 @@
 package org.verapdf.model.impl.pb.pd;
 
-import org.apache.log4j.Logger;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureTreeRoot;
 import org.verapdf.model.baselayer.Object;
@@ -10,10 +13,6 @@ import org.verapdf.model.tools.TaggedPDFHelper;
 import org.verapdf.model.tools.TaggedPDFRoleMapHelper;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Current class is representation of PDF`s logical structure facilities.
  * Implemented by Apache PDFBox.
@@ -21,8 +20,6 @@ import java.util.Map;
  * @author Evgeniy Muravitskiy
  */
 public class PBoxPDStructTreeRoot extends PBoxPDObject implements PDStructTreeRoot {
-
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDStructTreeRoot.class);
 
 	/** Type name for {@code PBoxPDStructTreeRoot} */
 	public static final String STRUCT_TREE_ROOT_TYPE = "PDStructTreeRoot";
@@ -37,7 +34,8 @@ public class PBoxPDStructTreeRoot extends PBoxPDObject implements PDStructTreeRo
 	/**
 	 * Default constructor
 	 *
-	 * @param treeRoot structure tree root implementation
+	 * @param treeRoot
+	 *            structure tree root implementation
 	 */
 	public PBoxPDStructTreeRoot(PDStructureTreeRoot treeRoot, PDFAFlavour flavour) {
 		super(treeRoot, STRUCT_TREE_ROOT_TYPE);
@@ -61,7 +59,8 @@ public class PBoxPDStructTreeRoot extends PBoxPDObject implements PDStructTreeRo
 
 	private List<PDStructElem> parseChildren() {
 		COSDictionary parent = ((PDStructureTreeRoot) this.simplePDObject).getCOSObject();
-		return TaggedPDFHelper.getStructTreeRootChildren(parent, new TaggedPDFRoleMapHelper(getRoleMap(), this.flavour));
+		return TaggedPDFHelper.getStructTreeRootChildren(parent,
+				new TaggedPDFRoleMapHelper(getRoleMap(), this.flavour));
 	}
 
 	private Map<String, String> getRoleMap() {
@@ -81,8 +80,7 @@ public class PBoxPDStructTreeRoot extends PBoxPDObject implements PDStructTreeRo
 
 		if (!this.children.isEmpty()) {
 			return this.children.get(0).getstandardType();
-		} else {
-			return null;
 		}
+		return null;
 	}
 }

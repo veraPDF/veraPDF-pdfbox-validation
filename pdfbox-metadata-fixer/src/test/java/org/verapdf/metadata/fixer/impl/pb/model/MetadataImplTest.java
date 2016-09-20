@@ -25,14 +25,14 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Maksim Bezrukov
  */
-@SuppressWarnings({"static-method", "javadoc"})
+@SuppressWarnings({"javadoc"})
 @RunWith(Parameterized.class)
 public class MetadataImplTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {"/test1.pdf", 1, "B"}, {"/test2.pdf", 1, "B"}
+                {"/test1.pdf",  Integer.valueOf(1), "B"}, {"/test2.pdf", Integer.valueOf(1), "B"}
         });
     }
 

@@ -39,7 +39,8 @@ public class PBoxCMapFile extends PBoxExternal implements CMapFile {
     /**
      * @return value of {@code WMode} key
      */
-    public Long getWMode() {
+    @Override
+	public Long getWMode() {
         try {
             CMap map = new CMapParser().parse(fileStream.getUnfilteredStream());
             return Long.valueOf(map.getWMode());
@@ -52,7 +53,8 @@ public class PBoxCMapFile extends PBoxExternal implements CMapFile {
     /**
      * @return value of {@code WMode} key of parent dictionary
      */
-    public Long getdictWMode() {
+    @Override
+	public Long getdictWMode() {
         return Long.valueOf(this.fileStream.getInt(COSName.getPDFName("WMode"), 0));
     }
 

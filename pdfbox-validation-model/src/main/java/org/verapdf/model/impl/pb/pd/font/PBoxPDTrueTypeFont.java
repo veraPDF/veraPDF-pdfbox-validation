@@ -34,7 +34,7 @@ public class PBoxPDTrueTypeFont extends PBoxPDSimpleFont implements PDTrueTypeFo
 			}
 
 			for (Map.Entry<Integer, String> entry : differences.entrySet()) {
-				if (!glyphList.containsGlyphName(entry.getValue())) {
+				if (!glyphList.containsGlyphName(entry.getValue()).booleanValue()) {
 					return Boolean.FALSE;
 				}
 			}

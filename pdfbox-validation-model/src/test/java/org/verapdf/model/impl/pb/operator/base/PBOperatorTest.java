@@ -1,6 +1,9 @@
 package org.verapdf.model.impl.pb.operator.base;
 
-import org.apache.pdfbox.cos.COSInteger;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.List;
+
 import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.cos.COSObjectKey;
 import org.apache.pdfbox.cos.COSStream;
@@ -17,10 +20,6 @@ import org.verapdf.model.impl.pb.cos.PBCosInteger;
 import org.verapdf.model.impl.pb.cos.PBCosReal;
 import org.verapdf.model.operator.Operator;
 import org.verapdf.model.tools.resources.PDInheritableResources;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.List;
 
 /**
  * @author Evgeniy Muravitskiy

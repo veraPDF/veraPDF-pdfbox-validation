@@ -14,8 +14,8 @@ public class PBoxPDHalftone extends PBoxPDObject implements PDHalftone {
 
 	public PBoxPDHalftone(COSDictionary dict) {
 		super(dict, HALFTONE_TYPE);
-		this.halftoneName = this.getHalftoneName(dict);
-		this.halftoneType = this.getHalftoneType(dict);
+		this.halftoneName = PBoxPDHalftone.getHalftoneName(dict);
+		this.halftoneType = PBoxPDHalftone.getHalftoneType(dict);
 	}
 
 	public PBoxPDHalftone(COSName name) {
@@ -24,13 +24,13 @@ public class PBoxPDHalftone extends PBoxPDObject implements PDHalftone {
 		this.halftoneType = null;
 	}
 
-	private Long getHalftoneType(COSDictionary dict) {
+	private static Long getHalftoneType(COSDictionary dict) {
 		COSBase type = dict.getDictionaryObject(COSName.getPDFName("HalftoneType"));
 		return !(type instanceof COSNumber) ? null :
 				Long.valueOf(((COSNumber) type).longValue());
 	}
 
-	private String getHalftoneName(COSDictionary dict) {
+	private static String getHalftoneName(COSDictionary dict) {
 		COSBase name = dict.getDictionaryObject(COSName.getPDFName("HalftoneName"));
 		if (name instanceof COSName) {
 			return ((COSName) name).getName();

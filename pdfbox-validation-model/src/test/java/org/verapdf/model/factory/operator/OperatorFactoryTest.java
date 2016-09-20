@@ -21,10 +21,10 @@ public class OperatorFactoryTest {
 	@Parameterized.Parameters
 	public static Collection<Object[]> data() {
 		List<Object[]> parameters = new ArrayList<>();
-		parameters.add(new Object[] {new COSString("Test COSBase case."), 0});
-		parameters.add(new Object[] {Operator.getOperator("q"), 1});
-		parameters.add(new Object[] {RenderingIntent.ABSOLUTE_COLORIMETRIC, 0});
-		parameters.add(new Object[] {"Unsupported type of object.", 0});
+		parameters.add(new Object[] {new COSString("Test COSBase case."), new Integer(0)});
+		parameters.add(new Object[] {Operator.getOperator("q"), new Integer(1)});
+		parameters.add(new Object[] {RenderingIntent.ABSOLUTE_COLORIMETRIC, new Integer(0)});
+		parameters.add(new Object[] {"Unsupported type of object.", new Integer(0)});
 		return parameters;
 	}
 

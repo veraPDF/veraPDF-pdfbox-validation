@@ -1,12 +1,11 @@
 package org.verapdf.model.impl.pb.operator.specialgs;
 
+import java.util.List;
+
 import org.apache.pdfbox.cos.COSBase;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosNumber;
-import org.verapdf.model.coslayer.CosReal;
 import org.verapdf.model.operator.Op_cm;
-
-import java.util.List;
 
 /**
  * Operator which modifies the current transformation

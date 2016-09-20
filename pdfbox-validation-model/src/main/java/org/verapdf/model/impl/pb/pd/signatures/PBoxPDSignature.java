@@ -76,17 +76,17 @@ public class PBoxPDSignature extends PBoxPDObject implements PDSignature {
                     this.simplePDObject).getByteRange();
             for (int i = 0; i < 3; ++i) {
                 if (byteRange[i] != actualByteRange[i]) {
-                    return false;
+                    return Boolean.FALSE;
                 }
             }
-            return true;
+            return Boolean.TRUE;
         } catch (IOException ex) {
             LOGGER.debug("Can't create parser to process digital signature", ex);
-            return false;
+            return Boolean.FALSE;
         }
     }
 
-    private List<PKCSDataObject> getContents() {
+    private static List<PKCSDataObject> getContents() {
         if (contents != null) {
             List<PKCSDataObject> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
             list.add(new PBoxPKCSDataObject(new COSString(contents)));

@@ -1,5 +1,9 @@
 package org.verapdf.model.impl.pb.operator.textshow;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSNumber;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -7,14 +11,9 @@ import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.factory.operator.GraphicState;
 import org.verapdf.model.impl.pb.cos.PBCosNumber;
-import org.verapdf.model.impl.pb.cos.PBCosReal;
 import org.verapdf.model.operator.Op_DoubleQuote;
 import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Operator which moves to the next line and shows a text string,

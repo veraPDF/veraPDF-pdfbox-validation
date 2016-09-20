@@ -26,9 +26,8 @@ public class OutlinesHelper {
 			}
 			outlines.clear();
 			return Collections.unmodifiableList(result);
-		} else {
-			return Collections.emptyList();
 		}
+			return Collections.emptyList();
 	}
 
 	private static Map<PDOutlineItem, String> getOutlinesMap(PDDocumentCatalog catalog) {

@@ -3,7 +3,6 @@ package org.verapdf.model.impl.pb.cos;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.verapdf.model.coslayer.CosFilter;
-import org.verapdf.model.tools.IDGenerator;
 
 /**
  * @author Timur Kamalov

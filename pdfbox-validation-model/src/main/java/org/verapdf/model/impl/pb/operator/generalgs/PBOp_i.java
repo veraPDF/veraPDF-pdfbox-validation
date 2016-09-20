@@ -1,11 +1,10 @@
 package org.verapdf.model.impl.pb.operator.generalgs;
 
+import java.util.List;
+
 import org.apache.pdfbox.cos.COSBase;
 import org.verapdf.model.coslayer.CosNumber;
-import org.verapdf.model.coslayer.CosReal;
 import org.verapdf.model.operator.Op_i;
-
-import java.util.List;
 
 /**
  * Operator defining the flatness tolerance in the graphics state

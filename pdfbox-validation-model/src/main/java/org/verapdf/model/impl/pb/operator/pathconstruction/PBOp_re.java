@@ -1,12 +1,11 @@
 package org.verapdf.model.impl.pb.operator.pathconstruction;
 
+import java.util.List;
+
 import org.apache.pdfbox.cos.COSBase;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosNumber;
-import org.verapdf.model.coslayer.CosReal;
 import org.verapdf.model.operator.Op_re;
-
-import java.util.List;
 
 /**
  * Operator which appends a rectangle to the current path

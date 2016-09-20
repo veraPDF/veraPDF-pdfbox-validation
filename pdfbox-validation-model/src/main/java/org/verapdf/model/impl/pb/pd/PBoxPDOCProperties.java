@@ -35,12 +35,12 @@ public class PBoxPDOCProperties extends PBoxPDObject implements PDOCProperties {
 	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
-			case D:
-				return this.getD();
-			case CONFIGS:
-				return this.getConfigs();
-			default:
-				return super.getLinkedObjects(link);
+		case D:
+			return this.getD();
+		case CONFIGS:
+			return this.getConfigs();
+		default:
+			return super.getLinkedObjects(link);
 		}
 	}
 
@@ -49,7 +49,8 @@ public class PBoxPDOCProperties extends PBoxPDObject implements PDOCProperties {
 
 		COSBase contentProperties = this.simplePDObject.getCOSObject();
 		if (contentProperties instanceof COSDictionary) {
-			COSDictionary defaultConfig = (COSDictionary) ((COSDictionary) contentProperties).getDictionaryObject(COSName.D);
+			COSDictionary defaultConfig = (COSDictionary) ((COSDictionary) contentProperties)
+					.getDictionaryObject(COSName.D);
 
 			String[] groupNames = ((PDOptionalContentProperties) this.simplePDObject).getGroupNames();
 			List<String> groupNamesList = Arrays.asList(groupNames);
@@ -58,13 +59,12 @@ public class PBoxPDOCProperties extends PBoxPDObject implements PDOCProperties {
 
 			result.add(pdConfig);
 			return result;
-		} else {
-			LOGGER.debug("Invalid object type of the default optional configuration dictionary. Returning empty config.");
-			PDOCConfig config = new PBoxPDOCConfig(new COSDictionary());
-
-			result.add(config);
-			return result;
 		}
+		LOGGER.debug("Invalid object type of the default optional configuration dictionary. Returning empty config.");
+		PDOCConfig config = new PBoxPDOCConfig(new COSDictionary());
+
+		result.add(config);
+		return result;
 	}
 
 	private List<PDOCConfig> getConfigs() {
@@ -82,19 +82,19 @@ public class PBoxPDOCProperties extends PBoxPDObject implements PDOCProperties {
 			for (int i = 0; i < configs.size(); i++) {
 				COSBase config = configs.get(i);
 				if (config instanceof COSDictionary) {
-					PDOCConfig pdConfig = new PBoxPDOCConfig(config, groupNamesList, names.contains(((COSDictionary) config).getString(COSName.NAME)));
+					PDOCConfig pdConfig = new PBoxPDOCConfig(config, groupNamesList,
+							names.contains(((COSDictionary) config).getString(COSName.NAME)));
 					result.add(pdConfig);
 				} else {
 					LOGGER.debug("Invalid object type of the configuration dictionary. Ignoring config.");
 				}
 			}
 			return result;
-		} else {
-			return Collections.emptyList();
 		}
+		return Collections.emptyList();
 	}
 
-	private List<String> getAllNames(final COSDictionary contentProperties) {
+	private static List<String> getAllNames(final COSDictionary contentProperties) {
 		List<String> result = new ArrayList<>();
 
 		COSBase defaultConfig = contentProperties.getDictionaryObject(COSName.D);

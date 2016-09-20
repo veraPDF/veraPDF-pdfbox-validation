@@ -33,9 +33,9 @@ public class PBoxPDPerms extends PBoxPDObject implements PDPerms{
 		Set<COSName> names = ((COSDictionary) this.simplePDObject).keySet();
 		for(COSName name : names) {
 			if(name.compareTo(UC3) != 0 && name.compareTo(COSName.DOC_MDP) != 0) {
-				return true;
+				return Boolean.TRUE;
 			}
 		}
-		return false;
+		return Boolean.FALSE;
 	}
 }

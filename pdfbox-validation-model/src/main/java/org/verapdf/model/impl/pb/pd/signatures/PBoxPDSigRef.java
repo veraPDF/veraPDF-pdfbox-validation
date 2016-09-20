@@ -1,6 +1,5 @@
 package org.verapdf.model.impl.pb.pd.signatures;
 
-import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -11,8 +10,6 @@ import org.verapdf.model.pdlayer.PDSigRef;
  * @author Sergey Shemyakov
  */
 public class PBoxPDSigRef extends PBoxPDObject implements PDSigRef{
-
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDSigRef.class);
 
 	/** Type name for {@code PBoxPDSigRef} */
 	public static final String SIGNATURE_REFERENCE_TYPE = "PDSigRef";
@@ -32,9 +29,9 @@ public class PBoxPDSigRef extends PBoxPDObject implements PDSigRef{
 	@Override
 	public Boolean getcontainsDigestEntries() {
 		COSDictionary dictionary = ((COSDictionary)this.simplePDObject);
-		return dictionary.containsKey(COSName.DIGEST_LOCATION) ||
+		return Boolean.valueOf(dictionary.containsKey(COSName.DIGEST_LOCATION) ||
 				dictionary.containsKey(COSName.DIGEST_VALUE) ||
-				dictionary.containsKey(COSName.DIGEST_METHOD);
+				dictionary.containsKey(COSName.DIGEST_METHOD));
 	}
 
 	/**
@@ -47,8 +44,8 @@ public class PBoxPDSigRef extends PBoxPDObject implements PDSigRef{
 		COSDictionary perms = (COSDictionary)
 				documentCatalog.getDictionaryObject(COSName.PERMS);
 		if (perms == null) {
-			return false;
+			return Boolean.FALSE;
 		}
-		return perms.containsKey(COSName.DOC_MDP);
+		return Boolean.valueOf(perms.containsKey(COSName.DOC_MDP));
 	}
 }

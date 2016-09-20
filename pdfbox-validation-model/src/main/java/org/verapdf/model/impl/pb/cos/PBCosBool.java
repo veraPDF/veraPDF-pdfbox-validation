@@ -28,7 +28,7 @@ public class PBCosBool extends PBCosObject implements CosBool {
      */
     @Override
     public Boolean getvalue() {
-        return this.value;
+        return Boolean.valueOf(this.value);
     }
 
     /**

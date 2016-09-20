@@ -16,7 +16,7 @@ public class PBCosString extends PBCosObject implements CosString {
     private final String value;
     private final boolean isHex;
     private final boolean containsOnlyHex;
-    private final long hexCount;
+    private final Long hexCount;
 
     /**
      * Default constructor
@@ -47,7 +47,7 @@ public class PBCosString extends PBCosObject implements CosString {
      */
     @Override
     public Boolean getisHex() {
-        return this.isHex;
+        return Boolean.valueOf(this.isHex);
     }
 
     /**
@@ -55,7 +55,7 @@ public class PBCosString extends PBCosObject implements CosString {
      */
     @Override
     public Boolean getcontainsOnlyHex() {
-        return this.containsOnlyHex;
+        return Boolean.valueOf(this.containsOnlyHex);
     }
 
     /**

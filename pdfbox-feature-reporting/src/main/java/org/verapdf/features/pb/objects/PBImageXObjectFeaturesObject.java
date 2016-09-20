@@ -37,15 +37,25 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 	/**
 	 * Constructs new shading features object
 	 *
-	 * @param imageXObject    PDImageXObject which represents image xobject for feature report
-	 * @param id              id of the object
-	 * @param colorSpaceChild colorSpace id which contains in this image xobject
-	 * @param maskChild       image xobject id which contains in this image xobject as it's mask
-	 * @param sMaskChild      image xobject id which contains in this image xobject as it's smask
-	 * @param alternatesChild set of image xobject ids which contains in this image xobject as alternates
+	 * @param imageXObject
+	 *            PDImageXObject which represents image xobject for feature
+	 *            report
+	 * @param id
+	 *            id of the object
+	 * @param colorSpaceChild
+	 *            colorSpace id which contains in this image xobject
+	 * @param maskChild
+	 *            image xobject id which contains in this image xobject as it's
+	 *            mask
+	 * @param sMaskChild
+	 *            image xobject id which contains in this image xobject as it's
+	 *            smask
+	 * @param alternatesChild
+	 *            set of image xobject ids which contains in this image xobject
+	 *            as alternates
 	 */
 	public PBImageXObjectFeaturesObject(PDImageXObjectProxy imageXObject, String id, String colorSpaceChild,
-										String maskChild, String sMaskChild, Set<String> alternatesChild) {
+			String maskChild, String sMaskChild, Set<String> alternatesChild) {
 		this.imageXObject = imageXObject;
 		this.id = id;
 		this.colorSpaceChild = colorSpaceChild;
@@ -65,9 +75,12 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 	/**
 	 * Reports featurereport into collection
 	 *
-	 * @param collection collection for feature report
-	 * @return FeatureTreeNode class which represents a root node of the constructed collection tree
-	 * @throws FeatureParsingException occurs when wrong features tree node constructs
+	 * @param collection
+	 *            collection for feature report
+	 * @return FeatureTreeNode class which represents a root node of the
+	 *         constructed collection tree
+	 * @throws FeatureParsingException
+	 *             occurs when wrong features tree node constructs
 	 */
 	@Override
 	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
@@ -86,7 +99,8 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 				shading.setAttribute(ID, colorSpaceChild);
 			}
 
-			FeatureTreeNode.createChildNode("bitsPerComponent", root).setValue(String.valueOf(imageXObject.getBitsPerComponent()));
+			FeatureTreeNode.createChildNode("bitsPerComponent", root)
+					.setValue(String.valueOf(imageXObject.getBitsPerComponent()));
 			FeatureTreeNode.createChildNode("imageMask", root).setValue(String.valueOf(imageXObject.isStencil()));
 
 			if (maskChild != null) {
@@ -94,7 +108,8 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 				mask.setAttribute(ID, maskChild);
 			}
 
-			FeatureTreeNode.createChildNode("interpolate", root).setValue(String.valueOf(imageXObject.getInterpolate()));
+			FeatureTreeNode.createChildNode("interpolate", root)
+					.setValue(String.valueOf(imageXObject.getInterpolate()));
 			PBCreateNodeHelper.parseIDSet(alternatesChild, "alternate", "alternates", root);
 			if (sMaskChild != null) {
 				FeatureTreeNode mask = FeatureTreeNode.createChildNode("sMask", root);
@@ -102,7 +117,8 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 			}
 
 			if (imageXObject.getCOSStream().getItem(COSName.STRUCT_PARENT) != null) {
-				FeatureTreeNode.createChildNode("structParent", root).setValue(String.valueOf(imageXObject.getStructParent()));
+				FeatureTreeNode.createChildNode("structParent", root)
+						.setValue(String.valueOf(imageXObject.getStructParent()));
 			}
 
 			try {
@@ -126,7 +142,8 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 	}
 
 	/**
-	 * @return null if it can not get image xobject stream and features data of the image in other case.
+	 * @return null if it can not get image xobject stream and features data of
+	 *         the image in other case.
 	 */
 	@Override
 	public FeaturesData getData() {
@@ -148,44 +165,50 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 					filtersNames.add(filter.getName());
 				}
 
-				List<COSDictionary> decodeList = getDecodeList(imageXObject.getCOSStream().getDictionaryObject(COSName.DECODE_PARMS));
+				List<COSDictionary> decodeList = getDecodeList(
+						imageXObject.getCOSStream().getDictionaryObject(COSName.DECODE_PARMS));
 
 				for (int i = 0; i < filtersNames.size(); ++i) {
 					String filter = filtersNames.get(i);
 					COSDictionary dic = i < decodeList.size() ? decodeList.get(i) : null;
 					switch (filter) {
-						case "LZWDecode":
-							filters.add(ImageFeaturesData.Filter.newInstance(filter, getLZWOrFlatFiltersMap(dic, true), null));
-							break;
-						case "FlateDecode":
-							filters.add(ImageFeaturesData.Filter.newInstance(filter, getLZWOrFlatFiltersMap(dic, false), null));
-							break;
-						case "CCITTFaxDecode":
-							filters.add(ImageFeaturesData.Filter.newInstance(filter, getCCITTFaxFiltersMap(dic), null));
-							break;
-						case "DCTDecode":
-							filters.add(ImageFeaturesData.Filter.newInstance(filter, getDCTFiltersMap(dic), null));
-							break;
-						case "JBIG2Decode":
-							InputStream global = null;
-							if (dic != null && dic.getDictionaryObject(COSName.JBIG2_GLOBALS) instanceof COSStream) {
-								global = ((COSStream) dic.getDictionaryObject(COSName.JBIG2_GLOBALS)).getUnfilteredStream();
-							}
-							filters.add(ImageFeaturesData.Filter.newInstance(filter, new HashMap<String, String>(), global));
-							break;
-						case "Crypt":
-							if (!(dic != null && COSName.IDENTITY.equals(dic.getCOSName(COSName.NAME)))) {
-								LOGGER.debug("An Image has a Crypt filter");
-								return null;
-							}
-						default:
-							filters.add(ImageFeaturesData.Filter.newInstance(filter, new HashMap<String, String>(), null));
+					case "LZWDecode":
+						filters.add(
+								ImageFeaturesData.Filter.newInstance(filter, getLZWOrFlatFiltersMap(dic, true), null));
+						break;
+					case "FlateDecode":
+						filters.add(
+								ImageFeaturesData.Filter.newInstance(filter, getLZWOrFlatFiltersMap(dic, false), null));
+						break;
+					case "CCITTFaxDecode":
+						filters.add(ImageFeaturesData.Filter.newInstance(filter, getCCITTFaxFiltersMap(dic), null));
+						break;
+					case "DCTDecode":
+						filters.add(ImageFeaturesData.Filter.newInstance(filter, getDCTFiltersMap(dic), null));
+						break;
+					case "JBIG2Decode":
+						InputStream global = null;
+						if (dic != null && dic.getDictionaryObject(COSName.JBIG2_GLOBALS) instanceof COSStream) {
+							global = ((COSStream) dic.getDictionaryObject(COSName.JBIG2_GLOBALS)).getUnfilteredStream();
+						}
+						filters.add(
+								ImageFeaturesData.Filter.newInstance(filter, new HashMap<String, String>(), global));
+						break;
+					case "Crypt":
+						if (!(dic != null && COSName.IDENTITY.equals(dic.getCOSName(COSName.NAME)))) {
+							LOGGER.debug("An Image has a Crypt filter");
+							return null;
+						}
+						//$FALL-THROUGH$
+					default:
+						filters.add(ImageFeaturesData.Filter.newInstance(filter, new HashMap<String, String>(), null));
 					}
 				}
 			}
 
 			Integer width = getIntegerWithDefault(imageXObject.getCOSStream().getDictionaryObject(COSName.WIDTH), null);
-			Integer height = getIntegerWithDefault(imageXObject.getCOSStream().getDictionaryObject(COSName.HEIGHT), null);
+			Integer height = getIntegerWithDefault(imageXObject.getCOSStream().getDictionaryObject(COSName.HEIGHT),
+					null);
 
 			return ImageFeaturesData.newInstance(metadata, stream, width, height, filters);
 		} catch (IOException e) {
@@ -215,14 +238,18 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 	private static Map<String, String> getCCITTFaxFiltersMap(COSDictionary base) {
 		Map<String, String> res = new HashMap<>();
 		if (base != null) {
-			putIntegerAsStringWithDefault(res, "K", base.getDictionaryObject(COSName.K), 0);
-			putBooleanAsStringWithDefault(res, "EndOfLine", base.getDictionaryObject(COSName.COLORS), false);
-			putBooleanAsStringWithDefault(res, "EncodedByteAlign", base.getDictionaryObject(COSName.BITS_PER_COMPONENT), false);
-			putIntegerAsStringWithDefault(res, "Columns", base.getDictionaryObject(COSName.COLUMNS), 1728);
-			putIntegerAsStringWithDefault(res, "Rows", base.getDictionaryObject(COSName.ROWS), 0);
-			putBooleanAsStringWithDefault(res, "EndOfBlock", base.getDictionaryObject(COSName.getPDFName("EndOfBlock")), true);
-			putBooleanAsStringWithDefault(res, "BlackIs1", base.getDictionaryObject(COSName.BLACK_IS_1), false);
-			putIntegerAsStringWithDefault(res, "DamagedRowsBeforeError", base.getDictionaryObject(COSName.getPDFName("DamagedRowsBeforeError")), 0);
+			putIntegerAsStringWithDefault(res, "K", base.getDictionaryObject(COSName.K), Integer.valueOf(0));
+			putBooleanAsStringWithDefault(res, "EndOfLine", base.getDictionaryObject(COSName.COLORS), Boolean.FALSE);
+			putBooleanAsStringWithDefault(res, "EncodedByteAlign", base.getDictionaryObject(COSName.BITS_PER_COMPONENT),
+					Boolean.FALSE);
+			putIntegerAsStringWithDefault(res, "Columns", base.getDictionaryObject(COSName.COLUMNS),
+					Integer.valueOf(1728));
+			putIntegerAsStringWithDefault(res, "Rows", base.getDictionaryObject(COSName.ROWS), Integer.valueOf(0));
+			putBooleanAsStringWithDefault(res, "EndOfBlock", base.getDictionaryObject(COSName.getPDFName("EndOfBlock")),
+					Boolean.TRUE);
+			putBooleanAsStringWithDefault(res, "BlackIs1", base.getDictionaryObject(COSName.BLACK_IS_1), Boolean.FALSE);
+			putIntegerAsStringWithDefault(res, "DamagedRowsBeforeError",
+					base.getDictionaryObject(COSName.getPDFName("DamagedRowsBeforeError")), Integer.valueOf(0));
 		} else {
 			res.put("K", "0");
 			res.put("EndOfLine", "false");
@@ -241,7 +268,8 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 		Map<String, String> res = new HashMap<>();
 		if (base != null && base.getDictionaryObject(COSName.getPDFName("ColorTransform")) != null
 				&& base.getDictionaryObject(COSName.getPDFName("ColorTransform")) instanceof COSInteger) {
-			res.put("ColorTransform", String.valueOf(((COSInteger) (base).getDictionaryObject(COSName.getPDFName("ColorTransform"))).intValue()));
+			res.put("ColorTransform", String.valueOf(
+					((COSInteger) (base).getDictionaryObject(COSName.getPDFName("ColorTransform"))).intValue()));
 		}
 		return res;
 	}
@@ -249,12 +277,13 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 	private static Map<String, String> getLZWOrFlatFiltersMap(COSDictionary base, boolean isLZW) {
 		Map<String, String> res = new HashMap<>();
 		if (base != null) {
-			putIntegerAsStringWithDefault(res, "Predictor", base.getDictionaryObject(COSName.PREDICTOR), 1);
-			putIntegerAsStringWithDefault(res, "Colors", base.getDictionaryObject(COSName.COLORS), 1);
-			putIntegerAsStringWithDefault(res, "BitsPerComponent", base.getDictionaryObject(COSName.BITS_PER_COMPONENT), 8);
-			putIntegerAsStringWithDefault(res, "Columns", base.getDictionaryObject(COSName.COLUMNS), 1);
+			putIntegerAsStringWithDefault(res, "Predictor", base.getDictionaryObject(COSName.PREDICTOR), Integer.valueOf(1));
+			putIntegerAsStringWithDefault(res, "Colors", base.getDictionaryObject(COSName.COLORS), Integer.valueOf(1));
+			putIntegerAsStringWithDefault(res, "BitsPerComponent", base.getDictionaryObject(COSName.BITS_PER_COMPONENT),
+					Integer.valueOf(8));
+			putIntegerAsStringWithDefault(res, "Columns", base.getDictionaryObject(COSName.COLUMNS), Integer.valueOf(1));
 			if (isLZW) {
-				putIntegerAsStringWithDefault(res, "EarlyChange", base.getDictionaryObject(COSName.EARLY_CHANGE), 1);
+				putIntegerAsStringWithDefault(res, "EarlyChange", base.getDictionaryObject(COSName.EARLY_CHANGE), Integer.valueOf(1));
 			}
 		} else {
 			res.put("Predictor", "1");
@@ -270,13 +299,13 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 
 	private static Integer getIntegerWithDefault(Object value, Integer defaultValue) {
 		if (value instanceof COSInteger) {
-			return ((COSInteger) value).intValue();
-		} else {
-			return defaultValue;
+			return Integer.valueOf(((COSInteger) value).intValue());
 		}
+		return defaultValue;
 	}
 
-	private static void putIntegerAsStringWithDefault(Map<String, String> map, String key, Object value, Integer defaultValue) {
+	private static void putIntegerAsStringWithDefault(Map<String, String> map, String key, Object value,
+			Integer defaultValue) {
 		if (value instanceof COSInteger) {
 			map.put(key, String.valueOf(((COSInteger) value).intValue()));
 		} else {
@@ -286,7 +315,8 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 		}
 	}
 
-	private static void putBooleanAsStringWithDefault(Map<String, String> map, String key, Object value, Boolean defaultValue) {
+	private static void putBooleanAsStringWithDefault(Map<String, String> map, String key, Object value,
+			Boolean defaultValue) {
 		if (value instanceof COSBoolean) {
 			map.put(key, String.valueOf(((COSBoolean) value).getValue()));
 		} else {

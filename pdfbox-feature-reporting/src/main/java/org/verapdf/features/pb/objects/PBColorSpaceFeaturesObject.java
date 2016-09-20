@@ -215,7 +215,7 @@ public class PBColorSpaceFeaturesObject implements IFeaturesObject {
 
 	}
 
-	private void parseFloatArray(float[] array, FeatureTreeNode parent) throws FeatureParsingException {
+	private static void parseFloatArray(float[] array, FeatureTreeNode parent) throws FeatureParsingException {
 		for (int i = 0; i < array.length; ++i) {
 			FeatureTreeNode element = FeatureTreeNode.createChildNode("element", parent);
 			element.setAttribute("number", String.valueOf(i));
@@ -223,7 +223,7 @@ public class PBColorSpaceFeaturesObject implements IFeaturesObject {
 		}
 	}
 
-	private void parseTristimulus(PDTristimulus tris, FeatureTreeNode curNode) {
+	private static void parseTristimulus(PDTristimulus tris, FeatureTreeNode curNode) {
 		curNode.setAttribute("x", String.valueOf(tris.getX()));
 		curNode.setAttribute("y", String.valueOf(tris.getY()));
 		curNode.setAttribute("z", String.valueOf(tris.getZ()));

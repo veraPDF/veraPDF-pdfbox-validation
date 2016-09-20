@@ -1,5 +1,8 @@
 package org.verapdf.model.impl.pb.operator.generalgs;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -7,10 +10,6 @@ import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosArray;
 import org.verapdf.model.impl.pb.cos.PBCosArray;
 import org.verapdf.model.impl.pb.cos.PBCosInteger;
-import org.verapdf.model.impl.pb.cos.PBCosReal;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 /**
  * @author Evgeniy Muravitskiy

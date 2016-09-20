@@ -1,15 +1,14 @@
 package org.verapdf.model.impl.pb.cos;
 
+import java.util.Random;
+
 import org.apache.pdfbox.cos.COSFloat;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.verapdf.model.coslayer.CosReal;
 import org.verapdf.model.impl.BaseTest;
-
-import java.util.Random;
 
 /**
  * @author Evgeniy Muravitskiy

@@ -1,15 +1,16 @@
 package org.verapdf.model.impl.pb.operator.type3font;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.verapdf.model.impl.pb.operator.base.PBOperatorTest;
 
 /**
  * @author Evgeniy Muravitskiy
  */
-public class PBOp_d0Test extends PBOpType3FontTest {
+public class PBOp_d0Test extends PBOperatorTest {
 
 	@BeforeClass
 	public static void setUp() throws IOException, URISyntaxException {

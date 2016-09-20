@@ -1,17 +1,19 @@
 package org.verapdf.model.impl.pb.operator.base;
 
-import org.apache.pdfbox.cos.*;
-import org.verapdf.model.GenericModelObject;
-import org.verapdf.model.coslayer.CosNumber;
-import org.verapdf.model.coslayer.CosReal;
-import org.verapdf.model.impl.pb.cos.PBCosInteger;
-import org.verapdf.model.impl.pb.cos.PBCosNumber;
-import org.verapdf.model.impl.pb.cos.PBCosReal;
-import org.verapdf.model.operator.Operator;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSFloat;
+import org.apache.pdfbox.cos.COSNumber;
+import org.verapdf.model.GenericModelObject;
+import org.verapdf.model.coslayer.CosNumber;
+import org.verapdf.model.coslayer.CosReal;
+import org.verapdf.model.impl.pb.cos.PBCosNumber;
+import org.verapdf.model.impl.pb.cos.PBCosReal;
+import org.verapdf.model.operator.Operator;
 
 /**
  * Base class for operator layer

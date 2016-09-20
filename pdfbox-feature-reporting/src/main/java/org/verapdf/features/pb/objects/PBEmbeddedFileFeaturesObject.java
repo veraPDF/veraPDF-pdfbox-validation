@@ -146,7 +146,7 @@ public class PBEmbeddedFileFeaturesObject implements IFeaturesObject {
 			builder.subtype(ef.getSubtype());
 			builder.creationDate(ef.getCreationDate());
 			builder.modDate(ef.getModDate());
-			builder.size(ef.getSize());
+			builder.size(Integer.valueOf(ef.getSize()));
 
 			COSBase baseParams = ef.getStream().getDictionaryObject(COSName.PARAMS);
 			if (baseParams instanceof COSDictionary) {

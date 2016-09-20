@@ -39,7 +39,7 @@ public class PBOp_EI extends PBOpInlineImage implements Op_EI {
 				   PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
 		super(arguments, OP_EI_TYPE);
 		this.imageData = imageData;
-		this.resources = this.getResources(resources);
+		this.resources = PBOp_EI.getResources(resources);
 		this.document = document;
 		this.flavour = flavour;
 	}
@@ -71,7 +71,7 @@ public class PBOp_EI extends PBOpInlineImage implements Op_EI {
 		return Collections.emptyList();
 	}
 
-	private PDResources getResources(PDInheritableResources resources) {
+	private static PDResources getResources(PDInheritableResources resources) {
 		PDResources currRes = resources.getCurrentResources();
 		COSDictionary dictionary = resources.getInheritedResources().getCOSObject();
 		PDResources pageRes = new PDResources(new COSDictionary(dictionary));
