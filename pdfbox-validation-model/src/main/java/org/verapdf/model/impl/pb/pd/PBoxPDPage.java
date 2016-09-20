@@ -98,7 +98,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 		if (this.annotations == null) {
 			this.annotations = parseAnnotataions();
 		}
-		return this.containsTransparency;
+		return Boolean.valueOf(this.containsTransparency);
 	}
 
 	@Override

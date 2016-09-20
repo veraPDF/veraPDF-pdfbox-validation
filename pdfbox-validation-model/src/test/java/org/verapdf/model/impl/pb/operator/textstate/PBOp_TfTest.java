@@ -1,18 +1,19 @@
 package org.verapdf.model.impl.pb.operator.textstate;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.verapdf.model.coslayer.CosName;
 import org.verapdf.model.impl.pb.cos.PBCosName;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
+import org.verapdf.model.impl.pb.operator.base.PBOperatorTest;
 
 /**
  * @author Evgeniy Muravitskiy
  */
-public class PBOp_TfTest extends PBOpTextStateTest {
+public class PBOp_TfTest extends PBOperatorTest {
 
 	@BeforeClass
 	public static void setUp() throws IOException, URISyntaxException {

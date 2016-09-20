@@ -70,10 +70,9 @@ public class PBCosBBox extends PBCosArray implements CosBBox {
 			COSBase base = array.get(position);
 			if (base instanceof COSNumber) {
 				return Double.valueOf(((COSNumber) base).doubleValue());
-			} else {
+			}
 				LOGGER.debug("In bbox expected number but got "
 						+ base.getClass().getSimpleName());
-			}
 		} else {
 			LOGGER.debug("Expected size of bbox array greater than"
 					+ position + "but got " + array.size());

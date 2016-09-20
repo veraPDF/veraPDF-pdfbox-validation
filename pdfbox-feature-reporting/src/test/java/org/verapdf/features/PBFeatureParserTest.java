@@ -32,24 +32,24 @@ public class PBFeatureParserTest {
 		File pdf = new File(TestNodeGenerator.getSystemIndependentPath("/FR.pdf"));
 		PDDocument document = PDDocument.load(pdf, false, true);
 		FeaturesConfig.Builder configBuilder = new FeaturesConfig.Builder();
-		configBuilder.informationDict(true);
-		configBuilder.metadata(true);
-		configBuilder.documentSecurity(true);
-		configBuilder.signatures(true);
-		configBuilder.lowLevelInfo(true);
-		configBuilder.embeddedFiles(true);
-		configBuilder.iccProfiles(true);
-		configBuilder.outputIntents(true);
-		configBuilder.outlines(true);
-		configBuilder.annotations(true);
-		configBuilder.pages(true);
-		configBuilder.graphicsStates(true);
-		configBuilder.colorSpaces(true);
-		configBuilder.patterns(true);
-		configBuilder.shadings(true);
-		configBuilder.xobjects(true);
-		configBuilder.fonts(true);
-		configBuilder.propertiesDicts(true);
+		configBuilder.informationDict(Boolean.TRUE);
+		configBuilder.metadata(Boolean.TRUE);
+		configBuilder.documentSecurity(Boolean.TRUE);
+		configBuilder.signatures(Boolean.TRUE);
+		configBuilder.lowLevelInfo(Boolean.TRUE);
+		configBuilder.embeddedFiles(Boolean.TRUE);
+		configBuilder.iccProfiles(Boolean.TRUE);
+		configBuilder.outputIntents(Boolean.TRUE);
+		configBuilder.outlines(Boolean.TRUE);
+		configBuilder.annotations(Boolean.TRUE);
+		configBuilder.pages(Boolean.TRUE);
+		configBuilder.graphicsStates(Boolean.TRUE);
+		configBuilder.colorSpaces(Boolean.TRUE);
+		configBuilder.patterns(Boolean.TRUE);
+		configBuilder.shadings(Boolean.TRUE);
+		configBuilder.xobjects(Boolean.TRUE);
+		configBuilder.fonts(Boolean.TRUE);
+		configBuilder.propertiesDicts(Boolean.TRUE);
 		collection = PBFeatureParser.getFeaturesCollection(document, configBuilder.build());
 	}
 
@@ -193,7 +193,7 @@ public class PBFeatureParserTest {
 	}
 
 	@Test
-	public void testPage() throws FeatureParsingException, FileNotFoundException, URISyntaxException {
+	public void testPage() {
 		List<FeatureTreeNode> treeNodes = collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PAGE);
 		// TODO: return this when image colorspace obtaining will be fixed
 		//assertTrue(treeNodes.contains(TestNodeGenerator.getPage()));

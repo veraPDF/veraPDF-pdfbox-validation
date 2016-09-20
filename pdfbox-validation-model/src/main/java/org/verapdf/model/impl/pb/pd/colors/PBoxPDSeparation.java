@@ -85,7 +85,7 @@ public class PBoxPDSeparation extends PBoxPDColorSpace implements org.verapdf.mo
 		return Boolean.TRUE;
 	}
 
-	private COSBase unwrapObject(COSBase object) {
+	private static COSBase unwrapObject(COSBase object) {
 		if (object instanceof COSObject) {
 			return ((COSObject) object).getObject();
 		}

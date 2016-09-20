@@ -25,7 +25,7 @@ public class FontHelper {
 	 * @param font Apache PDFBox font
 	 * @return Apache Preflight font container
 	 */
-	public static FontContainer getFontContainer(PDFont font) {
+	public static FontContainer<? extends PDFontLike> getFontContainer(PDFont font) {
 		if (font == null) {
 			return null;
 		}

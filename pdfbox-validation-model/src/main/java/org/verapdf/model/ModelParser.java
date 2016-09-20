@@ -86,7 +86,7 @@ public final class ModelParser implements PDFParser, Closeable {
      *             when target file is not pdf or pdf file is not contain root
      *             object
      */
-    public PDDocument getPDDocument() throws IOException {
+    public PDDocument getPDDocument() {
         return this.document;
     }
 

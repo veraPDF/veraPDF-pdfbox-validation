@@ -26,154 +26,156 @@ import static org.verapdf.pdfa.results.MetadataFixerResult.RepairStatus.*;
  */
 public class PDFDocumentImpl implements PDFDocument {
 
-    private static final Logger LOGGER = Logger.getLogger(PDFDocumentImpl.class);
+	private static final Logger LOGGER = Logger.getLogger(PDFDocumentImpl.class);
 
-    private final PDDocument document;
-    private MetadataImpl metadata;
-    private InfoDictionaryImpl info;
-    private boolean isUnfiltered = false;
+	private final PDDocument document;
+	private MetadataImpl metadata;
+	private InfoDictionaryImpl info;
+	private boolean isUnfiltered = false;
 
-    /**
-     * @param document
-     */
-    public PDFDocumentImpl(PDDocument document) {
-        if (document == null) {
-            throw new IllegalArgumentException("Document representation can not be null");
-        }
-        this.document = document;
-        this.metadata = parseMetadata();
-        this.info = this.getInfo();
-    }
+	/**
+	 * @param document
+	 */
+	public PDFDocumentImpl(PDDocument document) {
+		if (document == null) {
+			throw new IllegalArgumentException("Document representation can not be null");
+		}
+		this.document = document;
+		this.metadata = parseMetadata();
+		this.info = this.getInfo();
+	}
 
-    private MetadataImpl parseMetadata() {
-        PDDocumentCatalog catalog = this.document.getDocumentCatalog();
-        PDMetadata meta = catalog.getMetadata();
-        if (meta == null) {
-            COSStream stream = this.document.getDocument().createCOSStream();
-            catalog.setMetadata(new PDMetadata(stream));
-            catalog.getCOSObject().setNeedToBeUpdated(true);
-            VeraPDFMeta xmp = VeraPDFMeta.create();
-            return new MetadataImpl(xmp, stream);
-        }
-        return parseMetadata(meta);
-    }
+	private MetadataImpl parseMetadata() {
+		PDDocumentCatalog catalog = this.document.getDocumentCatalog();
+		PDMetadata meta = catalog.getMetadata();
+		if (meta == null) {
+			try (COSStream stream = this.document.getDocument().createCOSStream()) {
+				catalog.setMetadata(new PDMetadata(stream));
+				catalog.getCOSObject().setNeedToBeUpdated(true);
+				VeraPDFMeta xmp = VeraPDFMeta.create();
+				return new MetadataImpl(xmp, stream);
+			} catch (IOException excep) {
+				// TODO Auto-generated catch block
+				excep.printStackTrace();
+			}
+		}
+		return parseMetadata(meta);
+	}
 
-    private MetadataImpl parseMetadata(PDMetadata meta) {
-        try {
-            VeraPDFMeta xmp = VeraPDFMeta.parse(meta.getStream().getUnfilteredStream());
-            if (xmp != null) {
-                return new MetadataImpl(xmp, meta.getStream());
-            }
-        } catch (IOException e) {
-            LOGGER.debug(
-                    "Problems with document parsing or structure. "
-                            + e.getMessage(), e);
-        } catch (XMPException e) {
-            LOGGER.debug("Problems with XMP parsing. " + e.getMessage(), e);
-        }
-        return null;
-    }
+	private static MetadataImpl parseMetadata(PDMetadata meta) {
+		try {
+			VeraPDFMeta xmp = VeraPDFMeta.parse(meta.getStream().getUnfilteredStream());
+			if (xmp != null) {
+				return new MetadataImpl(xmp, meta.getStream());
+			}
+		} catch (IOException e) {
+			LOGGER.debug("Problems with document parsing or structure. " + e.getMessage(), e);
+		} catch (XMPException e) {
+			LOGGER.debug("Problems with XMP parsing. " + e.getMessage(), e);
+		}
+		return null;
+	}
 
-    private InfoDictionaryImpl getInfo() {
-        COSDictionary trailer = this.document.getDocument().getTrailer();
-        COSBase infoDict = trailer.getDictionaryObject(COSName.INFO);
-        return !(infoDict instanceof COSDictionary) ? null :
-                new InfoDictionaryImpl(new PDDocumentInformation((COSDictionary) infoDict));
-    }
+	private InfoDictionaryImpl getInfo() {
+		COSDictionary trailer = this.document.getDocument().getTrailer();
+		COSBase infoDict = trailer.getDictionaryObject(COSName.INFO);
+		return !(infoDict instanceof COSDictionary) ? null
+				: new InfoDictionaryImpl(new PDDocumentInformation((COSDictionary) infoDict));
+	}
 
-    /**
-     * {@inheritDoc} Implemented by Apache PDFBox library.
-     */
-    @Override
-    public Metadata getMetadata() {
-        return this.metadata;
-    }
+	/**
+	 * {@inheritDoc} Implemented by Apache PDFBox library.
+	 */
+	@Override
+	public Metadata getMetadata() {
+		return this.metadata;
+	}
 
-    /**
-     * {@inheritDoc} Implemented by Apache PDFBox library.
-     */
-    @Override
-    public InfoDictionary getInfoDictionary() {
-        return this.info;
-    }
+	/**
+	 * {@inheritDoc} Implemented by Apache PDFBox library.
+	 */
+	@Override
+	public InfoDictionary getInfoDictionary() {
+		return this.info;
+	}
 
-    /**
-     * {@inheritDoc} Implemented by Apache PDFBox library.
-     */
-    @Override
-    public boolean isNeedToBeUpdated() {
-        boolean metaUpd = this.metadata != null && this.metadata.isNeedToBeUpdated();
-        boolean infoUpd = this.info != null && this.info.isNeedToBeUpdated();
-        return metaUpd || infoUpd || this.isUnfiltered;
-    }
+	/**
+	 * {@inheritDoc} Implemented by Apache PDFBox library.
+	 */
+	@Override
+	public boolean isNeedToBeUpdated() {
+		boolean metaUpd = this.metadata != null && this.metadata.isNeedToBeUpdated();
+		boolean infoUpd = this.info != null && this.info.isNeedToBeUpdated();
+		return metaUpd || infoUpd || this.isUnfiltered;
+	}
 
-    /**
-     * {@inheritDoc} Implemented by Apache PDFBox library.
-     */
-    @Override
-    public MetadataFixerResult saveDocumentIncremental(final MetadataFixerResultImpl.RepairStatus status, OutputStream output) {
-        MetadataFixerResultImpl.Builder builder = new MetadataFixerResultImpl.Builder();
-        try {
-            PDMetadata meta = this.document.getDocumentCatalog().getMetadata();
-            boolean isMetaPresent = meta != null && this.isNeedToBeUpdated();
-            boolean isMetaAdd = meta == null && this.metadata != null;
-            if (isMetaPresent || isMetaAdd) {
-                this.metadata.updateMetadataStream();
-                if (isMetaAdd) {
-                    this.document.getDocumentCatalog().getCOSObject().setNeedToBeUpdated(true);
-                }
-                this.document.saveIncremental(output);
-                output.close();
-                builder.status(getStatus(status));
-            } else {
-                builder.status(status);
-            }
-        } catch (Exception e) {
-            LOGGER.info(e);
-            builder.status(FIX_ERROR).addFix("Problems with document save. " + e.getMessage());
-        }
-        return builder.build();
-    }
+	/**
+	 * {@inheritDoc} Implemented by Apache PDFBox library.
+	 */
+	@Override
+	public MetadataFixerResult saveDocumentIncremental(final MetadataFixerResultImpl.RepairStatus status,
+			OutputStream output) {
+		MetadataFixerResultImpl.Builder builder = new MetadataFixerResultImpl.Builder();
+		try {
+			PDMetadata meta = this.document.getDocumentCatalog().getMetadata();
+			boolean isMetaPresent = meta != null && this.isNeedToBeUpdated();
+			boolean isMetaAdd = meta == null && this.metadata != null;
+			if (isMetaPresent || isMetaAdd) {
+				this.metadata.updateMetadataStream();
+				if (isMetaAdd) {
+					this.document.getDocumentCatalog().getCOSObject().setNeedToBeUpdated(true);
+				}
+				this.document.saveIncremental(output);
+				output.close();
+				builder.status(getStatus(status));
+			} else {
+				builder.status(status);
+			}
+		} catch (Exception e) {
+			LOGGER.info(e);
+			builder.status(FIX_ERROR).addFix("Problems with document save. " + e.getMessage());
+		}
+		return builder.build();
+	}
 
-    @Override
-    public int removeFiltersForAllMetadataObjects() {
-        int res = 0;
-        try {
-            List<COSObject> objects = this.document.getDocument().getObjectsByType(COSName.METADATA);
+	@Override
+	public int removeFiltersForAllMetadataObjects() {
+		int res = 0;
+		try {
+			List<COSObject> objects = this.document.getDocument().getObjectsByType(COSName.METADATA);
 
-            List<COSStream> metas = new ArrayList<>();
-            for (COSObject obj : objects) {
-                COSBase base = obj.getObject();
-                if (base instanceof COSStream) {
-                    metas.add((COSStream) base);
-                } else {
-                    LOGGER.debug("Founded non-stream Metadata dictionary.");
-                }
-            }
-            for (COSStream stream : metas) {
-                COSBase filters = stream.getFilters();
-                if (filters instanceof COSName
-                        || (filters instanceof COSArray && ((COSArray) filters).size() != 0)) {
-                    try {
-                        stream.setFilters(null);
-                        stream.setNeedToBeUpdated(true);
-                        ++res;
-                    } catch (IOException e) {
-                        LOGGER.debug("Problems with unfilter stream.", e);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            LOGGER.debug("Can not obtain Metadata objects", e);
-        }
+			List<COSStream> metas = new ArrayList<>();
+			for (COSObject obj : objects) {
+				COSBase base = obj.getObject();
+				if (base instanceof COSStream) {
+					metas.add((COSStream) base);
+				} else {
+					LOGGER.debug("Founded non-stream Metadata dictionary.");
+				}
+			}
+			for (COSStream stream : metas) {
+				COSBase filters = stream.getFilters();
+				if (filters instanceof COSName || (filters instanceof COSArray && ((COSArray) filters).size() != 0)) {
+					try {
+						stream.setFilters(null);
+						stream.setNeedToBeUpdated(true);
+						++res;
+					} catch (IOException e) {
+						LOGGER.debug("Problems with unfilter stream.", e);
+					}
+				}
+			}
+		} catch (IOException e) {
+			LOGGER.debug("Can not obtain Metadata objects", e);
+		}
 
-        isUnfiltered = res > 0;
+		isUnfiltered = res > 0;
 
-        return res;
-    }
+		return res;
+	}
 
-    private static MetadataFixerResultImpl.RepairStatus getStatus(final MetadataFixerResultImpl.RepairStatus status) {
-        return status == NO_ACTION ? SUCCESS : status;
-    }
+	private static MetadataFixerResultImpl.RepairStatus getStatus(final MetadataFixerResultImpl.RepairStatus status) {
+		return status == NO_ACTION ? SUCCESS : status;
+	}
 
 }

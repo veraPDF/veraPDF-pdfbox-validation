@@ -43,13 +43,15 @@ public class ColorSpaceFactory {
 	 * {@link org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace} to
 	 * {@link PBoxPDColorSpace}).
 	 *
-	 * @param colorSpace pdfbox color space object
+	 * @param colorSpace
+	 *            pdfbox color space object
 	 * @return {@code <? extends PBoxPDColorSpace>} object or {@code null} if
-	 * {@code colorSpace} argument {@code null} or unsupported type
+	 *         {@code colorSpace} argument {@code null} or unsupported type
 	 */
-	public static PDColorSpace getColorSpace(
-			org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace colorSpace, PDDocument document, PDFAFlavour flavour) {
-		return getColorSpace(colorSpace, null, PDInheritableResources.EMPTY_EXTENDED_RESOURCES, 0, false, document, flavour);
+	public static PDColorSpace getColorSpace(org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace colorSpace,
+			PDDocument document, PDFAFlavour flavour) {
+		return getColorSpace(colorSpace, null, PDInheritableResources.EMPTY_EXTENDED_RESOURCES, 0, false, document,
+				flavour);
 	}
 
 	/**
@@ -58,15 +60,17 @@ public class ColorSpaceFactory {
 	 * {@link PBoxPDColorSpace}). If color space is pattern color space, than
 	 * transform to Pattern object.
 	 *
-	 * @param colorSpace pdfbox color space object
-	 * @param pattern    pattern of pattern color space
+	 * @param colorSpace
+	 *            pdfbox color space object
+	 * @param pattern
+	 *            pattern of pattern color space
 	 * @return {@code <? extends PBoxPDColorSpace>} object or {@code null} if
-	 * {@code colorSpace} argument is {@code null},{@code pattern}
-	 * argument is {@code null} or unsupported type of color space
+	 *         {@code colorSpace} argument is {@code null},{@code pattern}
+	 *         argument is {@code null} or unsupported type of color space
 	 */
-	public static PDColorSpace getColorSpace(
-			org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace colorSpace,
-			PDAbstractPattern pattern, PDInheritableResources resources, int opm, boolean overprintingFlag, PDDocument document, PDFAFlavour flavour) {
+	public static PDColorSpace getColorSpace(org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace colorSpace,
+			PDAbstractPattern pattern, PDInheritableResources resources, int opm, boolean overprintingFlag,
+			PDDocument document, PDFAFlavour flavour) {
 		if (colorSpace == null) {
 			return null;
 		}
@@ -75,50 +79,50 @@ public class ColorSpaceFactory {
 		}
 		PDColorSpace result;
 		switch (colorSpace.getName()) {
-			case CAL_GRAY:
-				result = new PBoxPDCalGray((PDCalGray) colorSpace);
+		case CAL_GRAY:
+			result = new PBoxPDCalGray((PDCalGray) colorSpace);
+			StaticContainers.cachedColorSpaces.put(colorSpace, result);
+			return result;
+		case CAL_RGB:
+			result = new PBoxPDCalRGB((PDCalRGB) colorSpace);
+			StaticContainers.cachedColorSpaces.put(colorSpace, result);
+			return result;
+		case DEVICE_N:
+			result = new PBoxPDDeviceN((PDDeviceN) colorSpace, document, flavour);
+			StaticContainers.cachedColorSpaces.put(colorSpace, result);
+			return result;
+		case DEVICE_CMYK:
+			return PBoxPDDeviceCMYK.getInstance();
+		case DEVICE_GRB:
+			return PBoxPDDeviceRGB.getInstance();
+		case DEVICE_GRAY:
+			return PBoxPDDeviceGray.getInstance();
+		case ICC_BASED:
+			if (colorSpace.getNumberOfComponents() != 4) {
+				result = new PBoxPDICCBased((PDICCBased) colorSpace);
 				StaticContainers.cachedColorSpaces.put(colorSpace, result);
 				return result;
-			case CAL_RGB:
-				result = new PBoxPDCalRGB((PDCalRGB) colorSpace);
-				StaticContainers.cachedColorSpaces.put(colorSpace, result);
-				return result;
-			case DEVICE_N:
-				result = new PBoxPDDeviceN((PDDeviceN) colorSpace, document, flavour);
-				StaticContainers.cachedColorSpaces.put(colorSpace, result);
-				return result;
-			case DEVICE_CMYK:
-				return PBoxPDDeviceCMYK.getInstance();
-			case DEVICE_GRB:
-				return PBoxPDDeviceRGB.getInstance();
-			case DEVICE_GRAY:
-				return PBoxPDDeviceGray.getInstance();
-			case ICC_BASED:
-				if (colorSpace.getNumberOfComponents() != 4) {
-					result = new PBoxPDICCBased((PDICCBased) colorSpace);
-					StaticContainers.cachedColorSpaces.put(colorSpace, result);
-					return result;
-				} else {
-					//we don't want to cache ICCBasedCMYK color space because it can be used with different extgstates
-					result = new PBoxPDICCBasedCMYK((PDICCBased) colorSpace, opm, overprintingFlag);
-					return result;
-				}
-			case LAB:
-				result = new PBoxPDLab((PDLab) colorSpace);
-				StaticContainers.cachedColorSpaces.put(colorSpace, result);
-				return result;
-			case SEPARATION:
-				result = new PBoxPDSeparation((PDSeparation) colorSpace, document, flavour);
-				StaticContainers.cachedColorSpaces.put(colorSpace, result);
-				return result;
-			case INDEXED:
-				result = new PBoxPDIndexed((PDIndexed) colorSpace, document, flavour);
-				StaticContainers.cachedColorSpaces.put(colorSpace, result);
-				return result;
-			case PATTERN:
-				return getPattern(pattern, resources, document, flavour);
-			default:
-				return null;
+			}
+			// we don't want to cache ICCBasedCMYK color space because it can be
+			// used with different extgstates
+			result = new PBoxPDICCBasedCMYK((PDICCBased) colorSpace, opm, overprintingFlag);
+			return result;
+		case LAB:
+			result = new PBoxPDLab((PDLab) colorSpace);
+			StaticContainers.cachedColorSpaces.put(colorSpace, result);
+			return result;
+		case SEPARATION:
+			result = new PBoxPDSeparation((PDSeparation) colorSpace, document, flavour);
+			StaticContainers.cachedColorSpaces.put(colorSpace, result);
+			return result;
+		case INDEXED:
+			result = new PBoxPDIndexed((PDIndexed) colorSpace, document, flavour);
+			StaticContainers.cachedColorSpaces.put(colorSpace, result);
+			return result;
+		case PATTERN:
+			return getPattern(pattern, resources, document, flavour);
+		default:
+			return null;
 		}
 	}
 
@@ -127,12 +131,15 @@ public class ColorSpaceFactory {
 	 * {@link org.apache.pdfbox.pdmodel.graphics.pattern.PDAbstractPattern} to
 	 * {@link org.verapdf.model.impl.pb.pd.pattern.PBoxPDPattern})
 	 *
-	 * @param pattern   pdfbox pattern object
-	 * @param resources page resources for tiling pattern
+	 * @param pattern
+	 *            pdfbox pattern object
+	 * @param resources
+	 *            page resources for tiling pattern
 	 * @return {@code <? extends PDPattern>} object or {@code null} if
-	 * {@code pattern} argument is {@code null}
+	 *         {@code pattern} argument is {@code null}
 	 */
-	public static PDPattern getPattern(PDAbstractPattern pattern, PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
+	public static PDPattern getPattern(PDAbstractPattern pattern, PDInheritableResources resources, PDDocument document,
+			PDFAFlavour flavour) {
 		if (pattern != null) {
 			if (pattern.getPatternType() == PDAbstractPattern.TYPE_SHADING_PATTERN) {
 				return new PBoxPDShadingPattern((PDShadingPattern) pattern, document, flavour);

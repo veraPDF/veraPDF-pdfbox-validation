@@ -26,7 +26,6 @@ public class PBCosDocumentTest extends BaseTest {
     public static final String FILE_RELATIVE_PATH = "/model/impl/pb/cos/veraPDF test suite 6-1-2-t02-fail-a.pdf";
 
     private static final Long expectedNumberOfIndirects = Long.valueOf(17);
-    private static final Long expectedSizeOfDocument = Long.valueOf(9437);
 	private static final double expectedDocumentVersion = 1.4;
     private static final String expectedIDS = "D6CF927DCF82444068EB69A5914F8070A2A7539F7C71DEBB6A4A6B418235962D";
 

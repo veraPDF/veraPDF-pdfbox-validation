@@ -1,13 +1,12 @@
 package org.verapdf.model.impl.pb.operator.pathconstruction;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.verapdf.model.impl.pb.cos.PBCosInteger;
-import org.verapdf.model.impl.pb.cos.PBCosReal;
 import org.verapdf.model.impl.pb.operator.base.PBOperatorTest;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -21,6 +20,6 @@ public class PBOp_vTest extends PBOperatorTest {
 
 	@Test
 	public void testControlPointsTest() {
-		testLinksToReals(PBOp_v.CONTROL_POINTS, 4, PBCosInteger.COS_INTEGER_TYPE);
+		testLinksToReals(PBOpPathConstruction.CONTROL_POINTS, 4, PBCosInteger.COS_INTEGER_TYPE);
 	}
 }

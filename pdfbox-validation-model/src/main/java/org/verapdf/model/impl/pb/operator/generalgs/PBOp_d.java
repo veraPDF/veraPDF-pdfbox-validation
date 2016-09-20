@@ -1,19 +1,18 @@
 package org.verapdf.model.impl.pb.operator.generalgs;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosArray;
 import org.verapdf.model.coslayer.CosNumber;
-import org.verapdf.model.coslayer.CosReal;
 import org.verapdf.model.impl.pb.cos.PBCosArray;
 import org.verapdf.model.operator.Op_d;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Operator defining the line dash pattern in the graphics state

@@ -10,6 +10,7 @@ import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -38,7 +39,8 @@ public class PBLowLvlInfoFeaturesObject implements IFeaturesObject {
 	/**
 	 * Constructs new low level info feature object.
 	 *
-	 * @param document pdfbox class represents document object
+	 * @param document
+	 *            pdfbox class represents document object
 	 */
 	public PBLowLvlInfoFeaturesObject(COSDocument document) {
 		this.document = document;
@@ -55,18 +57,21 @@ public class PBLowLvlInfoFeaturesObject implements IFeaturesObject {
 	/**
 	 * Reports all features from the object into the collection
 	 *
-	 * @param collection collection for feature report
-	 * @return FeatureTreeNode class which represents a root node of the constructed collection tree
-	 * @throws FeatureParsingException occurs when wrong features tree node constructs
+	 * @param collection
+	 *            collection for feature report
+	 * @return FeatureTreeNode class which represents a root node of the
+	 *         constructed collection tree
+	 * @throws FeatureParsingException
+	 *             occurs when wrong features tree node constructs
 	 */
 	@Override
 	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
 		if (document != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("lowLevelInfo");
 
-
 			if (document.getObjects() != null) {
-				FeatureTreeNode.createChildNode("indirectObjectsNumber", root).setValue(String.valueOf(document.getObjects().size()));
+				FeatureTreeNode.createChildNode("indirectObjectsNumber", root)
+						.setValue(String.valueOf(document.getObjects().size()));
 			}
 
 			addDocumentId(root, collection);
@@ -109,12 +114,16 @@ public class PBLowLvlInfoFeaturesObject implements IFeaturesObject {
 			}
 
 			if (base instanceof COSStream) {
-				COSStream stream = (COSStream) base;
+				try (COSStream stream = (COSStream) base) {
 
-				COSBase baseFilter = stream.getFilters();
+					COSBase baseFilter = stream.getFilters();
 
-				if (baseFilter != null) {
-					addFiltersFromBase(res, baseFilter);
+					if (baseFilter != null) {
+						addFiltersFromBase(res, baseFilter);
+					}
+				} catch (IOException excep) {
+					// TODO Auto-generated catch block
+					excep.printStackTrace();
 				}
 			}
 		}
@@ -140,8 +149,7 @@ public class PBLowLvlInfoFeaturesObject implements IFeaturesObject {
 			}
 
 			if (ids.size() != 2 || creationId == null || modificationId == null) {
-				ErrorsHelper.addErrorIntoCollection(collection,
-						documentId,
+				ErrorsHelper.addErrorIntoCollection(collection, documentId,
 						"Document's ID must be an array of two not null elements");
 			}
 		}

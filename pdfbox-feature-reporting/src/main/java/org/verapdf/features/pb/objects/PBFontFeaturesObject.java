@@ -1,10 +1,26 @@
 package org.verapdf.features.pb.objects;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.log4j.Logger;
-import org.apache.pdfbox.cos.*;
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSInteger;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSNumber;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.common.PDStream;
-import org.apache.pdfbox.pdmodel.font.*;
+import org.apache.pdfbox.pdmodel.font.PDCIDFont;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
+import org.apache.pdfbox.pdmodel.font.PDFontLike;
+import org.apache.pdfbox.pdmodel.font.PDSimpleFont;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.pdmodel.font.PDType3Font;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesData;
 import org.verapdf.features.FeaturesObjectTypesEnum;
@@ -13,13 +29,6 @@ import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Feature object for fonts
@@ -201,15 +210,15 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 					builder.fontWeight(getNumber(descriptorDict.getDictionaryObject(COSName.FONT_WEIGHT)));
 					COSBase fl = descriptorDict.getDictionaryObject(COSName.FLAGS);
 					if (fl instanceof COSInteger) {
-						builder.flags(((COSInteger) fl).intValue());
+						builder.flags(Integer.valueOf(((COSInteger) fl).intValue()));
 					}
 					PDRectangle rex = descriptor.getFontBoundingBox();
 					if (rex != null) {
 						List<Double> rect = new ArrayList<>();
-						rect.add((double) rex.getLowerLeftX());
-						rect.add((double) rex.getLowerLeftY());
-						rect.add((double) rex.getUpperRightX());
-						rect.add((double) rex.getUpperRightY());
+						rect.add(Double.valueOf(rex.getLowerLeftX()));
+						rect.add(Double.valueOf(rex.getLowerLeftY()));
+						rect.add(Double.valueOf(rex.getUpperRightX()));
+						rect.add(Double.valueOf(rex.getUpperRightY()));
 						builder.fontBBox(rect);
 					}
 
@@ -236,18 +245,9 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 	}
 
 	private static Double getNumber(Object value) {
-		if (value instanceof COSNumber) {
-			return ((COSNumber) value).doubleValue();
-		} else {
-			return null;
-		}
+		return (value instanceof COSNumber) ? Double.valueOf(((COSNumber) value).doubleValue()) : null;
 	}
 
-	private static void putIfNotNull(Map<String, Object> map, String key, Object value) {
-		if (key != null && value != null) {
-			map.put(key, value);
-		}
-	}
 
 	private static void parseFontDescriptior(PDFontDescriptor descriptor, FeatureTreeNode root, FeaturesCollection collection) throws FeatureParsingException {
 		if (descriptor != null) {

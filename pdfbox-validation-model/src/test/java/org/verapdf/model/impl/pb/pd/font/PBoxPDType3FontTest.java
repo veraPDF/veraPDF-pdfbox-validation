@@ -22,9 +22,9 @@ public class PBoxPDType3FontTest extends PBoxPDSimpleFontTest {
 	private static final String TYPE3_FONT_NAME = "T3_0";
 	private static final String TYPE3_SUBTYPE = "Type3";
 
-	private static final Long WIDTHS_SIZE = 2l;
-	private static final Long FIRST_CHAR = 97l;
-	private static final Long LAST_CHAR = 98l;
+	private static final Long WIDTHS_SIZE = new Long(2l);
+	private static final Long FIRST_CHAR = new Long(97l);
+	private static final Long LAST_CHAR = new Long(98l);
 
 	private static final long CONTENT_STREAMS_SIZE = 2l;
 
@@ -45,7 +45,7 @@ public class PBoxPDType3FontTest extends PBoxPDSimpleFontTest {
 
 	@Override
 	public void testBaseFont() {
-		List<? extends org.verapdf.model.baselayer.Object> baseFonts = actual.getLinkedObjects(PBoxPDType1Font.BASE_FONT);
+		List<? extends org.verapdf.model.baselayer.Object> baseFonts = actual.getLinkedObjects(PBoxPDFont.BASE_FONT);
 		Assert.assertEquals(0, baseFonts.size());
 	}
 
@@ -71,7 +71,7 @@ public class PBoxPDType3FontTest extends PBoxPDSimpleFontTest {
 
 	@Override
 	public void testIsStandard() {
-		Assert.assertFalse(((PDType3Font) actual).getisStandard());
+		Assert.assertFalse(((PDType3Font) actual).getisStandard().booleanValue());
 	}
 
 	@Test

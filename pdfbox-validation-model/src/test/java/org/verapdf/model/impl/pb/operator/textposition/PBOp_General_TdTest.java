@@ -5,11 +5,12 @@ import org.junit.Test;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosInteger;
 import org.verapdf.model.impl.pb.cos.PBCosInteger;
+import org.verapdf.model.impl.pb.operator.base.PBOperatorTest;
 
 /**
  * @author Evgeniy Muravitskiy
  */
-public abstract class PBOp_General_TdTest extends PBOpTextPositionTest {
+public abstract class PBOp_General_TdTest extends PBOperatorTest {
 
 	protected static Long expectedVertical;
 	protected static Long expectedHorizontal;
@@ -24,7 +25,7 @@ public abstract class PBOp_General_TdTest extends PBOpTextPositionTest {
 		testOffset(PBOp_General_Td.HORIZONTAL_OFFSET, expectedHorizontal);
 	}
 
-	private void testOffset(String link, Long value) {
+	private static void testOffset(String link, Long value) {
 		Object object = testObject(link, 1, PBCosInteger.COS_INTEGER_TYPE);
 		Assert.assertEquals(value, ((CosInteger) object).getintValue());
 	}

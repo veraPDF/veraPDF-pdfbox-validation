@@ -88,7 +88,7 @@ public class PBShadingPatternFeaturesObject implements IFeaturesObject {
 		return null;
 	}
 
-	private void parseFloatMatrix(float[][] array, FeatureTreeNode parent) throws FeatureParsingException {
+	private static void parseFloatMatrix(float[][] array, FeatureTreeNode parent) throws FeatureParsingException {
 		for (int i = 0; i < array.length; ++i) {
 			for (int j = 0; j < array.length - 1; ++j) {
 				FeatureTreeNode element = FeatureTreeNode.createChildNode("element", parent);

@@ -26,7 +26,7 @@ public class PBoxPDResources extends PBoxPDObject implements PDResource {
 
 	@Override
 	public Boolean getisInherited() {
-		return this.inherited;
+		return Boolean.valueOf(this.inherited);
 	}
 
 }

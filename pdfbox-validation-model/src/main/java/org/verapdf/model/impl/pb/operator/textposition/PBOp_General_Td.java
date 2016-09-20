@@ -1,18 +1,14 @@
 package org.verapdf.model.impl.pb.operator.textposition;
 
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSFloat;
-import org.apache.pdfbox.cos.COSInteger;
-import org.apache.pdfbox.cos.COSNumber;
-import org.verapdf.model.baselayer.Object;
-import org.verapdf.model.coslayer.CosNumber;
-import org.verapdf.model.impl.pb.cos.PBCosInteger;
-import org.verapdf.model.impl.pb.cos.PBCosNumber;
-import org.verapdf.model.impl.pb.cos.PBCosReal;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSNumber;
+import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.coslayer.CosNumber;
+import org.verapdf.model.impl.pb.cos.PBCosNumber;
 
 /**
  * Base class for text position operators (Td and TD)

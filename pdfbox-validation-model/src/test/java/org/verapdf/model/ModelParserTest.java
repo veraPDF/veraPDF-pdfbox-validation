@@ -14,13 +14,14 @@ import java.nio.file.Paths;
 /**
  * @author Evgeniy Muravitskiy
  */
-@SuppressWarnings({"static-method", "javadoc"})
+@SuppressWarnings({ "javadoc" })
 public class ModelParserTest {
 
 	@Test
 	public void testExistingFile() throws URISyntaxException, IOException, ModelParsingException {
 		String path = getSystemIndependentPath("/model/impl/pb/pd/Fonts.pdf");
-		try (ModelParser loader = ModelParser.createModelWithFlavour(new FileInputStream(path), null)) {
+		try (FileInputStream fis = new FileInputStream(path);
+				ModelParser loader = ModelParser.createModelWithFlavour(fis, null)) {
 			Assert.assertNotNull(loader.getPDDocument());
 			Assert.assertNotNull(loader.getRoot());
 		}

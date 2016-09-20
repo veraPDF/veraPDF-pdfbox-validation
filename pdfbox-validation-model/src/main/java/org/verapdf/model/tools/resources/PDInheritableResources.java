@@ -43,7 +43,7 @@ public class PDInheritableResources {
 	/**
 	 * @return current resources
 	 */
-	public PDResources getCurrentResources(){
+	public PDResources getCurrentResources() {
 		return this.currentResources;
 	}
 
@@ -70,11 +70,10 @@ public class PDInheritableResources {
 	public PDColorSpace getColorSpace(COSName name) throws IOException {
 		try {
 			/*
-				if name is name of device depended color space and
-				default color space defined only in page resource
-			 	dictionary that wee need to get it from page
-			 	resource dictionary
-			*/
+			 * if name is name of device depended color space and default color
+			 * space defined only in page resource dictionary that wee need to
+			 * get it from page resource dictionary
+			 */
 			if (this.isDefaultColorSpaceUsed(name)) {
 				return this.inheritedResources.getColorSpace(name);
 			}
@@ -83,8 +82,8 @@ public class PDInheritableResources {
 				return colorSpace;
 			}
 		} catch (IOException e) {
-			LOGGER.debug("Problems during color space obtain from current resource dictionary. " +
-					"Trying to find it in inherited dictionary", e);
+			LOGGER.debug("Problems during color space obtain from current resource dictionary. "
+					+ "Trying to find it in inherited dictionary", e);
 		}
 		PDColorSpace colorSpace = this.inheritedResources.getColorSpace(name);
 		colorSpace.setInherited(true);
@@ -95,12 +94,11 @@ public class PDInheritableResources {
 		PDExtendedGraphicsState state = this.currentResources.getExtGState(name);
 		if (state != null) {
 			return state;
-		} else {
-			state = this.inheritedResources.getExtGState(name);
-			if (state != null) {
-				state.setInherited(true);
-				return state;
-			}
+		}
+		state = this.inheritedResources.getExtGState(name);
+		if (state != null) {
+			state.setInherited(true);
+			return state;
 		}
 
 		return null;
@@ -110,12 +108,11 @@ public class PDInheritableResources {
 		PDShading shading = this.currentResources.getShading(name);
 		if (shading != null) {
 			return shading;
-		} else {
-			shading = this.inheritedResources.getShading(name);
-			if (shading != null) {
-				shading.setInherited(true);
-				return shading;
-			}
+		}
+		shading = this.inheritedResources.getShading(name);
+		if (shading != null) {
+			shading.setInherited(true);
+			return shading;
 		}
 
 		return null;
@@ -125,12 +122,11 @@ public class PDInheritableResources {
 		PDAbstractPattern pattern = this.currentResources.getPattern(name);
 		if (pattern != null) {
 			return pattern;
-		} else {
-			pattern = this.inheritedResources.getPattern(name);
-			if (pattern != null) {
-				pattern.setInherited(true);
-				return pattern;
-			}
+		}
+		pattern = this.inheritedResources.getPattern(name);
+		if (pattern != null) {
+			pattern.setInherited(true);
+			return pattern;
 		}
 
 		return null;
@@ -140,19 +136,18 @@ public class PDInheritableResources {
 		PDXObject object = this.currentResources.getXObject(name);
 		if (object != null) {
 			return object;
-		} else {
-			object = this.inheritedResources.getXObject(name);
-			if (object != null) {
-				object.setInherited(true);
-				return object;
-			}
+		}
+		object = this.inheritedResources.getXObject(name);
+		if (object != null) {
+			object.setInherited(true);
+			return object;
 		}
 
 		return null;
 	}
 
 	private boolean isDefaultColorSpaceUsed(COSName name) {
-		if (this.isDeviceDepended(name)) {
+		if (PDInheritableResources.isDeviceDepended(name)) {
 			COSName value = PDColorSpace.getDefaultValue(this.currentResources, name);
 			if (value != null) {
 				return false;
@@ -165,18 +160,17 @@ public class PDInheritableResources {
 		return false;
 	}
 
-	private boolean isDeviceDepended(COSName name) {
-		return COSName.DEVICERGB.equals(name) ||
-				COSName.DEVICEGRAY.equals(name) || COSName.DEVICECMYK.equals(name);
+	private static boolean isDeviceDepended(COSName name) {
+		return COSName.DEVICERGB.equals(name) || COSName.DEVICEGRAY.equals(name) || COSName.DEVICECMYK.equals(name);
 	}
 
 	public static PDInheritableResources getInstance(PDResources pageResources) {
 		return getInstance(null, pageResources);
 	}
 
-	public static PDInheritableResources getInstance(
-			PDResources inheritedResources, PDResources currentResources) {
-		inheritedResources = inheritedResources != null && currentResources == null ? inheritedResources : EMPTY_RESOURCES;
+	public static PDInheritableResources getInstance(PDResources inheritedResources, PDResources currentResources) {
+		inheritedResources = inheritedResources != null && currentResources == null ? inheritedResources
+				: EMPTY_RESOURCES;
 		currentResources = currentResources != null ? currentResources : EMPTY_RESOURCES;
 		return new PDInheritableResources(inheritedResources, currentResources);
 	}

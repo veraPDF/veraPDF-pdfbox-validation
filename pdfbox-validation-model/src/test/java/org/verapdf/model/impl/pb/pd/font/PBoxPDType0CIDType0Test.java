@@ -19,7 +19,6 @@ import java.util.List;
 public class PBoxPDType0CIDType0Test extends PBoxPDType0FontTest {
 
 	private static final String TYPE0_FONT_NAME = "C0_0";
-	private static final String TYPE0_BASE_FONT = "IIWNIN+AdobeFanHeitiStd-Bold";
 	private static final String TYPE0_SUBTYPE = "Type0";
 
 	@BeforeClass
@@ -35,7 +34,7 @@ public class PBoxPDType0CIDType0Test extends PBoxPDType0FontTest {
 
 	@Override
 	public void testBaseFont() {
-		List<? extends Object> baseFonts = actual.getLinkedObjects(PBoxPDType1Font.BASE_FONT);
+		List<? extends Object> baseFonts = actual.getLinkedObjects(PBoxPDFont.BASE_FONT);
 		Object object = baseFonts.get(0);
 		Assert.assertEquals("CosUnicodeName", object.getObjectType());
 		Assert.assertEquals("IIWNIN+AdobeFanHeitiStd-Bold", ((CosName) object).getinternalRepresentation());
@@ -62,7 +61,7 @@ public class PBoxPDType0CIDType0Test extends PBoxPDType0FontTest {
 
 	@Override
 	public void testAreRegistryOrderingCompatible() {
-		Assert.assertTrue(((PDType0Font) actual).getareRegistryOrderingCompatible());
+		Assert.assertTrue(((PDType0Font) actual).getareRegistryOrderingCompatible().booleanValue());
 	}
 
 }

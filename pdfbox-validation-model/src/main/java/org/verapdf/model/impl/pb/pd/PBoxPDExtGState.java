@@ -46,12 +46,12 @@ public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
 
     public PBoxPDExtGState(PDExtendedGraphicsState state, PDDocument document, PDFAFlavour flavour) {
         super(state, EXT_G_STATE_TYPE);
-		this.tr = this.getStringProperty(state, COSName.TR);
-		this.tr2 = this.getStringProperty(state, COSName.getPDFName("TR2"));
-		this.sMask = this.getStringProperty(state, COSName.SMASK);
-		this.BM = this.getStringProperty(state, COSName.BM);
-		this.ca = this.getDoubleProperty(state, COSName.CA_NS);
-		this.CA = this.getDoubleProperty(state, COSName.CA);
+		this.tr = PBoxPDExtGState.getStringProperty(state, COSName.TR);
+		this.tr2 = PBoxPDExtGState.getStringProperty(state, COSName.getPDFName("TR2"));
+		this.sMask = PBoxPDExtGState.getStringProperty(state, COSName.SMASK);
+		this.BM = PBoxPDExtGState.getStringProperty(state, COSName.BM);
+		this.ca = PBoxPDExtGState.getDoubleProperty(state, COSName.CA_NS);
+		this.CA = PBoxPDExtGState.getDoubleProperty(state, COSName.CA);
 		this.document = document;
 		this.flavour = flavour;
     }
@@ -86,13 +86,13 @@ public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
         return this.CA;
     }
 
-    private String getStringProperty(PDExtendedGraphicsState state, COSName key) {
+    private static String getStringProperty(PDExtendedGraphicsState state, COSName key) {
 		COSBase base = state.getCOSObject().getDictionaryObject(key);
 		return base == null ? null : base instanceof COSName ?
 				((COSName) base).getName() : base.toString();
     }
 
-	private Double getDoubleProperty(PDExtendedGraphicsState state, COSName key) {
+	private static Double getDoubleProperty(PDExtendedGraphicsState state, COSName key) {
 		COSBase base = state.getCOSObject().getDictionaryObject(key);
 		return !(base instanceof COSNumber) ? null :
 				Double.valueOf(((COSNumber) base).doubleValue());

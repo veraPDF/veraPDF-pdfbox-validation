@@ -79,13 +79,12 @@ public final class IDGenerator {
 			String value = IDGenerator.generateID(current);
 			if (value != null) {
 				return "outline " + value;
-			} else {
+			}
 			/*
 				TODO : according to specification entries Next, Prev, First and Parent
 				must be indirect objects, but document can fail specification.
 				How we must resolve this situation?
 			 */
-			}
 		}
 		return null;
 	}

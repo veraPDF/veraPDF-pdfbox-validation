@@ -1,30 +1,21 @@
 package org.verapdf.model.impl.pb.pd.signatures;
 
-import org.apache.log4j.Logger;
-import org.apache.pdfbox.contentstream.PDContentStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSObject;
-import org.apache.pdfbox.cos.COSObjectKey;
-import org.apache.pdfbox.pdfparser.BaseParser;
-import org.apache.pdfbox.pdfparser.COSParser;
-import org.apache.pdfbox.pdfparser.SignatureParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.impl.pb.pd.PBoxPDFormField;
 import org.verapdf.model.pdlayer.PDSignature;
 import org.verapdf.model.pdlayer.PDSignatureField;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * @author Sergey Shemyakov
  */
 public class PBoxPDSignatureField extends PBoxPDFormField implements PDSignatureField {
-
-    private static final Logger LOGGER = Logger.getLogger(PBoxPDSignatureField.class);
 
     /**
      * Type name for {@code PBoxPDSignatureField}

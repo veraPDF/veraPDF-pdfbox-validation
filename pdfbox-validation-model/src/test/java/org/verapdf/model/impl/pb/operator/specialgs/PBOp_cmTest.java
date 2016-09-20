@@ -1,13 +1,12 @@
 package org.verapdf.model.impl.pb.operator.specialgs;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.verapdf.model.impl.pb.cos.PBCosInteger;
-import org.verapdf.model.impl.pb.cos.PBCosReal;
 import org.verapdf.model.impl.pb.operator.base.PBOperatorTest;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 /**
  * @author Evgeniy Muravitskiy

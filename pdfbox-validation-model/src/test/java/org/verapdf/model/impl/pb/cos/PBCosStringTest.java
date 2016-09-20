@@ -31,7 +31,7 @@ public class PBCosStringTest extends BaseTest {
 
         final String string = "AAFFFEEE";
         COSString value = COSString.parseHex(string);
-        value.setContainsOnlyHex(Boolean.FALSE);
+        value.setContainsOnlyHex(false);
         value.setHexCount(Long.valueOf(string.length()));
 
         actual = new PBCosString(value);

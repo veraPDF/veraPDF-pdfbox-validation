@@ -43,17 +43,17 @@ public class PBoxPDOCConfig extends PBoxPDObject implements PDOCConfig {
 					COSBase element = ((COSArray) order).getObject(i);
 					if (element instanceof COSArray) {
 						groupsInOrder += ((COSArray) element).size();
-						if (!checkCOSArrayInOrder((COSArray) element)) {
+						if (!checkCOSArrayInOrder((COSArray) element).booleanValue()) {
 							return Boolean.FALSE;
 						}
 					} else if (element instanceof COSString) {
 						groupsInOrder++;
-						if (!checkCOSStringInOrder((COSString) element)) {
+						if (!checkCOSStringInOrder((COSString) element).booleanValue()) {
 							return Boolean.FALSE;
 						}
 					} else if (element instanceof COSDictionary) {
 						groupsInOrder++;
-						if (!checkCOSDictionaryInOrder((COSDictionary) element)) {
+						if (!checkCOSDictionaryInOrder((COSDictionary) element).booleanValue()) {
 							return Boolean.FALSE;
 						}
 					} else {
@@ -88,18 +88,16 @@ public class PBoxPDOCConfig extends PBoxPDObject implements PDOCConfig {
 					}
 				}
 				return result;
-			} else {
-				LOGGER.debug("Invalid object type of AS entry. Ignoring the entry.");
-				return result;
 			}
-		} else {
-			return null;
+			LOGGER.debug("Invalid object type of AS entry. Ignoring the entry.");
+			return result;
 		}
+		return null;
 	}
 
 	@Override
 	public Boolean gethasDuplicateName() {
-		return this.duplicateName;
+		return Boolean.valueOf(this.duplicateName);
 	}
 
 	@Override
@@ -111,11 +109,11 @@ public class PBoxPDOCConfig extends PBoxPDObject implements PDOCConfig {
 		for (int i = 0; i < array.size(); i++) {
 			COSBase element = array.getObject(i);
 			if (element instanceof COSString) {
-				if (!checkCOSStringInOrder((COSString) element)) {
+				if (!checkCOSStringInOrder((COSString) element).booleanValue()) {
 					return Boolean.FALSE;
 				}
 			} else if (element instanceof COSDictionary) {
-				if (!checkCOSDictionaryInOrder((COSDictionary) element)) {
+				if (!checkCOSDictionaryInOrder((COSDictionary) element).booleanValue()) {
 					return Boolean.FALSE;
 				}
 			}
@@ -124,19 +122,10 @@ public class PBoxPDOCConfig extends PBoxPDObject implements PDOCConfig {
 	}
 
 	private Boolean checkCOSStringInOrder(COSString element) {
-		if (!groupNames.contains((element).getString())) {
-			return Boolean.FALSE;
-		} else {
-			return Boolean.TRUE;
-		}
+		return (!groupNames.contains((element).getString())) ? Boolean.FALSE : Boolean.TRUE;
 	}
 
 	private Boolean checkCOSDictionaryInOrder(COSDictionary element) {
-		if (!groupNames.contains(element.getString(COSName.NAME))) {
-			return Boolean.FALSE;
-		} else {
-			return Boolean.TRUE;
-		}
+		return (!groupNames.contains(element.getString(COSName.NAME))) ? Boolean.FALSE : Boolean.TRUE;
 	}
-
 }

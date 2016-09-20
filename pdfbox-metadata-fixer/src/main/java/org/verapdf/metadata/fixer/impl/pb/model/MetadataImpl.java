@@ -142,14 +142,14 @@ public class MetadataImpl implements Metadata {
         }
     }
 
-    private int compare(String conf, String confToCompare) {
+	private static int compare(String conf, String confToCompare) {
         int confInt = confToInt(conf);
         int confToCompareInt = confToInt(confToCompare);
 
         return confInt - confToCompareInt;
     }
 
-    private int confToInt(String conf) {
+    private static int confToInt(String conf) {
         switch (conf) {
             case "A":
                 return 2;
@@ -167,7 +167,7 @@ public class MetadataImpl implements Metadata {
             Integer identificationPart = this.metadata.getIdentificationPart();
             if (identificationPart == null) {
                 return false;
-            } else {
+			}
                 String identificationConformance = this.metadata.getIdentificationConformance();
                 if (identificationPart.intValue() == 1) {
                     return "A".equals(identificationConformance) || "B".equals(identificationConformance);
@@ -178,7 +178,6 @@ public class MetadataImpl implements Metadata {
                 } else {
                     return false;
                 }
-            }
         } catch (XMPException e) {
             LOGGER.debug("Can not obtain identification fields.", e);
             throw new IllegalStateException(e);

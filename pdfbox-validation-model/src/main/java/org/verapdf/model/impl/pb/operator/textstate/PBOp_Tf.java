@@ -1,17 +1,16 @@
 package org.verapdf.model.impl.pb.operator.textstate;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosName;
 import org.verapdf.model.coslayer.CosNumber;
-import org.verapdf.model.coslayer.CosReal;
 import org.verapdf.model.impl.pb.cos.PBCosName;
 import org.verapdf.model.operator.Op_Tf;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author Evgeniy Muravitskiy

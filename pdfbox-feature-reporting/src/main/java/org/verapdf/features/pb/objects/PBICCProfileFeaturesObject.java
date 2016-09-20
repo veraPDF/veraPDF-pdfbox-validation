@@ -31,7 +31,6 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 	private static final String ID = "id";
 	private static final int HEADER_SIZE = 128;
 	private static final int FF_FLAG = 0xFF;
-	private static final int F_FLAG = 0x0F;
 	private static final int REQUIRED_LENGTH = 4;
 	private static final int TAGINFO_LENGTH = 12;
 	private static final int BITSINBYTE = 8;
@@ -139,7 +138,7 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 
 			COSBase nBase = profile.getDictionaryObject(COSName.N);
 			if (nBase instanceof COSInteger) {
-				n = ((COSInteger) nBase).intValue();
+				n = Integer.valueOf(((COSInteger) nBase).intValue());
 
 				COSBase rangeBase = profile.getDictionaryObject(COSName.RANGE);
 				if (rangeBase instanceof COSArray) {
@@ -147,16 +146,16 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 					range = new ArrayList<>();
 					for (COSBase baseNumb : array) {
 						if (baseNumb instanceof COSNumber) {
-							range.add(((COSNumber) baseNumb).doubleValue());
+							range.add(Double.valueOf(((COSNumber) baseNumb).doubleValue()));
 						} else {
 							range.add(null);
 						}
 					}
 				} else {
 					range = new ArrayList<>();
-					for (int i = 0; i < n; ++i) {
-						range.add(0.);
-						range.add(1.);
+					for (int i = 0; i < n.intValue(); ++i) {
+						range.add(Double.valueOf(0.));
+						range.add(Double.valueOf(1.));
 					}
 				}
 			}

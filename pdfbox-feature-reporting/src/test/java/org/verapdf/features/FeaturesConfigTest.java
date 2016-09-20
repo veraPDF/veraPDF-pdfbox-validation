@@ -31,49 +31,49 @@ public class FeaturesConfigTest {
 
     @Test
     public void infoDictionaryTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().informationDict(false).build();
+        FeaturesConfig config = createFullFeaturesConfigBuilder().informationDict(Boolean.FALSE).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.INFORMATION_DICTIONARY).isEmpty());
     }
 
     @Test
     public void metadataTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().metadata(false).build();
+        FeaturesConfig config = createFullFeaturesConfigBuilder().metadata(Boolean.FALSE).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.METADATA).isEmpty());
     }
 
     @Test
     public void documentSecurityTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().documentSecurity(false).build();
+        FeaturesConfig config = createFullFeaturesConfigBuilder().documentSecurity(Boolean.FALSE).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.DOCUMENT_SECURITY).isEmpty());
     }
 
     @Test
     public void signaturesTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().signatures(false).build();
+        FeaturesConfig config = createFullFeaturesConfigBuilder().signatures(Boolean.FALSE).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.SIGNATURE).isEmpty());
     }
 
     @Test
     public void lowLevelInfoTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().lowLevelInfo(false).build();
+        FeaturesConfig config = createFullFeaturesConfigBuilder().lowLevelInfo(Boolean.FALSE).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.LOW_LEVEL_INFO).isEmpty());
     }
 
     @Test
     public void embeddedFilesTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().embeddedFiles(false).build();
+        FeaturesConfig config = createFullFeaturesConfigBuilder().embeddedFiles(Boolean.FALSE).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.EMBEDDED_FILE).isEmpty());
     }
 
     @Test
     public void iccProfilesTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().iccProfiles(false).build();
+        FeaturesConfig config = createFullFeaturesConfigBuilder().iccProfiles(Boolean.FALSE).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.ICCPROFILE).isEmpty());
         assertNull(getFirstNodeFromListWithPath(
@@ -84,7 +84,7 @@ public class FeaturesConfigTest {
 
     @Test
     public void outputIntentTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().outputIntents(false).build();
+        FeaturesConfig config = createFullFeaturesConfigBuilder().outputIntents(Boolean.FALSE).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.OUTPUTINTENT).isEmpty());
         assertNull(getFirstNodeFromListWithPath(
@@ -93,14 +93,14 @@ public class FeaturesConfigTest {
 
     @Test
     public void outlinesTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().outlines(false).build();
+        FeaturesConfig config = createFullFeaturesConfigBuilder().outlines(Boolean.FALSE).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.OUTLINES).isEmpty());
     }
 
     @Test
     public void annotationsTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().annotations(false).build();
+        FeaturesConfig config = createFullFeaturesConfigBuilder().annotations(Boolean.FALSE).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.ANNOTATION).isEmpty());
         assertNull(getFirstNodeFromListWithPath(
@@ -111,7 +111,7 @@ public class FeaturesConfigTest {
 
     @Test
     public void pagesTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().pages(false).build();
+        FeaturesConfig config = createFullFeaturesConfigBuilder().pages(Boolean.FALSE).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PAGE).isEmpty());
         assertNull(getFirstNodeFromListWithPath(
@@ -140,7 +140,7 @@ public class FeaturesConfigTest {
 
     @Test
     public void graphicsStateTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().graphicsStates(false).build();
+        FeaturesConfig config = createFullFeaturesConfigBuilder().graphicsStates(Boolean.FALSE).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.EXT_G_STATE).isEmpty());
         assertNull(getFirstNodeFromListWithPath(
@@ -159,7 +159,7 @@ public class FeaturesConfigTest {
 
     @Test
     public void colorSpaceTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().colorSpaces(false).build();
+        FeaturesConfig config = createFullFeaturesConfigBuilder().colorSpaces(Boolean.FALSE).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.COLORSPACE).isEmpty());
         assertNull(getFirstNodeFromListWithPath(
@@ -182,7 +182,7 @@ public class FeaturesConfigTest {
 
     @Test
     public void patternsTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().patterns(false).build();
+        FeaturesConfig config = createFullFeaturesConfigBuilder().patterns(Boolean.FALSE).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PATTERN).isEmpty());
         assertNull(getFirstNodeFromListWithPath(
@@ -213,7 +213,7 @@ public class FeaturesConfigTest {
 
     @Test
     public void shadingsTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().shadings(false).build();
+        FeaturesConfig config = createFullFeaturesConfigBuilder().shadings(Boolean.FALSE).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.SHADING).isEmpty());
         assertNull(getFirstNodeFromListWithPath(
@@ -231,7 +231,7 @@ public class FeaturesConfigTest {
     }
     @Test
     public void xobjectsTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().xobjects(false).build();
+        FeaturesConfig config = createFullFeaturesConfigBuilder().xobjects(Boolean.FALSE).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FORM_XOBJECT).isEmpty());
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.IMAGE_XOBJECT).isEmpty());
@@ -261,7 +261,7 @@ public class FeaturesConfigTest {
 
     @Test
     public void fontsTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().fonts(false).build();
+        FeaturesConfig config = createFullFeaturesConfigBuilder().fonts(Boolean.FALSE).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FONT).isEmpty());
         assertNull(getFirstNodeFromListWithPath(
@@ -294,7 +294,7 @@ public class FeaturesConfigTest {
 
     @Test
     public void propertiesDictionariesTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().propertiesDicts(false).build();
+        FeaturesConfig config = createFullFeaturesConfigBuilder().propertiesDicts(Boolean.FALSE).build();
         FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
         assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PROPERTIES).isEmpty());
         assertNull(getFirstNodeFromListWithPath(
@@ -307,26 +307,26 @@ public class FeaturesConfigTest {
                 collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FONT), "resources", "propertiesDicts"));
     }
 
-    private FeaturesConfig.Builder createFullFeaturesConfigBuilder() {
+    private static FeaturesConfig.Builder createFullFeaturesConfigBuilder() {
         FeaturesConfig.Builder configBuilder = new FeaturesConfig.Builder();
-        configBuilder.informationDict(true);
-        configBuilder.metadata(true);
-        configBuilder.documentSecurity(true);
-        configBuilder.signatures(true);
-        configBuilder.lowLevelInfo(true);
-        configBuilder.embeddedFiles(true);
-        configBuilder.iccProfiles(true);
-        configBuilder.outputIntents(true);
-        configBuilder.outlines(true);
-        configBuilder.annotations(true);
-        configBuilder.pages(true);
-        configBuilder.graphicsStates(true);
-        configBuilder.colorSpaces(true);
-        configBuilder.patterns(true);
-        configBuilder.shadings(true);
-        configBuilder.xobjects(true);
-        configBuilder.fonts(true);
-        configBuilder.propertiesDicts(true);
+        configBuilder.informationDict(Boolean.TRUE);
+        configBuilder.metadata(Boolean.TRUE);
+        configBuilder.documentSecurity(Boolean.TRUE);
+        configBuilder.signatures(Boolean.TRUE);
+        configBuilder.lowLevelInfo(Boolean.TRUE);
+        configBuilder.embeddedFiles(Boolean.TRUE);
+        configBuilder.iccProfiles(Boolean.TRUE);
+        configBuilder.outputIntents(Boolean.TRUE);
+        configBuilder.outlines(Boolean.TRUE);
+        configBuilder.annotations(Boolean.TRUE);
+        configBuilder.pages(Boolean.TRUE);
+        configBuilder.graphicsStates(Boolean.TRUE);
+        configBuilder.colorSpaces(Boolean.TRUE);
+        configBuilder.patterns(Boolean.TRUE);
+        configBuilder.shadings(Boolean.TRUE);
+        configBuilder.xobjects(Boolean.TRUE);
+        configBuilder.fonts(Boolean.TRUE);
+        configBuilder.propertiesDicts(Boolean.TRUE);
         return configBuilder;
     }
 

@@ -52,20 +52,21 @@ public class PBoxEmbeddedFile extends PBoxExternal implements EmbeddedFile {
 			try {
 				InputStream unfilteredStream = stream.getUnfilteredStream();
 				unfilteredStream.mark(Integer.MAX_VALUE);
-				ModelParser parser1b = ModelParser.createModelWithFlavour(unfilteredStream, PDFAFlavour.PDFA_1_B);
-				PDFAValidator validator1b = Validators.createValidator(PDFAFlavour.PDFA_1_B, false, 1);
-				ValidationResult result1b = validator1b.validate(parser1b);
-				if (result1b.isCompliant()) {
-					parser1b.close();
-					return Boolean.TRUE;
+				try (ModelParser parser1b = ModelParser.createModelWithFlavour(unfilteredStream,
+						PDFAFlavour.PDFA_1_B)) {
+					PDFAValidator validator1b = Validators.createValidator(PDFAFlavour.PDFA_1_B, false, 1);
+					ValidationResult result1b = validator1b.validate(parser1b);
+					if (result1b.isCompliant()) {
+						return Boolean.TRUE;
+					}
 				}
 				unfilteredStream.reset();
-				ModelParser parser2b = ModelParser.createModelWithFlavour(unfilteredStream, PDFAFlavour.PDFA_2_B);
-				PDFAValidator validator2b = Validators.createValidator(PDFAFlavour.PDFA_2_B, false, 1);
-				ValidationResult result2b = validator2b.validate(parser2b);
-				parser1b.close();
-				parser2b.close();
-				return Boolean.valueOf(result2b.isCompliant());
+				try (ModelParser parser2b = ModelParser.createModelWithFlavour(unfilteredStream,
+						PDFAFlavour.PDFA_2_B)) {
+					PDFAValidator validator2b = Validators.createValidator(PDFAFlavour.PDFA_2_B, false, 1);
+					ValidationResult result2b = validator2b.validate(parser2b);
+					return Boolean.valueOf(result2b.isCompliant());
+				}
 			} catch (Throwable e) {
 				LOGGER.debug("Exception during validation of embedded file", e);
 				return Boolean.FALSE;

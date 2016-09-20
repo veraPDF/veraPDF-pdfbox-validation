@@ -22,9 +22,9 @@ import java.util.*;
  */
 public class PBoxPDType3Font extends PBoxPDSimpleFont implements PDType3Font {
 
-    public static final String TYPE3_FONT_TYPE = "PDType3Font";
+	public static final String TYPE3_FONT_TYPE = "PDType3Font";
 
-    public static final String CHAR_STRINGS = "charStrings";
+	public static final String CHAR_STRINGS = "charStrings";
 
 	private final PDInheritableResources resources;
 
@@ -33,7 +33,8 @@ public class PBoxPDType3Font extends PBoxPDSimpleFont implements PDType3Font {
 
 	private Map<String, PDContentStream> charStrings = null;
 
-	public PBoxPDType3Font(PDFontLike font, RenderingMode renderingMode, PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
+	public PBoxPDType3Font(PDFontLike font, RenderingMode renderingMode, PDInheritableResources resources,
+			PDDocument document, PDFAFlavour flavour) {
 		super(font, renderingMode, TYPE3_FONT_TYPE);
 		this.resources = resources;
 		this.document = document;
@@ -45,20 +46,20 @@ public class PBoxPDType3Font extends PBoxPDSimpleFont implements PDType3Font {
 		return Boolean.FALSE;
 	}
 
-    @Override
-    public List<? extends Object> getLinkedObjects(String link) {
-        if (CHAR_STRINGS.equals(link)) {
-            return this.getCharStrings();
-        }
-        return super.getLinkedObjects(link);
-    }
+	@Override
+	public List<? extends Object> getLinkedObjects(String link) {
+		if (CHAR_STRINGS.equals(link)) {
+			return this.getCharStrings();
+		}
+		return super.getLinkedObjects(link);
+	}
 
-    private List<PDContentStream> getCharStrings() {
-        if (this.charStrings == null) {
+	private List<PDContentStream> getCharStrings() {
+		if (this.charStrings == null) {
 			parseCharStrings();
 		}
 		return new ArrayList<>(this.charStrings.values());
-    }
+	}
 
 	public Map<String, PDContentStream> getCharProcStreams() {
 		if (this.charStrings == null) {
@@ -68,25 +69,20 @@ public class PBoxPDType3Font extends PBoxPDSimpleFont implements PDType3Font {
 	}
 
 	public Encoding getEncodingObject() {
-		if (this.pdFontLike instanceof PDSimpleFont) {
-			return ((PDSimpleFont) this.pdFontLike).getEncoding();
-		} else {
-			return null;
-		}
+		return (this.pdFontLike instanceof PDSimpleFont) ? ((PDSimpleFont) this.pdFontLike).getEncoding() : null;
 	}
 
 	private void parseCharStrings() {
-		COSDictionary charProcDict = ((org.apache.pdfbox.pdmodel.font.PDType3Font) this.pdFontLike)
-				.getCharProcs();
+		COSDictionary charProcDict = ((org.apache.pdfbox.pdmodel.font.PDType3Font) this.pdFontLike).getCharProcs();
 		if (charProcDict != null) {
 			Set<COSName> keySet = charProcDict.keySet();
 			Map<String, PDContentStream> map = new HashMap<>(keySet.size());
 			for (COSName cosName : keySet) {
 				PDType3CharProc charProc = ((org.apache.pdfbox.pdmodel.font.PDType3Font) this.pdFontLike)
 						.getCharProc(cosName);
-				PBoxPDContentStream contentStream =
-						new PBoxPDContentStream(charProc, this.resources, this.document, this.flavour);
-				map.put(cosName.getName(), contentStream);
+				PBoxPDContentStream pdContentStream = new PBoxPDContentStream(charProc, this.resources, this.document,
+						this.flavour);
+				map.put(cosName.getName(), pdContentStream);
 			}
 			this.charStrings = Collections.unmodifiableMap(map);
 		} else {

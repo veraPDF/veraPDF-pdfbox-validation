@@ -45,11 +45,9 @@ public abstract class PBoxPDFont extends PBoxPDResources implements PDFont {
 	public String getType() {
 		String type = null;
 		if (this.pdFontLike instanceof org.apache.pdfbox.pdmodel.font.PDFont) {
-			type = ((org.apache.pdfbox.pdmodel.font.PDFont) this.pdFontLike)
-					.getType();
+			type = ((org.apache.pdfbox.pdmodel.font.PDFont) this.pdFontLike).getType();
 		} else if (this.pdFontLike instanceof PDCIDFont) {
-			type = ((PDCIDFont) this.pdFontLike).getCOSObject().getNameAsString(
-					COSName.TYPE);
+			type = ((PDCIDFont) this.pdFontLike).getCOSObject().getNameAsString(COSName.TYPE);
 		}
 		return type;
 	}
@@ -63,11 +61,9 @@ public abstract class PBoxPDFont extends PBoxPDResources implements PDFont {
 	public String getSubtype() {
 		String subtype = null;
 		if (this.pdFontLike instanceof org.apache.pdfbox.pdmodel.font.PDFont) {
-			subtype = ((org.apache.pdfbox.pdmodel.font.PDFont) this.pdFontLike)
-					.getSubType();
+			subtype = ((org.apache.pdfbox.pdmodel.font.PDFont) this.pdFontLike).getSubType();
 		} else if (this.pdFontLike instanceof PDCIDFont) {
-			subtype = ((PDCIDFont) this.pdFontLike).getCOSObject().getNameAsString(
-					COSName.SUBTYPE);
+			subtype = ((PDCIDFont) this.pdFontLike).getCOSObject().getNameAsString(COSName.SUBTYPE);
 		}
 		return subtype;
 	}
@@ -86,45 +82,43 @@ public abstract class PBoxPDFont extends PBoxPDResources implements PDFont {
 	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
-			case FONT_FILE:
-				return this.getFontFile();
-			case BASE_FONT:
-				return this.getBaseFont();
-			default:
-				return super.getLinkedObjects(link);
+		case FONT_FILE:
+			return this.getFontFile();
+		case BASE_FONT:
+			return this.getBaseFont();
+		default:
+			return super.getLinkedObjects(link);
 		}
 	}
 
 	private List<FontProgram> getFontFile() {
-		if (!getSubtype().equals(FontFactory.TYPE_3)
-				&& (this.pdFontLike.isEmbedded())) {
+		if (!getSubtype().equals(FontFactory.TYPE_3) && (this.pdFontLike.isEmbedded())) {
 			if (getSubtype().equals(FontFactory.TRUE_TYPE)) {
 				PBoxTrueTypeFontProgram trueTypeFontProgram = new PBoxTrueTypeFontProgram(
 						((PDTrueTypeFont) this.pdFontLike).getTrueTypeFont(), getisSymbolic());
-				return this.getFontProgramList(trueTypeFontProgram);
-			} else {
-				PDFontDescriptor fontDescriptor = pdFontLike.getFontDescriptor();
-				PDStream fontFile;
-				if (getSubtype().equals(FontFactory.TYPE_1)) {
-					if (this.pdFontLike instanceof PDType1CFont) {
-						fontFile = fontDescriptor.getFontFile3();
-					} else {
-						fontFile = fontDescriptor.getFontFile();
-					}
-				} else if (getSubtype().equals(FontFactory.CID_FONT_TYPE_2)) {
-					fontFile = fontDescriptor.getFontFile2();
-				} else {
+				return PBoxPDFont.getFontProgramList(trueTypeFontProgram);
+			}
+			PDFontDescriptor fontDescriptor = pdFontLike.getFontDescriptor();
+			PDStream fontFile;
+			if (getSubtype().equals(FontFactory.TYPE_1)) {
+				if (this.pdFontLike instanceof PDType1CFont) {
 					fontFile = fontDescriptor.getFontFile3();
+				} else {
+					fontFile = fontDescriptor.getFontFile();
 				}
-				if (fontFile != null) {
-					return this.getFontProgramList(new PBoxFontProgram(fontFile));
-				}
+			} else if (getSubtype().equals(FontFactory.CID_FONT_TYPE_2)) {
+				fontFile = fontDescriptor.getFontFile2();
+			} else {
+				fontFile = fontDescriptor.getFontFile3();
+			}
+			if (fontFile != null) {
+				return PBoxPDFont.getFontProgramList(new PBoxFontProgram(fontFile));
 			}
 		}
 		return Collections.emptyList();
 	}
 
-	private List<FontProgram> getFontProgramList(FontProgram fontProgram) {
+	private static List<FontProgram> getFontProgramList(FontProgram fontProgram) {
 		List<FontProgram> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 		list.add(fontProgram);
 		return Collections.unmodifiableList(list);

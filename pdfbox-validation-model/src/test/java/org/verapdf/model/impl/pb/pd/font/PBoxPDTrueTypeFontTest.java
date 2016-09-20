@@ -18,12 +18,11 @@ import java.util.List;
 public class PBoxPDTrueTypeFontTest extends PBoxPDSimpleFontTest {
 
 	private static final String TRUETYPE_FONT_NAME = "TT0";
-	private static final String TRUETYPE_BASE_FONT = "CUQUFZ+GillSansMT";
 	private static final String TRUETYPE_SUBTYPE = "TrueType";
 
-	private static final Long WIDTHS_SIZE = 90l;
-	private static final Long FIRST_CHAR = 32l;
-	private static final Long LAST_CHAR = 121l;
+	private static final Long WIDTHS_SIZE = new Long(90l);
+	private static final Long FIRST_CHAR =  new Long(32l);
+	private static final Long LAST_CHAR =  new Long(121l);
 
 	@BeforeClass
 	public static void setUp() throws IOException, URISyntaxException {
@@ -38,7 +37,7 @@ public class PBoxPDTrueTypeFontTest extends PBoxPDSimpleFontTest {
 
 	@Override
 	public void testBaseFont() {
-		List<? extends Object> baseFonts = actual.getLinkedObjects(PBoxPDType1Font.BASE_FONT);
+		List<? extends Object> baseFonts = actual.getLinkedObjects(PBoxPDFont.BASE_FONT);
 		Object object = baseFonts.get(0);
 		Assert.assertEquals("CosUnicodeName", object.getObjectType());
 		Assert.assertEquals("CUQUFZ+GillSansMT", ((CosName) object).getinternalRepresentation());
@@ -66,7 +65,7 @@ public class PBoxPDTrueTypeFontTest extends PBoxPDSimpleFontTest {
 
 	@Override
 	public void testIsStandard() {
-		Assert.assertFalse(((PDSimpleFont) actual).getisStandard());
+		Assert.assertFalse(((PDSimpleFont) actual).getisStandard().booleanValue());
 	}
 
 	@Override
