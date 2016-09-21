@@ -1,6 +1,5 @@
 package org.verapdf.metadata.fixer.impl.pb;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.metadata.fixer.entity.PDFDocument;
 import org.verapdf.metadata.fixer.impl.pb.model.PDFDocumentImpl;
 import org.verapdf.metadata.fixer.utils.FixerConfig;
@@ -21,9 +20,9 @@ public class FixerConfigImpl implements FixerConfig {
 	private final ProcessedObjectsParser parser;
 	private final boolean fixFlavour;
 
-	private FixerConfigImpl(PDDocument document, ValidationResult validationResult,
+	private FixerConfigImpl(PDFDocument document, ValidationResult validationResult,
 							ProcessedObjectsParser parser, boolean fixFlavour) {
-		this.document = new PDFDocumentImpl(document);
+		this.document = document;
 		this.validationResult = validationResult;
 		this.parser = parser;
 		this.fixFlavour = fixFlavour;
@@ -63,21 +62,21 @@ public class FixerConfigImpl implements FixerConfig {
 			throw new IllegalArgumentException("Input stream of source document can not be null");
 		}
 		try {
-			return getFixerConfig(PDDocument.load(toFix, false, true), result, parser, fixFlavour);
+			return getFixerConfig(new PDFDocumentImpl(toFix), result, parser, fixFlavour);
 		} catch (IOException e) {
 			throw new IllegalArgumentException("Can not load document from input stream", e);
 		}
 	}
 
-	public static FixerConfig getFixerConfig(PDDocument toFix, ValidationResult result) {
+	public static FixerConfig getFixerConfig(PDFDocument toFix, ValidationResult result) {
 		return getFixerConfig(toFix, result, XMLProcessedObjectsParser.getInstance());
 	}
 
-	public static FixerConfig getFixerConfig(PDDocument toFix, ValidationResult result, ProcessedObjectsParser parser) {
+	public static FixerConfig getFixerConfig(PDFDocument toFix, ValidationResult result, ProcessedObjectsParser parser) {
 		return getFixerConfig(toFix, result, parser, true);
 	}
 
-	public static FixerConfig getFixerConfig(PDDocument toFix, ValidationResult result,
+	public static FixerConfig getFixerConfig(PDFDocument toFix, ValidationResult result,
 											 ProcessedObjectsParser parser, boolean fixFlavour) {
 		if (toFix == null) {
 			throw new IllegalArgumentException("Document for fix can not be null");
