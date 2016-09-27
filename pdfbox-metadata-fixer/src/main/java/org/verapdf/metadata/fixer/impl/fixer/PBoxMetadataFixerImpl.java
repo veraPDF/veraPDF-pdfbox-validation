@@ -15,7 +15,7 @@ import java.io.OutputStream;
  */
 public class PBoxMetadataFixerImpl extends MetadataFixerImpl {
 
-	PBoxMetadataFixerImpl() {
+	public PBoxMetadataFixerImpl() {
 
 	}
 

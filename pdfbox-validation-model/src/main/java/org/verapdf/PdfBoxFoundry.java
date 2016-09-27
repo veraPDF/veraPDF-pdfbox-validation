@@ -9,6 +9,7 @@ import java.io.InputStream;
 import org.verapdf.core.EncryptedPdfException;
 import org.verapdf.core.ModelParsingException;
 import org.verapdf.metadata.fixer.entity.PDFDocument;
+import org.verapdf.metadata.fixer.impl.fixer.PBoxMetadataFixerImpl;
 import org.verapdf.metadata.fixer.impl.pb.model.PDFDocumentImpl;
 import org.verapdf.metadata.fixer.utils.FixerConfig;
 import org.verapdf.model.ModelParser;
@@ -46,7 +47,6 @@ public class PdfBoxFoundry implements VeraPDFFoundry {
 	 */
 	@Override
 	public PDFParser newPdfParser(InputStream pdfStream) throws ModelParsingException, EncryptedPdfException {
-		// TODO Auto-generated method stub
 		return newPdfParser(pdfStream, PDFAFlavour.AUTO);
 	}
 
@@ -56,7 +56,6 @@ public class PdfBoxFoundry implements VeraPDFFoundry {
 	@Override
 	public PDFParser newPdfParser(InputStream pdfStream, PDFAFlavour flavour)
 			throws ModelParsingException, EncryptedPdfException {
-		// TODO Auto-generated method stub
 		return ModelParser.createModelWithFlavour(pdfStream, flavour);
 	}
 
@@ -64,28 +63,8 @@ public class PdfBoxFoundry implements VeraPDFFoundry {
 	 * @see org.verapdf.pdfa.VeraPDFFoundry#newMetadataFixer(org.verapdf.metadata.fixer.utils.FixerConfig)
 	 */
 	@Override
-	public MetadataFixer newMetadataFixer(FixerConfig config) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * @see org.verapdf.pdfa.VeraPDFFoundry#newFixerConfig(org.verapdf.metadata.fixer.entity.PDFDocument, org.verapdf.pdfa.results.ValidationResult)
-	 */
-	@Override
-	public FixerConfig newFixerConfig(PDFDocument pdfDocument, ValidationResult validationResult) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * @see org.verapdf.pdfa.VeraPDFFoundry#newPdfDocument(java.io.InputStream, org.verapdf.pdfa.flavours.PDFAFlavour)
-	 */
-	@Override
-	public PDFDocument newPdfDocument(InputStream pdfStream, PDFAFlavour flavour)
-			throws ModelParsingException, EncryptedPdfException, IOException {
-		// TODO Auto-generated method stub
-		return new PDFDocumentImpl(pdfStream);
+	public MetadataFixer newMetadataFixer() {
+		return new PBoxMetadataFixerImpl();
 	}
 
 }
