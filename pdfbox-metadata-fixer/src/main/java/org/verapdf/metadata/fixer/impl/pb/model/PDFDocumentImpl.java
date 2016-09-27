@@ -1,9 +1,22 @@
 package org.verapdf.metadata.fixer.impl.pb.model;
 
-import com.adobe.xmp.XMPException;
-import com.adobe.xmp.impl.VeraPDFMeta;
+import static org.verapdf.pdfa.results.MetadataFixerResult.RepairStatus.FIX_ERROR;
+import static org.verapdf.pdfa.results.MetadataFixerResult.RepairStatus.NO_ACTION;
+import static org.verapdf.pdfa.results.MetadataFixerResult.RepairStatus.SUCCESS;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
-import org.apache.pdfbox.cos.*;
+import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSObject;
+import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
@@ -14,12 +27,8 @@ import org.verapdf.metadata.fixer.entity.PDFDocument;
 import org.verapdf.pdfa.results.MetadataFixerResult;
 import org.verapdf.pdfa.results.MetadataFixerResultImpl;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.verapdf.pdfa.results.MetadataFixerResult.RepairStatus.*;
+import com.adobe.xmp.XMPException;
+import com.adobe.xmp.impl.VeraPDFMeta;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -32,6 +41,18 @@ public class PDFDocumentImpl implements PDFDocument {
 	private MetadataImpl metadata;
 	private InfoDictionaryImpl info;
 	private boolean isUnfiltered = false;
+
+	/**
+	 * Create a new PDFDocumentImpl from the passed InputStream
+	 * 
+	 * @param pdfStream
+	 *            an {@link java.io.InputStream} to be parsed as a PDF Document.
+	 * @throws IOException
+	 *             when there's a problem reading or parsing the file.
+	 */
+	public PDFDocumentImpl(InputStream pdfStream) throws IOException {
+		this(PDDocument.load(pdfStream, false, true));
+	}
 
 	/**
 	 * @param document
