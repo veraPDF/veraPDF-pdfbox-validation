@@ -1,32 +1,36 @@
 package org.verapdf.model;
 
-import com.adobe.xmp.XMPException;
-import com.adobe.xmp.impl.VeraPDFMeta;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
+import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
+import org.verapdf.core.EncryptedPdfException;
 import org.verapdf.core.ModelParsingException;
 import org.verapdf.features.FeaturesExtractor;
 import org.verapdf.features.config.FeaturesConfig;
 import org.verapdf.features.pb.PBFeatureParser;
 import org.verapdf.features.tools.FeaturesCollection;
+import org.verapdf.metadata.fixer.entity.PDFDocument;
+import org.verapdf.metadata.fixer.impl.pb.model.PDFDocumentImpl;
 import org.verapdf.model.impl.pb.containers.StaticContainers;
 import org.verapdf.model.impl.pb.cos.PBCosDocument;
 import org.verapdf.pdfa.PDFParser;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
+import com.adobe.xmp.XMPException;
+import com.adobe.xmp.impl.VeraPDFMeta;
 
 /**
  * Current class is entry point to model implementation.
  *
  * @author Evgeniy Muravitskiy
  */
-public final class ModelParser implements PDFParser, Closeable {
+public final class ModelParser implements PDFParser {
 
     private static final Logger LOGGER = Logger.getLogger(ModelParser.class);
 
@@ -42,10 +46,12 @@ public final class ModelParser implements PDFParser, Closeable {
     }
 
     
-    public static ModelParser createModelWithFlavour(InputStream toLoad, PDFAFlavour flavour) throws ModelParsingException {
+    public static ModelParser createModelWithFlavour(InputStream toLoad, PDFAFlavour flavour) throws ModelParsingException, EncryptedPdfException {
         try {
             cleanUp();
             return new ModelParser(toLoad, (flavour == PDFAFlavour.NO_FLAVOUR || flavour == null) ? DEFAULT_FLAVOUR : flavour);
+        } catch (InvalidPasswordException excep) {
+            throw new EncryptedPdfException("The PDF stream appears to be encrypted.", excep);
         } catch (IOException excep) {
             throw new ModelParsingException("Couldn't parse stream", excep);
         }
@@ -90,6 +96,9 @@ public final class ModelParser implements PDFParser, Closeable {
         return this.document;
     }
 
+    public PDFDocument getPDFDocument() {
+    	return new PDFDocumentImpl(this.document);
+    }
     /**
      * Method return root object of model implementation from pdf box model
      * together with the hierarchy.
