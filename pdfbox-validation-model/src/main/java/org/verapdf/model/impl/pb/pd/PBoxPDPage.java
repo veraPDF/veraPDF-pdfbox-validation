@@ -92,8 +92,11 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 
 	@Override
 	public Boolean getcontainsTransparency() {
+		if (this.flavour.getPart().getPartNumber() == 1) {
+			throw new IllegalStateException("Contains transparency method mast not be called in case of PDF/A-1 flavours");
+		}
 		if (this.contentStreams == null) {
-			parseContentStream();
+			this.contentStreams = parseContentStream();
 		}
 		if (this.annotations == null) {
 			this.annotations = parseAnnotataions();
@@ -168,21 +171,27 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 	}
 
 	private List<PDContentStream> getContentStream() {
+		if (this.flavour == null || this.flavour.getPart().getPartNumber() == 1) {
+			return parseContentStream();
+		}
 		if (this.contentStreams == null) {
-			parseContentStream();
+			this.contentStreams = parseContentStream();
 		}
 		return this.contentStreams;
 	}
 
-	private void parseContentStream() {
-		this.contentStreams = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+	private List<PDContentStream> parseContentStream() {
+		List<PDContentStream> contentStreams = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 		org.apache.pdfbox.pdmodel.PDPage page =
 				(org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject;
 		PDInheritableResources resources = PDInheritableResources
 				.getInstance(page.getInheritedResources(), page.getPageResources());
 		PBoxPDContentStream contentStream = new PBoxPDContentStream(page, resources, this.document, this.flavour);
 		contentStreams.add(contentStream);
-		this.containsTransparency = contentStream.isContainsTransparency();
+		if (this.flavour != null && this.flavour.getPart().getPartNumber() != 1) {
+			this.containsTransparency = contentStream.isContainsTransparency();
+		}
+		return contentStreams;
 	}
 
 	private List<PDAction> getActions() {
@@ -205,6 +214,9 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 	}
 
 	private List<PDAnnot> getAnnotations() {
+		if (this.flavour == null || this.flavour.getPart().getPartNumber() == 1) {
+			return parseAnnotataions();
+		}
 		if (this.annotations == null) {
 			this.annotations = parseAnnotataions();
 		}
@@ -236,7 +248,9 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 		for (PDAnnotation annotation : pdfboxAnnotations) {
 			if (annotation != null) {
 				PBoxPDAnnot annot = new PBoxPDAnnot(annotation, pageResources, this.document, this.flavour);
-				this.containsTransparency |= annot.isContainsTransparency();
+				if (this.flavour != null && this.flavour.getPart().getPartNumber() != 1) {
+					this.containsTransparency |= annot.isContainsTransparency();
+				}
 				annotations.add(annot);
 			}
 		}
