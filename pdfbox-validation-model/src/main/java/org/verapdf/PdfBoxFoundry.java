@@ -3,22 +3,17 @@
  */
 package org.verapdf;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.verapdf.core.EncryptedPdfException;
 import org.verapdf.core.ModelParsingException;
-import org.verapdf.metadata.fixer.entity.PDFDocument;
 import org.verapdf.metadata.fixer.impl.fixer.PBoxMetadataFixerImpl;
-import org.verapdf.metadata.fixer.impl.pb.model.PDFDocumentImpl;
-import org.verapdf.metadata.fixer.utils.FixerConfig;
 import org.verapdf.model.ModelParser;
 import org.verapdf.pdfa.MetadataFixer;
 import org.verapdf.pdfa.PDFParser;
 import org.verapdf.pdfa.VeraPDFFoundry;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
-import org.verapdf.pdfa.results.ValidationResult;
-import org.verapdf.pdfa.validators.ReferenceBatchValidator;
+import org.verapdf.pdfa.validation.validators.ReferenceBatchValidator;
 import org.verapdf.processor.ProcessorImpl;
 
 /**

@@ -10,7 +10,7 @@ import org.verapdf.model.external.EmbeddedFile;
 import org.verapdf.pdfa.PDFAValidator;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.results.ValidationResult;
-import org.verapdf.pdfa.validators.Validators;
+import org.verapdf.pdfa.validation.validators.Validators;
 
 import java.io.InputStream;
 
