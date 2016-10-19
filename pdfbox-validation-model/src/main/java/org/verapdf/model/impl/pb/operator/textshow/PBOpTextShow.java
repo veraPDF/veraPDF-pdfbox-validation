@@ -1,21 +1,14 @@
 package org.verapdf.model.impl.pb.operator.textshow;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.font.PDFontLike;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.pdmodel.font.PDType1CFont;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDAbstractPattern;
 import org.apache.pdfbox.preflight.font.container.FontContainer;
 import org.verapdf.model.baselayer.Object;
@@ -29,6 +22,11 @@ import org.verapdf.model.pdlayer.PDFont;
 import org.verapdf.model.tools.FontHelper;
 import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * Base class for all text show operators
@@ -112,6 +110,7 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 
 	private List<PBGlyph> getUsedGlyphs() {
 		org.apache.pdfbox.pdmodel.font.PDFont font = getFontFromResources();
+		boolean fontProgramIsInvalid = font.isDamaged() || fontProgramIsNull(font);
 		FontContainer<? extends PDFontLike> fontContainer = FontHelper.getFontContainer(font);
 
 		if (fontContainer == null) {
@@ -124,15 +123,19 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 			try (InputStream inputStream = new ByteArrayInputStream(string)) {
 				while (inputStream.available() > 0) {
 					int code = font.readCode(inputStream);
-					boolean glyphPresent = fontContainer.hasGlyph(code);
-					boolean widthsConsistent = this.checkWidths(code);
+					Boolean glyphPresent = null;
+					Boolean widthsConsistent = null ;
+					if(!fontProgramIsInvalid) {
+						glyphPresent = fontContainer.hasGlyph(code);
+						widthsConsistent = this.checkWidths(code);
+					}
 					PBGlyph glyph;
 					if (font.getSubType().equals(FontFactory.TYPE_0)) {
 						int CID = ((PDType0Font) font).codeToCID(code);
-						glyph = new PBCIDGlyph(Boolean.valueOf(glyphPresent), Boolean.valueOf(widthsConsistent), font, code, CID,
+						glyph = new PBCIDGlyph(glyphPresent, widthsConsistent, font, code, CID,
 								this.state.getRenderingMode().intValue());
 					} else {
-						glyph = new PBGlyph(Boolean.valueOf(glyphPresent), Boolean.valueOf(widthsConsistent), font, code,
+						glyph = new PBGlyph(glyphPresent, widthsConsistent, font, code,
 								this.state.getRenderingMode().intValue());
 					}
 					res.add(glyph);
@@ -269,6 +272,29 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 					e);
 			return null;
 		}
+	}
+
+	private static boolean fontProgramIsNull(org.apache.pdfbox.pdmodel.font.PDFont font) {
+		if (!font.getSubType().equals(FontFactory.TYPE_3) && (font.isEmbedded())) {
+			PDStream fontFile;
+			if (font.getSubType().equals(FontFactory.TYPE_1) ||
+					font.getSubType().equals(FontFactory.MM_TYPE_1)) {
+				if (font instanceof PDType1CFont) {
+					fontFile = font.getFontDescriptor().getFontFile3();
+				} else {
+					fontFile = font.getFontDescriptor().getFontFile();
+				}
+			} else if (font.getSubType().equals(FontFactory.CID_FONT_TYPE_2) ||
+					font.getSubType().equals(FontFactory.TRUE_TYPE)) {
+				fontFile = font.getFontDescriptor().getFontFile2();
+			} else {
+				fontFile = font.getFontDescriptor().getFontFile3();
+			}
+			if (fontFile != null) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }
