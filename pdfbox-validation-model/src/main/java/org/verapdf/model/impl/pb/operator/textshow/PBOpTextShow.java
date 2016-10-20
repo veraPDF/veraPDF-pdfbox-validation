@@ -6,9 +6,7 @@ import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.common.PDStream;
-import org.apache.pdfbox.pdmodel.font.PDFontLike;
-import org.apache.pdfbox.pdmodel.font.PDType0Font;
-import org.apache.pdfbox.pdmodel.font.PDType1CFont;
+import org.apache.pdfbox.pdmodel.font.*;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDAbstractPattern;
 import org.apache.pdfbox.preflight.font.container.FontContainer;
 import org.verapdf.model.baselayer.Object;
@@ -17,6 +15,7 @@ import org.verapdf.model.factory.font.FontFactory;
 import org.verapdf.model.factory.operator.GraphicState;
 import org.verapdf.model.impl.pb.operator.base.PBOperator;
 import org.verapdf.model.operator.OpTextShow;
+import org.verapdf.model.pdlayer.PDCIDFont;
 import org.verapdf.model.pdlayer.PDColorSpace;
 import org.verapdf.model.pdlayer.PDFont;
 import org.verapdf.model.tools.FontHelper;
@@ -275,6 +274,12 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 	}
 
 	private static boolean fontProgramIsNull(org.apache.pdfbox.pdmodel.font.PDFont font) {
+		if(font instanceof PDType3Font) {
+			return false;
+		}
+		if(font instanceof PDType0Font) {
+			return descendantFontProgramIsNull((PDType0Font) font);
+		}
 		if (!font.getSubType().equals(FontFactory.TYPE_3) && (font.isEmbedded())) {
 			PDStream fontFile;
 			if (font.getSubType().equals(FontFactory.TYPE_1) ||
@@ -293,6 +298,19 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 			if (fontFile != null) {
 				return false;
 			}
+		}
+		return true;
+	}
+
+	private static boolean descendantFontProgramIsNull(PDType0Font font) {
+		org.apache.pdfbox.pdmodel.font.PDCIDFont descendant = font.getDescendantFont();
+		if(descendant instanceof PDCIDFontType2) {
+			if(descendant.getFontDescriptor() != null) {
+				return descendant.getFontDescriptor().getFontFile3() == null &&
+						descendant.getFontDescriptor().getFontFile2() == null;
+			}
+		} else {
+			return descendant.getFontDescriptor().getFontFile3() == null;
 		}
 		return true;
 	}
