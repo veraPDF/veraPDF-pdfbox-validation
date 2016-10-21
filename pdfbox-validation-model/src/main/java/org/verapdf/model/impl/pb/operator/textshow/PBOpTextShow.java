@@ -276,11 +276,9 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 	private static boolean fontProgramIsNull(org.apache.pdfbox.pdmodel.font.PDFont font) {
 		if(font instanceof PDType3Font) {
 			return false;
-		}
-		if(font instanceof PDType0Font) {
+		} else if(font instanceof PDType0Font) {
 			return descendantFontProgramIsNull((PDType0Font) font);
-		}
-		if (!font.getSubType().equals(FontFactory.TYPE_3) && (font.isEmbedded())) {
+		} else if (!font.getSubType().equals(FontFactory.TYPE_3) && (font.isEmbedded())) {
 			PDStream fontFile;
 			if (font.getSubType().equals(FontFactory.TYPE_1) ||
 					font.getSubType().equals(FontFactory.MM_TYPE_1)) {
