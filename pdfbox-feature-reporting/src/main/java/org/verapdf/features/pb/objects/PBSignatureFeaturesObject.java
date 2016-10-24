@@ -1,18 +1,19 @@
 package org.verapdf.features.pb.objects;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
+import javax.xml.bind.DatatypeConverter;
+
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.verapdf.core.FeatureParsingException;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.FeaturesData;
-import org.verapdf.features.FeaturesObjectTypesEnum;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.SignatureFeaturesData;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
-
-import javax.xml.bind.DatatypeConverter;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 /**
  * @author Maksim Bezrukov
@@ -26,8 +27,8 @@ public class PBSignatureFeaturesObject implements IFeaturesObject {
     }
 
     @Override
-    public FeaturesObjectTypesEnum getType() {
-        return FeaturesObjectTypesEnum.SIGNATURE;
+    public FeatureObjectType getType() {
+        return FeatureObjectType.SIGNATURE;
     }
 
     @Override
@@ -50,7 +51,7 @@ public class PBSignatureFeaturesObject implements IFeaturesObject {
             PBCreateNodeHelper.addNotEmptyNode("reason", signature.getReason(), root);
             PBCreateNodeHelper.addNotEmptyNode("contactInfo", signature.getContactInfo(), root);
 
-            collection.addNewFeatureTree(FeaturesObjectTypesEnum.SIGNATURE, root);
+            collection.addNewFeatureTree(FeatureObjectType.SIGNATURE, root);
 
             return root;
         }

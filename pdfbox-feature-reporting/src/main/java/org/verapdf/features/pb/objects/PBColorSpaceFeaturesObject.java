@@ -6,7 +6,7 @@ import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.graphics.color.*;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesData;
-import org.verapdf.features.FeaturesObjectTypesEnum;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.ErrorsHelper;
@@ -53,11 +53,11 @@ public class PBColorSpaceFeaturesObject implements IFeaturesObject {
 	}
 
 	/**
-	 * @return DOCUMENT_SECURITY instance of the FeaturesObjectTypesEnum enumeration
+	 * @return DOCUMENT_SECURITY instance of the FeatureObjectType enumeration
 	 */
 	@Override
-	public FeaturesObjectTypesEnum getType() {
-		return FeaturesObjectTypesEnum.COLORSPACE;
+	public FeatureObjectType getType() {
+		return FeatureObjectType.COLORSPACE;
 	}
 
 	/**
@@ -82,12 +82,12 @@ public class PBColorSpaceFeaturesObject implements IFeaturesObject {
 			} else if (colorSpace instanceof PDICCBased) {
 				PDICCBased icc = (PDICCBased) colorSpace;
 				if (colorSpaceChild != null) {
-					FeatureTreeNode alt = FeatureTreeNode.createChildNode("alternate", root);
+					FeatureTreeNode alt = root.addChild("alternate");
 					alt.setAttribute(ID, colorSpaceChild);
 				}
-				FeatureTreeNode.createChildNode("components", root).setValue(String.valueOf(icc.getNumberOfComponents()));
+				root.addChild("components").setValue(String.valueOf(icc.getNumberOfComponents()));
 				if (iccProfileChild != null) {
-					FeatureTreeNode prof = FeatureTreeNode.createChildNode("iccProfile", root);
+					FeatureTreeNode prof = root.addChild("iccProfile");
 					prof.setAttribute(ID, iccProfileChild);
 				}
 			} else if (colorSpace instanceof PDIndexed) {
@@ -95,26 +95,26 @@ public class PBColorSpaceFeaturesObject implements IFeaturesObject {
 			} else if (colorSpace instanceof PDSeparation) {
 				PDSeparation sep = (PDSeparation) colorSpace;
 				if (colorSpaceChild != null) {
-					FeatureTreeNode alt = FeatureTreeNode.createChildNode("alternate", root);
+					FeatureTreeNode alt = root.addChild("alternate");
 					alt.setAttribute(ID, colorSpaceChild);
 				}
 				PBCreateNodeHelper.addNotEmptyNode("colorantName", sep.getColorantName(), root);
 			} else if (colorSpace instanceof PDDeviceN) {
 				PDDeviceN devN = (PDDeviceN) colorSpace;
 				if (colorSpaceChild != null) {
-					FeatureTreeNode alt = FeatureTreeNode.createChildNode("alternate", root);
+					FeatureTreeNode alt = root.addChild("alternate");
 					alt.setAttribute(ID, colorSpaceChild);
 				}
 				List<String> devNColorantNames = devN.getColorantNames();
 				if (devNColorantNames != null) {
-					FeatureTreeNode colorantNames = FeatureTreeNode.createChildNode("colorantNames", root);
+					FeatureTreeNode colorantNames = root.addChild("colorantNames");
 					for (String name : devNColorantNames) {
 						PBCreateNodeHelper.addNotEmptyNode("colorantName", name, colorantNames);
 					}
 				}
 			}
 
-			collection.addNewFeatureTree(FeaturesObjectTypesEnum.COLORSPACE, root);
+			collection.addNewFeatureTree(FeatureObjectType.COLORSPACE, root);
 			return root;
 		}
 
@@ -133,13 +133,12 @@ public class PBColorSpaceFeaturesObject implements IFeaturesObject {
 		PDIndexed index = (PDIndexed) colorSpace;
 
 		if (colorSpaceChild != null) {
-			FeatureTreeNode alt = FeatureTreeNode.createChildNode("base", root);
+			FeatureTreeNode alt = root.addChild("base");
 			alt.setAttribute(ID, colorSpaceChild);
 		}
 
 		if (index.getCOSObject() instanceof COSArray) {
-			FeatureTreeNode hival = FeatureTreeNode.createChildNode("hival",
-					root);
+			FeatureTreeNode hival = root.addChild("hival");
 			if (((COSArray) index.getCOSObject()).size() >= 3 &&
 					((COSArray) index.getCOSObject()).getObject(2) instanceof COSNumber) {
 				hival.setValue(String.valueOf(((COSNumber) ((COSArray) index.getCOSObject()).getObject(2)).intValue()));
@@ -149,8 +148,7 @@ public class PBColorSpaceFeaturesObject implements IFeaturesObject {
 						"Indexed color space has no element hival or hival is not a number");
 			}
 
-			FeatureTreeNode lookup = FeatureTreeNode.createChildNode("lookup",
-					root);
+			FeatureTreeNode lookup = root.addChild("lookup");
 			if (((COSArray) index.getCOSObject()).size() >= 4) {
 				byte[] lookupData = null;
 				COSBase lookupTable = ((COSArray) index.getCOSObject()).getObject(3);
@@ -190,23 +188,23 @@ public class PBColorSpaceFeaturesObject implements IFeaturesObject {
 	private void parseCIEDictionaryBased(FeatureTreeNode root) throws FeatureParsingException {
 		PDCIEDictionaryBasedColorSpace cie = (PDCIEDictionaryBasedColorSpace) colorSpace;
 
-		parseTristimulus(cie.getWhitepoint(), FeatureTreeNode.createChildNode("whitePoint", root));
-		parseTristimulus(cie.getBlackPoint(), FeatureTreeNode.createChildNode("blackPoint", root));
+		parseTristimulus(cie.getWhitepoint(), root.addChild("whitePoint"));
+		parseTristimulus(cie.getBlackPoint(), root.addChild("blackPoint"));
 
 		if (cie instanceof PDCalGray) {
 			PDCalGray calGray = (PDCalGray) cie;
-			FeatureTreeNode.createChildNode("gamma", root).setValue(String.valueOf(calGray.getGamma()));
+			root.addChild("gamma").setValue(String.valueOf(calGray.getGamma()));
 		} else if (cie instanceof PDCalRGB) {
 			PDCalRGB calRGB = (PDCalRGB) cie;
-			FeatureTreeNode gamma = FeatureTreeNode.createChildNode("gamma", root);
+			FeatureTreeNode gamma = root.addChild("gamma");
 			PDGamma pdGamma = calRGB.getGamma();
 			gamma.setAttribute("red", String.valueOf(pdGamma.getR()));
 			gamma.setAttribute("green", String.valueOf(pdGamma.getG()));
 			gamma.setAttribute("blue", String.valueOf(pdGamma.getB()));
-			parseFloatArray(calRGB.getMatrix(), FeatureTreeNode.createChildNode("matrix", root));
+			parseFloatArray(calRGB.getMatrix(), root.addChild("matrix"));
 		} else if (cie instanceof PDLab) {
 			PDLab lab = (PDLab) cie;
-			FeatureTreeNode range = FeatureTreeNode.createChildNode("range", root);
+			FeatureTreeNode range = root.addChild("range");
 			range.setAttribute("aMin", String.valueOf(lab.getARange().getMin()));
 			range.setAttribute("aMax", String.valueOf(lab.getARange().getMax()));
 			range.setAttribute("bMin", String.valueOf(lab.getBRange().getMin()));
@@ -217,7 +215,7 @@ public class PBColorSpaceFeaturesObject implements IFeaturesObject {
 
 	private static void parseFloatArray(float[] array, FeatureTreeNode parent) throws FeatureParsingException {
 		for (int i = 0; i < array.length; ++i) {
-			FeatureTreeNode element = FeatureTreeNode.createChildNode("element", parent);
+			FeatureTreeNode element = parent.addChild("element");
 			element.setAttribute("number", String.valueOf(i));
 			element.setAttribute("value", String.valueOf(array[i]));
 		}

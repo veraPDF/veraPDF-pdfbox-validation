@@ -7,7 +7,7 @@ import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesData;
-import org.verapdf.features.FeaturesObjectTypesEnum;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.ErrorsHelper;
@@ -36,11 +36,11 @@ public class PBOutputIntentsFeaturesObject implements IFeaturesObject {
 	}
 
 	/**
-	 * @return OUTPUTINTENT instance of the FeaturesObjectTypesEnum enumeration
+	 * @return OUTPUTINTENT instance of the FeatureObjectType enumeration
 	 */
 	@Override
-	public FeaturesObjectTypesEnum getType() {
-		return FeaturesObjectTypesEnum.OUTPUTINTENT;
+	public FeatureObjectType getType() {
+		return FeatureObjectType.OUTPUTINTENT;
 	}
 
 	/**
@@ -63,11 +63,11 @@ public class PBOutputIntentsFeaturesObject implements IFeaturesObject {
 			PBCreateNodeHelper.addNotEmptyNode("info", outInt.getInfo(), root);
 
 			if (iccProfileID != null) {
-				FeatureTreeNode destOutInt = FeatureTreeNode.createChildNode("destOutputIntent", root);
+				FeatureTreeNode destOutInt = root.addChild("destOutputIntent");
 				destOutInt.setAttribute("id", iccProfileID);
 			}
 
-			collection.addNewFeatureTree(FeaturesObjectTypesEnum.OUTPUTINTENT, root);
+			collection.addNewFeatureTree(FeatureObjectType.OUTPUTINTENT, root);
 
 			return root;
 		}
@@ -93,7 +93,7 @@ public class PBOutputIntentsFeaturesObject implements IFeaturesObject {
 			}
 
 			if (baseType != null) {
-				FeatureTreeNode type = FeatureTreeNode.createChildNode("subtype", root);
+				FeatureTreeNode type = root.addChild("subtype");
 				if (baseType instanceof COSName) {
 					type.setValue(((COSName) baseType).getName());
 				} else {

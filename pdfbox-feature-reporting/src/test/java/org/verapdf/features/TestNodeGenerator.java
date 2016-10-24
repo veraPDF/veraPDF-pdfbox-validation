@@ -32,15 +32,15 @@ public final class TestNodeGenerator {
 	public static FeatureTreeNode getFont0() throws FeatureParsingException {
 		FeatureTreeNode font = FeatureTreeNode.createRootNode("font");
 		font.setAttribute("id", "fntIndir90");
-		FeatureTreeNode type = FeatureTreeNode.createChildNode("type", font);
+		FeatureTreeNode type = font.addChild("type");
 		type.setValue("Type1");
-		FeatureTreeNode baseFont = FeatureTreeNode.createChildNode("baseFont", font);
+		FeatureTreeNode baseFont = font.addChild("baseFont");
 		baseFont.setValue("OLXYQW+MyriadPro-Regular");
-		FeatureTreeNode firstChar = FeatureTreeNode.createChildNode("firstChar", font);
+		FeatureTreeNode firstChar = font.addChild("firstChar");
 		firstChar.setValue("32");
-		FeatureTreeNode lastChar = FeatureTreeNode.createChildNode("lastChar", font);
+		FeatureTreeNode lastChar = font.addChild("lastChar");
 		lastChar.setValue("121");
-		FeatureTreeNode widths = FeatureTreeNode.createChildNode("widths", font);
+		FeatureTreeNode widths = font.addChild("widths");
 		String[] chars = new String[] { "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44",
 				"45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61",
 				"62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77", "78",
@@ -53,69 +53,69 @@ public final class TestNodeGenerator {
 				"0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "569", "0", "564", "501", "292", "0", "0", "0",
 				"0", "0", "0", "834", "555", "549", "569", "0", "0", "0", "331", "0", "0", "0", "0", "471" };
 		for (int i = 0; i < values.length; ++i) {
-			FeatureTreeNode width = FeatureTreeNode.createChildNode("width", widths);
+			FeatureTreeNode width = widths.addChild("width");
 			width.setValue(values[i]);
 			width.setAttribute("char", chars[i]);
 		}
-		FeatureTreeNode encoding = FeatureTreeNode.createChildNode("encoding", font);
+		FeatureTreeNode encoding = font.addChild("encoding");
 		encoding.setValue("WinAnsiEncoding");
-		FeatureTreeNode fontDescriptor = FeatureTreeNode.createChildNode("fontDescriptor", font);
-		FeatureTreeNode fontName = FeatureTreeNode.createChildNode("fontName", fontDescriptor);
+		FeatureTreeNode fontDescriptor = font.addChild("fontDescriptor");
+		FeatureTreeNode fontName = fontDescriptor.addChild("fontName");
 		fontName.setValue("OLXYQW+MyriadPro-Regular");
-		FeatureTreeNode fontFamily = FeatureTreeNode.createChildNode("fontFamily", fontDescriptor);
+		FeatureTreeNode fontFamily = fontDescriptor.addChild("fontFamily");
 		fontFamily.setValue("Myriad Pro");
-		FeatureTreeNode fontStretch = FeatureTreeNode.createChildNode("fontStretch", fontDescriptor);
+		FeatureTreeNode fontStretch = fontDescriptor.addChild("fontStretch");
 		fontStretch.setValue("Normal");
-		FeatureTreeNode fontWeight = FeatureTreeNode.createChildNode("fontWeight", fontDescriptor);
+		FeatureTreeNode fontWeight = fontDescriptor.addChild("fontWeight");
 		fontWeight.setValue("400.0");
-		FeatureTreeNode fixedPitch = FeatureTreeNode.createChildNode("fixedPitch", fontDescriptor);
+		FeatureTreeNode fixedPitch = fontDescriptor.addChild("fixedPitch");
 		fixedPitch.setValue("false");
-		FeatureTreeNode serif = FeatureTreeNode.createChildNode("serif", fontDescriptor);
+		FeatureTreeNode serif = fontDescriptor.addChild("serif");
 		serif.setValue("false");
-		FeatureTreeNode symbolic = FeatureTreeNode.createChildNode("symbolic", fontDescriptor);
+		FeatureTreeNode symbolic = fontDescriptor.addChild("symbolic");
 		symbolic.setValue("false");
-		FeatureTreeNode script = FeatureTreeNode.createChildNode("script", fontDescriptor);
+		FeatureTreeNode script = fontDescriptor.addChild("script");
 		script.setValue("false");
-		FeatureTreeNode nonsymbolic = FeatureTreeNode.createChildNode("nonsymbolic", fontDescriptor);
+		FeatureTreeNode nonsymbolic = fontDescriptor.addChild("nonsymbolic");
 		nonsymbolic.setValue("true");
-		FeatureTreeNode italic = FeatureTreeNode.createChildNode("italic", fontDescriptor);
+		FeatureTreeNode italic = fontDescriptor.addChild("italic");
 		italic.setValue("false");
-		FeatureTreeNode allCap = FeatureTreeNode.createChildNode("allCap", fontDescriptor);
+		FeatureTreeNode allCap = fontDescriptor.addChild("allCap");
 		allCap.setValue("false");
-		FeatureTreeNode smallCap = FeatureTreeNode.createChildNode("smallCap", fontDescriptor);
+		FeatureTreeNode smallCap = fontDescriptor.addChild("smallCap");
 		smallCap.setValue("false");
-		FeatureTreeNode forceBold = FeatureTreeNode.createChildNode("forceBold", fontDescriptor);
+		FeatureTreeNode forceBold = fontDescriptor.addChild("forceBold");
 		forceBold.setValue("false");
-		FeatureTreeNode fontBBox = FeatureTreeNode.createChildNode("fontBBox", fontDescriptor);
+		FeatureTreeNode fontBBox = fontDescriptor.addChild("fontBBox");
 		fontBBox.setAttribute("lly", "-250.0");
 		fontBBox.setAttribute("llx", "-157.0");
 		fontBBox.setAttribute("urx", "1126.0");
 		fontBBox.setAttribute("ury", "952.0");
-		FeatureTreeNode italicAngle = FeatureTreeNode.createChildNode("italicAngle", fontDescriptor);
+		FeatureTreeNode italicAngle = fontDescriptor.addChild("italicAngle");
 		italicAngle.setValue("0.0");
-		FeatureTreeNode ascent = FeatureTreeNode.createChildNode("ascent", fontDescriptor);
+		FeatureTreeNode ascent = fontDescriptor.addChild("ascent");
 		ascent.setValue("952.0");
-		FeatureTreeNode descent = FeatureTreeNode.createChildNode("descent", fontDescriptor);
+		FeatureTreeNode descent = fontDescriptor.addChild("descent");
 		descent.setValue("-250.0");
-		FeatureTreeNode leading = FeatureTreeNode.createChildNode("leading", fontDescriptor);
+		FeatureTreeNode leading = fontDescriptor.addChild("leading");
 		leading.setValue("0.0");
-		FeatureTreeNode capHeight = FeatureTreeNode.createChildNode("capHeight", fontDescriptor);
+		FeatureTreeNode capHeight = fontDescriptor.addChild("capHeight");
 		capHeight.setValue("674.0");
-		FeatureTreeNode xHeight = FeatureTreeNode.createChildNode("xHeight", fontDescriptor);
+		FeatureTreeNode xHeight = fontDescriptor.addChild("xHeight");
 		xHeight.setValue("484.0");
-		FeatureTreeNode stemV = FeatureTreeNode.createChildNode("stemV", fontDescriptor);
+		FeatureTreeNode stemV = fontDescriptor.addChild("stemV");
 		stemV.setValue("88.0");
-		FeatureTreeNode stemH = FeatureTreeNode.createChildNode("stemH", fontDescriptor);
+		FeatureTreeNode stemH = fontDescriptor.addChild("stemH");
 		stemH.setValue("0.0");
-		FeatureTreeNode averageWidth = FeatureTreeNode.createChildNode("averageWidth", fontDescriptor);
+		FeatureTreeNode averageWidth = fontDescriptor.addChild("averageWidth");
 		averageWidth.setValue("0.0");
-		FeatureTreeNode maxWidth = FeatureTreeNode.createChildNode("maxWidth", fontDescriptor);
+		FeatureTreeNode maxWidth = fontDescriptor.addChild("maxWidth");
 		maxWidth.setValue("0.0");
-		FeatureTreeNode missingWidth = FeatureTreeNode.createChildNode("missingWidth", fontDescriptor);
+		FeatureTreeNode missingWidth = fontDescriptor.addChild("missingWidth");
 		missingWidth.setValue("0.0");
-		FeatureTreeNode charSet = FeatureTreeNode.createChildNode("charSet", fontDescriptor);
+		FeatureTreeNode charSet = fontDescriptor.addChild("charSet");
 		charSet.setValue("/space/one/E/T/b/d/e/f/m/n/o/p/t/y");
-		FeatureTreeNode embedded = FeatureTreeNode.createChildNode("embedded", fontDescriptor);
+		FeatureTreeNode embedded = fontDescriptor.addChild("embedded");
 		embedded.setValue("true");
 		return font;
 	}
@@ -123,70 +123,70 @@ public final class TestNodeGenerator {
 	public static FeatureTreeNode getFont1() throws FeatureParsingException {
 		FeatureTreeNode font = FeatureTreeNode.createRootNode("font");
 		font.setAttribute("id", "fntDir32");
-		FeatureTreeNode type = FeatureTreeNode.createChildNode("type", font);
+		FeatureTreeNode type = font.addChild("type");
 		type.setValue("CIDFontType2");
-		FeatureTreeNode baseFont = FeatureTreeNode.createChildNode("baseFont", font);
+		FeatureTreeNode baseFont = font.addChild("baseFont");
 		baseFont.setValue("CBTOEA+ArialMT");
-		FeatureTreeNode defaultWidth = FeatureTreeNode.createChildNode("defaultWidth", font);
+		FeatureTreeNode defaultWidth = font.addChild("defaultWidth");
 		defaultWidth.setValue("750");
-		FeatureTreeNode cidSystemInfo = FeatureTreeNode.createChildNode("cidSystemInfo", font);
-		FeatureTreeNode registry = FeatureTreeNode.createChildNode("registry", cidSystemInfo);
+		FeatureTreeNode cidSystemInfo = font.addChild("cidSystemInfo");
+		FeatureTreeNode registry = cidSystemInfo.addChild("registry");
 		registry.setValue("Adobe");
-		FeatureTreeNode ordering = FeatureTreeNode.createChildNode("ordering", cidSystemInfo);
+		FeatureTreeNode ordering = cidSystemInfo.addChild("ordering");
 		ordering.setValue("Identity");
-		FeatureTreeNode supplement = FeatureTreeNode.createChildNode("supplement", cidSystemInfo);
+		FeatureTreeNode supplement = cidSystemInfo.addChild("supplement");
 		supplement.setValue("0");
-		FeatureTreeNode fontDescriptor = FeatureTreeNode.createChildNode("fontDescriptor", font);
-		FeatureTreeNode fontName = FeatureTreeNode.createChildNode("fontName", fontDescriptor);
+		FeatureTreeNode fontDescriptor = font.addChild("fontDescriptor");
+		FeatureTreeNode fontName = fontDescriptor.addChild("fontName");
 		fontName.setValue("Arial");
-		FeatureTreeNode fontWeight = FeatureTreeNode.createChildNode("fontWeight", fontDescriptor);
+		FeatureTreeNode fontWeight = fontDescriptor.addChild("fontWeight");
 		fontWeight.setValue("0.0");
-		FeatureTreeNode fixedPitch = FeatureTreeNode.createChildNode("fixedPitch", fontDescriptor);
+		FeatureTreeNode fixedPitch = fontDescriptor.addChild("fixedPitch");
 		fixedPitch.setValue("false");
-		FeatureTreeNode serif = FeatureTreeNode.createChildNode("serif", fontDescriptor);
+		FeatureTreeNode serif = fontDescriptor.addChild("serif");
 		serif.setValue("false");
-		FeatureTreeNode symbolic = FeatureTreeNode.createChildNode("symbolic", fontDescriptor);
+		FeatureTreeNode symbolic = fontDescriptor.addChild("symbolic");
 		symbolic.setValue("false");
-		FeatureTreeNode script = FeatureTreeNode.createChildNode("script", fontDescriptor);
+		FeatureTreeNode script = fontDescriptor.addChild("script");
 		script.setValue("false");
-		FeatureTreeNode nonsymbolic = FeatureTreeNode.createChildNode("nonsymbolic", fontDescriptor);
+		FeatureTreeNode nonsymbolic = fontDescriptor.addChild("nonsymbolic");
 		nonsymbolic.setValue("true");
-		FeatureTreeNode italic = FeatureTreeNode.createChildNode("italic", fontDescriptor);
+		FeatureTreeNode italic = fontDescriptor.addChild("italic");
 		italic.setValue("false");
-		FeatureTreeNode allCap = FeatureTreeNode.createChildNode("allCap", fontDescriptor);
+		FeatureTreeNode allCap = fontDescriptor.addChild("allCap");
 		allCap.setValue("false");
-		FeatureTreeNode smallCap = FeatureTreeNode.createChildNode("smallCap", fontDescriptor);
+		FeatureTreeNode smallCap = fontDescriptor.addChild("smallCap");
 		smallCap.setValue("false");
-		FeatureTreeNode forceBold = FeatureTreeNode.createChildNode("forceBold", fontDescriptor);
+		FeatureTreeNode forceBold = fontDescriptor.addChild("forceBold");
 		forceBold.setValue("false");
-		FeatureTreeNode fontBBox = FeatureTreeNode.createChildNode("fontBBox", fontDescriptor);
+		FeatureTreeNode fontBBox = fontDescriptor.addChild("fontBBox");
 		fontBBox.setAttribute("lly", "-325.0");
 		fontBBox.setAttribute("llx", "-665.0");
 		fontBBox.setAttribute("urx", "2000.0");
 		fontBBox.setAttribute("ury", "1006.0");
-		FeatureTreeNode italicAngle = FeatureTreeNode.createChildNode("italicAngle", fontDescriptor);
+		FeatureTreeNode italicAngle = fontDescriptor.addChild("italicAngle");
 		italicAngle.setValue("0.0");
-		FeatureTreeNode ascent = FeatureTreeNode.createChildNode("ascent", fontDescriptor);
+		FeatureTreeNode ascent = fontDescriptor.addChild("ascent");
 		ascent.setValue("728.0");
-		FeatureTreeNode descent = FeatureTreeNode.createChildNode("descent", fontDescriptor);
+		FeatureTreeNode descent = fontDescriptor.addChild("descent");
 		descent.setValue("-210.0");
-		FeatureTreeNode leading = FeatureTreeNode.createChildNode("leading", fontDescriptor);
+		FeatureTreeNode leading = fontDescriptor.addChild("leading");
 		leading.setValue("0.0");
-		FeatureTreeNode capHeight = FeatureTreeNode.createChildNode("capHeight", fontDescriptor);
+		FeatureTreeNode capHeight = fontDescriptor.addChild("capHeight");
 		capHeight.setValue("677.0");
-		FeatureTreeNode xHeight = FeatureTreeNode.createChildNode("xHeight", fontDescriptor);
+		FeatureTreeNode xHeight = fontDescriptor.addChild("xHeight");
 		xHeight.setValue("480.0");
-		FeatureTreeNode stemV = FeatureTreeNode.createChildNode("stemV", fontDescriptor);
+		FeatureTreeNode stemV = fontDescriptor.addChild("stemV");
 		stemV.setValue("88.0");
-		FeatureTreeNode stemH = FeatureTreeNode.createChildNode("stemH", fontDescriptor);
+		FeatureTreeNode stemH = fontDescriptor.addChild("stemH");
 		stemH.setValue("0.0");
-		FeatureTreeNode averageWidth = FeatureTreeNode.createChildNode("averageWidth", fontDescriptor);
+		FeatureTreeNode averageWidth = fontDescriptor.addChild("averageWidth");
 		averageWidth.setValue("0.0");
-		FeatureTreeNode maxWidth = FeatureTreeNode.createChildNode("maxWidth", fontDescriptor);
+		FeatureTreeNode maxWidth = fontDescriptor.addChild("maxWidth");
 		maxWidth.setValue("0.0");
-		FeatureTreeNode missingWidth = FeatureTreeNode.createChildNode("missingWidth", fontDescriptor);
+		FeatureTreeNode missingWidth = fontDescriptor.addChild("missingWidth");
 		missingWidth.setValue("0.0");
-		FeatureTreeNode embedded = FeatureTreeNode.createChildNode("embedded", fontDescriptor);
+		FeatureTreeNode embedded = fontDescriptor.addChild("embedded");
 		embedded.setValue("true");
 		return font;
 	}
@@ -194,74 +194,74 @@ public final class TestNodeGenerator {
 	public static FeatureTreeNode getFont2() throws FeatureParsingException {
 		FeatureTreeNode font = FeatureTreeNode.createRootNode("font");
 		font.setAttribute("id", "fntDir64");
-		FeatureTreeNode type = FeatureTreeNode.createChildNode("type", font);
+		FeatureTreeNode type = font.addChild("type");
 		type.setValue("CIDFontType0");
-		FeatureTreeNode baseFont = FeatureTreeNode.createChildNode("baseFont", font);
+		FeatureTreeNode baseFont = font.addChild("baseFont");
 		baseFont.setValue("IIWNIN+AdobeFanHeitiStd-Bold");
-		FeatureTreeNode defaultWidth = FeatureTreeNode.createChildNode("defaultWidth", font);
+		FeatureTreeNode defaultWidth = font.addChild("defaultWidth");
 		defaultWidth.setValue("1000");
-		FeatureTreeNode cidSystemInfo = FeatureTreeNode.createChildNode("cidSystemInfo", font);
-		FeatureTreeNode registry = FeatureTreeNode.createChildNode("registry", cidSystemInfo);
+		FeatureTreeNode cidSystemInfo = font.addChild("cidSystemInfo");
+		FeatureTreeNode registry = cidSystemInfo.addChild("registry");
 		registry.setValue("Adobe");
-		FeatureTreeNode ordering = FeatureTreeNode.createChildNode("ordering", cidSystemInfo);
+		FeatureTreeNode ordering = cidSystemInfo.addChild("ordering");
 		ordering.setValue("CNS1");
-		FeatureTreeNode supplement = FeatureTreeNode.createChildNode("supplement", cidSystemInfo);
+		FeatureTreeNode supplement = cidSystemInfo.addChild("supplement");
 		supplement.setValue("6");
-		FeatureTreeNode fontDescriptor = FeatureTreeNode.createChildNode("fontDescriptor", font);
-		FeatureTreeNode fontName = FeatureTreeNode.createChildNode("fontName", fontDescriptor);
+		FeatureTreeNode fontDescriptor = font.addChild("fontDescriptor");
+		FeatureTreeNode fontName = fontDescriptor.addChild("fontName");
 		fontName.setValue("IIWNIN+AdobeFanHeitiStd-Bold");
-		FeatureTreeNode fontFamily = FeatureTreeNode.createChildNode("fontFamily", fontDescriptor);
+		FeatureTreeNode fontFamily = fontDescriptor.addChild("fontFamily");
 		fontFamily.setValue("Adobe Fan Heiti Std B");
-		FeatureTreeNode fontStretch = FeatureTreeNode.createChildNode("fontStretch", fontDescriptor);
+		FeatureTreeNode fontStretch = fontDescriptor.addChild("fontStretch");
 		fontStretch.setValue("Normal");
-		FeatureTreeNode fontWeight = FeatureTreeNode.createChildNode("fontWeight", fontDescriptor);
+		FeatureTreeNode fontWeight = fontDescriptor.addChild("fontWeight");
 		fontWeight.setValue("600.0");
-		FeatureTreeNode fixedPitch = FeatureTreeNode.createChildNode("fixedPitch", fontDescriptor);
+		FeatureTreeNode fixedPitch = fontDescriptor.addChild("fixedPitch");
 		fixedPitch.setValue("false");
-		FeatureTreeNode serif = FeatureTreeNode.createChildNode("serif", fontDescriptor);
+		FeatureTreeNode serif = fontDescriptor.addChild("serif");
 		serif.setValue("false");
-		FeatureTreeNode symbolic = FeatureTreeNode.createChildNode("symbolic", fontDescriptor);
+		FeatureTreeNode symbolic = fontDescriptor.addChild("symbolic");
 		symbolic.setValue("true");
-		FeatureTreeNode script = FeatureTreeNode.createChildNode("script", fontDescriptor);
+		FeatureTreeNode script = fontDescriptor.addChild("script");
 		script.setValue("false");
-		FeatureTreeNode nonsymbolic = FeatureTreeNode.createChildNode("nonsymbolic", fontDescriptor);
+		FeatureTreeNode nonsymbolic = fontDescriptor.addChild("nonsymbolic");
 		nonsymbolic.setValue("false");
-		FeatureTreeNode italic = FeatureTreeNode.createChildNode("italic", fontDescriptor);
+		FeatureTreeNode italic = fontDescriptor.addChild("italic");
 		italic.setValue("false");
-		FeatureTreeNode allCap = FeatureTreeNode.createChildNode("allCap", fontDescriptor);
+		FeatureTreeNode allCap = fontDescriptor.addChild("allCap");
 		allCap.setValue("false");
-		FeatureTreeNode smallCap = FeatureTreeNode.createChildNode("smallCap", fontDescriptor);
+		FeatureTreeNode smallCap = fontDescriptor.addChild("smallCap");
 		smallCap.setValue("false");
-		FeatureTreeNode forceBold = FeatureTreeNode.createChildNode("forceBold", fontDescriptor);
+		FeatureTreeNode forceBold = fontDescriptor.addChild("forceBold");
 		forceBold.setValue("false");
-		FeatureTreeNode fontBBox = FeatureTreeNode.createChildNode("fontBBox", fontDescriptor);
+		FeatureTreeNode fontBBox = fontDescriptor.addChild("fontBBox");
 		fontBBox.setAttribute("lly", "-283.0");
 		fontBBox.setAttribute("llx", "-163.0");
 		fontBBox.setAttribute("urx", "1087.0");
 		fontBBox.setAttribute("ury", "967.0");
-		FeatureTreeNode italicAngle = FeatureTreeNode.createChildNode("italicAngle", fontDescriptor);
+		FeatureTreeNode italicAngle = fontDescriptor.addChild("italicAngle");
 		italicAngle.setValue("0.0");
-		FeatureTreeNode ascent = FeatureTreeNode.createChildNode("ascent", fontDescriptor);
+		FeatureTreeNode ascent = fontDescriptor.addChild("ascent");
 		ascent.setValue("967.0");
-		FeatureTreeNode descent = FeatureTreeNode.createChildNode("descent", fontDescriptor);
+		FeatureTreeNode descent = fontDescriptor.addChild("descent");
 		descent.setValue("-283.0");
-		FeatureTreeNode leading = FeatureTreeNode.createChildNode("leading", fontDescriptor);
+		FeatureTreeNode leading = fontDescriptor.addChild("leading");
 		leading.setValue("0.0");
-		FeatureTreeNode capHeight = FeatureTreeNode.createChildNode("capHeight", fontDescriptor);
+		FeatureTreeNode capHeight = fontDescriptor.addChild("capHeight");
 		capHeight.setValue("766.0");
-		FeatureTreeNode xHeight = FeatureTreeNode.createChildNode("xHeight", fontDescriptor);
+		FeatureTreeNode xHeight = fontDescriptor.addChild("xHeight");
 		xHeight.setValue("551.0");
-		FeatureTreeNode stemV = FeatureTreeNode.createChildNode("stemV", fontDescriptor);
+		FeatureTreeNode stemV = fontDescriptor.addChild("stemV");
 		stemV.setValue("116.0");
-		FeatureTreeNode stemH = FeatureTreeNode.createChildNode("stemH", fontDescriptor);
+		FeatureTreeNode stemH = fontDescriptor.addChild("stemH");
 		stemH.setValue("0.0");
-		FeatureTreeNode averageWidth = FeatureTreeNode.createChildNode("averageWidth", fontDescriptor);
+		FeatureTreeNode averageWidth = fontDescriptor.addChild("averageWidth");
 		averageWidth.setValue("0.0");
-		FeatureTreeNode maxWidth = FeatureTreeNode.createChildNode("maxWidth", fontDescriptor);
+		FeatureTreeNode maxWidth = fontDescriptor.addChild("maxWidth");
 		maxWidth.setValue("1000.0");
-		FeatureTreeNode missingWidth = FeatureTreeNode.createChildNode("missingWidth", fontDescriptor);
+		FeatureTreeNode missingWidth = fontDescriptor.addChild("missingWidth");
 		missingWidth.setValue("800.0");
-		FeatureTreeNode embedded = FeatureTreeNode.createChildNode("embedded", fontDescriptor);
+		FeatureTreeNode embedded = fontDescriptor.addChild("embedded");
 		embedded.setValue("true");
 
 		return font;
@@ -278,26 +278,26 @@ public final class TestNodeGenerator {
 		FeatureTreeNode root = FeatureTreeNode.createRootNode("pattern");
 		root.setAttribute(ID, "ptrnIndir49");
 		root.setAttribute("type", "tiling");
-		FeatureTreeNode.createChildNode("paintType", root).setValue("2");
-		FeatureTreeNode.createChildNode("tilingType", root).setValue("1");
-		FeatureTreeNode bbox = FeatureTreeNode.createChildNode("bbox", root);
+		root.addChild("paintType").setValue("2");
+		root.addChild("tilingType").setValue("1");
+		FeatureTreeNode bbox = root.addChild("bbox");
 		bbox.setAttribute(LLX, "0.0");
 		bbox.setAttribute(LLY, "0.0");
 		bbox.setAttribute(URX, "5.0");
 		bbox.setAttribute(URY, "10.0");
-		FeatureTreeNode.createChildNode("xStep", root).setValue("5.0");
-		FeatureTreeNode.createChildNode("yStep", root).setValue("10.0");
+		root.addChild("xStep").setValue("5.0");
+		root.addChild("yStep").setValue("10.0");
 		getStandartMatrix(root);
-		FeatureTreeNode resources = FeatureTreeNode.createChildNode("resources", root);
-		FeatureTreeNode colorSpaces = FeatureTreeNode.createChildNode("colorSpaces", resources);
-		FeatureTreeNode clr2 = FeatureTreeNode.createChildNode("colorSpace", colorSpaces);
+		FeatureTreeNode resources = root.addChild("resources");
+		FeatureTreeNode colorSpaces = resources.addChild("colorSpaces");
+		FeatureTreeNode clr2 = colorSpaces.addChild("colorSpace");
 		clr2.setAttribute(ID, "clrspDir19");
-		FeatureTreeNode clr1 = FeatureTreeNode.createChildNode("colorSpace", colorSpaces);
+		FeatureTreeNode clr1 = colorSpaces.addChild("colorSpace");
 		clr1.setAttribute(ID, "clrspDir20");
-		FeatureTreeNode xobjects = FeatureTreeNode.createChildNode("xobjects", resources);
-		FeatureTreeNode xobj2 = FeatureTreeNode.createChildNode("xobject", xobjects);
+		FeatureTreeNode xobjects = resources.addChild("xobjects");
+		FeatureTreeNode xobj2 = xobjects.addChild("xobject");
 		xobj2.setAttribute(ID, "xobjIndir60");
-		FeatureTreeNode xobj1 = FeatureTreeNode.createChildNode("xobject", xobjects);
+		FeatureTreeNode xobj1 = xobjects.addChild("xobject");
 		xobj1.setAttribute(ID, "xobjIndir56");
 		return root;
 	}
@@ -306,16 +306,16 @@ public final class TestNodeGenerator {
 		FeatureTreeNode root = FeatureTreeNode.createRootNode("pattern");
 		root.setAttribute(ID, "ptrnIndir50");
 		root.setAttribute("type", "shading");
-		FeatureTreeNode shading = FeatureTreeNode.createChildNode("shading", root);
+		FeatureTreeNode shading = root.addChild("shading");
 		shading.setAttribute(ID, "shdngIndir52");
 		getStandartMatrix(root);
-		FeatureTreeNode gst = FeatureTreeNode.createChildNode("graphicsState", root);
+		FeatureTreeNode gst = root.addChild("graphicsState");
 		gst.setAttribute(ID, "exGStIndir93");
 		return root;
 	}
 
 	public static void getStandartMatrix(FeatureTreeNode root) throws FeatureParsingException {
-		FeatureTreeNode matr = FeatureTreeNode.createChildNode("matrix", root);
+		FeatureTreeNode matr = root.addChild("matrix");
 		addElement("1", "1", "1.0", matr);
 		addElement("2", "1", "0.0", matr);
 		addElement("1", "2", "0.0", matr);
@@ -326,7 +326,7 @@ public final class TestNodeGenerator {
 
 	public static void addElement(String column, String row, String value, FeatureTreeNode parent)
 			throws FeatureParsingException {
-		FeatureTreeNode element = FeatureTreeNode.createChildNode("element", parent);
+		FeatureTreeNode element = parent.addChild("element");
 		element.setAttribute("column", column);
 		element.setAttribute("row", row);
 		element.setAttribute("value", value);
@@ -335,15 +335,15 @@ public final class TestNodeGenerator {
 	public static FeatureTreeNode getShading() throws FeatureParsingException {
 		FeatureTreeNode root = FeatureTreeNode.createRootNode("shading");
 		root.setAttribute(ID, "shdngIndir52");
-		FeatureTreeNode.createChildNode("shadingType", root).setValue("2");
-		FeatureTreeNode clr = FeatureTreeNode.createChildNode("colorSpace", root);
+		root.addChild("shadingType").setValue("2");
+		FeatureTreeNode clr = root.addChild("colorSpace");
 		clr.setAttribute(ID, "devrgb");
-		FeatureTreeNode bbox = FeatureTreeNode.createChildNode("bbox", root);
+		FeatureTreeNode bbox = root.addChild("bbox");;
 		bbox.setAttribute(LLX, "0.0");
 		bbox.setAttribute(LLY, "0.0");
 		bbox.setAttribute(URX, "400.0");
 		bbox.setAttribute(URY, "400.0");
-		FeatureTreeNode.createChildNode("antiAlias", root).setValue("false");
+		root.addChild("antiAlias").setValue("false");
 		return root;
 	}
 
@@ -364,15 +364,15 @@ public final class TestNodeGenerator {
 			String overprintForStroke, String overprintForFill, String fontChild) throws FeatureParsingException {
 		FeatureTreeNode root = FeatureTreeNode.createRootNode("graphicsState");
 		root.setAttribute(ID, id);
-		FeatureTreeNode.createChildNode("transparency", root).setValue(transparency);
-		FeatureTreeNode.createChildNode("strokeAdjustment", root).setValue(strokeAdjustment);
-		FeatureTreeNode.createChildNode("overprintForStroke", root).setValue(overprintForStroke);
-		FeatureTreeNode.createChildNode("overprintForFill", root).setValue(overprintForFill);
+		root.addChild("transparency").setValue(transparency);
+		root.addChild("strokeAdjustment").setValue(strokeAdjustment);
+		root.addChild("overprintForStroke").setValue(overprintForStroke);
+		root.addChild("overprintForFill").setValue(overprintForFill);
 
 		if (fontChild != null) {
-			FeatureTreeNode res = FeatureTreeNode.createChildNode("resources", root);
-			FeatureTreeNode fons = FeatureTreeNode.createChildNode("fonts", res);
-			FeatureTreeNode fon = FeatureTreeNode.createChildNode("font", fons);
+			FeatureTreeNode res = root.addChild("resources");
+			FeatureTreeNode fons = res.addChild("fonts");
+			FeatureTreeNode fon = fons.addChild("font");
 			fon.setAttribute(ID, fontChild);
 		}
 		return root;
@@ -388,11 +388,11 @@ public final class TestNodeGenerator {
 		addBox("trimBox", root);
 		addBox("bleedBox", root);
 		addBox("artBox", root);
-		FeatureTreeNode.createChildNode("rotation", root).setValue("0");
-		FeatureTreeNode.createChildNode("scaling", root).setValue("75.0");
-		FeatureTreeNode thumb = FeatureTreeNode.createChildNode("thumbnail", root);
+		root.addChild("rotation").setValue("0");
+		root.addChild("scaling").setValue("75.0");
+		FeatureTreeNode thumb = root.addChild("thumbnail");
 		thumb.setAttribute(ID, "xobjIndir126");
-		FeatureTreeNode.createChildMetadataNode("metadata", root)
+		root.addMetadataChild("metadata")
 				.setValue(DatatypeConverter.printHexBinary(getMetadataBytesFromFile("/page1_metadata_bytes.txt")));
 
 		List<String> annotations = new ArrayList<>();
@@ -405,7 +405,7 @@ public final class TestNodeGenerator {
 		annotations.add("annotIndir40");
 		makeList("annotation", annotations, root);
 
-		FeatureTreeNode resources = FeatureTreeNode.createChildNode("resources", root);
+		FeatureTreeNode resources = root.addChild("resources");
 
 		List<String> graphicsStates = new ArrayList<>();
 		graphicsStates.add("exGStIndir47");
@@ -471,15 +471,15 @@ public final class TestNodeGenerator {
 
 	public static void makeList(String name, List<String> values, FeatureTreeNode parent)
 			throws FeatureParsingException {
-		FeatureTreeNode head = FeatureTreeNode.createChildNode(name + "s", parent);
+		FeatureTreeNode head = parent.addChild(name + "s");
 		for (String el : values) {
-			FeatureTreeNode element = FeatureTreeNode.createChildNode(name, head);
+			FeatureTreeNode element = head.addChild(name);
 			element.setAttribute(ID, el);
 		}
 	}
 
 	public static void addBox(String name, FeatureTreeNode parent) throws FeatureParsingException {
-		FeatureTreeNode box = FeatureTreeNode.createChildNode(name, parent);
+		FeatureTreeNode box = parent.addChild(name);
 		box.setAttribute(LLX, "0.0");
 		box.setAttribute(LLY, "0.0");
 		box.setAttribute(URX, "499.977");
@@ -494,7 +494,7 @@ public final class TestNodeGenerator {
 		FeatureTreeNode root = FeatureTreeNode.createRootNode("annotation");
 		root.setAttribute(ID, id);
 		PBCreateNodeHelper.addNotEmptyNode("subType", subtype, root);
-		FeatureTreeNode rec = FeatureTreeNode.createChildNode("rectangle", root);
+		FeatureTreeNode rec = root.addChild("rectangle");
 		rec.setAttribute(LLX, llx);
 		rec.setAttribute(LLY, lly);
 		rec.setAttribute(URX, urx);
@@ -504,92 +504,92 @@ public final class TestNodeGenerator {
 		PBCreateNodeHelper.addNotEmptyNode("modifiedDate", modifiedDate, root);
 
 		if (xobj != null && !xobj.isEmpty()) {
-			FeatureTreeNode resources = FeatureTreeNode.createChildNode("resources", root);
+			FeatureTreeNode resources = root.addChild("resources");
 			for (String objID : xobj) {
-				FeatureTreeNode node = FeatureTreeNode.createChildNode("xobject", resources);
+				FeatureTreeNode node = resources.addChild("xobject");
 				node.setAttribute(ID, objID);
 			}
 		}
 		if (popup != null) {
-			FeatureTreeNode pop = FeatureTreeNode.createChildNode("popup", root);
+			FeatureTreeNode pop = root.addChild("popup");
 			pop.setAttribute(ID, popup);
 		}
 
 		if (red != null && green != null && blue != null && kayan != null) {
-			FeatureTreeNode color = FeatureTreeNode.createChildNode("color", root);
+			FeatureTreeNode color = root.addChild("color");
 			color.setAttribute("cyan", red);
 			color.setAttribute("magenta", green);
 			color.setAttribute("yellow", blue);
 			color.setAttribute("black", blue);
 		} else if (red != null && green != null && blue != null) {
-			FeatureTreeNode color = FeatureTreeNode.createChildNode("color", root);
+			FeatureTreeNode color = root.addChild("color");
 			color.setAttribute("red", red);
 			color.setAttribute("green", green);
 			color.setAttribute("blue", blue);
 		} else if (red != null) {
-			FeatureTreeNode color = FeatureTreeNode.createChildNode("color", root);
+			FeatureTreeNode color = root.addChild("color");
 			color.setAttribute("gray", red);
 		}
 
-		FeatureTreeNode.createChildNode("invisible", root).setValue(invisible);
-		FeatureTreeNode.createChildNode("hidden", root).setValue(hidden);
-		FeatureTreeNode.createChildNode("print", root).setValue(print);
-		FeatureTreeNode.createChildNode("noZoom", root).setValue(noZoom);
-		FeatureTreeNode.createChildNode("noRotate", root).setValue(noRotate);
-		FeatureTreeNode.createChildNode("noView", root).setValue(noView);
-		FeatureTreeNode.createChildNode("readOnly", root).setValue(readOnly);
-		FeatureTreeNode.createChildNode("locked", root).setValue(locked);
-		FeatureTreeNode.createChildNode("toggleNoView", root).setValue(toggleNoView);
-		FeatureTreeNode.createChildNode("lockedContents", root).setValue(lockedContents);
+		root.addChild("invisible").setValue(invisible);
+		root.addChild("hidden").setValue(hidden);
+		root.addChild("print").setValue(print);
+		root.addChild("noZoom").setValue(noZoom);
+		root.addChild("noRotate").setValue(noRotate);
+		root.addChild("noView").setValue(noView);
+		root.addChild("readOnly").setValue(readOnly);
+		root.addChild("locked").setValue(locked);
+		root.addChild("toggleNoView").setValue(toggleNoView);
+		root.addChild("lockedContents").setValue(lockedContents);
 
 		return root;
 	}
 
 	public static FeatureTreeNode getOutlines() throws FeatureParsingException {
 		FeatureTreeNode root = FeatureTreeNode.createRootNode("outlines");
-		FeatureTreeNode out1 = FeatureTreeNode.createChildNode("outline", root);
+		FeatureTreeNode out1 = root.addChild("outline");
 		makeOutline("1 - COLOR", "1.0", "0.0", "0.0", "false", "false", out1);
-		FeatureTreeNode out1_1 = FeatureTreeNode.createChildNode("outline", out1);
+		FeatureTreeNode out1_1 = out1.addChild("outline");
 		makeOutline("1.1", "0.0", "0.0", "1.0", "false", "false", out1_1);
-		FeatureTreeNode out2 = FeatureTreeNode.createChildNode("outline", root);
+		FeatureTreeNode out2 = root.addChild("outline");
 		makeOutline("2 - ITALIC", "0.0", "0.0", "0.0", "true", "false", out2);
-		FeatureTreeNode out2_2 = FeatureTreeNode.createChildNode("outline", out2);
+		FeatureTreeNode out2_2 = out2.addChild("outline");
 		makeOutline("2.2", "0.0", "0.0", "0.0", "true", "false", out2_2);
-		FeatureTreeNode out2_2_1 = FeatureTreeNode.createChildNode("outline", out2_2);
+		FeatureTreeNode out2_2_1 = out2_2.addChild("outline");
 		makeOutline("2.2.1", "0.0", "0.0", "0.0", "true", "false", out2_2_1);
-		FeatureTreeNode out2_2_2 = FeatureTreeNode.createChildNode("outline", out2_2);
+		FeatureTreeNode out2_2_2 = out2_2.addChild("outline");
 		makeOutline("2.2.2", "0.0", "0.0", "0.0", "true", "false", out2_2_2);
-		FeatureTreeNode out2_2_2_1 = FeatureTreeNode.createChildNode("outline", out2_2_2);
+		FeatureTreeNode out2_2_2_1 = out2_2_2.addChild("outline");
 		makeOutline("2.2.2.1", "0.0", "0.0", "0.0", "true", "false", out2_2_2_1);
-		FeatureTreeNode out2_1 = FeatureTreeNode.createChildNode("outline", out2);
+		FeatureTreeNode out2_1 = out2.addChild("outline");
 		makeOutline("2.1", "0.0", "0.0", "0.0", "true", "false", out2_1);
-		FeatureTreeNode out3 = FeatureTreeNode.createChildNode("outline", root);
+		FeatureTreeNode out3 = root.addChild("outline");
 		makeOutline("3 - BOLD", "0.0", "0.0", "0.0", "false", "true", out3);
-		FeatureTreeNode out4 = FeatureTreeNode.createChildNode("outline", root);
+		FeatureTreeNode out4 = root.addChild("outline");
 		makeOutline("4", "0.0", "0.0", "0.0", "false", "false", out4);
 		return root;
 	}
 
 	public static void makeOutline(String title, String red, String green, String blue, String italic, String bold,
 			FeatureTreeNode root) throws FeatureParsingException {
-		FeatureTreeNode.createChildNode("title", root).setValue(title);
-		FeatureTreeNode color = FeatureTreeNode.createChildNode("color", root);
+		root.addChild("title").setValue(title);
+		FeatureTreeNode color = root.addChild("color");
 		color.setAttribute("red", red);
 		color.setAttribute("green", green);
 		color.setAttribute("blue", blue);
-		FeatureTreeNode style = FeatureTreeNode.createChildNode("style", root);
+		FeatureTreeNode style = root.addChild("style");
 		style.setAttribute("italic", italic);
 		style.setAttribute("bold", bold);
 	}
 
 	public static FeatureTreeNode getOutputIntent() throws FeatureParsingException {
 		FeatureTreeNode root = FeatureTreeNode.createRootNode("outputIntent");
-		FeatureTreeNode.createChildNode("subtype", root).setValue("GTS_PDFA1");
-		FeatureTreeNode.createChildNode("outputCondition", root).setValue("SomeOutputCondition");
-		FeatureTreeNode.createChildNode("outputConditionIdentifier", root).setValue("Apple RGB");
-		FeatureTreeNode.createChildNode("registryName", root).setValue("fxqn:/us/va/reston/cnri/ietf/24/asdf%*.fred");
-		FeatureTreeNode.createChildNode("info", root).setValue("RGB");
-		FeatureTreeNode dest = FeatureTreeNode.createChildNode("destOutputIntent", root);
+		root.addChild("subtype").setValue("GTS_PDFA1");
+		root.addChild("outputCondition").setValue("SomeOutputCondition");
+		root.addChild("outputConditionIdentifier").setValue("Apple RGB");
+		root.addChild("registryName").setValue("fxqn:/us/va/reston/cnri/ietf/24/asdf%*.fred");
+		root.addChild("info").setValue("RGB");
+		FeatureTreeNode dest = root.addChild("destOutputIntent");
 		dest.setAttribute(ID, "iccProfileIndir19");
 		return root;
 	}
@@ -613,7 +613,7 @@ public final class TestNodeGenerator {
 		PBCreateNodeHelper.addNotEmptyNode("deviceModel", deviceModel, root);
 		PBCreateNodeHelper.addNotEmptyNode("deviceManufacturer", deviceManufacturer, root);
 		if (metadata != null) {
-			FeatureTreeNode.createChildMetadataNode("metadata", root)
+			root.addMetadataChild("metadata")
 					.setValue(DatatypeConverter.printHexBinary(metadata));
 		}
 
@@ -625,24 +625,24 @@ public final class TestNodeGenerator {
 			throws FeatureParsingException {
 		FeatureTreeNode root = FeatureTreeNode.createRootNode("embeddedFile");
 		root.setAttribute(ID, id);
-		FeatureTreeNode.createChildNode("fileName", root).setValue(fileName);
-		FeatureTreeNode.createChildNode("description", root).setValue(description);
-		FeatureTreeNode.createChildNode("subtype", root).setValue(subtype);
-		FeatureTreeNode.createChildNode("filter", root).setValue(filter);
-		FeatureTreeNode.createChildNode("creationDate", root).setValue(creationDate);
-		FeatureTreeNode.createChildNode("modDate", root).setValue(modDate);
-		FeatureTreeNode.createChildNode("checkSum", root).setValue(checkSum);
-		FeatureTreeNode.createChildNode("size", root).setValue(size);
+		root.addChild("fileName").setValue(fileName);
+		root.addChild("description").setValue(description);
+		root.addChild("subtype").setValue(subtype);
+		root.addChild("filter").setValue(filter);
+		root.addChild("creationDate").setValue(creationDate);
+		root.addChild("modDate").setValue(modDate);
+		root.addChild("checkSum").setValue(checkSum);
+		root.addChild("size").setValue(size);
 		return root;
 	}
 
 	public static FeatureTreeNode getLowLvlInfo() throws FeatureParsingException {
 		FeatureTreeNode lli = FeatureTreeNode.createRootNode("lowLevelInfo");
-		FeatureTreeNode.createChildNode("indirectObjectsNumber", lli).setValue("129");
-		FeatureTreeNode docID = FeatureTreeNode.createChildNode("documentId", lli);
+		lli.addChild("indirectObjectsNumber").setValue("129");
+		FeatureTreeNode docID = lli.addChild("documentId");
 		docID.setAttribute("modificationId", "295EBB0E08D32644B7E5C1825F15AD3A");
 		docID.setAttribute("creationId", "85903F3A2C43B1DA24E486CD15B8154E");
-		FeatureTreeNode filters = FeatureTreeNode.createChildNode("filters", lli);
+		FeatureTreeNode filters = lli.addChild("filters");
 		addFilter("FlateDecode", filters);
 		addFilter("ASCIIHexDecode", filters);
 		addFilter("ASCII85Decode", filters);
@@ -652,7 +652,7 @@ public final class TestNodeGenerator {
 	}
 
 	public static void addFilter(String name, FeatureTreeNode parent) throws FeatureParsingException {
-		FeatureTreeNode filter = FeatureTreeNode.createChildNode("filter", parent);
+		FeatureTreeNode filter = parent.addChild("filter");
 		filter.setAttribute("name", name);
 	}
 
@@ -675,7 +675,7 @@ public final class TestNodeGenerator {
 	public static FeatureTreeNode getMetadataNode()
 			throws FeatureParsingException, FileNotFoundException, URISyntaxException {
 		FeatureTreeNode rootMetadataNode = FeatureTreeNode.createRootNode(METADATA);
-		FeatureTreeNode xmpNode = FeatureTreeNode.createChildMetadataNode("xmpPackage", rootMetadataNode);
+		FeatureTreeNode xmpNode = rootMetadataNode.addMetadataChild("xmpPackage");
 		xmpNode.setValue(DatatypeConverter.printHexBinary(getMetadataBytesFromFile("/metadata_bytes.txt")));
 		return rootMetadataNode;
 	}
@@ -692,7 +692,7 @@ public final class TestNodeGenerator {
 	}
 
 	public static void addEntry(String name, String value, FeatureTreeNode parent) throws FeatureParsingException {
-		FeatureTreeNode entry = FeatureTreeNode.createChildNode(ENTRY, parent);
+		FeatureTreeNode entry = parent.addChild(ENTRY);
 		entry.setValue(value);
 		entry.setAttribute("key", name);
 	}
@@ -737,7 +737,7 @@ public final class TestNodeGenerator {
 		}
 
 		public FeatureTreeNode generateNode(FeatureTreeNode parent) throws FeatureParsingException {
-			FeatureTreeNode root = FeatureTreeNode.createChildNode("fontDescriptor", parent);
+			FeatureTreeNode root = parent.addChild("fontDescriptor");
 
 			PBCreateNodeHelper.addNotEmptyNode("fontName", fontName, root);
 			PBCreateNodeHelper.addNotEmptyNode("fontFamily", fontFamily, root);
@@ -753,7 +753,7 @@ public final class TestNodeGenerator {
 			PBCreateNodeHelper.addNotEmptyNode("smallCap", smallCap, root);
 			PBCreateNodeHelper.addNotEmptyNode("forceBold", forceBold, root);
 
-			FeatureTreeNode bbox = FeatureTreeNode.createChildNode("fontBBox", root);
+			FeatureTreeNode bbox = root.addChild("fontBBox");
 			bbox.setAttribute(LLX, fontBBox_llx);
 			bbox.setAttribute(LLY, fontBBox_lly);
 			bbox.setAttribute(URX, fontBBox_urx);

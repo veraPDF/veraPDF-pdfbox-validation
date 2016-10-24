@@ -1,19 +1,19 @@
 package org.verapdf.features.pb.objects;
 
+import java.io.IOException;
+
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.apache.pdfbox.pdmodel.encryption.PDEncryption;
 import org.verapdf.core.FeatureParsingException;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.FeaturesData;
-import org.verapdf.features.FeaturesObjectTypesEnum;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
-
-import java.io.IOException;
 
 /**
  * Features object for document security
@@ -38,8 +38,8 @@ public class PBDocSecurityFeaturesObject implements IFeaturesObject {
 	 * @return DOCUMENT_SECURITY instance of the FeaturesObjectTypesEnum enumeration
 	 */
 	@Override
-	public FeaturesObjectTypesEnum getType() {
-		return FeaturesObjectTypesEnum.DOCUMENT_SECURITY;
+	public FeatureObjectType getType() {
+		return FeatureObjectType.DOCUMENT_SECURITY;
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class PBDocSecurityFeaturesObject implements IFeaturesObject {
 				PBCreateNodeHelper.addNotEmptyNode("ownerKey", ownerKey, root);
 			} catch (IOException e) {
 				LOGGER.debug("PDFBox error getting owner key data", e);
-				FeatureTreeNode ownerKey = FeatureTreeNode.createChildNode("ownerKey", root);
+				FeatureTreeNode ownerKey = root.addChild("ownerKey");
 				ErrorsHelper.addErrorIntoCollection(collection,
 						ownerKey,
 						e.getMessage());
@@ -74,7 +74,7 @@ public class PBDocSecurityFeaturesObject implements IFeaturesObject {
 				PBCreateNodeHelper.addNotEmptyNode("userKey", userKey, root);
 			} catch (IOException e) {
 				LOGGER.debug("PDFBox error getting user key data", e);
-				FeatureTreeNode userKey = FeatureTreeNode.createChildNode("userKey", root);
+				FeatureTreeNode userKey = root.addChild("userKey");
 				ErrorsHelper.addErrorIntoCollection(collection,
 						userKey,
 						e.getMessage());
@@ -97,10 +97,10 @@ public class PBDocSecurityFeaturesObject implements IFeaturesObject {
 				}
 			} catch (IOException e) {
 				LOGGER.debug("PDFBox reports no matching security handle.", e);
-				FeatureTreeNode.createChildNode("securityHandler", root).setValue("No security handler");
+				root.addChild("securityHandler").setValue("No security handler");
 			}
 
-			collection.addNewFeatureTree(FeaturesObjectTypesEnum.DOCUMENT_SECURITY, root);
+			collection.addNewFeatureTree(FeatureObjectType.DOCUMENT_SECURITY, root);
 			return root;
 		}
 		return null;

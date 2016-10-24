@@ -3,7 +3,7 @@ package org.verapdf.features.pb.objects;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDShadingPattern;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesData;
-import org.verapdf.features.FeaturesObjectTypesEnum;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
@@ -38,11 +38,11 @@ public class PBShadingPatternFeaturesObject implements IFeaturesObject {
 	}
 
 	/**
-	 * @return PATTERN instance of the FeaturesObjectTypesEnum enumeration
+	 * @return PATTERN instance of the FeatureObjectType enumeration
 	 */
 	@Override
-	public FeaturesObjectTypesEnum getType() {
-		return FeaturesObjectTypesEnum.PATTERN;
+	public FeatureObjectType getType() {
+		return FeatureObjectType.PATTERN;
 	}
 
 	/**
@@ -62,18 +62,18 @@ public class PBShadingPatternFeaturesObject implements IFeaturesObject {
 			root.setAttribute("type", "shading");
 
 			if (shadingChild != null) {
-				FeatureTreeNode shading = FeatureTreeNode.createChildNode("shading", root);
+				FeatureTreeNode shading = root.addChild("shading");
 				shading.setAttribute(ID, shadingChild);
 			}
 
-			parseFloatMatrix(shadingPattern.getMatrix().getValues(), FeatureTreeNode.createChildNode("matrix", root));
+			parseFloatMatrix(shadingPattern.getMatrix().getValues(), root.addChild("matrix"));
 
 			if (extGStateChild != null) {
-				FeatureTreeNode exGState = FeatureTreeNode.createChildNode("graphicsState", root);
+				FeatureTreeNode exGState = root.addChild("graphicsState");
 				exGState.setAttribute(ID, extGStateChild);
 			}
 
-			collection.addNewFeatureTree(FeaturesObjectTypesEnum.PATTERN, root);
+			collection.addNewFeatureTree(FeatureObjectType.PATTERN, root);
 			return root;
 		}
 
@@ -91,7 +91,7 @@ public class PBShadingPatternFeaturesObject implements IFeaturesObject {
 	private static void parseFloatMatrix(float[][] array, FeatureTreeNode parent) throws FeatureParsingException {
 		for (int i = 0; i < array.length; ++i) {
 			for (int j = 0; j < array.length - 1; ++j) {
-				FeatureTreeNode element = FeatureTreeNode.createChildNode("element", parent);
+				FeatureTreeNode element = parent.addChild("element");
 				element.setAttribute("row", String.valueOf(i + 1));
 				element.setAttribute("column", String.valueOf(j + 1));
 				element.setAttribute("value", String.valueOf(array[i][j]));

@@ -3,7 +3,7 @@ package org.verapdf.features.pb.objects;
 import org.apache.pdfbox.pdmodel.graphics.shading.PDShading;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesData;
-import org.verapdf.features.FeaturesObjectTypesEnum;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
@@ -36,11 +36,11 @@ public class PBShadingFeaturesObject implements IFeaturesObject {
 	}
 
 	/**
-	 * @return SHADING instance of the FeaturesObjectTypesEnum enumeration
+	 * @return SHADING instance of the FeatureObjectType enumeration
 	 */
 	@Override
-	public FeaturesObjectTypesEnum getType() {
-		return FeaturesObjectTypesEnum.SHADING;
+	public FeatureObjectType getType() {
+		return FeatureObjectType.SHADING;
 	}
 
 	/**
@@ -58,18 +58,18 @@ public class PBShadingFeaturesObject implements IFeaturesObject {
 				root.setAttribute(ID, id);
 			}
 
-			FeatureTreeNode.createChildNode("shadingType", root).setValue(String.valueOf(shading.getShadingType()));
+			root.addChild("shadingType").setValue(String.valueOf(shading.getShadingType()));
 
 			if (colorSpaceChild != null) {
-				FeatureTreeNode shadingClr = FeatureTreeNode.createChildNode("colorSpace", root);
+				FeatureTreeNode shadingClr = root.addChild("colorSpace");
 				shadingClr.setAttribute(ID, colorSpaceChild);
 			}
 
 			PBCreateNodeHelper.addBoxFeature("bbox", shading.getBBox(), root);
 
-			FeatureTreeNode.createChildNode("antiAlias", root).setValue(String.valueOf(shading.getAntiAlias()));
+			root.addChild("antiAlias").setValue(String.valueOf(shading.getAntiAlias()));
 
-			collection.addNewFeatureTree(FeaturesObjectTypesEnum.SHADING, root);
+			collection.addNewFeatureTree(FeatureObjectType.SHADING, root);
 			return root;
 		}
 
