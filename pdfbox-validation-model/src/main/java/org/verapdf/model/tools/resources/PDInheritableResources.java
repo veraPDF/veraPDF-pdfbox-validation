@@ -20,7 +20,7 @@ public class PDInheritableResources {
 
 	private static final Logger LOGGER = Logger.getLogger(PDInheritableResources.class);
 
-	public static final PDResources EMPTY_RESOURCES = new PDEmptyResources();
+	public static final PDResources EMPTY_RESOURCES = new PDResources();
 	public static final PDInheritableResources EMPTY_EXTENDED_RESOURCES = new PDEmptyInheritableResources();
 
 	private final PDResources currentResources;
