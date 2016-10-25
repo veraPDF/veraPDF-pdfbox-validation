@@ -25,7 +25,7 @@ public class ColorSpaceFactory {
 	public static final String CAL_GRAY = "CalGray";
 	public static final String CAL_RGB = "CalRGB";
 	public static final String DEVICE_CMYK = "DeviceCMYK";
-	public static final String DEVICE_GRB = "DeviceRGB";
+	public static final String DEVICE_RGB = "DeviceRGB";
 	public static final String DEVICE_GRAY = "DeviceGray";
 	public static final String DEVICE_N = "DeviceN";
 	public static final String ICC_BASED = "ICCBased";
@@ -92,11 +92,23 @@ public class ColorSpaceFactory {
 			StaticContainers.cachedColorSpaces.put(colorSpace, result);
 			return result;
 		case DEVICE_CMYK:
-			return PBoxPDDeviceCMYK.getInstance();
-		case DEVICE_GRB:
-			return PBoxPDDeviceRGB.getInstance();
+			if (colorSpace.isInherited()) {
+				return PBoxPDDeviceCMYK.getInheritedInstance();
+			} else {
+				return PBoxPDDeviceCMYK.getInstance();
+			}
+		case DEVICE_RGB:
+			if (colorSpace.isInherited()) {
+				return PBoxPDDeviceRGB.getInheritedInstance();
+			} else {
+				return PBoxPDDeviceRGB.getInstance();
+			}
 		case DEVICE_GRAY:
-			return PBoxPDDeviceGray.getInstance();
+			if (colorSpace.isInherited()) {
+				return PBoxPDDeviceGray.getInheritedInstance();
+			} else {
+				return PBoxPDDeviceGray.getInstance();
+			}
 		case ICC_BASED:
 			if (colorSpace.getNumberOfComponents() != 4) {
 				result = new PBoxPDICCBased((PDICCBased) colorSpace);
