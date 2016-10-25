@@ -67,6 +67,10 @@ public class PBoxPDType0Font extends PBoxPDFont implements PDType0Font {
 			parentCMapOrdering = cMap.getOrdering();
 			parentCMapRegistry = cMap.getRegistry();
 		}
+		if (encoding instanceof COSName) {
+			parentCIDOrdering = parentCMapOrdering;
+			parentCIDRegistry = parentCMapRegistry;
+		}
 		String descOrdering = null;
 		String descRegistry = null;
 		PDCIDSystemInfo info = ((org.apache.pdfbox.pdmodel.font.PDType0Font) this.pdFontLike)
