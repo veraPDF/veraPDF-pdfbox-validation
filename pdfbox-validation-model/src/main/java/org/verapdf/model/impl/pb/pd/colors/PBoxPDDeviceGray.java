@@ -9,6 +9,8 @@ public class PBoxPDDeviceGray extends PBoxPDColorSpace implements PDDeviceGray {
 
     private static final PDDeviceGray INSTANCE = new PBoxPDDeviceGray(
             org.apache.pdfbox.pdmodel.graphics.color.PDDeviceGray.INSTANCE);
+    private static final PDDeviceGray INHERITED_INSTANCE = new PBoxPDDeviceGray(
+            org.apache.pdfbox.pdmodel.graphics.color.PDDeviceGray.INHERITED_INSTANCE);
 
     public static final String DEVICE_GRAY_TYPE = "PDDeviceGray";
 
@@ -19,5 +21,9 @@ public class PBoxPDDeviceGray extends PBoxPDColorSpace implements PDDeviceGray {
 
     public static PDDeviceGray getInstance() {
         return INSTANCE;
+    }
+
+    public static PDDeviceGray getInheritedInstance() {
+        return INHERITED_INSTANCE;
     }
 }
