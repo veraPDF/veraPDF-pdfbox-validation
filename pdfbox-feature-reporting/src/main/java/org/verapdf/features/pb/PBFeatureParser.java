@@ -56,7 +56,6 @@ import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
-import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.FeaturesExtractor;
 import org.verapdf.features.FeaturesReporter;
@@ -409,37 +408,30 @@ public final class PBFeatureParser {
 	}
 
 	private void handleSubtypeCreationProblem(String errorMessage) {
-		creationProblem(null, errorMessage, FeatureObjectType.EMBEDDED_FILE,
-				"PBFeatureParser.reportEmbeddedFileNode logic failure.", true);
+		creationProblem(null, errorMessage, FeatureObjectType.EMBEDDED_FILE, true);
 	}
 
 	private void fontCreationProblem(final String nodeID, String errorMessage) {
-		creationProblem(nodeID, errorMessage, FeatureObjectType.FONT,
-				"PBFeatureParser.fontCreationProblem logic failure.", false);
+		creationProblem(nodeID, errorMessage, FeatureObjectType.FONT, false);
 	}
 
 	private void patternCreationProblem(final String nodeID, String errorMessage) {
-		creationProblem(nodeID, errorMessage, FeatureObjectType.PATTERN,
-				"PBFeatureParser.patternCreationProblem logic failure.", false);
+		creationProblem(nodeID, errorMessage, FeatureObjectType.PATTERN, false);
 	}
 
 	private void colorSpaceCreationProblem(final String nodeID, String errorMessage) {
-		creationProblem(nodeID, errorMessage, FeatureObjectType.COLORSPACE,
-				"PBFeatureParser.colorSpaceCreationProblem logic failure.", false);
+		creationProblem(nodeID, errorMessage, FeatureObjectType.COLORSPACE, false);
 	}
 
 	private void shadingCreationProblem(final String nodeID, String errorMessage) {
-		creationProblem(nodeID, errorMessage, FeatureObjectType.SHADING,
-				"PBFeatureParser.shadingCreationProblem logic failure.", false);
+		creationProblem(nodeID, errorMessage, FeatureObjectType.SHADING, false);
 	}
 
 	private void xobjectCreationProblem(final String nodeID, String errorMessage) {
-		creationProblem(nodeID, errorMessage, FeatureObjectType.FAILED_XOBJECT,
-				"PBFeatureParser.xobjectCreationProblem logic failure.", false);
+		creationProblem(nodeID, errorMessage, FeatureObjectType.FAILED_XOBJECT, false);
 	}
 
-	private void creationProblem(final String nodeID, final String errorMessage, final FeatureObjectType type,
-			final String loggerMessage, final boolean isTypeError) {
+	private void creationProblem(final String nodeID, final String errorMessage, final FeatureObjectType type, final boolean isTypeError) {
 		if (config.isFeatureEnabled(type)) {
 			if (!isTypeError) {
 				FeatureTreeNode node = FeatureTreeNode.createRootNode(type.getNodeName());

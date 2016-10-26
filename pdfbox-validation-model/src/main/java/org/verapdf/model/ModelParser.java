@@ -96,7 +96,8 @@ public final class ModelParser implements PDFParser {
         return this.document;
     }
 
-    public PDFDocument getPDFDocument() {
+    @Override
+	public PDFDocument getPDFDocument() {
     	return new PDFDocumentImpl(this.document);
     }
     /**

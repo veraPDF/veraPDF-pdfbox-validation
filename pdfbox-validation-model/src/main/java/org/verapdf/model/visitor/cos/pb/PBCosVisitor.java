@@ -1,11 +1,31 @@
 package org.verapdf.model.visitor.cos.pb;
 
-import org.apache.pdfbox.cos.*;
+import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSBoolean;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSDocument;
+import org.apache.pdfbox.cos.COSFloat;
+import org.apache.pdfbox.cos.COSInteger;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSNull;
+import org.apache.pdfbox.cos.COSObject;
+import org.apache.pdfbox.cos.COSStream;
+import org.apache.pdfbox.cos.COSString;
+import org.apache.pdfbox.cos.ICOSVisitor;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.verapdf.model.impl.pb.cos.*;
+import org.verapdf.model.impl.pb.cos.PBCosArray;
+import org.verapdf.model.impl.pb.cos.PBCosBool;
+import org.verapdf.model.impl.pb.cos.PBCosDict;
+import org.verapdf.model.impl.pb.cos.PBCosDocument;
+import org.verapdf.model.impl.pb.cos.PBCosFileSpecification;
+import org.verapdf.model.impl.pb.cos.PBCosIndirect;
+import org.verapdf.model.impl.pb.cos.PBCosInteger;
+import org.verapdf.model.impl.pb.cos.PBCosName;
+import org.verapdf.model.impl.pb.cos.PBCosNull;
+import org.verapdf.model.impl.pb.cos.PBCosReal;
+import org.verapdf.model.impl.pb.cos.PBCosStream;
+import org.verapdf.model.impl.pb.cos.PBCosString;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
-
-import java.io.IOException;
 
 /**
  * Implementation of {@link ICOSVisitor} which realize Visitor pattern.
@@ -33,7 +53,7 @@ public final class PBCosVisitor implements ICOSVisitor {
      * @see PBCosArray
      */
     @Override
-    public Object visitFromArray(COSArray obj) throws IOException {
+    public Object visitFromArray(COSArray obj) {
         return new PBCosArray(obj, document, flavour);
     }
 
@@ -42,7 +62,7 @@ public final class PBCosVisitor implements ICOSVisitor {
      * @see PBCosBool
      */
     @Override
-    public Object visitFromBoolean(COSBoolean obj) throws IOException {
+    public Object visitFromBoolean(COSBoolean obj) {
         return PBCosBool.valueOf(obj);
     }
 
@@ -54,7 +74,7 @@ public final class PBCosVisitor implements ICOSVisitor {
 	 * @see PBCosFileSpecification
      */
     @Override
-    public Object visitFromDictionary(COSDictionary obj) throws IOException {
+    public Object visitFromDictionary(COSDictionary obj) {
 		COSName type = obj.getCOSName(COSName.TYPE);
 		boolean isFileSpec = type != null && COSName.FILESPEC.equals(type);
 		return isFileSpec ? new PBCosFileSpecification(obj, document, flavour) : new PBCosDict(obj, document, flavour);
@@ -65,7 +85,7 @@ public final class PBCosVisitor implements ICOSVisitor {
      * @see PBCosDocument
      */
     @Override
-    public Object visitFromDocument(COSDocument obj) throws IOException {
+    public Object visitFromDocument(COSDocument obj) {
         return new PBCosDocument(obj, flavour);
     }
 
@@ -74,7 +94,7 @@ public final class PBCosVisitor implements ICOSVisitor {
      * @see PBCosReal
      */
     @Override
-    public Object visitFromFloat(COSFloat obj) throws IOException {
+    public Object visitFromFloat(COSFloat obj) {
         return new PBCosReal(obj);
     }
 
@@ -83,7 +103,7 @@ public final class PBCosVisitor implements ICOSVisitor {
      * @see PBCosInteger
      */
     @Override
-    public Object visitFromInt(COSInteger obj) throws IOException {
+    public Object visitFromInt(COSInteger obj) {
         return new PBCosInteger(obj);
     }
 
@@ -92,7 +112,7 @@ public final class PBCosVisitor implements ICOSVisitor {
      * @see PBCosName
      */
     @Override
-    public Object visitFromName(COSName obj) throws IOException {
+    public Object visitFromName(COSName obj) {
         return new PBCosName(obj);
     }
 
@@ -101,7 +121,7 @@ public final class PBCosVisitor implements ICOSVisitor {
      * @see PBCosNull
      */
     @Override
-    public Object visitFromNull(COSNull obj) throws IOException {
+    public Object visitFromNull(COSNull obj) {
         return PBCosNull.getInstance();
     }
 
@@ -110,7 +130,7 @@ public final class PBCosVisitor implements ICOSVisitor {
      * @see PBCosStream
      */
     @Override
-    public Object visitFromStream(COSStream obj) throws IOException {
+    public Object visitFromStream(COSStream obj) {
         return new PBCosStream(obj, document, flavour);
     }
 
@@ -119,7 +139,7 @@ public final class PBCosVisitor implements ICOSVisitor {
      * @see PBCosString
      */
     @Override
-    public Object visitFromString(COSString obj) throws IOException {
+    public Object visitFromString(COSString obj) {
         return new PBCosString(obj);
     }
 

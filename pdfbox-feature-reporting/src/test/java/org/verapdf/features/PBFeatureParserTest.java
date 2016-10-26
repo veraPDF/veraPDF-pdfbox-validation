@@ -12,8 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.bind.JAXBException;
-
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,7 +29,7 @@ public class PBFeatureParserTest {
 	private static FeaturesCollection collection;
 
 	@BeforeClass
-	public static void before() throws URISyntaxException, IOException, JAXBException {
+	public static void before() throws URISyntaxException, IOException {
 		File pdf = new File(TestNodeGenerator.getSystemIndependentPath("/FR.pdf"));
 		try (PDDocument document = PDDocument.load(pdf, false, true)) {
 			FeaturesConfig config = FeaturesConfig.fromFeatureSet(EnumSet.allOf(FeatureObjectType.class));
