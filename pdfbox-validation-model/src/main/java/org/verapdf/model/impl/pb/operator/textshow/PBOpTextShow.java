@@ -109,12 +109,12 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 
 	private List<PBGlyph> getUsedGlyphs() {
 		org.apache.pdfbox.pdmodel.font.PDFont font = getFontFromResources();
-		boolean fontProgramIsInvalid = font.isDamaged() || fontProgramIsNull(font);
 		FontContainer<? extends PDFontLike> fontContainer = FontHelper.getFontContainer(font);
 
 		if (fontContainer == null) {
 			return Collections.emptyList();
 		}
+        boolean fontProgramIsInvalid = font.isDamaged() || fontProgramIsNull(font);
 
 		List<PBGlyph> res = new ArrayList<>();
 		List<byte[]> strings = getStrings(this.arguments);
