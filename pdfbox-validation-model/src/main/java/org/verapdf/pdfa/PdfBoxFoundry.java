@@ -1,25 +1,15 @@
 /**
  * 
  */
-package org.verapdf;
+package org.verapdf.pdfa;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.verapdf.core.EncryptedPdfException;
 import org.verapdf.core.ModelParsingException;
-import org.verapdf.metadata.fixer.entity.PDFDocument;
 import org.verapdf.metadata.fixer.impl.fixer.PBoxMetadataFixerImpl;
-import org.verapdf.metadata.fixer.impl.pb.model.PDFDocumentImpl;
-import org.verapdf.metadata.fixer.utils.FixerConfig;
 import org.verapdf.model.ModelParser;
-import org.verapdf.pdfa.MetadataFixer;
-import org.verapdf.pdfa.PDFParser;
-import org.verapdf.pdfa.VeraPDFFoundry;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
-import org.verapdf.pdfa.results.ValidationResult;
-import org.verapdf.pdfa.validators.ReferenceBatchValidator;
-import org.verapdf.processor.ProcessorImpl;
 
 /**
  * @author  <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -30,17 +20,10 @@ import org.verapdf.processor.ProcessorImpl;
  * Created 22 Sep 2016:09:20:18
  */
 
-public class PdfBoxFoundry implements VeraPDFFoundry {
-	private static PdfBoxFoundry INSTANCE = new PdfBoxFoundry();
-	
+class PdfBoxFoundry extends AbstractFoundry {
+	private static final PdfBoxFoundry instance = new PdfBoxFoundry();
 	private PdfBoxFoundry() {
 	}
-	
-	public static void initialise() {
-		ProcessorImpl.initialise(INSTANCE);
-		ReferenceBatchValidator.initialise(INSTANCE);
-	}
-	
 	
 	/**
 	 * @see org.verapdf.pdfa.VeraPDFFoundry#newPdfParser(java.io.InputStream)
@@ -67,4 +50,7 @@ public class PdfBoxFoundry implements VeraPDFFoundry {
 		return new PBoxMetadataFixerImpl();
 	}
 
+	static VeraPDFFoundry getInstance() {
+		return instance;
+	}
 }
