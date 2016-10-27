@@ -1,6 +1,10 @@
 package org.verapdf.model.impl.pb.external;
 
 import org.apache.log4j.Logger;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSObject;
+import org.apache.pdfbox.cos.COSStream;
+import org.verapdf.model.coslayer.CosStream;
 import org.verapdf.model.external.ICCProfile;
 
 import java.io.IOException;
@@ -33,20 +37,34 @@ public class PBoxICCProfile extends PBoxExternal implements ICCProfile {
     private byte[] profileHeader;
     private InputStream profileStream;
     private Long dictionaryNumberOfColors;
+    private boolean isValid = true;
 
-    protected PBoxICCProfile(InputStream profileStream,
-            				 Long dictionaryNumberOfColors,
-							 String type) throws IOException {
+    protected PBoxICCProfile(COSStream profileStream,
+							 String type) {
         super(type);
-        this.profileStream = profileStream;
-        this.dictionaryNumberOfColors = dictionaryNumberOfColors;
 
-        initializeProfileHeader();
+        try {
+            this.profileStream = profileStream.getUnfilteredStream();
+            this.dictionaryNumberOfColors = profileStream.getLong(COSName.N);
+            if(this.dictionaryNumberOfColors == -1) {
+                this.dictionaryNumberOfColors = null;
+            }
+
+            initializeProfileHeader();
+        } catch (IOException e) {
+            this.isValid = false;
+            if(this.profileHeader == null) {
+                this.profileHeader = new byte[0];
+            }
+        }
     }
 
     private void initializeProfileHeader() throws IOException {
         int available = this.profileStream.available();
         int size = available > HEADER_LENGTH ? HEADER_LENGTH : available;
+        if(size != HEADER_LENGTH) {
+            this.isValid = false;
+        }
 
         this.profileHeader = new byte[size];
         this.profileStream.mark(size);
@@ -113,11 +131,13 @@ public class PBoxICCProfile extends PBoxExternal implements ICCProfile {
 	 * Indicate validity of icc profile.
 	 * Need to implemented by customer.
 	 *
-	 * @return true if profile is valid
+	 * @return true if profile is valid, false if ICC header is less then 128
+     * bytes or stream cannot be read. Other checks should be implemented by
+     * customer.
 	 */
     @Override
     public Boolean getisValid() {
-        return Boolean.TRUE;
+        return this.isValid;
     }
 
 }

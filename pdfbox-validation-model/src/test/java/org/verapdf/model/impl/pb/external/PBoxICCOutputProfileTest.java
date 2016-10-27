@@ -39,10 +39,7 @@ public class PBoxICCOutputProfileTest extends PBoxICCProfileTest {
 
 		doc = PDDocument.load(file, false, true);
 		PDOutputIntent outputIntent = doc.getDocumentCatalog().getOutputIntents().get(0);
-		try (InputStream unfilteredStream = outputIntent.getDestOutputIntent().getUnfilteredStream()) {
-			Long N = Long.valueOf(outputIntent.getDestOutputIntent().getLong(COSName.N));
-			actual = new PBoxICCOutputProfile(unfilteredStream, COSName.GTS_PDFA1.getName(), N);
-		}
+		actual = new PBoxICCOutputProfile(outputIntent.getDestOutputIntent(), COSName.GTS_PDFA1.getName());
 	}
 
 	@Test

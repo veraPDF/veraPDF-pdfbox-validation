@@ -90,11 +90,8 @@ public class PBoxPDOutputIntent extends PBoxPDObject implements PDOutputIntent {
 
 	private static List<ICCOutputProfile> getDestProfilesFromStream(COSStream destStream, final String subType) throws IOException {
 		List<ICCOutputProfile> profile = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-		try (final InputStream unfilteredStream = destStream.getUnfilteredStream()) {
-			long N = destStream.getLong(COSName.N);
-			profile.add(new PBoxICCOutputProfile(unfilteredStream, subType, N != -1 ? Long.valueOf(N) : null));
-			return Collections.unmodifiableList(profile);
-		}
+        profile.add(new PBoxICCOutputProfile(destStream, subType));
+		return Collections.unmodifiableList(profile);
 	}
 
 	private List<CosObject> getDestOutputProfileRef() {
