@@ -4,7 +4,10 @@
 package org.verapdf.pdfa;
 
 import java.io.InputStream;
+import java.net.URI;
 
+import org.verapdf.component.ComponentDetails;
+import org.verapdf.component.Components;
 import org.verapdf.core.EncryptedPdfException;
 import org.verapdf.core.ModelParsingException;
 import org.verapdf.metadata.fixer.impl.fixer.PBoxMetadataFixerImpl;
@@ -21,10 +24,17 @@ import org.verapdf.pdfa.flavours.PDFAFlavour;
  */
 
 class PdfBoxFoundry extends AbstractFoundry {
+	private static final URI id = URI.create("http://foundries.verapdf.org#pdfbox");
+	private static final ComponentDetails details = Components.detailsFromValues(id, "VeraPDF PDFBox Foundry");
 	private static final PdfBoxFoundry instance = new PdfBoxFoundry();
 	private PdfBoxFoundry() {
+		super();
 	}
 	
+	@Override
+	public ComponentDetails getDetails() {
+		return details;
+	}
 	/**
 	 * @see org.verapdf.pdfa.VeraPDFFoundry#newPdfParser(java.io.InputStream)
 	 */
