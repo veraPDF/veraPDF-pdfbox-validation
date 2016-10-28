@@ -8,6 +8,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosFileSpecification;
 import org.verapdf.model.external.EmbeddedFile;
+import org.verapdf.model.impl.pb.containers.StaticContainers;
 import org.verapdf.model.impl.pb.external.PBoxEmbeddedFile;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
@@ -60,8 +61,7 @@ public class PBCosFileSpecification extends PBCosDict implements
 
 	@Override
 	public Boolean getisAssociatedFile() {
-		//TODO: implement me
-		return Boolean.FALSE;
+		return this.baseObject != null && StaticContainers.fileSpecificationKeys.contains(this.baseObject.getKey());
 	}
 
 	@Override
