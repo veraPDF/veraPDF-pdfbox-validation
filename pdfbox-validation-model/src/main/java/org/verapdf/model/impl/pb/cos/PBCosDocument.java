@@ -11,6 +11,7 @@ import org.verapdf.model.coslayer.CosIndirect;
 import org.verapdf.model.coslayer.CosTrailer;
 import org.verapdf.model.coslayer.CosXRef;
 import org.verapdf.model.impl.pb.pd.PBoxPDDocument;
+import org.verapdf.model.tools.FileSpecificationKeysHelper;
 import org.verapdf.model.tools.XMPChecker;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
@@ -68,6 +69,9 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 	public PBCosDocument(PDDocument pdDocument, PDFAFlavour flavour) {
 		this(pdDocument.getDocument(), flavour);
 		this.pdDocument = pdDocument;
+		if (flavour.getPart() == PDFAFlavour.Specification.ISO_19005_3) {
+			FileSpecificationKeysHelper.registerFileSpecificationKeys(pdDocument);
+		}
 	}
 
 	/**
