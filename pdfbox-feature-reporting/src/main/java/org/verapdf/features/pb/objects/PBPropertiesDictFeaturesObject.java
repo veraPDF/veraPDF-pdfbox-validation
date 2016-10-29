@@ -5,7 +5,7 @@ import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesData;
-import org.verapdf.features.FeaturesObjectTypesEnum;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
@@ -31,11 +31,11 @@ public class PBPropertiesDictFeaturesObject implements IFeaturesObject {
 	}
 
 	/**
-	 * @return PROPERTIES instance of the FeaturesObjectTypesEnum enumeration
+	 * @return PROPERTIES instance of the FeatureObjectType enumeration
 	 */
 	@Override
-	public FeaturesObjectTypesEnum getType() {
-		return FeaturesObjectTypesEnum.PROPERTIES;
+	public FeatureObjectType getType() {
+		return FeatureObjectType.PROPERTIES;
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class PBPropertiesDictFeaturesObject implements IFeaturesObject {
 				PBCreateNodeHelper.addNotEmptyNode("type", ((COSName) type).getName(), root);
 			}
 
-			collection.addNewFeatureTree(FeaturesObjectTypesEnum.PROPERTIES, root);
+			collection.addNewFeatureTree(FeatureObjectType.PROPERTIES, root);
 			return root;
 		}
 

@@ -1,17 +1,26 @@
 package org.verapdf.features.pb.objects;
 
-import org.apache.pdfbox.cos.*;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDocument;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSObject;
+import org.apache.pdfbox.cos.COSStream;
 import org.verapdf.core.FeatureParsingException;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.FeaturesData;
-import org.verapdf.features.FeaturesObjectTypesEnum;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
-
-import java.io.IOException;
-import java.util.*;
 
 /**
  * Feature object for low level info part of the features report
@@ -47,11 +56,11 @@ public class PBLowLvlInfoFeaturesObject implements IFeaturesObject {
 	}
 
 	/**
-	 * @return LOW_LVL_INFO instance of the FeaturesObjectTypesEnum enumeration
+	 * @return LOW_LVL_INFO instance of the FeatureObjectType enumeration
 	 */
 	@Override
-	public FeaturesObjectTypesEnum getType() {
-		return FeaturesObjectTypesEnum.LOW_LEVEL_INFO;
+	public FeatureObjectType getType() {
+		return FeatureObjectType.LOW_LEVEL_INFO;
 	}
 
 	/**
@@ -70,7 +79,7 @@ public class PBLowLvlInfoFeaturesObject implements IFeaturesObject {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("lowLevelInfo");
 
 			if (document.getObjects() != null) {
-				FeatureTreeNode.createChildNode("indirectObjectsNumber", root)
+				root.addChild("indirectObjectsNumber")
 						.setValue(String.valueOf(document.getObjects().size()));
 			}
 
@@ -79,17 +88,17 @@ public class PBLowLvlInfoFeaturesObject implements IFeaturesObject {
 			Set<String> filters = getAllFilters();
 
 			if (!filters.isEmpty()) {
-				FeatureTreeNode filtersNode = FeatureTreeNode.createChildNode("filters", root);
+				FeatureTreeNode filtersNode = root.addChild("filters");
 
 				for (String filter : filters) {
 					if (filter != null) {
-						FeatureTreeNode filterNode = FeatureTreeNode.createChildNode("filter", filtersNode);
+						FeatureTreeNode filterNode = filtersNode.addChild("filter");
 						filterNode.setAttribute("name", filter);
 					}
 				}
 			}
 
-			collection.addNewFeatureTree(FeaturesObjectTypesEnum.LOW_LEVEL_INFO, root);
+			collection.addNewFeatureTree(FeatureObjectType.LOW_LEVEL_INFO, root);
 			return root;
 
 		}
@@ -137,7 +146,7 @@ public class PBLowLvlInfoFeaturesObject implements IFeaturesObject {
 			String creationId = PBCreateNodeHelper.getStringFromBase(ids.get(0));
 			String modificationId = PBCreateNodeHelper.getStringFromBase(ids.get(1));
 
-			FeatureTreeNode documentId = FeatureTreeNode.createChildNode("documentId", root);
+			FeatureTreeNode documentId = root.addChild("documentId");
 
 			if (creationId != null || modificationId != null) {
 				if (creationId != null) {

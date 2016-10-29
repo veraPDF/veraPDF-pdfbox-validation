@@ -1,22 +1,33 @@
 package org.verapdf.features.pb.objects;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+
 import org.apache.log4j.Logger;
-import org.apache.pdfbox.cos.*;
+import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSInteger;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSNumber;
+import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.verapdf.core.FeatureParsingException;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.FeaturesData;
-import org.verapdf.features.FeaturesObjectTypesEnum;
 import org.verapdf.features.ICCProfileFeaturesData;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
 
 /**
  * Feature object for icc profile
@@ -80,8 +91,8 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 	 * @return ICCPROFILE instance of the FeaturesObjectTypesEnum enumeration
 	 */
 	@Override
-	public FeaturesObjectTypesEnum getType() {
-		return FeaturesObjectTypesEnum.ICCPROFILE;
+	public FeatureObjectType getType() {
+		return FeatureObjectType.ICCPROFILE;
 	}
 
 	/**
@@ -109,7 +120,7 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 				PBCreateNodeHelper.parseMetadata(meta, "metadata", root, collection);
 			}
 
-			collection.addNewFeatureTree(FeaturesObjectTypesEnum.ICCPROFILE, root);
+			collection.addNewFeatureTree(FeatureObjectType.ICCPROFILE, root);
 			return root;
 		}
 		return null;

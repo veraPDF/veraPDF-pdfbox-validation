@@ -3,7 +3,7 @@ package org.verapdf.features.pb.objects;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesData;
-import org.verapdf.features.FeaturesObjectTypesEnum;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
@@ -37,11 +37,11 @@ public class PBInfoDictFeaturesObject implements IFeaturesObject {
 	}
 
 	/**
-	 * @return INFORMATION_DICTIONARY instance of the FeaturesObjectTypesEnum enumeration
+	 * @return INFORMATION_DICTIONARY instance of the FeatureObjectType enumeration
 	 */
 	@Override
-	public FeaturesObjectTypesEnum getType() {
-		return FeaturesObjectTypesEnum.INFORMATION_DICTIONARY;
+	public FeatureObjectType getType() {
+		return FeatureObjectType.INFORMATION_DICTIONARY;
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class PBInfoDictFeaturesObject implements IFeaturesObject {
 				}
 			}
 
-			collection.addNewFeatureTree(FeaturesObjectTypesEnum.INFORMATION_DICTIONARY, root);
+			collection.addNewFeatureTree(FeatureObjectType.INFORMATION_DICTIONARY, root);
 
 			return root;
 		}
@@ -101,7 +101,7 @@ public class PBInfoDictFeaturesObject implements IFeaturesObject {
 
 	private static void addEntry(String name, String value, FeatureTreeNode root) throws FeatureParsingException {
 		if (name != null && value != null) {
-			FeatureTreeNode entry = FeatureTreeNode.createChildNode(ENTRY, root);
+			FeatureTreeNode entry = root.addChild(ENTRY);
 			entry.setValue(value);
 			entry.setAttribute(KEY, name);
 		}
