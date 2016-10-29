@@ -64,45 +64,44 @@ public class PBoxPDCIDFont extends PBoxPDFont implements PDCIDFont {
 
 	@Override
 	public Boolean getcidSetListsAllGlyphs() {
-		try {
 			PDStream cidSet = getCIDSetStream();
-			if (cidSet != null) {
-				try (InputStream stream = ((COSStream) cidSet.getCOSObject()).getUnfilteredStream()) {
-					int length = cidSet.getLength();
-					byte[] cidSetBytes = getCIDsFromCIDSet(stream, length);
+			if (cidSet == null) {
+				return Boolean.TRUE;
+			}
+			try {
+				InputStream stream = ((COSStream) cidSet.getCOSObject()).getUnfilteredStream();
+				int length = cidSet.getLength();
+				byte[] cidSetBytes = getCIDsFromCIDSet(stream, length);
 
-					// reverse bit order in bit set (convert to big endian)
-					BitSet bitSet = toBitSetBigEndian(cidSetBytes);
+				// reverse bit order in bit set (convert to big endian)
+				BitSet bitSet = toBitSetBigEndian(cidSetBytes);
 
-					org.apache.pdfbox.pdmodel.font.PDCIDFont cidFont = (org.apache.pdfbox.pdmodel.font.PDCIDFont) this.pdFontLike;
-					for (int i = 1; i < bitSet.size(); i++) {
-						if (bitSet.get(i) && !cidFont.hasGlyph(i)) {
+				org.apache.pdfbox.pdmodel.font.PDCIDFont cidFont = (org.apache.pdfbox.pdmodel.font.PDCIDFont) this.pdFontLike;
+				for (int i = 1; i < bitSet.size(); i++) {
+					if (bitSet.get(i) && !cidFont.hasGlyph(i)) {
+						return Boolean.FALSE;
+					}
+				}
+				if (!flavour.equals(PDFAFlavour.PDFA_1_A) || !flavour.equals(PDFAFlavour.PDFA_1_B)) {
+					// on this levels we need to ensure that all glyphs
+					// present
+					// in font program are described in cid set
+					if (cidFont instanceof PDCIDFontType0) {
+						CFFFont cffFont = ((PDCIDFontType0) cidFont).getCFFFont();
+						if (cffFont == null) {
 							return Boolean.FALSE;
 						}
-					}
-					if (!flavour.equals(PDFAFlavour.PDFA_1_A) || !flavour.equals(PDFAFlavour.PDFA_1_B)) {
-						// on this levels we need to ensure that all glyphs
-						// present
-						// in font program are described in cid set
-						if (cidFont instanceof PDCIDFontType0) {
-							CFFFont cffFont = ((PDCIDFontType0) cidFont).getCFFFont();
-							if (cffFont == null) {
+						if (bitSet.cardinality() < cffFont.getNumCharStrings()) {
+							return Boolean.FALSE;
+						}
+					} else if (cidFont instanceof PDCIDFontType2) {
+						try (TrueTypeFont trueTypeFont = ((PDCIDFontType2) cidFont).getTrueTypeFont()) {
+							if (bitSet.cardinality() < trueTypeFont.getNumberOfGlyphs()) {
 								return Boolean.FALSE;
-							}
-							if (bitSet.cardinality() < cffFont.getNumCharStrings()) {
-								return Boolean.FALSE;
-							}
-						} else if (cidFont instanceof PDCIDFontType2) {
-							try (TrueTypeFont trueTypeFont = ((PDCIDFontType2) cidFont).getTrueTypeFont()) {
-								if (bitSet.cardinality() < trueTypeFont.getNumberOfGlyphs()) {
-									return Boolean.FALSE;
-								}
 							}
 						}
 					}
 				}
-
-			}
 		} catch (IOException e) {
 			LOGGER.debug("Error while parsing embedded font program. " + e.getMessage(), e);
 			return Boolean.FALSE;

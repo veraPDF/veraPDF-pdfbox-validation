@@ -5,12 +5,13 @@ import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
+import org.bouncycastle.cert.crmf.ValueDecryptorGenerator;
 import org.verapdf.model.ModelParser;
 import org.verapdf.model.external.EmbeddedFile;
 import org.verapdf.pdfa.PDFAValidator;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.results.ValidationResult;
-import org.verapdf.pdfa.validation.validators.Validators;
+import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 
 import java.io.InputStream;
 
@@ -54,7 +55,7 @@ public class PBoxEmbeddedFile extends PBoxExternal implements EmbeddedFile {
 				unfilteredStream.mark(Integer.MAX_VALUE);
 				try (ModelParser parser1b = ModelParser.createModelWithFlavour(unfilteredStream,
 						PDFAFlavour.PDFA_1_B)) {
-					PDFAValidator validator1b = Validators.createValidator(PDFAFlavour.PDFA_1_B, false, 1);
+					PDFAValidator validator1b = ValidatorFactory.createValidator(PDFAFlavour.PDFA_1_B, false, 1);
 					ValidationResult result1b = validator1b.validate(parser1b);
 					if (result1b.isCompliant()) {
 						return Boolean.TRUE;
@@ -63,7 +64,7 @@ public class PBoxEmbeddedFile extends PBoxExternal implements EmbeddedFile {
 				unfilteredStream.reset();
 				try (ModelParser parser2b = ModelParser.createModelWithFlavour(unfilteredStream,
 						PDFAFlavour.PDFA_2_B)) {
-					PDFAValidator validator2b = Validators.createValidator(PDFAFlavour.PDFA_2_B, false, 1);
+					PDFAValidator validator2b = ValidatorFactory.createValidator(PDFAFlavour.PDFA_2_B, false, 1);
 					ValidationResult result2b = validator2b.validate(parser2b);
 					return Boolean.valueOf(result2b.isCompliant());
 				}

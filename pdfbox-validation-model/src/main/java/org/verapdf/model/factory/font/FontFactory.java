@@ -58,6 +58,7 @@ public final class FontFactory {
 			case TYPE_0:
 				return new PBoxPDType0Font(pdfboxFont, renderingMode, document, flavour);
 			case TYPE_1:
+			case MM_TYPE_1:
 				if (pdfboxFont instanceof PDType1Font) {
 					return new PBoxPDType1Font((PDType1Font) pdfboxFont, renderingMode);
 				} else if (pdfboxFont instanceof PDType1CFont) {
