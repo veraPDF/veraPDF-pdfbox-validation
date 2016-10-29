@@ -6,6 +6,9 @@ import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.graphics.PDXObject;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace;
+import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceCMYK;
+import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceGray;
+import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDAbstractPattern;
 import org.apache.pdfbox.pdmodel.graphics.shading.PDShading;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
@@ -20,7 +23,7 @@ public class PDInheritableResources {
 
 	private static final Logger LOGGER = Logger.getLogger(PDInheritableResources.class);
 
-	public static final PDResources EMPTY_RESOURCES = new PDEmptyResources();
+	public static final PDResources EMPTY_RESOURCES = new PDResources();
 	public static final PDInheritableResources EMPTY_EXTENDED_RESOURCES = new PDEmptyInheritableResources();
 
 	private final PDResources currentResources;
@@ -86,7 +89,7 @@ public class PDInheritableResources {
 					+ "Trying to find it in inherited dictionary", e);
 		}
 		PDColorSpace colorSpace = this.inheritedResources.getColorSpace(name);
-		colorSpace.setInherited(true);
+		colorSpace = setInheritedColorSpace(colorSpace);
 		return colorSpace;
 	}
 
@@ -162,6 +165,18 @@ public class PDInheritableResources {
 
 	private static boolean isDeviceDepended(COSName name) {
 		return COSName.DEVICERGB.equals(name) || COSName.DEVICEGRAY.equals(name) || COSName.DEVICECMYK.equals(name);
+	}
+
+	private static PDColorSpace setInheritedColorSpace(PDColorSpace colorSpace) {
+		if (colorSpace == PDDeviceCMYK.INSTANCE) {
+			return PDDeviceCMYK.INHERITED_INSTANCE;
+		} else if (colorSpace == PDDeviceRGB.INSTANCE) {
+			return PDDeviceRGB.INHERITED_INSTANCE;
+		} else if (colorSpace == PDDeviceGray.INSTANCE) {
+			return PDDeviceGray.INHERITED_INSTANCE;
+		}
+		colorSpace.setInherited(true);
+		return colorSpace;
 	}
 
 	public static PDInheritableResources getInstance(PDResources pageResources) {

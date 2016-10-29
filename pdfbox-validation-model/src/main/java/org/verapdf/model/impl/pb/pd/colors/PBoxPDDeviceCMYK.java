@@ -11,6 +11,8 @@ public class PBoxPDDeviceCMYK extends PBoxPDColorSpace implements PDDeviceCMYK {
 
     private static final PDDeviceCMYK INSTANCE = new PBoxPDDeviceCMYK(
             org.apache.pdfbox.pdmodel.graphics.color.PDDeviceCMYK.INSTANCE);
+    private static final PDDeviceCMYK INHERITED_INSTANCE = new PBoxPDDeviceCMYK(
+            org.apache.pdfbox.pdmodel.graphics.color.PDDeviceCMYK.INHERITED_INSTANCE);
 
     public static final String DEVICE_CMYK_TYPE = "PDDeviceCMYK";
 
@@ -21,5 +23,9 @@ public class PBoxPDDeviceCMYK extends PBoxPDColorSpace implements PDDeviceCMYK {
 
     public static PDDeviceCMYK getInstance() {
         return INSTANCE;
+    }
+
+    public static PDDeviceCMYK getInheritedInstance() {
+        return INHERITED_INSTANCE;
     }
 }
