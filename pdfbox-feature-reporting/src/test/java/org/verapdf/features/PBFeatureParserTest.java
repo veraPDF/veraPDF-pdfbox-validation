@@ -16,7 +16,6 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.verapdf.core.FeatureParsingException;
-import org.verapdf.features.config.FeaturesConfig;
 import org.verapdf.features.pb.PBFeatureParser;
 import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
@@ -32,7 +31,7 @@ public class PBFeatureParserTest {
 	public static void before() throws URISyntaxException, IOException {
 		File pdf = new File(TestNodeGenerator.getSystemIndependentPath("/FR.pdf"));
 		try (PDDocument document = PDDocument.load(pdf, false, true)) {
-			FeaturesConfig config = FeaturesConfig.fromFeatureSet(EnumSet.allOf(FeatureObjectType.class));
+			FeatureExtractorConfig config = FeatureExtractorConfigImpl.fromFeatureSet(EnumSet.allOf(FeatureObjectType.class));
 			collection = PBFeatureParser.getFeaturesCollection(document, config);
 		}
 	}

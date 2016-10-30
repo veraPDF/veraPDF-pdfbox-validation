@@ -56,10 +56,10 @@ import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
+import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.FeaturesExtractor;
 import org.verapdf.features.FeaturesReporter;
-import org.verapdf.features.config.FeaturesConfig;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 import org.verapdf.features.tools.FeaturesCollection;
@@ -79,10 +79,10 @@ public final class PBFeatureParser {
 	private static final String DEVICECMYK_ID = "devcmyk";
 
 	private FeaturesReporter reporter;
-	private FeaturesConfig config;
+	private FeatureExtractorConfig config;
 	private Set<String> processedIDs;
 
-	private PBFeatureParser(FeaturesReporter reporter, FeaturesConfig config) {
+	private PBFeatureParser(FeaturesReporter reporter, FeatureExtractorConfig config) {
 		this.reporter = reporter;
 		this.config = config;
 		this.processedIDs = new HashSet<>();
@@ -96,7 +96,7 @@ public final class PBFeatureParser {
 	 *            the document for parsing
 	 * @return FeaturesCollection class with information about all featurereport
 	 */
-	public static FeaturesCollection getFeaturesCollection(final PDDocument document, final FeaturesConfig config) {
+	public static FeaturesCollection getFeaturesCollection(final PDDocument document, final FeatureExtractorConfig config) {
 
 		FeaturesReporter reporter = new FeaturesReporter(config);
 		return getFeatures(document, reporter, config);
@@ -111,14 +111,14 @@ public final class PBFeatureParser {
 	 * @return FeaturesCollection class with information about all featurereport
 	 */
 	public static FeaturesCollection getFeaturesCollection(final PDDocument document,
-			final List<FeaturesExtractor> extractors, final FeaturesConfig config) {
+			final List<FeaturesExtractor> extractors, final FeatureExtractorConfig config) {
 
 		FeaturesReporter reporter = new FeaturesReporter(config, extractors);
 		return getFeatures(document, reporter, config);
 	}
 
 	private static FeaturesCollection getFeatures(PDDocument document, FeaturesReporter reporter,
-			FeaturesConfig config) {
+			FeatureExtractorConfig config) {
 		if (config == null) {
 			throw new IllegalArgumentException("Features config can not be null");
 		}

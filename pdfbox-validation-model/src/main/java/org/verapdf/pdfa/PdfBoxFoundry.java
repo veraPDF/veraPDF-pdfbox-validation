@@ -11,7 +11,7 @@ import org.verapdf.component.ComponentDetails;
 import org.verapdf.component.Components;
 import org.verapdf.core.EncryptedPdfException;
 import org.verapdf.core.ModelParsingException;
-import org.verapdf.metadata.fixer.impl.fixer.PBoxMetadataFixerImpl;
+import org.verapdf.metadata.fixer.PBoxMetadataFixerImpl;
 import org.verapdf.model.ModelParser;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
@@ -44,7 +44,7 @@ class PdfBoxFoundry extends AbstractFoundry {
 	 */
 	@Override
 	public PDFParser newPdfParser(InputStream pdfStream) throws ModelParsingException, EncryptedPdfException {
-		return newPdfParser(pdfStream, PDFAFlavour.AUTO);
+		return newPdfParser(pdfStream, PDFAFlavour.NO_FLAVOUR);
 	}
 
 	/**
