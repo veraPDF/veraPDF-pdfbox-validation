@@ -129,6 +129,9 @@ public class FileSpecificationKeysHelper {
 	}
 
 	private static void addAllAppearances(PDAppearanceEntry appearance, List<PDAppearanceStream> list) {
+		if (appearance == null) {
+			return;
+		}
 		if (appearance.isStream()) {
 			PDAppearanceStream appearanceStream = appearance.getAppearanceStream();
 			if (appearanceStream != null) {
