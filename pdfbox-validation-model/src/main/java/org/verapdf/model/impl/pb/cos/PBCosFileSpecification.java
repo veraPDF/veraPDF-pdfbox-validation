@@ -61,7 +61,9 @@ public class PBCosFileSpecification extends PBCosDict implements
 
 	@Override
 	public Boolean getisAssociatedFile() {
-		return this.baseObject != null && StaticContainers.fileSpecificationKeys.contains(this.baseObject.getKey());
+		return this.baseObject != null
+				&& StaticContainers.fileSpecificationKeys != null
+				&& StaticContainers.fileSpecificationKeys.contains(this.baseObject.getKey());
 	}
 
 	@Override
