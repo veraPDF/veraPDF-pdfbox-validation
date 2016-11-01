@@ -56,14 +56,13 @@ import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
-import org.verapdf.core.FeatureParsingException;
+import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.features.FeatureObjectType;
-import org.verapdf.features.FeaturesExtractor;
+import org.verapdf.features.AbstractFeaturesExtractor;
+import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeaturesReporter;
-import org.verapdf.features.config.FeaturesConfig;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
 
 /**
  * Parses PDFBox PDDocument to generate features collection
@@ -80,10 +79,10 @@ public final class PBFeatureParser {
 	private static final String DEVICECMYK_ID = "devcmyk";
 
 	private FeaturesReporter reporter;
-	private FeaturesConfig config;
+	private FeatureExtractorConfig config;
 	private Set<String> processedIDs;
 
-	private PBFeatureParser(FeaturesReporter reporter, FeaturesConfig config) {
+	private PBFeatureParser(FeaturesReporter reporter, FeatureExtractorConfig config) {
 		this.reporter = reporter;
 		this.config = config;
 		this.processedIDs = new HashSet<>();
@@ -97,7 +96,7 @@ public final class PBFeatureParser {
 	 *            the document for parsing
 	 * @return FeaturesCollection class with information about all featurereport
 	 */
-	public static FeaturesCollection getFeaturesCollection(final PDDocument document, final FeaturesConfig config) {
+	public static FeatureExtractionResult getFeaturesCollection(final PDDocument document, final FeatureExtractorConfig config) {
 
 		FeaturesReporter reporter = new FeaturesReporter(config);
 		return getFeatures(document, reporter, config);
@@ -111,15 +110,15 @@ public final class PBFeatureParser {
 	 *            the document for parsing
 	 * @return FeaturesCollection class with information about all featurereport
 	 */
-	public static FeaturesCollection getFeaturesCollection(final PDDocument document,
-			final List<FeaturesExtractor> extractors, final FeaturesConfig config) {
+	public static FeatureExtractionResult getFeaturesCollection(final PDDocument document,
+			final List<AbstractFeaturesExtractor> extractors, final FeatureExtractorConfig config) {
 
 		FeaturesReporter reporter = new FeaturesReporter(config, extractors);
 		return getFeatures(document, reporter, config);
 	}
 
-	private static FeaturesCollection getFeatures(PDDocument document, FeaturesReporter reporter,
-			FeaturesConfig config) {
+	private static FeatureExtractionResult getFeatures(PDDocument document, FeaturesReporter reporter,
+			FeatureExtractorConfig config) {
 		if (config == null) {
 			throw new IllegalArgumentException("Features config can not be null");
 		}
@@ -409,37 +408,30 @@ public final class PBFeatureParser {
 	}
 
 	private void handleSubtypeCreationProblem(String errorMessage) {
-		creationProblem(null, errorMessage, FeatureObjectType.EMBEDDED_FILE,
-				"PBFeatureParser.reportEmbeddedFileNode logic failure.", true);
+		creationProblem(null, errorMessage, FeatureObjectType.EMBEDDED_FILE, true);
 	}
 
 	private void fontCreationProblem(final String nodeID, String errorMessage) {
-		creationProblem(nodeID, errorMessage, FeatureObjectType.FONT,
-				"PBFeatureParser.fontCreationProblem logic failure.", false);
+		creationProblem(nodeID, errorMessage, FeatureObjectType.FONT, false);
 	}
 
 	private void patternCreationProblem(final String nodeID, String errorMessage) {
-		creationProblem(nodeID, errorMessage, FeatureObjectType.PATTERN,
-				"PBFeatureParser.patternCreationProblem logic failure.", false);
+		creationProblem(nodeID, errorMessage, FeatureObjectType.PATTERN, false);
 	}
 
 	private void colorSpaceCreationProblem(final String nodeID, String errorMessage) {
-		creationProblem(nodeID, errorMessage, FeatureObjectType.COLORSPACE,
-				"PBFeatureParser.colorSpaceCreationProblem logic failure.", false);
+		creationProblem(nodeID, errorMessage, FeatureObjectType.COLORSPACE, false);
 	}
 
 	private void shadingCreationProblem(final String nodeID, String errorMessage) {
-		creationProblem(nodeID, errorMessage, FeatureObjectType.SHADING,
-				"PBFeatureParser.shadingCreationProblem logic failure.", false);
+		creationProblem(nodeID, errorMessage, FeatureObjectType.SHADING, false);
 	}
 
 	private void xobjectCreationProblem(final String nodeID, String errorMessage) {
-		creationProblem(nodeID, errorMessage, FeatureObjectType.FAILED_XOBJECT,
-				"PBFeatureParser.xobjectCreationProblem logic failure.", false);
+		creationProblem(nodeID, errorMessage, FeatureObjectType.FAILED_XOBJECT, false);
 	}
 
-	private void creationProblem(final String nodeID, final String errorMessage, final FeatureObjectType type,
-			final String loggerMessage, final boolean isTypeError) {
+	private void creationProblem(final String nodeID, final String errorMessage, final FeatureObjectType type, final boolean isTypeError) {
 		if (config.isFeatureEnabled(type)) {
 			if (!isTypeError) {
 				FeatureTreeNode node = FeatureTreeNode.createRootNode(type.getNodeName());

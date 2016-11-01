@@ -8,8 +8,6 @@ import org.apache.pdfbox.pdmodel.graphics.pattern.PDAbstractPattern;
 import org.apache.pdfbox.pdmodel.graphics.shading.PDShading;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 
-import java.io.IOException;
-
 /**
  * @author Evgeniy Muravitskiy
  */
@@ -20,12 +18,12 @@ class PDEmptyInheritableResources extends PDInheritableResources {
 	}
 
 	@Override
-	public PDFont getFont(COSName name) throws IOException {
+	public PDFont getFont(COSName name) {
 		return null;
 	}
 
 	@Override
-	public PDColorSpace getColorSpace(COSName name) throws IOException {
+	public PDColorSpace getColorSpace(COSName name) {
 		return null;
 	}
 
@@ -35,17 +33,17 @@ class PDEmptyInheritableResources extends PDInheritableResources {
 	}
 
 	@Override
-	public PDShading getShading(COSName name) throws IOException {
+	public PDShading getShading(COSName name) {
 		return null;
 	}
 
 	@Override
-	public PDAbstractPattern getPattern(COSName name) throws IOException {
+	public PDAbstractPattern getPattern(COSName name) {
 		return null;
 	}
 
 	@Override
-	public PDXObject getXObject(COSName name) throws IOException {
+	public PDXObject getXObject(COSName name) {
 		return null;
 	}
 }

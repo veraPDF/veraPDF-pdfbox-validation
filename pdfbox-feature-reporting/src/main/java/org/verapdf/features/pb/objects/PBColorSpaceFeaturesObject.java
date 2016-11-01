@@ -6,12 +6,12 @@ import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.graphics.color.*;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesData;
+import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
@@ -68,7 +68,7 @@ public class PBColorSpaceFeaturesObject implements IFeaturesObject {
 	 * @throws FeatureParsingException occurs when wrong features tree node constructs
 	 */
 	@Override
-	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
+	public FeatureTreeNode reportFeatures(FeatureExtractionResult collection) throws FeatureParsingException {
 		if (colorSpace != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("colorSpace");
 
@@ -129,7 +129,7 @@ public class PBColorSpaceFeaturesObject implements IFeaturesObject {
 		return null;
 	}
 
-	private void parseIndexed(FeatureTreeNode root, FeaturesCollection collection) throws FeatureParsingException {
+	private void parseIndexed(FeatureTreeNode root, FeatureExtractionResult collection) throws FeatureParsingException {
 		PDIndexed index = (PDIndexed) colorSpace;
 
 		if (colorSpaceChild != null) {

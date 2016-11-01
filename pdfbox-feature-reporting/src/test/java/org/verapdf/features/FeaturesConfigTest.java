@@ -12,10 +12,11 @@ import java.util.List;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.verapdf.features.config.FeaturesConfig;
+import org.verapdf.features.FeatureExtractorConfig;
+import org.verapdf.features.FeatureObjectType;
+import org.verapdf.features.TestNodeGenerator;
 import org.verapdf.features.pb.PBFeatureParser;
 import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
 
 /**
  * @author Maksim Bezrukov
@@ -62,8 +63,8 @@ public class FeaturesConfigTest {
 
 	@Test
 	public void iccProfilesTest() {
-		FeaturesConfig config = configMissingFeature(FeatureObjectType.ICCPROFILE);
-		FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
+		FeatureExtractorConfig config = configMissingFeature(FeatureObjectType.ICCPROFILE);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
 		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.ICCPROFILE).isEmpty());
 		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.OUTPUTINTENT),
 				"destOutputIntent"));
@@ -73,8 +74,8 @@ public class FeaturesConfigTest {
 
 	@Test
 	public void outputIntentTest() {
-		FeaturesConfig config = configMissingFeature(FeatureObjectType.OUTPUTINTENT);
-		FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
+		FeatureExtractorConfig config = configMissingFeature(FeatureObjectType.OUTPUTINTENT);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
 		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.OUTPUTINTENT).isEmpty());
 		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.ICCPROFILE),
 				"parents", "outputIntent"));
@@ -87,8 +88,8 @@ public class FeaturesConfigTest {
 
 	@Test
 	public void annotationsTest() {
-		FeaturesConfig config = configMissingFeature(FeatureObjectType.ANNOTATION);
-		FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
+		FeatureExtractorConfig config = configMissingFeature(FeatureObjectType.ANNOTATION);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
 		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.ANNOTATION).isEmpty());
 		assertNull(
 				getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PAGE), "annotations"));
@@ -98,8 +99,8 @@ public class FeaturesConfigTest {
 
 	@Test
 	public void pagesTest() {
-		FeaturesConfig config = configMissingFeature(FeatureObjectType.PAGE);
-		FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
+		FeatureExtractorConfig config = configMissingFeature(FeatureObjectType.PAGE);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
 		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.PAGE).isEmpty());
 		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.ANNOTATION),
 				"parents", "page"));
@@ -127,8 +128,8 @@ public class FeaturesConfigTest {
 
 	@Test
 	public void graphicsStateTest() {
-		FeaturesConfig config = configMissingFeature(FeatureObjectType.EXT_G_STATE);
-		FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
+		FeatureExtractorConfig config = configMissingFeature(FeatureObjectType.EXT_G_STATE);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
 		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.EXT_G_STATE).isEmpty());
 		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PAGE), "resources",
 				"graphicsStates"));
@@ -146,8 +147,8 @@ public class FeaturesConfigTest {
 
 	@Test
 	public void colorSpaceTest() {
-		FeaturesConfig config = configMissingFeature(FeatureObjectType.COLORSPACE);
-		FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
+		FeatureExtractorConfig config = configMissingFeature(FeatureObjectType.COLORSPACE);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
 		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.COLORSPACE).isEmpty());
 		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.ICCPROFILE),
 				"parents", "iccBased"));
@@ -169,8 +170,8 @@ public class FeaturesConfigTest {
 
 	@Test
 	public void patternsTest() {
-		FeaturesConfig config = configMissingFeature(FeatureObjectType.PATTERN);
-		FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
+		FeatureExtractorConfig config = configMissingFeature(FeatureObjectType.PATTERN);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
 		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.PATTERN).isEmpty());
 		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.EXT_G_STATE),
 				"parents", "pattern"));
@@ -200,8 +201,8 @@ public class FeaturesConfigTest {
 
 	@Test
 	public void shadingsTest() {
-		FeaturesConfig config = configMissingFeature(FeatureObjectType.SHADING);
-		FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
+		FeatureExtractorConfig config = configMissingFeature(FeatureObjectType.SHADING);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
 		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.SHADING).isEmpty());
 		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.COLORSPACE),
 				"parents", "shading"));
@@ -221,8 +222,8 @@ public class FeaturesConfigTest {
 	public void xobjectsTest() {
 		EnumSet<FeatureObjectType> xobjs = EnumSet.of(FeatureObjectType.FAILED_XOBJECT, FeatureObjectType.FORM_XOBJECT,
 				FeatureObjectType.IMAGE_XOBJECT, FeatureObjectType.POSTSCRIPT_XOBJECT);
-		FeaturesConfig config = configMissingFeatures(xobjs);
-		FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
+		FeatureExtractorConfig config = configMissingFeatures(xobjs);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
 		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.FORM_XOBJECT).isEmpty());
 		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.IMAGE_XOBJECT).isEmpty());
 		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.POSTSCRIPT_XOBJECT).isEmpty());
@@ -251,8 +252,8 @@ public class FeaturesConfigTest {
 
 	@Test
 	public void fontsTest() {
-		FeaturesConfig config = configMissingFeature(FeatureObjectType.FONT);
-		FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
+		FeatureExtractorConfig config = configMissingFeature(FeatureObjectType.FONT);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
 		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.FONT).isEmpty());
 		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.EXT_G_STATE),
 				"parents", "font"));
@@ -284,8 +285,8 @@ public class FeaturesConfigTest {
 
 	@Test
 	public void propertiesDictionariesTest() {
-		FeaturesConfig config = configMissingFeature(FeatureObjectType.PROPERTIES);
-		FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
+		FeatureExtractorConfig config = configMissingFeature(FeatureObjectType.PROPERTIES);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
 		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.PROPERTIES).isEmpty());
 		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PAGE), "resources",
 				"propertiesDicts"));
@@ -310,22 +311,22 @@ public class FeaturesConfigTest {
 	}
 
 	public void testFeatureExclusion(FeatureObjectType type) {
-		FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, configMissingFeature(type));
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, configMissingFeature(type));
 		assertTrue(collection.getFeatureTreesForType(type).isEmpty());
 	}
 
-	private static FeaturesConfig configMissingFeature(FeatureObjectType toExclude) {
+	private static FeatureExtractorConfig configMissingFeature(FeatureObjectType toExclude) {
 		EnumSet<FeatureObjectType> testSet = EnumSet.allOf(FeatureObjectType.class);
 		testSet.remove(toExclude);
-		return FeaturesConfig.fromFeatureSet(testSet);
+		return FeatureExtractorConfigImpl.fromFeatureSet(testSet);
 	}
 
-	private static FeaturesConfig configMissingFeatures(EnumSet<FeatureObjectType> toExclude) {
+	private static FeatureExtractorConfig configMissingFeatures(EnumSet<FeatureObjectType> toExclude) {
 		EnumSet<FeatureObjectType> testSet = EnumSet.allOf(FeatureObjectType.class);
 		for (FeatureObjectType type : toExclude) {
 			testSet.remove(type);
 		}
-		return FeaturesConfig.fromFeatureSet(testSet);
+		return FeatureExtractorConfigImpl.fromFeatureSet(testSet);
 	}
 
 	private static FeatureTreeNode getFirstNodeFromListWithPath(List<FeatureTreeNode> list, String... names) {

@@ -5,12 +5,12 @@ import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocume
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesData;
+import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -50,7 +50,7 @@ public class PBOutlinesFeaturesObject implements IFeaturesObject {
 	 * @throws FeatureParsingException occurs when wrong features tree node constructs
 	 */
 	@Override
-	public FeatureTreeNode reportFeatures(FeaturesCollection collection)
+	public FeatureTreeNode reportFeatures(FeatureExtractionResult collection)
 			throws FeatureParsingException {
 		if (outline != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("outlines");
@@ -80,7 +80,7 @@ public class PBOutlinesFeaturesObject implements IFeaturesObject {
 	}
 
 	private static void createItem(PDOutlineItem item, FeatureTreeNode root,
-								   FeaturesCollection collection, Set<PDOutlineItem> items) throws FeatureParsingException {
+								   FeatureExtractionResult collection, Set<PDOutlineItem> items) throws FeatureParsingException {
 		if (item != null) {
 			items.add(item);
 			FeatureTreeNode itemNode = root.addChild(

@@ -7,13 +7,13 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.verapdf.core.FeatureParsingException;
+import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.FeaturesData;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.SignatureFeaturesData;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
 
 /**
  * @author Maksim Bezrukov
@@ -32,7 +32,7 @@ public class PBSignatureFeaturesObject implements IFeaturesObject {
     }
 
     @Override
-    public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
+    public FeatureTreeNode reportFeatures(FeatureExtractionResult collection) throws FeatureParsingException {
 
         if (signature != null) {
             FeatureTreeNode root = FeatureTreeNode.createRootNode("signature");

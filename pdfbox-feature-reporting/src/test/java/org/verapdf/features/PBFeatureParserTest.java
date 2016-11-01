@@ -12,29 +12,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.bind.JAXBException;
-
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.verapdf.core.FeatureParsingException;
-import org.verapdf.features.config.FeaturesConfig;
 import org.verapdf.features.pb.PBFeatureParser;
 import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
 
 /**
  * @author Maksim Bezrukov
  */
 public class PBFeatureParserTest {
 
-	private static FeaturesCollection collection;
+	private static FeatureExtractionResult collection;
 
 	@BeforeClass
-	public static void before() throws URISyntaxException, IOException, JAXBException {
+	public static void before() throws URISyntaxException, IOException {
 		File pdf = new File(TestNodeGenerator.getSystemIndependentPath("/FR.pdf"));
 		try (PDDocument document = PDDocument.load(pdf, false, true)) {
-			FeaturesConfig config = FeaturesConfig.fromFeatureSet(EnumSet.allOf(FeatureObjectType.class));
+			FeatureExtractorConfig config = FeatureExtractorConfigImpl.fromFeatureSet(EnumSet.allOf(FeatureObjectType.class));
 			collection = PBFeatureParser.getFeaturesCollection(document, config);
 		}
 	}

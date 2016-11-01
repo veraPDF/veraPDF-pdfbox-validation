@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.verapdf.core.EncryptedPdfException;
 import org.verapdf.core.ModelParsingException;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,7 +23,7 @@ public class ModelParserTest {
 	public void testExistingFile() throws URISyntaxException, IOException, ModelParsingException, EncryptedPdfException {
 		String path = getSystemIndependentPath("/model/impl/pb/pd/Fonts.pdf");
 		try (FileInputStream fis = new FileInputStream(path);
-				ModelParser loader = ModelParser.createModelWithFlavour(fis, null)) {
+				ModelParser loader = ModelParser.createModelWithFlavour(fis, PDFAFlavour.NO_FLAVOUR)) {
 			Assert.assertNotNull(loader.getPDDocument());
 			Assert.assertNotNull(loader.getRoot());
 		}

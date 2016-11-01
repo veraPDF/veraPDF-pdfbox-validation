@@ -14,13 +14,13 @@ import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.cos.COSStream;
 import org.verapdf.core.FeatureParsingException;
+import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.FeaturesData;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
 
 /**
  * Feature object for low level info part of the features report
@@ -74,7 +74,7 @@ public class PBLowLvlInfoFeaturesObject implements IFeaturesObject {
 	 *             occurs when wrong features tree node constructs
 	 */
 	@Override
-	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
+	public FeatureTreeNode reportFeatures(FeatureExtractionResult collection) throws FeatureParsingException {
 		if (document != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("lowLevelInfo");
 
@@ -140,7 +140,7 @@ public class PBLowLvlInfoFeaturesObject implements IFeaturesObject {
 		return res;
 	}
 
-	private void addDocumentId(FeatureTreeNode root, FeaturesCollection collection) throws FeatureParsingException {
+	private void addDocumentId(FeatureTreeNode root, FeatureExtractionResult collection) throws FeatureParsingException {
 		COSArray ids = document.getDocumentID();
 		if (ids != null) {
 			String creationId = PBCreateNodeHelper.getStringFromBase(ids.get(0));

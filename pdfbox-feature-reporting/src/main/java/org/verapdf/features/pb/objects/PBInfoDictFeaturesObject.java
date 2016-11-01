@@ -3,11 +3,11 @@ package org.verapdf.features.pb.objects;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesData;
+import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -52,7 +52,7 @@ public class PBInfoDictFeaturesObject implements IFeaturesObject {
 	 * @throws FeatureParsingException occurs when wrong features tree node constructs
 	 */
 	@Override
-	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
+	public FeatureTreeNode reportFeatures(FeatureExtractionResult collection) throws FeatureParsingException {
 
 		if (info != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("informationDict");

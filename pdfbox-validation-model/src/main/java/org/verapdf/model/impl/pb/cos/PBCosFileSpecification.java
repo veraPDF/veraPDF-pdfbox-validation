@@ -21,11 +21,10 @@ import java.util.List;
  *
  * @author Evgeniy Muravitskiy
  */
-public class PBCosFileSpecification extends PBCosDict implements
-        CosFileSpecification {
+public class PBCosFileSpecification extends PBCosDict implements CosFileSpecification {
 
-    /** Type name for PBCosFileSpecification */
-    public static final String COS_FILE_SPECIFICATION_TYPE = "CosFileSpecification";
+	/** Type name for PBCosFileSpecification */
+	public static final String COS_FILE_SPECIFICATION_TYPE = "CosFileSpecification";
 
 	public static final String EF = "EF";
 
@@ -33,16 +32,18 @@ public class PBCosFileSpecification extends PBCosDict implements
 	private final String uf;
 	private final String afrelationship;
 
-    /**
-     * Default constructor
-     * @param dictionary pdfbox COSDictionary
-     */
-    public PBCosFileSpecification(COSDictionary dictionary, PDDocument document, PDFAFlavour flavour) {
-        super(dictionary, COS_FILE_SPECIFICATION_TYPE, document, flavour);
+	/**
+	 * Default constructor
+	 * 
+	 * @param dictionary
+	 *            pdfbox COSDictionary
+	 */
+	public PBCosFileSpecification(COSDictionary dictionary, PDDocument document, PDFAFlavour flavour) {
+		super(dictionary, COS_FILE_SPECIFICATION_TYPE, document, flavour);
 		this.f = this.getStringValue(COSName.F);
 		this.uf = this.getStringValue(COSName.UF);
 		this.afrelationship = this.getNameValue(COSName.getPDFName("AFRelationship"));
-    }
+	}
 
 	@Override
 	public String getF() {
@@ -61,9 +62,9 @@ public class PBCosFileSpecification extends PBCosDict implements
 
 	@Override
 	public Boolean getisAssociatedFile() {
-		return this.baseObject != null
+		return Boolean.valueOf(this.baseObject != null
 				&& StaticContainers.fileSpecificationKeys != null
-				&& StaticContainers.fileSpecificationKeys.contains(this.baseObject.getKey());
+				&& StaticContainers.fileSpecificationKeys.contains(this.baseObject.getKey()));
 	}
 
 	@Override
@@ -75,8 +76,7 @@ public class PBCosFileSpecification extends PBCosDict implements
 	}
 
 	private List<EmbeddedFile> getEFFile() {
-		COSBase efDictionary = ((COSDictionary) this.baseObject)
-				.getDictionaryObject(COSName.EF);
+		COSBase efDictionary = ((COSDictionary) this.baseObject).getDictionaryObject(COSName.EF);
 		if (efDictionary instanceof COSDictionary) {
 			ArrayList<EmbeddedFile> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 			list.add(new PBoxEmbeddedFile((COSDictionary) efDictionary));

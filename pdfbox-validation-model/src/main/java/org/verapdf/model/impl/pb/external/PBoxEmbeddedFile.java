@@ -1,19 +1,18 @@
 package org.verapdf.model.impl.pb.external;
 
+import java.io.InputStream;
+
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
-import org.bouncycastle.cert.crmf.ValueDecryptorGenerator;
 import org.verapdf.model.ModelParser;
 import org.verapdf.model.external.EmbeddedFile;
 import org.verapdf.pdfa.PDFAValidator;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.results.ValidationResult;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
-
-import java.io.InputStream;
 
 /**
  * Embedded file representation implemented by Apache PDFBox

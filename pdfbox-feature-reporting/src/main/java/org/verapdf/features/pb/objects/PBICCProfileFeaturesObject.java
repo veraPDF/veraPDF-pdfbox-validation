@@ -20,6 +20,7 @@ import org.apache.pdfbox.cos.COSNumber;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.verapdf.core.FeatureParsingException;
+import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.FeaturesData;
 import org.verapdf.features.ICCProfileFeaturesData;
@@ -27,7 +28,6 @@ import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
 
 /**
  * Feature object for icc profile
@@ -103,7 +103,7 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 	 * @throws FeatureParsingException occurs when wrong features tree node constructs
 	 */
 	@Override
-	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
+	public FeatureTreeNode reportFeatures(FeatureExtractionResult collection) throws FeatureParsingException {
 
 		if (profile != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("iccProfile");
@@ -179,7 +179,7 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 		}
 	}
 
-	private void parseProfileHeader(FeatureTreeNode root, FeaturesCollection collection) throws FeatureParsingException {
+	private void parseProfileHeader(FeatureTreeNode root, FeatureExtractionResult collection) throws FeatureParsingException {
 		try {
 			byte[] profileBytes = PBCreateNodeHelper.inputStreamToByteArray(profile.getUnfilteredStream());
 
