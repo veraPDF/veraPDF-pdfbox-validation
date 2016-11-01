@@ -13,7 +13,7 @@ import org.verapdf.pdfa.results.ValidationResult;
 /**
  * @author Evgeniy Muravitskiy
  */
-public class PBoxMetadataFixerImpl extends MetadataFixerImpl {
+public final class PBoxMetadataFixerImpl extends MetadataFixerImpl {
 
 	public PBoxMetadataFixerImpl() {
 

@@ -18,6 +18,7 @@ import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.PRODUCER;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -27,6 +28,8 @@ import java.util.TimeZone;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
+import org.verapdf.component.ComponentDetails;
+import org.verapdf.component.Components;
 import org.verapdf.metadata.fixer.entity.InfoDictionary;
 import org.verapdf.metadata.fixer.entity.Metadata;
 import org.verapdf.metadata.fixer.entity.PDFDocument;
@@ -51,7 +54,10 @@ import org.xml.sax.SAXException;
 /**
  * @author Evgeniy Muravitskiy
  */
-public abstract class MetadataFixerImpl implements MetadataFixer {
+abstract class MetadataFixerImpl implements MetadataFixer {
+	private static final URI componentId = URI.create("http://pdfa.verapdf.org/metadata/fixer#default");
+	private static final String componentName = "veraPDF PDF Box Metadata Fixer";
+	private static final ComponentDetails componentDetails = Components.libraryDetails(componentId, componentName);
 	private static final ProfileDirectory PROFILES = Profiles.getVeraProfileDirectory();
 
 	private static final Logger LOGGER = Logger.getLogger(MetadataFixerImpl.class);
@@ -77,6 +83,11 @@ public abstract class MetadataFixerImpl implements MetadataFixer {
 			boolean fixIdentification, ProcessedObjectsParser parser) {
 		return result != null && result.isCompliant() ? new MetadataFixerResultImpl.Builder().build()
 				: fixAndSaveDocument(output, document, result, fixIdentification, parser);
+	}
+
+	@Override
+	public ComponentDetails getDetails() {
+		return componentDetails;
 	}
 
 	private static MetadataFixerResult fixAndSaveDocument(OutputStream output, PDFDocument document, ValidationResult result,
