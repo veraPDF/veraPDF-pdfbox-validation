@@ -6,7 +6,7 @@ import java.io.OutputStream;
 
 import org.verapdf.metadata.fixer.impl.pb.model.PDFDocumentImpl;
 import org.verapdf.metadata.fixer.utils.parser.XMLProcessedObjectsParser;
-import org.verapdf.pdfa.PDFParser;
+import org.verapdf.pdfa.PDFAParser;
 import org.verapdf.pdfa.results.MetadataFixerResult;
 import org.verapdf.pdfa.results.ValidationResult;
 
@@ -25,7 +25,7 @@ public final class PBoxMetadataFixerImpl extends MetadataFixerImpl {
 	}
 
 	@Override
-	public MetadataFixerResult fixMetadata(PDFParser parser, OutputStream outputRepaired, ValidationResult result) {
+	public MetadataFixerResult fixMetadata(PDFAParser parser, OutputStream outputRepaired, ValidationResult result) {
 		return super.fixMetadata(outputRepaired, parser.getPDFDocument(), result, true, XMLProcessedObjectsParser.getInstance());
 	}
 
