@@ -4,12 +4,12 @@ import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObjectProxy;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesData;
+import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.ImageFeaturesData;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -83,7 +83,7 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 	 *             occurs when wrong features tree node constructs
 	 */
 	@Override
-	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
+	public FeatureTreeNode reportFeatures(FeatureExtractionResult collection) throws FeatureParsingException {
 		if (imageXObject != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("xobject");
 			root.setAttribute("type", "image");

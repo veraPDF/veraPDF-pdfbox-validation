@@ -58,11 +58,11 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.features.FeatureObjectType;
-import org.verapdf.features.FeaturesExtractor;
+import org.verapdf.features.AbstractFeaturesExtractor;
+import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeaturesReporter;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
 
 /**
  * Parses PDFBox PDDocument to generate features collection
@@ -96,7 +96,7 @@ public final class PBFeatureParser {
 	 *            the document for parsing
 	 * @return FeaturesCollection class with information about all featurereport
 	 */
-	public static FeaturesCollection getFeaturesCollection(final PDDocument document, final FeatureExtractorConfig config) {
+	public static FeatureExtractionResult getFeaturesCollection(final PDDocument document, final FeatureExtractorConfig config) {
 
 		FeaturesReporter reporter = new FeaturesReporter(config);
 		return getFeatures(document, reporter, config);
@@ -110,14 +110,14 @@ public final class PBFeatureParser {
 	 *            the document for parsing
 	 * @return FeaturesCollection class with information about all featurereport
 	 */
-	public static FeaturesCollection getFeaturesCollection(final PDDocument document,
-			final List<FeaturesExtractor> extractors, final FeatureExtractorConfig config) {
+	public static FeatureExtractionResult getFeaturesCollection(final PDDocument document,
+			final List<AbstractFeaturesExtractor> extractors, final FeatureExtractorConfig config) {
 
 		FeaturesReporter reporter = new FeaturesReporter(config, extractors);
 		return getFeatures(document, reporter, config);
 	}
 
-	private static FeaturesCollection getFeatures(PDDocument document, FeaturesReporter reporter,
+	private static FeatureExtractionResult getFeatures(PDDocument document, FeaturesReporter reporter,
 			FeatureExtractorConfig config) {
 		if (config == null) {
 			throw new IllegalArgumentException("Features config can not be null");

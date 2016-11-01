@@ -22,13 +22,13 @@ import org.apache.pdfbox.pdmodel.font.PDSimpleFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.font.PDType3Font;
 import org.verapdf.core.FeatureParsingException;
+import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.FeaturesData;
 import org.verapdf.features.FontFeaturesData;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
 
 /**
  * Feature object for fonts
@@ -95,7 +95,7 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 	 * @throws FeatureParsingException occurs when wrong features tree node constructs
 	 */
 	@Override
-	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
+	public FeatureTreeNode reportFeatures(FeatureExtractionResult collection) throws FeatureParsingException {
 		if (fontLike != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("font");
 			if (id != null) {
@@ -249,7 +249,7 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 	}
 
 
-	private static void parseFontDescriptior(PDFontDescriptor descriptor, FeatureTreeNode root, FeaturesCollection collection) throws FeatureParsingException {
+	private static void parseFontDescriptior(PDFontDescriptor descriptor, FeatureTreeNode root, FeatureExtractionResult collection) throws FeatureParsingException {
 		if (descriptor != null) {
 			FeatureTreeNode descriptorNode = root.addChild("fontDescriptor");
 

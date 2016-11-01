@@ -18,14 +18,13 @@ import org.junit.Test;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.pb.PBFeatureParser;
 import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
 
 /**
  * @author Maksim Bezrukov
  */
 public class PBFeatureParserTest {
 
-	private static FeaturesCollection collection;
+	private static FeatureExtractionResult collection;
 
 	@BeforeClass
 	public static void before() throws URISyntaxException, IOException {

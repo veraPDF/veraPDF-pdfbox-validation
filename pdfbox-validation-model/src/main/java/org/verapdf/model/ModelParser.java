@@ -6,15 +6,14 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.verapdf.core.EncryptedPdfException;
 import org.verapdf.core.ModelParsingException;
+import org.verapdf.features.AbstractFeaturesExtractor;
+import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeatureExtractorConfig;
-import org.verapdf.features.FeaturesExtractor;
 import org.verapdf.features.pb.PBFeatureParser;
-import org.verapdf.features.tools.FeaturesCollection;
 import org.verapdf.metadata.fixer.entity.PDFDocument;
 import org.verapdf.metadata.fixer.impl.pb.model.PDFDocumentImpl;
 import org.verapdf.model.impl.pb.containers.StaticContainers;
@@ -117,12 +116,12 @@ public final class ModelParser implements PDFParser {
     }
 
     @Override
-    public FeaturesCollection getFeatures(FeatureExtractorConfig config) {
+    public FeatureExtractionResult getFeatures(FeatureExtractorConfig config) {
         return PBFeatureParser.getFeaturesCollection(this.document, config);
     }
 
     @Override
-    public FeaturesCollection getFeatures(FeatureExtractorConfig config, List<FeaturesExtractor> extractors) {
+    public FeatureExtractionResult getFeatures(FeatureExtractorConfig config, List<AbstractFeaturesExtractor> extractors) {
         return PBFeatureParser.getFeaturesCollection(this.document, extractors, config);
     }
 

@@ -8,10 +8,10 @@ import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.verapdf.core.FeatureParsingException;
+import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.pb.objects.ColorComponent;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
 
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -66,7 +66,7 @@ public final class PBCreateNodeHelper {
 	 * @throws FeatureParsingException
 	 */
 	public static FeatureTreeNode createDateNode(String nodeName, FeatureTreeNode parent, Calendar date,
-			FeaturesCollection collection) throws FeatureParsingException {
+			FeatureExtractionResult collection) throws FeatureParsingException {
 		FeatureTreeNode modificationDate = null;
 
 		if (date != null) {
@@ -171,7 +171,7 @@ public final class PBCreateNodeHelper {
 	 * @throws FeatureParsingException
 	 */
 	public static FeatureTreeNode addDeviceColorSpaceNode(String name, PDColor color, FeatureTreeNode parent,
-			FeaturesCollection collection) throws FeatureParsingException {
+			FeatureExtractionResult collection) throws FeatureParsingException {
 		if (name == null || color == null) {
 			return null;
 		}
@@ -269,7 +269,7 @@ public final class PBCreateNodeHelper {
 	 *             occurs when wrong features tree node constructs
 	 */
 	public static FeatureTreeNode parseMetadata(PDMetadata metadata, String nodeName, FeatureTreeNode parent,
-			FeaturesCollection collection) throws FeatureParsingException {
+			FeatureExtractionResult collection) throws FeatureParsingException {
 		if (metadata == null) {
 			return null;
 		}

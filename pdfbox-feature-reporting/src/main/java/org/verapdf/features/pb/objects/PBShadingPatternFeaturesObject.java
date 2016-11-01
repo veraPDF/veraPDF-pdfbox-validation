@@ -3,10 +3,10 @@ package org.verapdf.features.pb.objects;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDShadingPattern;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesData;
+import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
 
 /**
  * Features object for shading pattern
@@ -53,7 +53,7 @@ public class PBShadingPatternFeaturesObject implements IFeaturesObject {
 	 * @throws FeatureParsingException occurs when wrong features tree node constructs
 	 */
 	@Override
-	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
+	public FeatureTreeNode reportFeatures(FeatureExtractionResult collection) throws FeatureParsingException {
 		if (shadingPattern != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("pattern");
 			if (id != null) {

@@ -1,5 +1,31 @@
 package org.verapdf.metadata.fixer;
 
+import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.INFO_AUTHOR;
+import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.INFO_CREATION_DATE;
+import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.INFO_CREATOR;
+import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.INFO_MODIFICATION_DATE;
+import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.INFO_SUBJECT;
+import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.INFO_TITLE;
+import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.KEYWORDS;
+import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.METADATA_AUTHOR;
+import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.METADATA_CREATION_DATE;
+import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.METADATA_CREATOR;
+import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.METADATA_MODIFICATION_DATE;
+import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.METADATA_SUBJECT;
+import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.METADATA_TITLE;
+import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.PDF_DATE_FORMAT_REGEX;
+import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.PRODUCER;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimeZone;
+
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.log4j.Logger;
 import org.verapdf.metadata.fixer.entity.InfoDictionary;
 import org.verapdf.metadata.fixer.entity.Metadata;
@@ -9,11 +35,9 @@ import org.verapdf.metadata.fixer.schemas.BasicSchema;
 import org.verapdf.metadata.fixer.schemas.DublinCore;
 import org.verapdf.metadata.fixer.schemas.XMPBasic;
 import org.verapdf.metadata.fixer.utils.DateConverter;
-import org.verapdf.metadata.fixer.MetadataFixerConfig;
 import org.verapdf.metadata.fixer.utils.ProcessedObjectsInspector;
 import org.verapdf.metadata.fixer.utils.ValidationStatus;
 import org.verapdf.metadata.fixer.utils.parser.ProcessedObjectsParser;
-import org.verapdf.model.pdlayer.PDDocument;
 import org.verapdf.pdfa.MetadataFixer;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.results.MetadataFixerResult;
@@ -23,17 +47,6 @@ import org.verapdf.pdfa.validation.profiles.ProfileDirectory;
 import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
 import org.xml.sax.SAXException;
-
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URISyntaxException;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
-
-import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.*;
 
 /**
  * @author Evgeniy Muravitskiy
