@@ -61,7 +61,7 @@ class PdfBoxFoundry extends AbstractFoundry {
 	 * @see org.verapdf.pdfa.VeraPDFFoundry#newMetadataFixer(org.verapdf.metadata.fixer.utils.FixerConfig)
 	 */
 	@Override
-	public MetadataFixer newMetadataFixer() {
+	public MetadataFixer createMetadataFixer() {
 		return new PBoxMetadataFixerImpl();
 	}
 
