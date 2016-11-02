@@ -18,7 +18,7 @@ import org.verapdf.metadata.fixer.entity.PDFDocument;
 import org.verapdf.metadata.fixer.impl.pb.model.PDFDocumentImpl;
 import org.verapdf.model.impl.pb.containers.StaticContainers;
 import org.verapdf.model.impl.pb.cos.PBCosDocument;
-import org.verapdf.pdfa.PDFParser;
+import org.verapdf.pdfa.PDFAParser;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import com.adobe.xmp.XMPException;
@@ -29,7 +29,7 @@ import com.adobe.xmp.impl.VeraPDFMeta;
  *
  * @author Evgeniy Muravitskiy
  */
-public final class ModelParser implements PDFParser {
+public final class ModelParser implements PDFAParser {
 
     private static final Logger LOGGER = Logger.getLogger(ModelParser.class);
 
@@ -76,19 +76,6 @@ public final class ModelParser implements PDFParser {
 
     private static void cleanUp() {
         StaticContainers.clearAllContainers();
-    }
-
-    /**
-     * Get {@code PDDocument} object for current file.
-     *
-     * @return {@link org.apache.pdfbox.pdmodel.PDDocument} object of pdfbox
-     *         library.
-     * @throws IOException
-     *             when target file is not pdf or pdf file is not contain root
-     *             object
-     */
-    public PDDocument getPDDocument() {
-        return this.document;
     }
 
     @Override

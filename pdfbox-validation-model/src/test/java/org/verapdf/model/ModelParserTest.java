@@ -1,17 +1,18 @@
 package org.verapdf.model;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.verapdf.core.EncryptedPdfException;
-import org.verapdf.core.ModelParsingException;
-import org.verapdf.pdfa.flavours.PDFAFlavour;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.verapdf.core.EncryptedPdfException;
+import org.verapdf.core.ModelParsingException;
+import org.verapdf.pdfa.PDFAParser;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -23,8 +24,7 @@ public class ModelParserTest {
 	public void testExistingFile() throws URISyntaxException, IOException, ModelParsingException, EncryptedPdfException {
 		String path = getSystemIndependentPath("/model/impl/pb/pd/Fonts.pdf");
 		try (FileInputStream fis = new FileInputStream(path);
-				ModelParser loader = ModelParser.createModelWithFlavour(fis, PDFAFlavour.NO_FLAVOUR)) {
-			Assert.assertNotNull(loader.getPDDocument());
+				PDFAParser loader = ModelParser.createModelWithFlavour(fis, PDFAFlavour.NO_FLAVOUR)) {
 			Assert.assertNotNull(loader.getRoot());
 		}
 	}
