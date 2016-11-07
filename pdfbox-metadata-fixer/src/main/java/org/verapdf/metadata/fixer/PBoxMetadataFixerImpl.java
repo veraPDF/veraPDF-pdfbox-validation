@@ -20,13 +20,22 @@ public final class PBoxMetadataFixerImpl extends MetadataFixerImpl {
 	}
 
 	@Override
-	public MetadataFixerResult fixMetadata(InputStream toFix, OutputStream outputRepaired, ValidationResult result) throws IOException {
-		return super.fixMetadata(outputRepaired, new PDFDocumentImpl(toFix), result, true, XMLProcessedObjectsParser.getInstance());
+	public MetadataFixerResult fixMetadata(InputStream toFix, OutputStream outputRepaired, ValidationResult result)
+			throws IOException {
+		return super.fixMetadata(outputRepaired, new PDFDocumentImpl(toFix), result, true,
+				XMLProcessedObjectsParser.getInstance());
 	}
 
 	@Override
 	public MetadataFixerResult fixMetadata(PDFAParser parser, OutputStream outputRepaired, ValidationResult result) {
-		return super.fixMetadata(outputRepaired, parser.getPDFDocument(), result, true, XMLProcessedObjectsParser.getInstance());
+		return super.fixMetadata(outputRepaired, parser.getPDFDocument(), result, true,
+				XMLProcessedObjectsParser.getInstance());
+	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+
 	}
 
 }
