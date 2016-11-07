@@ -3,11 +3,11 @@ package org.verapdf.features.pb.objects;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesData;
-import org.verapdf.features.FeaturesObjectTypesEnum;
+import org.verapdf.features.FeatureExtractionResult;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
 
 import java.util.Set;
 
@@ -44,11 +44,11 @@ public class PBAnnotationFeaturesObject implements IFeaturesObject {
 	}
 
 	/**
-	 * @return ANNOTATION instance of the FeaturesObjectTypesEnum enumeration
+	 * @return ANNOTATION instance of the FeatureObjectType enumeration
 	 */
 	@Override
-	public FeaturesObjectTypesEnum getType() {
-		return FeaturesObjectTypesEnum.ANNOTATION;
+	public FeatureObjectType getType() {
+		return FeatureObjectType.ANNOTATION;
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class PBAnnotationFeaturesObject implements IFeaturesObject {
 	 * @throws FeatureParsingException occurs when wrong features tree node constructs
 	 */
 	@Override
-	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
+	public FeatureTreeNode reportFeatures(FeatureExtractionResult collection) throws FeatureParsingException {
 		if (annot != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("annotation");
 			if (id != null) {
@@ -73,17 +73,17 @@ public class PBAnnotationFeaturesObject implements IFeaturesObject {
 			PBCreateNodeHelper.addNotEmptyNode("modifiedDate", annot.getModifiedDate(), root);
 
 			if (formXObjects != null && !formXObjects.isEmpty()) {
-				FeatureTreeNode resources = FeatureTreeNode.createChildNode("resources", root);
+				FeatureTreeNode resources = root.addChild("resources");
 				for (String xObjID : formXObjects) {
 					if (xObjID != null) {
-						FeatureTreeNode xObjNode = FeatureTreeNode.createChildNode("xobject", resources);
+						FeatureTreeNode xObjNode = resources.addChild("xobject");
 						xObjNode.setAttribute(ID, xObjID);
 					}
 				}
 			}
 
 			if (popupId != null) {
-				FeatureTreeNode popup = FeatureTreeNode.createChildNode("popup", root);
+				FeatureTreeNode popup = root.addChild("popup");
 				popup.setAttribute(ID, popupId);
 			}
 
@@ -102,7 +102,7 @@ public class PBAnnotationFeaturesObject implements IFeaturesObject {
 			boolean lockedContents = (annot.getAnnotationFlags() & LOCKED_CONTENTS_FLAG) == LOCKED_CONTENTS_FLAG;
 			PBCreateNodeHelper.addNotEmptyNode("lockedContents", String.valueOf(lockedContents), root);
 
-			collection.addNewFeatureTree(FeaturesObjectTypesEnum.ANNOTATION, root);
+			collection.addNewFeatureTree(FeatureObjectType.ANNOTATION, root);
 			return root;
 		}
 		return null;

@@ -1,15 +1,15 @@
 package org.verapdf.features.pb.objects;
 
+import java.util.Set;
+
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDTilingPattern;
 import org.verapdf.core.FeatureParsingException;
+import org.verapdf.features.FeatureExtractionResult;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.FeaturesData;
-import org.verapdf.features.FeaturesObjectTypesEnum;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
-
-import java.util.Set;
 
 /**
  * Feature object for tilling pattern
@@ -61,8 +61,8 @@ public class PBTilingPatternFeaturesObject implements IFeaturesObject {
 	 * @return PATTERN instance of the FeaturesObjectTypesEnum enumeration
 	 */
 	@Override
-	public FeaturesObjectTypesEnum getType() {
-		return FeaturesObjectTypesEnum.PATTERN;
+	public FeatureObjectType getType() {
+		return FeatureObjectType.PATTERN;
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class PBTilingPatternFeaturesObject implements IFeaturesObject {
 	 * @throws FeatureParsingException occurs when wrong features tree node constructs
 	 */
 	@Override
-	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
+	public FeatureTreeNode reportFeatures(FeatureExtractionResult collection) throws FeatureParsingException {
 		if (tilingPattern != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("pattern");
 			if (id != null) {
@@ -81,19 +81,19 @@ public class PBTilingPatternFeaturesObject implements IFeaturesObject {
 			}
 			root.setAttribute("type", "tiling");
 
-			FeatureTreeNode.createChildNode("paintType", root).setValue(String.valueOf(tilingPattern.getPaintType()));
-			FeatureTreeNode.createChildNode("tilingType", root).setValue(String.valueOf(tilingPattern.getTilingType()));
+			root.addChild("paintType").setValue(String.valueOf(tilingPattern.getPaintType()));
+			root.addChild("tilingType").setValue(String.valueOf(tilingPattern.getTilingType()));
 
 			PBCreateNodeHelper.addBoxFeature("bbox", tilingPattern.getBBox(), root);
 
-			FeatureTreeNode.createChildNode("xStep", root).setValue(String.valueOf(tilingPattern.getXStep()));
-			FeatureTreeNode.createChildNode("yStep", root).setValue(String.valueOf(tilingPattern.getYStep()));
+			root.addChild("xStep").setValue(String.valueOf(tilingPattern.getXStep()));
+			root.addChild("yStep").setValue(String.valueOf(tilingPattern.getYStep()));
 
-			parseFloatMatrix(tilingPattern.getMatrix().getValues(), FeatureTreeNode.createChildNode("matrix", root));
+			parseFloatMatrix(tilingPattern.getMatrix().getValues(), root.addChild("matrix"));
 
 			parseResources(root);
 
-			collection.addNewFeatureTree(FeaturesObjectTypesEnum.PATTERN, root);
+			collection.addNewFeatureTree(FeatureObjectType.PATTERN, root);
 			return root;
 		}
 
@@ -111,7 +111,7 @@ public class PBTilingPatternFeaturesObject implements IFeaturesObject {
 	private static void parseFloatMatrix(float[][] array, FeatureTreeNode parent) throws FeatureParsingException {
 		for (int i = 0; i < array.length; ++i) {
 			for (int j = 0; j < array.length - 1; ++j) {
-				FeatureTreeNode element = FeatureTreeNode.createChildNode("element", parent);
+				FeatureTreeNode element = parent.addChild("element");
 				element.setAttribute("row", String.valueOf(i + 1));
 				element.setAttribute("column", String.valueOf(j + 1));
 				element.setAttribute("value", String.valueOf(array[i][j]));
@@ -128,7 +128,7 @@ public class PBTilingPatternFeaturesObject implements IFeaturesObject {
 				(xobjectChild != null && !xobjectChild.isEmpty()) ||
 				(fontChild != null && !fontChild.isEmpty()) ||
 				(propertiesChild != null && !propertiesChild.isEmpty())) {
-			FeatureTreeNode resources = FeatureTreeNode.createChildNode("resources", root);
+			FeatureTreeNode resources = root.addChild("resources");
 
 			PBCreateNodeHelper.parseIDSet(extGStateChild, "graphicsState", "graphicsStates", resources);
 			PBCreateNodeHelper.parseIDSet(colorSpaceChild, "colorSpace", "colorSpaces", resources);

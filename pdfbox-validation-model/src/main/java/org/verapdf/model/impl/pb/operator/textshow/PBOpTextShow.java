@@ -1,12 +1,25 @@
 package org.verapdf.model.impl.pb.operator.textshow;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.common.PDStream;
-import org.apache.pdfbox.pdmodel.font.*;
+import org.apache.pdfbox.pdmodel.font.PDCIDFontType2;
+import org.apache.pdfbox.pdmodel.font.PDFontLike;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.pdmodel.font.PDType1CFont;
+import org.apache.pdfbox.pdmodel.font.PDType3Font;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDAbstractPattern;
 import org.apache.pdfbox.preflight.font.container.FontContainer;
 import org.verapdf.model.baselayer.Object;
@@ -15,17 +28,11 @@ import org.verapdf.model.factory.font.FontFactory;
 import org.verapdf.model.factory.operator.GraphicState;
 import org.verapdf.model.impl.pb.operator.base.PBOperator;
 import org.verapdf.model.operator.OpTextShow;
-import org.verapdf.model.pdlayer.PDCIDFont;
 import org.verapdf.model.pdlayer.PDColorSpace;
 import org.verapdf.model.pdlayer.PDFont;
 import org.verapdf.model.tools.FontHelper;
 import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
 
 /**
  * Base class for all text show operators
@@ -125,8 +132,8 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 					Boolean glyphPresent = null;
 					Boolean widthsConsistent = null ;
 					if(!fontProgramIsInvalid) {
-						glyphPresent = fontContainer.hasGlyph(code);
-						widthsConsistent = this.checkWidths(code);
+						glyphPresent = Boolean.valueOf(fontContainer.hasGlyph(code));
+						widthsConsistent = Boolean.valueOf(this.checkWidths(code));
 					}
 					PBGlyph glyph;
 					if (font.getSubType().equals(FontFactory.TYPE_0)) {

@@ -4,12 +4,12 @@ import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObjectProxy;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesData;
-import org.verapdf.features.FeaturesObjectTypesEnum;
+import org.verapdf.features.FeatureExtractionResult;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.ImageFeaturesData;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,11 +65,11 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 	}
 
 	/**
-	 * @return IMAGE_XOBJECT instance of the FeaturesObjectTypesEnum enumeration
+	 * @return IMAGE_XOBJECT instance of the FeatureObjectType enumeration
 	 */
 	@Override
-	public FeaturesObjectTypesEnum getType() {
-		return FeaturesObjectTypesEnum.IMAGE_XOBJECT;
+	public FeatureObjectType getType() {
+		return FeatureObjectType.IMAGE_XOBJECT;
 	}
 
 	/**
@@ -83,7 +83,7 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 	 *             occurs when wrong features tree node constructs
 	 */
 	@Override
-	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
+	public FeatureTreeNode reportFeatures(FeatureExtractionResult collection) throws FeatureParsingException {
 		if (imageXObject != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("xobject");
 			root.setAttribute("type", "image");
@@ -91,39 +91,39 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 				root.setAttribute(ID, id);
 			}
 
-			FeatureTreeNode.createChildNode("width", root).setValue(String.valueOf(imageXObject.getWidth()));
-			FeatureTreeNode.createChildNode("height", root).setValue(String.valueOf(imageXObject.getHeight()));
+			root.addChild("width").setValue(String.valueOf(imageXObject.getWidth()));
+			root.addChild("height").setValue(String.valueOf(imageXObject.getHeight()));
 
 			if (colorSpaceChild != null) {
-				FeatureTreeNode shading = FeatureTreeNode.createChildNode("colorSpace", root);
+				FeatureTreeNode shading = root.addChild("colorSpace");
 				shading.setAttribute(ID, colorSpaceChild);
 			}
 
-			FeatureTreeNode.createChildNode("bitsPerComponent", root)
+			root.addChild("bitsPerComponent")
 					.setValue(String.valueOf(imageXObject.getBitsPerComponent()));
-			FeatureTreeNode.createChildNode("imageMask", root).setValue(String.valueOf(imageXObject.isStencil()));
+			root.addChild("imageMask").setValue(String.valueOf(imageXObject.isStencil()));
 
 			if (maskChild != null) {
-				FeatureTreeNode mask = FeatureTreeNode.createChildNode("mask", root);
+				FeatureTreeNode mask = root.addChild("mask");
 				mask.setAttribute(ID, maskChild);
 			}
 
-			FeatureTreeNode.createChildNode("interpolate", root)
+			root.addChild("interpolate")
 					.setValue(String.valueOf(imageXObject.getInterpolate()));
 			PBCreateNodeHelper.parseIDSet(alternatesChild, "alternate", "alternates", root);
 			if (sMaskChild != null) {
-				FeatureTreeNode mask = FeatureTreeNode.createChildNode("sMask", root);
+				FeatureTreeNode mask = root.addChild("sMask");
 				mask.setAttribute(ID, sMaskChild);
 			}
 
 			if (imageXObject.getCOSStream().getItem(COSName.STRUCT_PARENT) != null) {
-				FeatureTreeNode.createChildNode("structParent", root)
+				root.addChild("structParent")
 						.setValue(String.valueOf(imageXObject.getStructParent()));
 			}
 
 			try {
 				if (imageXObject.getStream().getFilters() != null && !imageXObject.getStream().getFilters().isEmpty()) {
-					FeatureTreeNode filters = FeatureTreeNode.createChildNode("filters", root);
+					FeatureTreeNode filters = root.addChild("filters");
 					for (COSName name : imageXObject.getStream().getFilters()) {
 						PBCreateNodeHelper.addNotEmptyNode("filter", name.getName(), filters);
 					}
@@ -134,7 +134,7 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 
 			PBCreateNodeHelper.parseMetadata(imageXObject.getMetadata(), "metadata", root, collection);
 
-			collection.addNewFeatureTree(FeaturesObjectTypesEnum.IMAGE_XOBJECT, root);
+			collection.addNewFeatureTree(FeatureObjectType.IMAGE_XOBJECT, root);
 			return root;
 		}
 
@@ -148,7 +148,6 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 	@Override
 	public FeaturesData getData() {
 		try {
-			InputStream stream = imageXObject.getCOSStream().getFilteredStream();
 			InputStream metadata = null;
 			if (imageXObject.getMetadata() != null) {
 				try {
@@ -169,30 +168,30 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 						imageXObject.getCOSStream().getDictionaryObject(COSName.DECODE_PARMS));
 
 				for (int i = 0; i < filtersNames.size(); ++i) {
-					String filter = filtersNames.get(i);
+					String filterName = filtersNames.get(i);
 					COSDictionary dic = i < decodeList.size() ? decodeList.get(i) : null;
-					switch (filter) {
+					switch (filterName) {
 					case "LZWDecode":
-						filters.add(
-								ImageFeaturesData.Filter.newInstance(filter, getLZWOrFlatFiltersMap(dic, true), null));
+						filters.add(ImageFeaturesData.Filter.newInstance(filterName, createLZWFilterMap(dic),
+								null));
 						break;
 					case "FlateDecode":
-						filters.add(
-								ImageFeaturesData.Filter.newInstance(filter, getLZWOrFlatFiltersMap(dic, false), null));
+						filters.add(ImageFeaturesData.Filter.newInstance(filterName, createFlatFilterMap(dic),
+								null));
 						break;
 					case "CCITTFaxDecode":
-						filters.add(ImageFeaturesData.Filter.newInstance(filter, getCCITTFaxFiltersMap(dic), null));
+						filters.add(ImageFeaturesData.Filter.newInstance(filterName, getCCITTFaxFiltersMap(dic), null));
 						break;
 					case "DCTDecode":
-						filters.add(ImageFeaturesData.Filter.newInstance(filter, getDCTFiltersMap(dic), null));
+						filters.add(ImageFeaturesData.Filter.newInstance(filterName, getDCTFiltersMap(dic), null));
 						break;
 					case "JBIG2Decode":
 						InputStream global = null;
 						if (dic != null && dic.getDictionaryObject(COSName.JBIG2_GLOBALS) instanceof COSStream) {
 							global = ((COSStream) dic.getDictionaryObject(COSName.JBIG2_GLOBALS)).getUnfilteredStream();
 						}
-						filters.add(
-								ImageFeaturesData.Filter.newInstance(filter, new HashMap<String, String>(), global));
+						filters.add(ImageFeaturesData.Filter.newInstance(filterName, new HashMap<String, String>(),
+								global));
 						break;
 					case "Crypt":
 						if (!(dic != null && COSName.IDENTITY.equals(dic.getCOSName(COSName.NAME)))) {
@@ -201,7 +200,8 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 						}
 						//$FALL-THROUGH$
 					default:
-						filters.add(ImageFeaturesData.Filter.newInstance(filter, new HashMap<String, String>(), null));
+						filters.add(
+								ImageFeaturesData.Filter.newInstance(filterName, new HashMap<String, String>(), null));
 					}
 				}
 			}
@@ -210,7 +210,7 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 			Integer height = getIntegerWithDefault(imageXObject.getCOSStream().getDictionaryObject(COSName.HEIGHT),
 					null);
 
-			return ImageFeaturesData.newInstance(metadata, stream, width, height, filters);
+			return ImageFeaturesData.newInstance(metadata, imageXObject.getCOSStream().getFilteredStream(), width, height, filters);
 		} catch (IOException e) {
 			LOGGER.debug("Error in obtaining features data for fonts", e);
 			return null;
@@ -274,26 +274,41 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 		return res;
 	}
 
-	private static Map<String, String> getLZWOrFlatFiltersMap(COSDictionary base, boolean isLZW) {
-		Map<String, String> res = new HashMap<>();
-		if (base != null) {
-			putIntegerAsStringWithDefault(res, "Predictor", base.getDictionaryObject(COSName.PREDICTOR), Integer.valueOf(1));
-			putIntegerAsStringWithDefault(res, "Colors", base.getDictionaryObject(COSName.COLORS), Integer.valueOf(1));
-			putIntegerAsStringWithDefault(res, "BitsPerComponent", base.getDictionaryObject(COSName.BITS_PER_COMPONENT),
-					Integer.valueOf(8));
-			putIntegerAsStringWithDefault(res, "Columns", base.getDictionaryObject(COSName.COLUMNS), Integer.valueOf(1));
-			if (isLZW) {
-				putIntegerAsStringWithDefault(res, "EarlyChange", base.getDictionaryObject(COSName.EARLY_CHANGE), Integer.valueOf(1));
-			}
-		} else {
-			res.put("Predictor", "1");
-			res.put("Colors", "1");
-			res.put("BitsPerComponent", "8");
-			res.put("Columns", "1");
-			if (isLZW) {
-				res.put("EarlyChange", "1");
-			}
+	private static Map<String, String> createLZWFilterMap(COSDictionary base) {
+		if (base == null) {
+			Map<String, String> retVal = createDefaultFlatFilterMap();
+			retVal.put("EarlyChange", "1");
+			return retVal;
 		}
+
+		Map<String, String> retVal = createFlatFilterMap(base);
+		putIntegerAsStringWithDefault(retVal, "EarlyChange", base.getDictionaryObject(COSName.EARLY_CHANGE),
+				Integer.valueOf(1));
+		return retVal;
+
+	}
+
+	private static Map<String, String> createFlatFilterMap(COSDictionary base) {
+		if (base == null)
+			return createDefaultFlatFilterMap();
+
+		Map<String, String> res = new HashMap<>();
+
+		putIntegerAsStringWithDefault(res, "Predictor", base.getDictionaryObject(COSName.PREDICTOR),
+				Integer.valueOf(1));
+		putIntegerAsStringWithDefault(res, "Colors", base.getDictionaryObject(COSName.COLORS), Integer.valueOf(1));
+		putIntegerAsStringWithDefault(res, "BitsPerComponent", base.getDictionaryObject(COSName.BITS_PER_COMPONENT),
+				Integer.valueOf(8));
+		putIntegerAsStringWithDefault(res, "Columns", base.getDictionaryObject(COSName.COLUMNS), Integer.valueOf(1));
+		return res;
+	}
+
+	private static Map<String, String> createDefaultFlatFilterMap() {
+		Map<String, String> res = new HashMap<>();
+		res.put("Predictor", "1");
+		res.put("Colors", "1");
+		res.put("BitsPerComponent", "8");
+		res.put("Columns", "1");
 		return res;
 	}
 

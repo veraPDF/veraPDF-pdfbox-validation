@@ -1,357 +1,344 @@
 package org.verapdf.features;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.verapdf.features.config.FeaturesConfig;
-import org.verapdf.features.pb.PBFeatureParser;
-import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.EnumSet;
 import java.util.List;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.verapdf.features.FeatureExtractorConfig;
+import org.verapdf.features.FeatureObjectType;
+import org.verapdf.features.TestNodeGenerator;
+import org.verapdf.features.pb.PBFeatureParser;
+import org.verapdf.features.tools.FeatureTreeNode;
 
 /**
  * @author Maksim Bezrukov
  */
 public class FeaturesConfigTest {
 
-    private static PDDocument document;
+	private static PDDocument document;
 
-    @BeforeClass
-    public static void before() throws URISyntaxException, IOException {
-        File pdf = new File(TestNodeGenerator.getSystemIndependentPath("/FR - DS.pdf"));
-        document = PDDocument.load(pdf, false, true);
-    }
+	@BeforeClass
+	public static void before() throws URISyntaxException, IOException {
+		File pdf = new File(TestNodeGenerator.getSystemIndependentPath("/FR - DS.pdf"));
+		document = PDDocument.load(pdf, false, true);
+	}
 
-    @Test
-    public void infoDictionaryTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().informationDict(Boolean.FALSE).build();
-        FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
-        assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.INFORMATION_DICTIONARY).isEmpty());
-    }
+	@Test
+	public void infoDictionaryTest() {
+		testFeatureExclusion(FeatureObjectType.INFORMATION_DICTIONARY);
+	}
 
-    @Test
-    public void metadataTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().metadata(Boolean.FALSE).build();
-        FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
-        assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.METADATA).isEmpty());
-    }
+	@Test
+	public void metadataTest() {
+		testFeatureExclusion(FeatureObjectType.METADATA);
+	}
 
-    @Test
-    public void documentSecurityTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().documentSecurity(Boolean.FALSE).build();
-        FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
-        assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.DOCUMENT_SECURITY).isEmpty());
-    }
+	@Test
+	public void documentSecurityTest() {
+		testFeatureExclusion(FeatureObjectType.DOCUMENT_SECURITY);
+	}
 
-    @Test
-    public void signaturesTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().signatures(Boolean.FALSE).build();
-        FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
-        assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.SIGNATURE).isEmpty());
-    }
+	@Test
+	public void signaturesTest() {
+		testFeatureExclusion(FeatureObjectType.SIGNATURE);
+	}
 
-    @Test
-    public void lowLevelInfoTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().lowLevelInfo(Boolean.FALSE).build();
-        FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
-        assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.LOW_LEVEL_INFO).isEmpty());
-    }
+	@Test
+	public void lowLevelInfoTest() {
+		testFeatureExclusion(FeatureObjectType.LOW_LEVEL_INFO);
+	}
 
-    @Test
-    public void embeddedFilesTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().embeddedFiles(Boolean.FALSE).build();
-        FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
-        assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.EMBEDDED_FILE).isEmpty());
-    }
+	@Test
+	public void embeddedFilesTest() {
+		testFeatureExclusion(FeatureObjectType.EMBEDDED_FILE);
+	}
 
-    @Test
-    public void iccProfilesTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().iccProfiles(Boolean.FALSE).build();
-        FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
-        assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.ICCPROFILE).isEmpty());
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.OUTPUTINTENT), "destOutputIntent"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.COLORSPACE), "iccProfile"));
-    }
+	@Test
+	public void iccProfilesTest() {
+		FeatureExtractorConfig config = configMissingFeature(FeatureObjectType.ICCPROFILE);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
+		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.ICCPROFILE).isEmpty());
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.OUTPUTINTENT),
+				"destOutputIntent"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.COLORSPACE),
+				"iccProfile"));
+	}
 
-    @Test
-    public void outputIntentTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().outputIntents(Boolean.FALSE).build();
-        FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
-        assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.OUTPUTINTENT).isEmpty());
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.ICCPROFILE), "parents", "outputIntent"));
-    }
+	@Test
+	public void outputIntentTest() {
+		FeatureExtractorConfig config = configMissingFeature(FeatureObjectType.OUTPUTINTENT);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
+		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.OUTPUTINTENT).isEmpty());
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.ICCPROFILE),
+				"parents", "outputIntent"));
+	}
 
-    @Test
-    public void outlinesTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().outlines(Boolean.FALSE).build();
-        FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
-        assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.OUTLINES).isEmpty());
-    }
+	@Test
+	public void outlinesTest() {
+		testFeatureExclusion(FeatureObjectType.OUTLINES);
+	}
 
-    @Test
-    public void annotationsTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().annotations(Boolean.FALSE).build();
-        FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
-        assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.ANNOTATION).isEmpty());
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PAGE), "annotations"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FORM_XOBJECT), "parents", "annotation"));
-    }
+	@Test
+	public void annotationsTest() {
+		FeatureExtractorConfig config = configMissingFeature(FeatureObjectType.ANNOTATION);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
+		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.ANNOTATION).isEmpty());
+		assertNull(
+				getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PAGE), "annotations"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FORM_XOBJECT),
+				"parents", "annotation"));
+	}
 
-    @Test
-    public void pagesTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().pages(Boolean.FALSE).build();
-        FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
-        assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PAGE).isEmpty());
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.ANNOTATION), "parents", "page"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.EXT_G_STATE), "parents", "page"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.COLORSPACE), "parents", "page"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PATTERN), "parents", "page"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.SHADING), "parents", "page"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FORM_XOBJECT), "parents", "page"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.IMAGE_XOBJECT), "parents", "page"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.POSTSCRIPT_XOBJECT), "parents", "page"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FAILED_XOBJECT), "parents", "page"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FONT), "parents", "page"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PROPERTIES), "parents", "page"));
-    }
+	@Test
+	public void pagesTest() {
+		FeatureExtractorConfig config = configMissingFeature(FeatureObjectType.PAGE);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
+		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.PAGE).isEmpty());
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.ANNOTATION),
+				"parents", "page"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.EXT_G_STATE),
+				"parents", "page"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.COLORSPACE),
+				"parents", "page"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PATTERN), "parents",
+				"page"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.SHADING), "parents",
+				"page"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FORM_XOBJECT),
+				"parents", "page"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.IMAGE_XOBJECT),
+				"parents", "page"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.POSTSCRIPT_XOBJECT),
+				"parents", "page"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FAILED_XOBJECT),
+				"parents", "page"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FONT), "parents",
+				"page"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PROPERTIES),
+				"parents", "page"));
+	}
 
-    @Test
-    public void graphicsStateTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().graphicsStates(Boolean.FALSE).build();
-        FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
-        assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.EXT_G_STATE).isEmpty());
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PAGE), "resources", "graphicsStates"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PATTERN), "resources", "graphicsStates"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PATTERN), "graphicsState"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FORM_XOBJECT), "resources", "graphicsStates"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FONT), "resources", "graphicsStates"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FONT), "parents", "graphicsState"));
-    }
+	@Test
+	public void graphicsStateTest() {
+		FeatureExtractorConfig config = configMissingFeature(FeatureObjectType.EXT_G_STATE);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
+		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.EXT_G_STATE).isEmpty());
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PAGE), "resources",
+				"graphicsStates"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PATTERN),
+				"resources", "graphicsStates"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PATTERN),
+				"graphicsState"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FORM_XOBJECT),
+				"resources", "graphicsStates"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FONT), "resources",
+				"graphicsStates"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FONT), "parents",
+				"graphicsState"));
+	}
 
-    @Test
-    public void colorSpaceTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().colorSpaces(Boolean.FALSE).build();
-        FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
-        assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.COLORSPACE).isEmpty());
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.ICCPROFILE), "parents", "iccBased"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PAGE), "resources", "colorSpaces"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PATTERN), "resources", "colorSpaces"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.SHADING), "colorSpace"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FORM_XOBJECT), "group", "colorSpace"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FORM_XOBJECT), "resources", "colorSpaces"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.IMAGE_XOBJECT), "colorSpace"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FONT), "resources", "colorSpaces"));
-    }
+	@Test
+	public void colorSpaceTest() {
+		FeatureExtractorConfig config = configMissingFeature(FeatureObjectType.COLORSPACE);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
+		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.COLORSPACE).isEmpty());
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.ICCPROFILE),
+				"parents", "iccBased"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PAGE), "resources",
+				"colorSpaces"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PATTERN),
+				"resources", "colorSpaces"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.SHADING),
+				"colorSpace"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FORM_XOBJECT),
+				"group", "colorSpace"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FORM_XOBJECT),
+				"resources", "colorSpaces"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.IMAGE_XOBJECT),
+				"colorSpace"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FONT), "resources",
+				"colorSpaces"));
+	}
 
-    @Test
-    public void patternsTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().patterns(Boolean.FALSE).build();
-        FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
-        assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PATTERN).isEmpty());
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.EXT_G_STATE), "parents", "pattern"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.COLORSPACE), "parents", "pattern"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.SHADING), "parents", "pattern"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FORM_XOBJECT), "parents", "pattern"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.IMAGE_XOBJECT), "parents", "pattern"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.POSTSCRIPT_XOBJECT), "parents", "pattern"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FAILED_XOBJECT), "parents", "pattern"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FONT), "parents", "pattern"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PROPERTIES), "parents", "pattern"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PAGE), "resources", "patterns"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FORM_XOBJECT), "resources", "patterns"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FONT), "resources", "patterns"));
-    }
+	@Test
+	public void patternsTest() {
+		FeatureExtractorConfig config = configMissingFeature(FeatureObjectType.PATTERN);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
+		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.PATTERN).isEmpty());
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.EXT_G_STATE),
+				"parents", "pattern"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.COLORSPACE),
+				"parents", "pattern"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.SHADING), "parents",
+				"pattern"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FORM_XOBJECT),
+				"parents", "pattern"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.IMAGE_XOBJECT),
+				"parents", "pattern"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.POSTSCRIPT_XOBJECT),
+				"parents", "pattern"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FAILED_XOBJECT),
+				"parents", "pattern"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FONT), "parents",
+				"pattern"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PROPERTIES),
+				"parents", "pattern"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PAGE), "resources",
+				"patterns"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FORM_XOBJECT),
+				"resources", "patterns"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FONT), "resources",
+				"patterns"));
+	}
 
-    @Test
-    public void shadingsTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().shadings(Boolean.FALSE).build();
-        FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
-        assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.SHADING).isEmpty());
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.COLORSPACE), "parents", "shading"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PAGE), "resources", "shadings"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PATTERN), "resources", "shadings"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PATTERN), "shading"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FORM_XOBJECT), "resources", "shadings"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FONT), "resources", "shadings"));
-    }
-    @Test
-    public void xobjectsTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().xobjects(Boolean.FALSE).build();
-        FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
-        assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FORM_XOBJECT).isEmpty());
-        assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.IMAGE_XOBJECT).isEmpty());
-        assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.POSTSCRIPT_XOBJECT).isEmpty());
-        assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FAILED_XOBJECT).isEmpty());
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.EXT_G_STATE), "parents", "xobject"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.COLORSPACE), "parents", "xobject"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.SHADING), "parents", "xobject"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PATTERN), "parents", "xobject"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FONT), "parents", "xobject"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PROPERTIES), "parents", "xobject"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PAGE), "resources", "xobjects"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.ANNOTATION), "resources", "xobject"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PATTERN), "resources", "xobjects"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FONT), "resources", "xobjects"));
-    }
+	@Test
+	public void shadingsTest() {
+		FeatureExtractorConfig config = configMissingFeature(FeatureObjectType.SHADING);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
+		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.SHADING).isEmpty());
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.COLORSPACE),
+				"parents", "shading"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PAGE), "resources",
+				"shadings"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PATTERN),
+				"resources", "shadings"));
+		assertNull(
+				getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PATTERN), "shading"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FORM_XOBJECT),
+				"resources", "shadings"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FONT), "resources",
+				"shadings"));
+	}
 
-    @Test
-    public void fontsTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().fonts(Boolean.FALSE).build();
-        FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
-        assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FONT).isEmpty());
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.EXT_G_STATE), "parents", "font"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.COLORSPACE), "parents", "font"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.SHADING), "parents", "font"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PATTERN), "parents", "font"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FORM_XOBJECT), "parents", "font"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.IMAGE_XOBJECT), "parents", "font"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.POSTSCRIPT_XOBJECT), "parents", "font"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FAILED_XOBJECT), "parents", "font"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PROPERTIES), "parents", "font"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PAGE), "resources", "fonts"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.EXT_G_STATE), "resources", "fonts"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PATTERN), "resources", "fonts"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FORM_XOBJECT), "resources", "fonts"));
-    }
+	@Test
+	public void xobjectsTest() {
+		EnumSet<FeatureObjectType> xobjs = EnumSet.of(FeatureObjectType.FAILED_XOBJECT, FeatureObjectType.FORM_XOBJECT,
+				FeatureObjectType.IMAGE_XOBJECT, FeatureObjectType.POSTSCRIPT_XOBJECT);
+		FeatureExtractorConfig config = configMissingFeatures(xobjs);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
+		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.FORM_XOBJECT).isEmpty());
+		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.IMAGE_XOBJECT).isEmpty());
+		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.POSTSCRIPT_XOBJECT).isEmpty());
+		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.FAILED_XOBJECT).isEmpty());
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.EXT_G_STATE),
+				"parents", "xobject"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.COLORSPACE),
+				"parents", "xobject"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.SHADING), "parents",
+				"xobject"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PATTERN), "parents",
+				"xobject"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FONT), "parents",
+				"xobject"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PROPERTIES),
+				"parents", "xobject"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PAGE), "resources",
+				"xobjects"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.ANNOTATION),
+				"resources", "xobject"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PATTERN),
+				"resources", "xobjects"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FONT), "resources",
+				"xobjects"));
+	}
 
-    @Test
-    public void propertiesDictionariesTest() {
-        FeaturesConfig config = createFullFeaturesConfigBuilder().propertiesDicts(Boolean.FALSE).build();
-        FeaturesCollection collection = PBFeatureParser.getFeaturesCollection(document, config);
-        assertTrue(collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PROPERTIES).isEmpty());
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PAGE), "resources", "propertiesDicts"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.PATTERN), "resources", "propertiesDicts"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FORM_XOBJECT), "resources", "propertiesDicts"));
-        assertNull(getFirstNodeFromListWithPath(
-                collection.getFeatureTreesForType(FeaturesObjectTypesEnum.FONT), "resources", "propertiesDicts"));
-    }
+	@Test
+	public void fontsTest() {
+		FeatureExtractorConfig config = configMissingFeature(FeatureObjectType.FONT);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
+		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.FONT).isEmpty());
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.EXT_G_STATE),
+				"parents", "font"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.COLORSPACE),
+				"parents", "font"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.SHADING), "parents",
+				"font"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PATTERN), "parents",
+				"font"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FORM_XOBJECT),
+				"parents", "font"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.IMAGE_XOBJECT),
+				"parents", "font"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.POSTSCRIPT_XOBJECT),
+				"parents", "font"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FAILED_XOBJECT),
+				"parents", "font"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PROPERTIES),
+				"parents", "font"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PAGE), "resources",
+				"fonts"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.EXT_G_STATE),
+				"resources", "fonts"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PATTERN),
+				"resources", "fonts"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FORM_XOBJECT),
+				"resources", "fonts"));
+	}
 
-    private static FeaturesConfig.Builder createFullFeaturesConfigBuilder() {
-        FeaturesConfig.Builder configBuilder = new FeaturesConfig.Builder();
-        configBuilder.informationDict(Boolean.TRUE);
-        configBuilder.metadata(Boolean.TRUE);
-        configBuilder.documentSecurity(Boolean.TRUE);
-        configBuilder.signatures(Boolean.TRUE);
-        configBuilder.lowLevelInfo(Boolean.TRUE);
-        configBuilder.embeddedFiles(Boolean.TRUE);
-        configBuilder.iccProfiles(Boolean.TRUE);
-        configBuilder.outputIntents(Boolean.TRUE);
-        configBuilder.outlines(Boolean.TRUE);
-        configBuilder.annotations(Boolean.TRUE);
-        configBuilder.pages(Boolean.TRUE);
-        configBuilder.graphicsStates(Boolean.TRUE);
-        configBuilder.colorSpaces(Boolean.TRUE);
-        configBuilder.patterns(Boolean.TRUE);
-        configBuilder.shadings(Boolean.TRUE);
-        configBuilder.xobjects(Boolean.TRUE);
-        configBuilder.fonts(Boolean.TRUE);
-        configBuilder.propertiesDicts(Boolean.TRUE);
-        return configBuilder;
-    }
+	@Test
+	public void propertiesDictionariesTest() {
+		FeatureExtractorConfig config = configMissingFeature(FeatureObjectType.PROPERTIES);
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
+		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.PROPERTIES).isEmpty());
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PAGE), "resources",
+				"propertiesDicts"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PATTERN),
+				"resources", "propertiesDicts"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FORM_XOBJECT),
+				"resources", "propertiesDicts"));
+		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FONT), "resources",
+				"propertiesDicts"));
+	}
 
-    private static FeatureTreeNode getFirstChildNodeWithName(FeatureTreeNode node, String name) {
-        if (node == null) {
-            return null;
-        }
-        for (FeatureTreeNode child : node.getChildren()) {
-            if (child.getName().equals(name)) {
-                return child;
-            }
-        }
-        return null;
-    }
+	private static FeatureTreeNode getFirstChildNodeWithName(FeatureTreeNode node, String name) {
+		if (node == null) {
+			return null;
+		}
+		for (FeatureTreeNode child : node.getChildren()) {
+			if (child.getName().equals(name)) {
+				return child;
+			}
+		}
+		return null;
+	}
 
-    private static FeatureTreeNode getFirstNodeFromListWithPath(List<FeatureTreeNode> list, String... names) {
-        for (FeatureTreeNode root : list) {
-            FeatureTreeNode result = root;
-            for (String name : names) {
-                result = getFirstChildNodeWithName(result, name);
-            }
-            if (result != null) {
-                return result;
-            }
-        }
-        return null;
-    }
+	public void testFeatureExclusion(FeatureObjectType type) {
+		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, configMissingFeature(type));
+		assertTrue(collection.getFeatureTreesForType(type).isEmpty());
+	}
+
+	private static FeatureExtractorConfig configMissingFeature(FeatureObjectType toExclude) {
+		EnumSet<FeatureObjectType> testSet = EnumSet.allOf(FeatureObjectType.class);
+		testSet.remove(toExclude);
+		return FeatureExtractorConfigImpl.fromFeatureSet(testSet);
+	}
+
+	private static FeatureExtractorConfig configMissingFeatures(EnumSet<FeatureObjectType> toExclude) {
+		EnumSet<FeatureObjectType> testSet = EnumSet.allOf(FeatureObjectType.class);
+		for (FeatureObjectType type : toExclude) {
+			testSet.remove(type);
+		}
+		return FeatureExtractorConfigImpl.fromFeatureSet(testSet);
+	}
+
+	private static FeatureTreeNode getFirstNodeFromListWithPath(List<FeatureTreeNode> list, String... names) {
+		for (FeatureTreeNode root : list) {
+			FeatureTreeNode result = root;
+			for (String name : names) {
+				result = getFirstChildNodeWithName(result, name);
+			}
+			if (result != null) {
+				return result;
+			}
+		}
+		return null;
+	}
 }

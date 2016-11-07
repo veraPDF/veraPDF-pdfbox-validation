@@ -5,12 +5,12 @@ import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocume
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeaturesData;
-import org.verapdf.features.FeaturesObjectTypesEnum;
+import org.verapdf.features.FeatureExtractionResult;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,11 +21,6 @@ import java.util.Set;
  * @author Maksim Bezrukov
  */
 public class PBOutlinesFeaturesObject implements IFeaturesObject {
-
-	private static final int RGB_COLORS_NUMBER = 3;
-	private static final int RGB_RED_COLOR_NUMBER = 0;
-	private static final int RGB_GREEN_COLOR_NUMBER = 1;
-	private static final int RGB_BLUE_COLOR_NUMBER = 2;
 
 	private PDDocumentOutline outline;
 
@@ -39,11 +34,11 @@ public class PBOutlinesFeaturesObject implements IFeaturesObject {
 	}
 
 	/**
-	 * @return OUTLINES instance of the FeaturesObjectTypesEnum enumeration
+	 * @return OUTLINES instance of the FeatureObjectType enumeration
 	 */
 	@Override
-	public FeaturesObjectTypesEnum getType() {
-		return FeaturesObjectTypesEnum.OUTLINES;
+	public FeatureObjectType getType() {
+		return FeatureObjectType.OUTLINES;
 	}
 
 	/**
@@ -55,7 +50,7 @@ public class PBOutlinesFeaturesObject implements IFeaturesObject {
 	 * @throws FeatureParsingException occurs when wrong features tree node constructs
 	 */
 	@Override
-	public FeatureTreeNode reportFeatures(FeaturesCollection collection)
+	public FeatureTreeNode reportFeatures(FeatureExtractionResult collection)
 			throws FeatureParsingException {
 		if (outline != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("outlines");
@@ -70,7 +65,7 @@ public class PBOutlinesFeaturesObject implements IFeaturesObject {
 			}
 
 			collection
-					.addNewFeatureTree(FeaturesObjectTypesEnum.OUTLINES, root);
+					.addNewFeatureTree(FeatureObjectType.OUTLINES, root);
 			return root;
 		}
 		return null;
@@ -85,25 +80,23 @@ public class PBOutlinesFeaturesObject implements IFeaturesObject {
 	}
 
 	private static void createItem(PDOutlineItem item, FeatureTreeNode root,
-								   FeaturesCollection collection, Set<PDOutlineItem> items) throws FeatureParsingException {
+								   FeatureExtractionResult collection, Set<PDOutlineItem> items) throws FeatureParsingException {
 		if (item != null) {
 			items.add(item);
-			FeatureTreeNode itemNode = FeatureTreeNode.createChildNode(
-					"outline", root);
+			FeatureTreeNode itemNode = root.addChild(
+					"outline");
 
 			PBCreateNodeHelper.addNotEmptyNode("title", item.getTitle(),
 					itemNode);
 
 
-			FeatureTreeNode color = FeatureTreeNode.createChildNode(
-					"color", itemNode);
+			FeatureTreeNode color = itemNode.addChild(
+					"color");
 
 			PDColor clr = item.getTextColor();
 			float[] rgb = clr.getComponents();
-			if (rgb.length == RGB_COLORS_NUMBER) {
-				color.setAttribute("red", String.valueOf(rgb[RGB_RED_COLOR_NUMBER]));
-				color.setAttribute("green", String.valueOf(rgb[RGB_GREEN_COLOR_NUMBER]));
-				color.setAttribute("blue", String.valueOf(rgb[RGB_BLUE_COLOR_NUMBER]));
+			if (rgb.length == ColorComponent.RGB_COMPONENTS.getColors().size()) {
+				color.setAttributes(ColorComponent.RGB_COMPONENTS.createAttributesMap(rgb));
 			} else {
 				ErrorsHelper.addErrorIntoCollection(collection,
 						color,
@@ -111,7 +104,7 @@ public class PBOutlinesFeaturesObject implements IFeaturesObject {
 			}
 
 
-			FeatureTreeNode style = FeatureTreeNode.createChildNode("style", itemNode);
+			FeatureTreeNode style = itemNode.addChild("style");
 			style.setAttribute("italic", String.valueOf(item.isItalic()));
 			style.setAttribute("bold", String.valueOf(item.isBold()));
 

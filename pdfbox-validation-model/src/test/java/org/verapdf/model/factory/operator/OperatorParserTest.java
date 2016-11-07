@@ -148,22 +148,22 @@ public class OperatorParserTest {
 		if (Operators.BI.equals(this.operator.getName())) {
 			testBIParse();
 		} else {
-			List<Object> operator = new ArrayList<>(1);
-			operator.add(this.operator);
+			List<Object> operators = new ArrayList<>(1);
+			operators.add(this.operator);
 			final org.verapdf.model.operator.Operator veraOperator =
-					new OperatorFactory().operatorsFromTokens(operator, RESOURCES, null, null).get(0);
+					new OperatorFactory().operatorsFromTokens(operators, RESOURCES, null, null).get(0);
 			Assert.assertEquals(this.expectedType, veraOperator.getObjectType());
 		}
 	}
 
 	public void testBIParse() {
-		List<Object> operator = new ArrayList<>();
+		List<Object> opObjects = new ArrayList<>();
 		Operator pdfBoxOperator = Operator.getOperator(Operators.BI);
 		pdfBoxOperator.setImageData(new byte[0]);
 		pdfBoxOperator.setImageParameters(new COSDictionary());
-		operator.add(pdfBoxOperator);
+		opObjects.add(pdfBoxOperator);
 		List<org.verapdf.model.operator.Operator> operators =
-				new OperatorFactory().operatorsFromTokens(operator, RESOURCES, null, null);
+				new OperatorFactory().operatorsFromTokens(opObjects, RESOURCES, null, null);
 		Assert.assertEquals(PBOp_BI.OP_BI_TYPE, operators.get(0).getObjectType());
 		Assert.assertEquals(PBOp_ID.OP_ID_TYPE, operators.get(1).getObjectType());
 		Assert.assertEquals(PBOp_EI.OP_EI_TYPE, operators.get(2).getObjectType());

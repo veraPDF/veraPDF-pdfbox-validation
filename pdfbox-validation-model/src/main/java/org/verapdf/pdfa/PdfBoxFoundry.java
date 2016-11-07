@@ -11,7 +11,7 @@ import org.verapdf.component.ComponentDetails;
 import org.verapdf.component.Components;
 import org.verapdf.core.EncryptedPdfException;
 import org.verapdf.core.ModelParsingException;
-import org.verapdf.metadata.fixer.impl.fixer.PBoxMetadataFixerImpl;
+import org.verapdf.metadata.fixer.PBoxMetadataFixerImpl;
 import org.verapdf.model.ModelParser;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
@@ -43,8 +43,8 @@ class PdfBoxFoundry extends AbstractFoundry {
 	 * @see org.verapdf.pdfa.VeraPDFFoundry#newPdfParser(java.io.InputStream)
 	 */
 	@Override
-	public PDFParser newPdfParser(InputStream pdfStream) throws ModelParsingException, EncryptedPdfException {
-		return newPdfParser(pdfStream, PDFAFlavour.AUTO);
+	public PDFAParser createParser(InputStream pdfStream) throws ModelParsingException, EncryptedPdfException {
+		return createParser(pdfStream, PDFAFlavour.NO_FLAVOUR);
 	}
 
 	/**
@@ -52,7 +52,7 @@ class PdfBoxFoundry extends AbstractFoundry {
 	 *      org.verapdf.pdfa.flavours.PDFAFlavour)
 	 */
 	@Override
-	public PDFParser newPdfParser(InputStream pdfStream, PDFAFlavour flavour)
+	public PDFAParser createParser(InputStream pdfStream, PDFAFlavour flavour)
 			throws ModelParsingException, EncryptedPdfException {
 		return ModelParser.createModelWithFlavour(pdfStream, flavour);
 	}
@@ -61,7 +61,7 @@ class PdfBoxFoundry extends AbstractFoundry {
 	 * @see org.verapdf.pdfa.VeraPDFFoundry#newMetadataFixer(org.verapdf.metadata.fixer.utils.FixerConfig)
 	 */
 	@Override
-	public MetadataFixer newMetadataFixer() {
+	public MetadataFixer createMetadataFixer() {
 		return new PBoxMetadataFixerImpl();
 	}
 

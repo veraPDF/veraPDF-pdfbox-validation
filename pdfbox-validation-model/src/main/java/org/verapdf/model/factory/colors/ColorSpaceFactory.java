@@ -94,21 +94,18 @@ public class ColorSpaceFactory {
 		case DEVICE_CMYK:
 			if (colorSpace.isInherited()) {
 				return PBoxPDDeviceCMYK.getInheritedInstance();
-			} else {
-				return PBoxPDDeviceCMYK.getInstance();
 			}
+			return PBoxPDDeviceCMYK.getInstance();
 		case DEVICE_RGB:
 			if (colorSpace.isInherited()) {
 				return PBoxPDDeviceRGB.getInheritedInstance();
-			} else {
-				return PBoxPDDeviceRGB.getInstance();
 			}
+			return PBoxPDDeviceRGB.getInstance();
 		case DEVICE_GRAY:
 			if (colorSpace.isInherited()) {
 				return PBoxPDDeviceGray.getInheritedInstance();
-			} else {
-				return PBoxPDDeviceGray.getInstance();
 			}
+			return PBoxPDDeviceGray.getInstance();
 		case ICC_BASED:
 			if (colorSpace.getNumberOfComponents() != 4) {
 				result = new PBoxPDICCBased((PDICCBased) colorSpace);

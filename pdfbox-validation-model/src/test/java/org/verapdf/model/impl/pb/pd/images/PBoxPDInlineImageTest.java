@@ -1,5 +1,8 @@
 package org.verapdf.model.impl.pb.pd.images;
 
+import java.io.IOException;
+import java.util.List;
+
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDResources;
@@ -11,17 +14,13 @@ import org.junit.Test;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosIIFilter;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.List;
-
 /**
  * @author Evgeniy Muravitskiy
  */
 public class PBoxPDInlineImageTest extends PBoxPDXImageTest {
 
 	@BeforeClass
-	public static void setUp() throws IOException, URISyntaxException {
+	public static void setUp() throws IOException {
 		expectedType = TYPES.contains(PBoxPDInlineImage.INLINE_IMAGE_TYPE) ?
 				PBoxPDInlineImage.INLINE_IMAGE_TYPE : null;
 		expectedID = null;
@@ -57,7 +56,7 @@ public class PBoxPDInlineImageTest extends PBoxPDXImageTest {
 	}
 
 	@AfterClass
-	public static void tearDown() throws IOException {
+	public static void tearDown() {
 		expectedType = null;
 		expectedID = null;
 		actual = null;

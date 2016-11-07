@@ -6,20 +6,19 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.verapdf.core.EncryptedPdfException;
 import org.verapdf.core.ModelParsingException;
-import org.verapdf.features.FeaturesExtractor;
-import org.verapdf.features.config.FeaturesConfig;
+import org.verapdf.features.AbstractFeaturesExtractor;
+import org.verapdf.features.FeatureExtractionResult;
+import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.features.pb.PBFeatureParser;
-import org.verapdf.features.tools.FeaturesCollection;
 import org.verapdf.metadata.fixer.entity.PDFDocument;
 import org.verapdf.metadata.fixer.impl.pb.model.PDFDocumentImpl;
 import org.verapdf.model.impl.pb.containers.StaticContainers;
 import org.verapdf.model.impl.pb.cos.PBCosDocument;
-import org.verapdf.pdfa.PDFParser;
+import org.verapdf.pdfa.PDFAParser;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import com.adobe.xmp.XMPException;
@@ -30,11 +29,9 @@ import com.adobe.xmp.impl.VeraPDFMeta;
  *
  * @author Evgeniy Muravitskiy
  */
-public final class ModelParser implements PDFParser {
+public final class ModelParser implements PDFAParser {
 
     private static final Logger LOGGER = Logger.getLogger(ModelParser.class);
-
-    private static final PDFAFlavour DEFAULT_FLAVOUR = PDFAFlavour.PDFA_1_B;
 
     private PDDocument document;
 
@@ -42,14 +39,14 @@ public final class ModelParser implements PDFParser {
 
     private ModelParser(final InputStream docStream, PDFAFlavour flavour) throws IOException {
         this.document = PDDocument.load(docStream, false, true);
-        this.flavour = (flavour == PDFAFlavour.AUTO) ? obtainFlavour(this.document) : flavour;
+        this.flavour = (flavour == PDFAFlavour.NO_FLAVOUR) ? obtainFlavour(this.document) : flavour;
     }
 
     
     public static ModelParser createModelWithFlavour(InputStream toLoad, PDFAFlavour flavour) throws ModelParsingException, EncryptedPdfException {
         try {
             cleanUp();
-            return new ModelParser(toLoad, (flavour == PDFAFlavour.NO_FLAVOUR || flavour == null) ? DEFAULT_FLAVOUR : flavour);
+            return new ModelParser(toLoad, flavour);
         } catch (InvalidPasswordException excep) {
             throw new EncryptedPdfException("The PDF stream appears to be encrypted.", excep);
         } catch (IOException excep) {
@@ -58,24 +55,22 @@ public final class ModelParser implements PDFParser {
     }
 
     private static PDFAFlavour obtainFlavour(PDDocument document) {
-        PDDocumentCatalog documentCatalog = document.getDocumentCatalog();
-        if (documentCatalog == null) {
-            return DEFAULT_FLAVOUR;
-        }
-        PDMetadata metadata = documentCatalog.getMetadata();
+    	if (document == null || document.getDocumentCatalog() == null) {
+    		return PDFAFlavour.NO_FLAVOUR;
+    	}
+        PDMetadata metadata = document.getDocumentCatalog().getMetadata();
         if (metadata == null) {
-            return DEFAULT_FLAVOUR;
+            return PDFAFlavour.NO_FLAVOUR;
         }
-        try {
-            InputStream is = metadata.exportXMPMetadata();
+        try (InputStream is = metadata.exportXMPMetadata()) {
             VeraPDFMeta veraPDFMeta = VeraPDFMeta.parse(is);
             Integer identificationPart = veraPDFMeta.getIdentificationPart();
             String identificationConformance = veraPDFMeta.getIdentificationConformance();
             PDFAFlavour pdfaFlavour = PDFAFlavour.byFlavourId(identificationPart + identificationConformance);
-            return pdfaFlavour == PDFAFlavour.NO_FLAVOUR ? DEFAULT_FLAVOUR : pdfaFlavour;
+            return pdfaFlavour;
         } catch (IOException | XMPException e) {
             LOGGER.error(e);
-            return DEFAULT_FLAVOUR;
+            return PDFAFlavour.NO_FLAVOUR;
         }
     }
 
@@ -83,20 +78,8 @@ public final class ModelParser implements PDFParser {
         StaticContainers.clearAllContainers();
     }
 
-    /**
-     * Get {@code PDDocument} object for current file.
-     *
-     * @return {@link org.apache.pdfbox.pdmodel.PDDocument} object of pdfbox
-     *         library.
-     * @throws IOException
-     *             when target file is not pdf or pdf file is not contain root
-     *             object
-     */
-    public PDDocument getPDDocument() {
-        return this.document;
-    }
-
-    public PDFDocument getPDFDocument() {
+    @Override
+	public PDFDocument getPDFDocument() {
     	return new PDFDocumentImpl(this.document);
     }
     /**
@@ -120,12 +103,12 @@ public final class ModelParser implements PDFParser {
     }
 
     @Override
-    public FeaturesCollection getFeatures(FeaturesConfig config) {
+    public FeatureExtractionResult getFeatures(FeatureExtractorConfig config) {
         return PBFeatureParser.getFeaturesCollection(this.document, config);
     }
 
     @Override
-    public FeaturesCollection getFeatures(FeaturesConfig config, List<FeaturesExtractor> extractors) {
+    public FeatureExtractionResult getFeatures(FeatureExtractorConfig config, List<AbstractFeaturesExtractor> extractors) {
         return PBFeatureParser.getFeaturesCollection(this.document, extractors, config);
     }
 

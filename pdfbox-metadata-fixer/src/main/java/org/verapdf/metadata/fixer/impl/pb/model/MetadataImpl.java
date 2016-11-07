@@ -1,7 +1,8 @@
 package org.verapdf.metadata.fixer.impl.pb.model;
 
-import com.adobe.xmp.XMPException;
-import com.adobe.xmp.impl.VeraPDFMeta;
+import java.io.IOException;
+import java.io.OutputStream;
+
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
@@ -19,9 +20,8 @@ import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.results.MetadataFixerResult;
 import org.verapdf.pdfa.results.MetadataFixerResultImpl;
 
-import javax.xml.transform.TransformerException;
-import java.io.IOException;
-import java.io.OutputStream;
+import com.adobe.xmp.XMPException;
+import com.adobe.xmp.impl.VeraPDFMeta;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -210,7 +210,7 @@ public class MetadataImpl implements Metadata {
     }
 
     @Override
-    public void updateMetadataStream() throws IOException, TransformerException, XMPException {
+    public void updateMetadataStream() throws IOException, XMPException {
         if (!this.stream.isNeedToBeUpdated()) {
             return;
         }

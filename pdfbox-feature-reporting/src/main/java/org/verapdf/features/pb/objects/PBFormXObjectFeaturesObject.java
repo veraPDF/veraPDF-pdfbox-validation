@@ -1,19 +1,19 @@
 package org.verapdf.features.pb.objects;
 
+import java.util.Set;
+
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.verapdf.core.FeatureParsingException;
+import org.verapdf.features.FeatureExtractionResult;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.FeaturesData;
-import org.verapdf.features.FeaturesObjectTypesEnum;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
-
-import java.util.Set;
 
 /**
  * Feature object for form xobjects
@@ -69,8 +69,8 @@ public class PBFormXObjectFeaturesObject implements IFeaturesObject {
 	 * @return FORM_XOBJECT instance of the FeaturesObjectTypesEnum enumeration
 	 */
 	@Override
-	public FeaturesObjectTypesEnum getType() {
-		return FeaturesObjectTypesEnum.FORM_XOBJECT;
+	public FeatureObjectType getType() {
+		return FeatureObjectType.FORM_XOBJECT;
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class PBFormXObjectFeaturesObject implements IFeaturesObject {
 	 * @throws FeatureParsingException occurs when wrong features tree node constructs
 	 */
 	@Override
-	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
+	public FeatureTreeNode reportFeatures(FeatureExtractionResult collection) throws FeatureParsingException {
 		if (formXObject != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("xobject");
 			root.setAttribute("type", "form");
@@ -90,27 +90,27 @@ public class PBFormXObjectFeaturesObject implements IFeaturesObject {
 			}
 
 			PBCreateNodeHelper.addBoxFeature("bbox", formXObject.getBBox(), root);
-			parseFloatMatrix(formXObject.getMatrix().getValues(), FeatureTreeNode.createChildNode("matrix", root));
+			parseFloatMatrix(formXObject.getMatrix().getValues(), root.addChild("matrix"));
 
 			if (formXObject.getGroup() != null) {
-				FeatureTreeNode groupNode = FeatureTreeNode.createChildNode("group", root);
+				FeatureTreeNode groupNode = root.addChild("group");
 				if (formXObject.getGroup().getSubType() != null) {
 					PBCreateNodeHelper.addNotEmptyNode("subtype", formXObject.getGroup().getSubType().getName(), groupNode);
 					if ("Transparency".equals(formXObject.getGroup().getSubType().getName())) {
 						if (groupColorSpaceChild != null) {
-							FeatureTreeNode clr = FeatureTreeNode.createChildNode("colorSpace", groupNode);
+							FeatureTreeNode clr = groupNode.addChild("colorSpace");
 							clr.setAttribute(ID, groupColorSpaceChild);
 						}
 
-						FeatureTreeNode.createChildNode("isolated", groupNode).setValue(String.valueOf(formXObject.getGroup().isIsolated()));
-						FeatureTreeNode.createChildNode("knockout", groupNode).setValue(String.valueOf(formXObject.getGroup().isKnockout()));
+						groupNode.addChild("isolated").setValue(String.valueOf(formXObject.getGroup().isIsolated()));
+						groupNode.addChild("knockout").setValue(String.valueOf(formXObject.getGroup().isKnockout()));
 					}
 
 				}
 			}
 
 			if (formXObject.getCOSStream().getItem(COSName.STRUCT_PARENTS) != null) {
-				FeatureTreeNode.createChildNode("structParents", root).setValue(String.valueOf(formXObject.getStructParents()));
+				root.addChild("structParents").setValue(String.valueOf(formXObject.getStructParents()));
 			}
 
 
@@ -122,7 +122,7 @@ public class PBFormXObjectFeaturesObject implements IFeaturesObject {
 
 			parseResources(root);
 
-			collection.addNewFeatureTree(FeaturesObjectTypesEnum.FORM_XOBJECT, root);
+			collection.addNewFeatureTree(FeatureObjectType.FORM_XOBJECT, root);
 			return root;
 		}
 
@@ -140,7 +140,7 @@ public class PBFormXObjectFeaturesObject implements IFeaturesObject {
 	private static void parseFloatMatrix(float[][] array, FeatureTreeNode parent) throws FeatureParsingException {
 		for (int i = 0; i < array.length; ++i) {
 			for (int j = 0; j < array.length - 1; ++j) {
-				FeatureTreeNode element = FeatureTreeNode.createChildNode("element", parent);
+				FeatureTreeNode element = parent.addChild("element");
 				element.setAttribute("row", String.valueOf(i + 1));
 				element.setAttribute("column", String.valueOf(j + 1));
 				element.setAttribute("value", String.valueOf(array[i][j]));
@@ -157,7 +157,7 @@ public class PBFormXObjectFeaturesObject implements IFeaturesObject {
 				(xobjectChild != null && !xobjectChild.isEmpty()) ||
 				(fontChild != null && !fontChild.isEmpty()) ||
 				(propertiesChild != null && !propertiesChild.isEmpty())) {
-			FeatureTreeNode resources = FeatureTreeNode.createChildNode("resources", root);
+			FeatureTreeNode resources = root.addChild("resources");
 
 			PBCreateNodeHelper.parseIDSet(extGStateChild, "graphicsState", "graphicsStates", resources);
 			PBCreateNodeHelper.parseIDSet(colorSpaceChild, "colorSpace", "colorSpaces", resources);

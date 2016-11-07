@@ -1,11 +1,10 @@
 package org.verapdf.features.pb.objects;
 
-import org.verapdf.core.FeatureParsingException;
+import org.verapdf.features.FeatureExtractionResult;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.FeaturesData;
-import org.verapdf.features.FeaturesObjectTypesEnum;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.tools.FeatureTreeNode;
-import org.verapdf.features.tools.FeaturesCollection;
 
 /**
  * Features object for postscript xobject
@@ -26,11 +25,11 @@ public class PBPostScriptXObjectFeaturesObject implements IFeaturesObject {
 	}
 
 	/**
-	 * @return POSTSCRIPT_XOBJECT instance of the FeaturesObjectTypesEnum enumeration
+	 * @return POSTSCRIPT_XOBJECT instance of the FeatureObjectType enumeration
 	 */
 	@Override
-	public FeaturesObjectTypesEnum getType() {
-		return FeaturesObjectTypesEnum.POSTSCRIPT_XOBJECT;
+	public FeatureObjectType getType() {
+		return FeatureObjectType.POSTSCRIPT_XOBJECT;
 	}
 
 	/**
@@ -41,14 +40,14 @@ public class PBPostScriptXObjectFeaturesObject implements IFeaturesObject {
 	 * @throws FeatureParsingException occurs when wrong features tree node constructs
 	 */
 	@Override
-	public FeatureTreeNode reportFeatures(FeaturesCollection collection) throws FeatureParsingException {
+	public FeatureTreeNode reportFeatures(FeatureExtractionResult collection) {
 		FeatureTreeNode root = FeatureTreeNode.createRootNode("xobject");
 		root.setAttribute("type", "postscript");
 		if (id != null) {
 			root.setAttribute("id", id);
 		}
 
-		collection.addNewFeatureTree(FeaturesObjectTypesEnum.POSTSCRIPT_XOBJECT, root);
+		collection.addNewFeatureTree(FeatureObjectType.POSTSCRIPT_XOBJECT, root);
 		return root;
 	}
 
