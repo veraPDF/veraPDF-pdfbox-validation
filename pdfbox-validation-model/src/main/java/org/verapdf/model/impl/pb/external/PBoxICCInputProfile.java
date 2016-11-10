@@ -1,5 +1,6 @@
 package org.verapdf.model.impl.pb.external;
 
+import org.apache.pdfbox.cos.COSStream;
 import org.verapdf.model.external.ICCInputProfile;
 
 import java.io.IOException;
@@ -20,11 +21,9 @@ public class PBoxICCInputProfile extends PBoxICCProfile implements
 	 * Default constructor.
 	 *
 	 * @param profile stream of profile
-	 * @param dictionaryNumberOfColors number of colors defined in stream dictionary
 	 * @throws IOException
 	 */
-    public PBoxICCInputProfile(InputStream profile,
-            Long dictionaryNumberOfColors) throws IOException {
-        super(profile, dictionaryNumberOfColors, ICC_INPUT_PROFILE_TYPE);
+    public PBoxICCInputProfile(COSStream profile) {
+        super(profile, ICC_INPUT_PROFILE_TYPE);
     }
 }

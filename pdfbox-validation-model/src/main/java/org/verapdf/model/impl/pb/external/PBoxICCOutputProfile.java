@@ -1,5 +1,6 @@
 package org.verapdf.model.impl.pb.external;
 
+import org.apache.pdfbox.cos.COSStream;
 import org.verapdf.model.external.ICCOutputProfile;
 
 import java.io.IOException;
@@ -24,12 +25,10 @@ public class PBoxICCOutputProfile extends PBoxICCProfile implements
 	 *
 	 * @param profile icc profile stream
 	 * @param subtype subtype value for current profile
-	 * @param N number of colors defined in stream dictionary
 	 * @throws IOException
 	 */
-    public PBoxICCOutputProfile(InputStream profile, String subtype, Long N)
-            throws IOException {
-        super(profile, N, ICC_OUTPUT_PROFILE_TYPE);
+    public PBoxICCOutputProfile(COSStream profile, String subtype) {
+        super(profile, ICC_OUTPUT_PROFILE_TYPE);
         this.subtype = subtype;
     }
 
