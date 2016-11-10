@@ -2,12 +2,16 @@ package org.verapdf.model;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
+import org.verapdf.ReleaseDetails;
+import org.verapdf.component.ComponentDetails;
+import org.verapdf.component.Components;
 import org.verapdf.core.EncryptedPdfException;
 import org.verapdf.core.ModelParsingException;
 import org.verapdf.features.AbstractFeaturesExtractor;
@@ -30,96 +34,108 @@ import com.adobe.xmp.impl.VeraPDFMeta;
  * @author Evgeniy Muravitskiy
  */
 public final class ModelParser implements PDFAParser {
+	private static final ReleaseDetails pdfBoxReleaseDetails = ReleaseDetails.addDetailsFromResource(
+			ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "pdfbox-parser." + ReleaseDetails.PROPERTIES_EXT);
+	private static final URI id = URI.create("http://pdfa.verapdf.org/parser#pdfbox");
+	private static final ComponentDetails details = Components.veraDetails(id, "PDFBox Parser",
+			pdfBoxReleaseDetails.getVersion());
 
-    private static final Logger LOGGER = Logger.getLogger(ModelParser.class);
+	private static final Logger logger = Logger.getLogger(ModelParser.class);
 
-    private PDDocument document;
+	private PDDocument document;
 
-    private final PDFAFlavour flavour;
+	private final PDFAFlavour flavour;
 
-    private ModelParser(final InputStream docStream, PDFAFlavour flavour) throws IOException {
-        this.document = PDDocument.load(docStream, false, true);
-        this.flavour = (flavour == PDFAFlavour.NO_FLAVOUR) ? obtainFlavour(this.document) : flavour;
-    }
+	private ModelParser(final InputStream docStream, PDFAFlavour flavour) throws IOException {
+		this.document = PDDocument.load(docStream, false, true);
+		this.flavour = (flavour == PDFAFlavour.NO_FLAVOUR) ? obtainFlavour(this.document) : flavour;
+	}
 
-    
-    public static ModelParser createModelWithFlavour(InputStream toLoad, PDFAFlavour flavour) throws ModelParsingException, EncryptedPdfException {
-        try {
-            cleanUp();
-            return new ModelParser(toLoad, flavour);
-        } catch (InvalidPasswordException excep) {
-            throw new EncryptedPdfException("The PDF stream appears to be encrypted.", excep);
-        } catch (IOException excep) {
-            throw new ModelParsingException("Couldn't parse stream", excep);
-        }
-    }
+	public static ModelParser createModelWithFlavour(InputStream toLoad, PDFAFlavour flavour)
+			throws ModelParsingException, EncryptedPdfException {
+		try {
+			cleanUp();
+			return new ModelParser(toLoad, flavour);
+		} catch (InvalidPasswordException excep) {
+			throw new EncryptedPdfException("The PDF stream appears to be encrypted.", excep);
+		} catch (IOException excep) {
+			throw new ModelParsingException("Couldn't parse stream", excep);
+		}
+	}
 
-    private static PDFAFlavour obtainFlavour(PDDocument document) {
-    	if (document == null || document.getDocumentCatalog() == null) {
-    		return PDFAFlavour.NO_FLAVOUR;
-    	}
-        PDMetadata metadata = document.getDocumentCatalog().getMetadata();
-        if (metadata == null) {
-            return PDFAFlavour.NO_FLAVOUR;
-        }
-        try (InputStream is = metadata.exportXMPMetadata()) {
-            VeraPDFMeta veraPDFMeta = VeraPDFMeta.parse(is);
-            Integer identificationPart = veraPDFMeta.getIdentificationPart();
-            String identificationConformance = veraPDFMeta.getIdentificationConformance();
-            PDFAFlavour pdfaFlavour = PDFAFlavour.byFlavourId(identificationPart + identificationConformance);
-            return pdfaFlavour;
-        } catch (IOException | XMPException e) {
-            LOGGER.error(e);
-            return PDFAFlavour.NO_FLAVOUR;
-        }
-    }
+	private static PDFAFlavour obtainFlavour(PDDocument document) {
+		if (document == null || document.getDocumentCatalog() == null) {
+			return PDFAFlavour.NO_FLAVOUR;
+		}
+		PDMetadata metadata = document.getDocumentCatalog().getMetadata();
+		if (metadata == null) {
+			return PDFAFlavour.NO_FLAVOUR;
+		}
+		try (InputStream is = metadata.exportXMPMetadata()) {
+			VeraPDFMeta veraPDFMeta = VeraPDFMeta.parse(is);
+			Integer identificationPart = veraPDFMeta.getIdentificationPart();
+			String identificationConformance = veraPDFMeta.getIdentificationConformance();
+			PDFAFlavour pdfaFlavour = PDFAFlavour.byFlavourId(identificationPart + identificationConformance);
+			return pdfaFlavour;
+		} catch (IOException | XMPException e) {
+			logger.error(e);
+			return PDFAFlavour.NO_FLAVOUR;
+		}
+	}
 
-    private static void cleanUp() {
-        StaticContainers.clearAllContainers();
-    }
+	private static void cleanUp() {
+		StaticContainers.clearAllContainers();
+	}
 
-    @Override
+	@Override
 	public PDFDocument getPDFDocument() {
-    	return new PDFDocumentImpl(this.document);
-    }
-    /**
-     * Method return root object of model implementation from pdf box model
-     * together with the hierarchy.
-     *
-     * @return root object representing by
-     *         {@link org.verapdf.model.coslayer.CosDocument}
-     * @throws IOException
-     *             when target file is not pdf or pdf file is not contain root
-     *             object
-     */
-    @Override
-    public org.verapdf.model.baselayer.Object getRoot() {
-        return new PBCosDocument(this.document, this.flavour);
-    }
+		return new PDFDocumentImpl(this.document);
+	}
 
-    @Override
-    public PDFAFlavour getFlavour() {
-        return this.flavour;
-    }
+	@Override
+	public ComponentDetails getDetails() {
+		return details;
+	}
 
-    @Override
-    public FeatureExtractionResult getFeatures(FeatureExtractorConfig config) {
-        return PBFeatureParser.getFeaturesCollection(this.document, config);
-    }
+	/**
+	 * Method return root object of model implementation from pdf box model
+	 * together with the hierarchy.
+	 *
+	 * @return root object representing by
+	 *         {@link org.verapdf.model.coslayer.CosDocument}
+	 * @throws IOException
+	 *             when target file is not pdf or pdf file is not contain root
+	 *             object
+	 */
+	@Override
+	public org.verapdf.model.baselayer.Object getRoot() {
+		return new PBCosDocument(this.document, this.flavour);
+	}
 
-    @Override
-    public FeatureExtractionResult getFeatures(FeatureExtractorConfig config, List<AbstractFeaturesExtractor> extractors) {
-        return PBFeatureParser.getFeaturesCollection(this.document, extractors, config);
-    }
+	@Override
+	public PDFAFlavour getFlavour() {
+		return this.flavour;
+	}
 
-    @Override
+	@Override
+	public FeatureExtractionResult getFeatures(FeatureExtractorConfig config) {
+		return PBFeatureParser.getFeaturesCollection(this.document, config);
+	}
+
+	@Override
+	public FeatureExtractionResult getFeatures(FeatureExtractorConfig config,
+			List<AbstractFeaturesExtractor> extractors) {
+		return PBFeatureParser.getFeaturesCollection(this.document, extractors, config);
+	}
+
+	@Override
 	public void close() {
 		try {
-            if (this.document != null) {
-                this.document.close();
-            }
+			if (this.document != null) {
+				this.document.close();
+			}
 		} catch (IOException e) {
-            LOGGER.error("Problems with document close.", e);
-        }
+			logger.error("Problems with document close.", e);
+		}
 	}
 }

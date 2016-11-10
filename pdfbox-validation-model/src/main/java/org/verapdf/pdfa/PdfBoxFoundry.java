@@ -72,4 +72,10 @@ class PdfBoxFoundry extends AbstractFoundry {
 	static VeraPDFFoundry getInstance() {
 		return instance;
 	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+
+	}
 }
