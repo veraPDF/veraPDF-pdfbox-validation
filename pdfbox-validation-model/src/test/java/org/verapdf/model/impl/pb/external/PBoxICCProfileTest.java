@@ -17,7 +17,7 @@ public abstract class PBoxICCProfileTest extends BaseTest {
 
 	@Test
 	public void testDeviceClassMethod() {
-//		Assert.assertEquals(((ICCProfile) actual).getdeviceClass(), expectedDeviceClass);	TODO: fix tests
+		Assert.assertEquals(((ICCProfile) actual).getdeviceClass(), expectedDeviceClass);
 	}
 
 	@Test
@@ -27,7 +27,7 @@ public abstract class PBoxICCProfileTest extends BaseTest {
 
 	@Test
 	public void testVersionMethod() {
-//		Assert.assertEquals(((ICCProfile) actual).getversion().doubleValue(), expectedVersion, 0.001);	TODO: fix tests
+		Assert.assertEquals(((ICCProfile) actual).getversion().doubleValue(), expectedVersion, 0.001);
 	}
 
 	@Test
@@ -37,6 +37,6 @@ public abstract class PBoxICCProfileTest extends BaseTest {
 
 	@Test
 	public void testIsValidMethod() {
-//		Assert.assertTrue(((ICCProfile) actual).getisValid().booleanValue());	TODO: fix tests
+		Assert.assertTrue(((ICCProfile) actual).getisValid().booleanValue());
 	}
 }

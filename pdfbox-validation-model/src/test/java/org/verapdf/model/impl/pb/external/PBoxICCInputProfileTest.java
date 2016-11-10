@@ -21,8 +21,6 @@ public class PBoxICCInputProfileTest extends PBoxICCProfileTest {
 	public static final int EXPECTED_VERSION = 0x02;
 	public static final int EXPECTED_SUBVERSION = 0x1A;
 
-	private static ByteArrayInputStream inputStream;
-
 	@BeforeClass
 	public static void setUp() throws IOException {
 		expectedType = TYPES.contains(PBoxICCInputProfile.ICC_INPUT_PROFILE_TYPE) ?
@@ -33,7 +31,7 @@ public class PBoxICCInputProfileTest extends PBoxICCProfileTest {
 	}
 
 	private static void setUpActualObject() throws IOException {
-		byte[] bytes = new byte[16];
+		byte[] bytes = new byte[128];
 
 		bytes[PBoxICCProfile.VERSION_BYTE] = EXPECTED_VERSION;
 		bytes[PBoxICCProfile.SUBVERSION_BYTE] = EXPECTED_SUBVERSION;
@@ -47,21 +45,20 @@ public class PBoxICCInputProfileTest extends PBoxICCProfileTest {
 		COSStream stream = new COSStream(dict);
 		OutputStream outputStream = stream.createUnfilteredStream();
 		outputStream.write(bytes);
+		outputStream.close();
 		actual = new PBoxICCInputProfile(stream);
 	}
 
 	@Override
 	@Test
 	public void testColorSpaceMethod() {
-		//Assert.assertNull(((ICCProfile) actual).getcolorSpace());		TODO: fix test
+		Assert.assertEquals(new String(new byte[]{0,0,0,0}), ((ICCProfile) actual).getcolorSpace());
 	}
 
 	@AfterClass
 	public static void tearDown() throws IOException {
-//		expectedType = null;	TODO: fix test
-//		expectedID = null;
-//		actual = null;
-//
-//		inputStream.close();
+		expectedType = null;
+		expectedID = null;
+		actual = null;
 	}
 }
