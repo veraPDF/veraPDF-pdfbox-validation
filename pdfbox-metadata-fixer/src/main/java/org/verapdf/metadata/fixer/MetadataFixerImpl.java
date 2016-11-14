@@ -21,6 +21,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
@@ -59,10 +60,9 @@ abstract class MetadataFixerImpl implements MetadataFixer {
 	private static final String componentName = "veraPDF PDF Box Metadata Fixer";
 	private static final ComponentDetails componentDetails = Components.libraryDetails(componentId, componentName);
 	private static final ProfileDirectory PROFILES = Profiles.getVeraProfileDirectory();
-
 	private static final Logger LOGGER = Logger.getLogger(MetadataFixerImpl.class);
 
-	private static final Map<String, String> attributes = new HashMap<>(8);
+	private static final Map<String, String> attributes = Collections.unmodifiableMap(mkAttsMap());
 
 	protected MetadataFixerImpl() {
 		// enabled only for nested classes
@@ -292,14 +292,16 @@ abstract class MetadataFixerImpl implements MetadataFixer {
 		}
 	}
 
-	static {
-		attributes.put(METADATA_TITLE, INFO_TITLE);
-		attributes.put(METADATA_SUBJECT, INFO_SUBJECT);
-		attributes.put(METADATA_AUTHOR, INFO_AUTHOR);
-		attributes.put(PRODUCER, PRODUCER);
-		attributes.put(KEYWORDS, KEYWORDS);
-		attributes.put(METADATA_CREATOR, INFO_CREATOR);
-		attributes.put(METADATA_CREATION_DATE, INFO_CREATION_DATE);
-		attributes.put(METADATA_MODIFICATION_DATE, INFO_MODIFICATION_DATE);
+	private static final Map<String, String> mkAttsMap() {
+		Map<String, String>  atts = new HashMap<>();
+		atts.put(METADATA_TITLE, INFO_TITLE);
+		atts.put(METADATA_SUBJECT, INFO_SUBJECT);
+		atts.put(METADATA_AUTHOR, INFO_AUTHOR);
+		atts.put(PRODUCER, PRODUCER);
+		atts.put(KEYWORDS, KEYWORDS);
+		atts.put(METADATA_CREATOR, INFO_CREATOR);
+		atts.put(METADATA_CREATION_DATE, INFO_CREATION_DATE);
+		atts.put(METADATA_MODIFICATION_DATE, INFO_MODIFICATION_DATE);
+		return atts;
 	}
 }
