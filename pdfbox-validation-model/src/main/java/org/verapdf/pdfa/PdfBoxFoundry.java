@@ -27,7 +27,7 @@ class PdfBoxFoundry extends AbstractFoundry {
 			ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "pdfbox-validation." + ReleaseDetails.PROPERTIES_EXT);
 
 	private static final ComponentDetails details = Components.veraDetails(id, "VeraPDF PDFBox Foundry",
-			pdfBoxReleaseDetails.getVersion());
+			pdfBoxReleaseDetails.getVersion(), "This foundry instance provides the PDF Box based validation library.");
 	private static final PdfBoxFoundry instance = new PdfBoxFoundry();
 
 	private PdfBoxFoundry() {
