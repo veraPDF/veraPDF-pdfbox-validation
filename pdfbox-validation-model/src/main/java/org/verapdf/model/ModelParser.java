@@ -22,6 +22,7 @@ import org.verapdf.metadata.fixer.entity.PDFDocument;
 import org.verapdf.metadata.fixer.impl.pb.model.PDFDocumentImpl;
 import org.verapdf.model.impl.pb.containers.StaticContainers;
 import org.verapdf.model.impl.pb.cos.PBCosDocument;
+import org.verapdf.pdfa.Foundries;
 import org.verapdf.pdfa.PDFAParser;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
@@ -64,12 +65,13 @@ public final class ModelParser implements PDFAParser {
 	}
 
 	private static PDFAFlavour obtainFlavour(PDDocument document) {
+		PDFAFlavour defaultFlavour = Foundries.defaultInstance().defaultFlavour();
 		if (document == null || document.getDocumentCatalog() == null) {
-			return PDFAFlavour.NO_FLAVOUR;
+			return defaultFlavour;
 		}
 		PDMetadata metadata = document.getDocumentCatalog().getMetadata();
 		if (metadata == null) {
-			return PDFAFlavour.NO_FLAVOUR;
+			return defaultFlavour;
 		}
 		try (InputStream is = metadata.exportXMPMetadata()) {
 			VeraPDFMeta veraPDFMeta = VeraPDFMeta.parse(is);
@@ -79,7 +81,7 @@ public final class ModelParser implements PDFAParser {
 			return pdfaFlavour;
 		} catch (IOException | XMPException e) {
 			logger.error(e);
-			return PDFAFlavour.NO_FLAVOUR;
+			return defaultFlavour;
 		}
 	}
 
