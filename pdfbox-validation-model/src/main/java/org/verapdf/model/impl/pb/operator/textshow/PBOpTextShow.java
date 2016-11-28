@@ -132,7 +132,11 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 					Boolean glyphPresent = null;
 					Boolean widthsConsistent = null ;
 					if(!fontProgramIsInvalid) {
-						glyphPresent = Boolean.valueOf(fontContainer.hasGlyph(code));
+						// every font contains notdef glyph. But if we call method
+						// of font container we can't distinguish case of code 0
+						// and glyph that is not present indeed.
+						glyphPresent = code == 0 ? true :
+								Boolean.valueOf(fontContainer.hasGlyph(code));
 						widthsConsistent = Boolean.valueOf(this.checkWidths(code));
 					}
 					PBGlyph glyph;
