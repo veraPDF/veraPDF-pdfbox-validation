@@ -9,7 +9,6 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeatureExtractionResult;
-import org.verapdf.features.pb.objects.ColorComponent;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 
