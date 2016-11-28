@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.verapdf.features.pb.objects;
+package org.verapdf.features.pb.tools;
 
 import java.util.EnumSet;
 import java.util.HashMap;
