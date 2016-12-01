@@ -1,12 +1,11 @@
 package org.verapdf.features.pb.objects;
 
-import java.util.Set;
-
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
+import org.apache.pdfbox.pdmodel.graphics.form.PDGroup;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeatureObjectType;
@@ -14,6 +13,8 @@ import org.verapdf.features.FeaturesData;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
+
+import java.util.Set;
 
 /**
  * Feature object for form xobjects
@@ -90,20 +91,21 @@ public class PBFormXObjectFeaturesObject implements IFeaturesObject {
 			}
 
 			PBCreateNodeHelper.addBoxFeature("bbox", formXObject.getBBox(), root);
-			parseFloatMatrix(formXObject.getMatrix().getValues(), root.addChild("matrix"));
+			PBCreateNodeHelper.parseFloatMatrix(formXObject.getMatrix().getValues(), root.addChild("matrix"));
 
-			if (formXObject.getGroup() != null) {
+			PDGroup group = formXObject.getGroup();
+			if (group != null) {
 				FeatureTreeNode groupNode = root.addChild("group");
-				if (formXObject.getGroup().getSubType() != null) {
-					PBCreateNodeHelper.addNotEmptyNode("subtype", formXObject.getGroup().getSubType().getName(), groupNode);
-					if ("Transparency".equals(formXObject.getGroup().getSubType().getName())) {
+				if (group.getSubType() != null) {
+					PBCreateNodeHelper.addNotEmptyNode("subtype", group.getSubType().getName(), groupNode);
+					if ("Transparency".equals(group.getSubType().getName())) {
 						if (groupColorSpaceChild != null) {
 							FeatureTreeNode clr = groupNode.addChild("colorSpace");
 							clr.setAttribute(ID, groupColorSpaceChild);
 						}
 
-						groupNode.addChild("isolated").setValue(String.valueOf(formXObject.getGroup().isIsolated()));
-						groupNode.addChild("knockout").setValue(String.valueOf(formXObject.getGroup().isKnockout()));
+						groupNode.addChild("isolated").setValue(String.valueOf(group.isIsolated()));
+						groupNode.addChild("knockout").setValue(String.valueOf(group.isKnockout()));
 					}
 
 				}
@@ -135,17 +137,6 @@ public class PBFormXObjectFeaturesObject implements IFeaturesObject {
 	@Override
 	public FeaturesData getData() {
 		return null;
-	}
-
-	private static void parseFloatMatrix(float[][] array, FeatureTreeNode parent) throws FeatureParsingException {
-		for (int i = 0; i < array.length; ++i) {
-			for (int j = 0; j < array.length - 1; ++j) {
-				FeatureTreeNode element = parent.addChild("element");
-				element.setAttribute("row", String.valueOf(i + 1));
-				element.setAttribute("column", String.valueOf(j + 1));
-				element.setAttribute("value", String.valueOf(array[i][j]));
-			}
-		}
 	}
 
 	private void parseResources(FeatureTreeNode root) throws FeatureParsingException {
