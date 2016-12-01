@@ -1,7 +1,5 @@
 package org.verapdf.features.pb.objects;
 
-import java.util.Set;
-
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDTilingPattern;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeatureExtractionResult;
@@ -10,6 +8,8 @@ import org.verapdf.features.FeaturesData;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
+
+import java.util.Set;
 
 /**
  * Feature object for tilling pattern
@@ -89,7 +89,7 @@ public class PBTilingPatternFeaturesObject implements IFeaturesObject {
 			root.addChild("xStep").setValue(String.valueOf(tilingPattern.getXStep()));
 			root.addChild("yStep").setValue(String.valueOf(tilingPattern.getYStep()));
 
-			parseFloatMatrix(tilingPattern.getMatrix().getValues(), root.addChild("matrix"));
+			PBCreateNodeHelper.parseFloatMatrix(tilingPattern.getMatrix().getValues(), root.addChild("matrix"));
 
 			parseResources(root);
 
@@ -106,17 +106,6 @@ public class PBTilingPatternFeaturesObject implements IFeaturesObject {
 	@Override
 	public FeaturesData getData() {
 		return null;
-	}
-
-	private static void parseFloatMatrix(float[][] array, FeatureTreeNode parent) throws FeatureParsingException {
-		for (int i = 0; i < array.length; ++i) {
-			for (int j = 0; j < array.length - 1; ++j) {
-				FeatureTreeNode element = parent.addChild("element");
-				element.setAttribute("row", String.valueOf(i + 1));
-				element.setAttribute("column", String.valueOf(j + 1));
-				element.setAttribute("value", String.valueOf(array[i][j]));
-			}
-		}
 	}
 
 	private void parseResources(FeatureTreeNode root) throws FeatureParsingException {

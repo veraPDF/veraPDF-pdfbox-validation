@@ -1,34 +1,20 @@
 package org.verapdf.features.pb.objects;
 
+import org.apache.log4j.Logger;
+import org.apache.pdfbox.cos.*;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.common.PDStream;
+import org.apache.pdfbox.pdmodel.font.*;
+import org.verapdf.core.FeatureParsingException;
+import org.verapdf.features.*;
+import org.verapdf.features.pb.tools.PBCreateNodeHelper;
+import org.verapdf.features.tools.FeatureTreeNode;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.log4j.Logger;
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSInteger;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSNumber;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.common.PDStream;
-import org.apache.pdfbox.pdmodel.font.PDCIDFont;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
-import org.apache.pdfbox.pdmodel.font.PDFontLike;
-import org.apache.pdfbox.pdmodel.font.PDSimpleFont;
-import org.apache.pdfbox.pdmodel.font.PDType0Font;
-import org.apache.pdfbox.pdmodel.font.PDType3Font;
-import org.verapdf.core.FeatureParsingException;
-import org.verapdf.features.FeatureExtractionResult;
-import org.verapdf.features.FeatureObjectType;
-import org.verapdf.features.FeaturesData;
-import org.verapdf.features.FontFeaturesData;
-import org.verapdf.features.IFeaturesObject;
-import org.verapdf.features.pb.tools.PBCreateNodeHelper;
-import org.verapdf.features.tools.FeatureTreeNode;
 
 /**
  * Feature object for fonts
@@ -143,7 +129,7 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 						PDType3Font type3 = (PDType3Font) sFont;
 
 						PBCreateNodeHelper.addBoxFeature("fontBBox", type3.getFontBBox(), root);
-						parseFloatMatrix(type3.getFontMatrix().getValues(), root.addChild("fontMatrix"));
+						PBCreateNodeHelper.parseFloatMatrix(type3.getFontMatrix().getValues(), root.addChild("fontMatrix"));
 
 						parseResources(root);
 					}
@@ -292,17 +278,6 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 			descriptorNode.addChild("embedded").setValue(String.valueOf(file != null));
 			if (file != null) {
 				PBCreateNodeHelper.parseMetadata(file.getMetadata(), "embeddedFileMetadata", descriptorNode, collection);
-			}
-		}
-	}
-
-	private static void parseFloatMatrix(float[][] array, FeatureTreeNode parent) throws FeatureParsingException {
-		for (int i = 0; i < array.length; ++i) {
-			for (int j = 0; j < array.length - 1; ++j) {
-				FeatureTreeNode element = parent.addChild("element");
-				element.setAttribute("row", String.valueOf(i));
-				element.setAttribute("column", String.valueOf(j));
-				element.setAttribute("value", String.valueOf(array[i][j]));
 			}
 		}
 	}

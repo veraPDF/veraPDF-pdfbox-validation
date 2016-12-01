@@ -316,19 +316,18 @@ public final class TestNodeGenerator {
 
 	public static void getStandartMatrix(FeatureTreeNode root) throws FeatureParsingException {
 		FeatureTreeNode matr = root.addChild("matrix");
-		addElement("1", "1", "1.0", matr);
-		addElement("2", "1", "0.0", matr);
-		addElement("1", "2", "0.0", matr);
-		addElement("2", "2", "1.0", matr);
-		addElement("1", "3", "0.0", matr);
-		addElement("2", "3", "0.0", matr);
+		addElement("1", "1.0", matr);
+		addElement("2", "0.0", matr);
+		addElement("3", "0.0", matr);
+		addElement("4", "1.0", matr);
+		addElement("5", "0.0", matr);
+		addElement("6", "0.0", matr);
 	}
 
-	public static void addElement(String column, String row, String value, FeatureTreeNode parent)
+	public static void addElement(String index, String value, FeatureTreeNode parent)
 			throws FeatureParsingException {
 		FeatureTreeNode element = parent.addChild("element");
-		element.setAttribute("column", column);
-		element.setAttribute("row", row);
+		element.setAttribute("index", index);
 		element.setAttribute("value", value);
 	}
 

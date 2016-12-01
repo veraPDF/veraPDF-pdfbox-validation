@@ -2,10 +2,11 @@ package org.verapdf.features.pb.objects;
 
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDShadingPattern;
 import org.verapdf.core.FeatureParsingException;
-import org.verapdf.features.FeaturesData;
 import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeatureObjectType;
+import org.verapdf.features.FeaturesData;
 import org.verapdf.features.IFeaturesObject;
+import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 
 /**
@@ -66,7 +67,7 @@ public class PBShadingPatternFeaturesObject implements IFeaturesObject {
 				shading.setAttribute(ID, shadingChild);
 			}
 
-			parseFloatMatrix(shadingPattern.getMatrix().getValues(), root.addChild("matrix"));
+			PBCreateNodeHelper.parseFloatMatrix(shadingPattern.getMatrix().getValues(), root.addChild("matrix"));
 
 			if (extGStateChild != null) {
 				FeatureTreeNode exGState = root.addChild("graphicsState");
@@ -86,16 +87,5 @@ public class PBShadingPatternFeaturesObject implements IFeaturesObject {
 	@Override
 	public FeaturesData getData() {
 		return null;
-	}
-
-	private static void parseFloatMatrix(float[][] array, FeatureTreeNode parent) throws FeatureParsingException {
-		for (int i = 0; i < array.length; ++i) {
-			for (int j = 0; j < array.length - 1; ++j) {
-				FeatureTreeNode element = parent.addChild("element");
-				element.setAttribute("row", String.valueOf(i + 1));
-				element.setAttribute("column", String.valueOf(j + 1));
-				element.setAttribute("value", String.valueOf(array[i][j]));
-			}
-		}
 	}
 }

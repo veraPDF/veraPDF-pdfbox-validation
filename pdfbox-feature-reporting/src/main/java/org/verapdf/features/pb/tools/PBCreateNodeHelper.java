@@ -287,4 +287,14 @@ public final class PBCreateNodeHelper {
 
 		return node;
 	}
+
+	public static void parseFloatMatrix(float[][] array, FeatureTreeNode parent) throws FeatureParsingException {
+		for (int i = 0; i < 3; ++i) {
+			for (int j = 0; j < 2; ++j) {
+				FeatureTreeNode element = parent.addChild("element");
+				element.setAttribute("index", String.valueOf(2*i+j+1));
+				element.setAttribute("value", String.valueOf(array[i][j]));
+			}
+		}
+	}
 }
