@@ -110,7 +110,7 @@ public class InfoDictionaryImpl implements InfoDictionary {
 
 	@Override
 	public void setNeedToBeUpdated(boolean needToBeUpdated) {
-		this.info.getCOSObject().setNeedToBeUpdated(true);
+		this.info.getCOSObject().setNeedToBeUpdated(needToBeUpdated);
 	}
 
 }
