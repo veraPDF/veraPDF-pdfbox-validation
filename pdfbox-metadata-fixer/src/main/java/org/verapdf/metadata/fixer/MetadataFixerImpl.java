@@ -1,33 +1,5 @@
 package org.verapdf.metadata.fixer;
 
-import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.INFO_AUTHOR;
-import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.INFO_CREATION_DATE;
-import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.INFO_CREATOR;
-import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.INFO_MODIFICATION_DATE;
-import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.INFO_SUBJECT;
-import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.INFO_TITLE;
-import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.KEYWORDS;
-import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.METADATA_AUTHOR;
-import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.METADATA_CREATION_DATE;
-import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.METADATA_CREATOR;
-import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.METADATA_MODIFICATION_DATE;
-import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.METADATA_SUBJECT;
-import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.METADATA_TITLE;
-import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.PDF_DATE_FORMAT_REGEX;
-import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.PRODUCER;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
-
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.log4j.Logger;
 import org.verapdf.component.ComponentDetails;
 import org.verapdf.component.Components;
@@ -52,6 +24,15 @@ import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
 import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
+
+import static org.verapdf.metadata.fixer.utils.MetadataFixerConstants.*;
+
 /**
  * @author Evgeniy Muravitskiy
  */
@@ -75,8 +56,6 @@ abstract class MetadataFixerImpl implements MetadataFixer {
 	 *
 	 * @param output
 	 *            stream to result file
-	 * @param config
-	 *            configuration for metadata fixer
 	 * @return report of made corrections
 	 */
 	public static MetadataFixerResult fixMetadata(OutputStream output, PDFDocument document, ValidationResult result,
@@ -126,7 +105,7 @@ abstract class MetadataFixerImpl implements MetadataFixer {
 			}
 
 			return getErrorResult("Problems with metadata obtain. No possibility to fix metadata.");
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			LOGGER.debug(e);
 			return getErrorResult("Error while fixing metadata: " + e.getMessage());
 		}
@@ -144,8 +123,7 @@ abstract class MetadataFixerImpl implements MetadataFixer {
 			try {
 				return ProcessedObjectsInspector.validationStatus(result.getTestAssertions(), profile, parser);
 			} catch (IOException | URISyntaxException | ParserConfigurationException | SAXException e) {
-				LOGGER.debug("Problem with validation status obtain. Validation status set as Invalid Document.");
-				LOGGER.debug(e);
+				LOGGER.debug("Problem with validation status obtain. Validation status set as Invalid Document.", e);
 				return ValidationStatus.INVALID_DOCUMENT;
 			}
 		}
@@ -159,6 +137,8 @@ abstract class MetadataFixerImpl implements MetadataFixer {
 			int removedFilters = document.removeFiltersForAllMetadataObjects();
 			if (removedFilters > 0) {
 				resultBuilder.addFix("Metadata streams unfiltered");
+			} else if (removedFilters < 0) {
+				throw new IllegalStateException("Problem while removing filters from metadata streams");
 			}
 		}
 		fixMetadata(resultBuilder, document, flavour);
