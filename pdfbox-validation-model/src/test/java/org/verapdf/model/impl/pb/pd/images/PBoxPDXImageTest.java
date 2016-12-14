@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.pdlayer.PDColorSpace;
 import org.verapdf.model.pdlayer.PDXImage;
+import org.verapdf.model.tools.resources.PDInheritableResources;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -29,7 +30,9 @@ public class PBoxPDXImageTest extends PBoxPDAbstractXObjectTest {
 
 		setUp(FILE_RELATIVE_PATH);
 		PDXObject xObject = document.getPage(0).getResources().getXObject(COSName.getPDFName(IMAGE_NAME));
-		actual = new PBoxPDXImage((PDImageXObjectProxy) xObject, document, null);
+		PDInheritableResources inheritableResources =
+				PDInheritableResources.getInstance(document.getPage(0).getResources());
+		actual = new PBoxPDXImage((PDImageXObjectProxy) xObject, inheritableResources, document, null);
 	}
 
 	@Override

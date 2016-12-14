@@ -4,6 +4,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObjectProxy;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.pdlayer.PDSMaskImage;
+import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.util.Collections;
@@ -16,8 +17,9 @@ public class PBoxPDSMaskImage extends PBoxPDXImage implements PDSMaskImage {
 
 	public static final String SMASK_IMAGE_TYPE = "PDSMaskImage";
 
-	public PBoxPDSMaskImage(PDImageXObjectProxy simplePDObject, PDDocument document, PDFAFlavour flavour) {
-		super(simplePDObject, SMASK_IMAGE_TYPE, document, flavour);
+	public PBoxPDSMaskImage(PDImageXObjectProxy simplePDObject, PDInheritableResources resources,
+							PDDocument document, PDFAFlavour flavour) {
+		super(simplePDObject, resources, SMASK_IMAGE_TYPE, document, flavour);
 	}
 
 	@Override
