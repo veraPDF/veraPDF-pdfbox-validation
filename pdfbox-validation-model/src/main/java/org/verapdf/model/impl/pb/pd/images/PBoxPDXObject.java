@@ -107,7 +107,7 @@ public class PBoxPDXObject extends PBoxPDResources implements PDXObject {
 		org.apache.pdfbox.pdmodel.graphics.PDXObject pbObject = org.apache.pdfbox.pdmodel.graphics.PDXObject
 				.createXObject(smaskDictionary, nameAsString, resourcesLocal);
 		if (pbObject instanceof PDImageXObjectProxy) {
-			return new PBoxPDSMaskImage((PDImageXObjectProxy) pbObject, document, flavour);
+			return new PBoxPDSMaskImage((PDImageXObjectProxy) pbObject, resources, document, flavour);
 		}
 		LOGGER.debug("SMask object is not an Image XObject");
 		return null;
@@ -120,7 +120,8 @@ public class PBoxPDXObject extends PBoxPDResources implements PDXObject {
 			PDInheritableResources resources = extendedResources.getExtendedResources(object.getResources());
 			return new PBoxPDXForm(object, resources, document, flavour);
 		} else if (pbObject instanceof PDImageXObjectProxy) {
-			return new PBoxPDXImage((PDImageXObjectProxy) pbObject, document, flavour);
+			return new PBoxPDXImage((PDImageXObjectProxy) pbObject, extendedResources,
+					document, flavour);
 		} else if (pbObject instanceof PDPostScriptXObject) {
 			return new PBoxPDXObject(pbObject, document, flavour);
 		} else {

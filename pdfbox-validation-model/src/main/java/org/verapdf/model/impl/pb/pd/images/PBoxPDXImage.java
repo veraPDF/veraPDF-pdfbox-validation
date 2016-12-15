@@ -41,12 +41,14 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 	private List<JPEG2000> jpeg2000List = null;
 	private PDColorSpace colorSpaceFromImage = null;
 
-	public PBoxPDXImage(PDImageXObjectProxy simplePDObject, PDDocument document, PDFAFlavour flavour) {
-		this(simplePDObject, X_IMAGE_TYPE, document, flavour);
+	public PBoxPDXImage(PDImageXObjectProxy simplePDObject, PDInheritableResources resources,
+						PDDocument document, PDFAFlavour flavour) {
+		this(simplePDObject, resources, X_IMAGE_TYPE, document, flavour);
 	}
 
-	protected PBoxPDXImage(PDImageXObjectProxy simplePDObject, String type, PDDocument document, PDFAFlavour flavour) {
-		super(simplePDObject, PDInheritableResources.EMPTY_EXTENDED_RESOURCES, type, document, flavour);
+	protected PBoxPDXImage(PDImageXObjectProxy simplePDObject, PDInheritableResources resources,
+						   String type, PDDocument document, PDFAFlavour flavour) {
+		super(simplePDObject, resources, type, document, flavour);
 		this.interpolate = simplePDObject.getInterpolate();
 	}
 
@@ -89,8 +91,8 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 		PDImageXObjectProxy image = (PDImageXObjectProxy) this.simplePDObject;
 		if (!image.isStencil()) {
 			try {
-				PDColorSpace buffer = ColorSpaceFactory.getColorSpace(image.getColorSpace(), this.document,
-						this.flavour);
+				PDColorSpace buffer = ColorSpaceFactory.getColorSpace(image.getColorSpace(),
+						null, resources, 0, false, this.document, this.flavour);
 				if (buffer == null) {
 					buffer = this.colorSpaceFromImage;
 				}
@@ -137,7 +139,7 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 
 			final PDStream stream = new PDStream((COSStream) alternatesImages);
 			PDImageXObjectProxy imageXObject = new PDImageXObjectProxy(stream, resourcesToAdd);
-			alternates.add(new PBoxPDXImage(imageXObject, this.document, this.flavour));
+			alternates.add(new PBoxPDXImage(imageXObject, resources, this.document, this.flavour));
 		}
 	}
 

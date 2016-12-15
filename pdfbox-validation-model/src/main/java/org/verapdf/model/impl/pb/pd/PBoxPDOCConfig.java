@@ -42,7 +42,7 @@ public class PBoxPDOCConfig extends PBoxPDObject implements PDOCConfig {
 				for (int i = 0; i < ((COSArray) order).size(); i++) {
 					COSBase element = ((COSArray) order).getObject(i);
 					if (element instanceof COSArray) {
-						groupsInOrder += ((COSArray) element).size();
+						groupsInOrder += getLenghtOfFlattenArray((COSArray) element);
 						if (!checkCOSArrayInOrder((COSArray) element).booleanValue()) {
 							return Boolean.FALSE;
 						}
@@ -108,7 +108,11 @@ public class PBoxPDOCConfig extends PBoxPDObject implements PDOCConfig {
 	private Boolean checkCOSArrayInOrder(COSArray array) {
 		for (int i = 0; i < array.size(); i++) {
 			COSBase element = array.getObject(i);
-			if (element instanceof COSString) {
+			if (element instanceof COSArray) {
+				if (!checkCOSArrayInOrder((COSArray) element).booleanValue()) {
+					return Boolean.FALSE;
+				}
+			} else if (element instanceof COSString) {
 				if (!checkCOSStringInOrder((COSString) element).booleanValue()) {
 					return Boolean.FALSE;
 				}
@@ -127,5 +131,18 @@ public class PBoxPDOCConfig extends PBoxPDObject implements PDOCConfig {
 
 	private Boolean checkCOSDictionaryInOrder(COSDictionary element) {
 		return (!groupNames.contains(element.getString(COSName.NAME))) ? Boolean.FALSE : Boolean.TRUE;
+	}
+
+	private static int getLenghtOfFlattenArray(COSArray array) {
+		int res = 0;
+		for (int i = 0; i < array.size(); i++) {
+			COSBase element = array.getObject(i);
+			if (element instanceof COSArray) {
+				res += getLenghtOfFlattenArray((COSArray) element);
+			} else {
+				res++;
+			}
+		}
+		return res;
 	}
 }
