@@ -1,7 +1,11 @@
 package org.verapdf.features;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.verapdf.core.FeatureParsingException;
+import org.verapdf.features.pb.PBFeatureParser;
+import org.verapdf.features.tools.FeatureTreeNode;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,12 +16,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.verapdf.core.FeatureParsingException;
-import org.verapdf.features.pb.PBFeatureParser;
-import org.verapdf.features.tools.FeatureTreeNode;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Maksim Bezrukov
@@ -49,7 +49,6 @@ public class PBFeatureParserTest {
 		assertEquals(4, collection.getFeatureTreesForType(FeatureObjectType.EXT_G_STATE).size());
 		assertEquals(1, collection.getFeatureTreesForType(FeatureObjectType.PROPERTIES).size());
 		assertEquals(2, collection.getFeatureTreesForType(FeatureObjectType.ERROR).size());
-		assertEquals(2, collection.getFeatureTreesForType(FeatureObjectType.FAILED_XOBJECT).size());
 		assertEquals(1, collection.getFeatureTreesForType(FeatureObjectType.SHADING).size());
 		assertEquals(2, collection.getFeatureTreesForType(FeatureObjectType.PATTERN).size());
 		// TODO: return this when image colorspace obtaining will be fixed
@@ -57,7 +56,7 @@ public class PBFeatureParserTest {
 		// collection.getFeatureTreesForType(FeatureObjectType.COLORSPACE).size());
 		// assertEquals(10,
 		// collection.getFeatureTreesForType(FeatureObjectType.IMAGE_XOBJECT).size());
-		assertEquals(12, collection.getFeatureTreesForType(FeatureObjectType.FORM_XOBJECT).size());
+		assertEquals(14, collection.getFeatureTreesForType(FeatureObjectType.FORM_XOBJECT).size());
 		assertEquals(0, collection.getFeatureTreesForType(FeatureObjectType.POSTSCRIPT_XOBJECT).size());
 		assertEquals(7, collection.getFeatureTreesForType(FeatureObjectType.FONT).size());
 
@@ -207,7 +206,7 @@ public class PBFeatureParserTest {
 
 	@Test
 	public void testFailedXObjects() throws FeatureParsingException {
-		List<FeatureTreeNode> treeNodes = collection.getFeatureTreesForType(FeatureObjectType.FAILED_XOBJECT);
+		List<FeatureTreeNode> treeNodes = collection.getFeatureTreesForType(FeatureObjectType.FORM_XOBJECT);
 		assertTrue(treeNodes.contains(TestNodeGenerator.getFailedXObject("xobjIndir53", "error0")));
 		assertTrue(treeNodes.contains(TestNodeGenerator.getFailedXObject("xobjIndir54", "error1")));
 	}

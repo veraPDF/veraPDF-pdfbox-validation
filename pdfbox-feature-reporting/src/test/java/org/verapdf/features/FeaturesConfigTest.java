@@ -1,7 +1,10 @@
 package org.verapdf.features;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.verapdf.features.pb.PBFeatureParser;
+import org.verapdf.features.tools.FeatureTreeNode;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,14 +12,8 @@ import java.net.URISyntaxException;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.verapdf.features.FeatureExtractorConfig;
-import org.verapdf.features.FeatureObjectType;
-import org.verapdf.features.TestNodeGenerator;
-import org.verapdf.features.pb.PBFeatureParser;
-import org.verapdf.features.tools.FeatureTreeNode;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Maksim Bezrukov
@@ -118,8 +115,6 @@ public class FeaturesConfigTest {
 				"parents", "page"));
 		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.POSTSCRIPT_XOBJECT),
 				"parents", "page"));
-		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FAILED_XOBJECT),
-				"parents", "page"));
 		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FONT), "parents",
 				"page"));
 		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PROPERTIES),
@@ -185,8 +180,6 @@ public class FeaturesConfigTest {
 				"parents", "pattern"));
 		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.POSTSCRIPT_XOBJECT),
 				"parents", "pattern"));
-		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FAILED_XOBJECT),
-				"parents", "pattern"));
 		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FONT), "parents",
 				"pattern"));
 		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PROPERTIES),
@@ -220,14 +213,13 @@ public class FeaturesConfigTest {
 
 	@Test
 	public void xobjectsTest() {
-		EnumSet<FeatureObjectType> xobjs = EnumSet.of(FeatureObjectType.FAILED_XOBJECT, FeatureObjectType.FORM_XOBJECT,
+		EnumSet<FeatureObjectType> xobjs = EnumSet.of(FeatureObjectType.FORM_XOBJECT,
 				FeatureObjectType.IMAGE_XOBJECT, FeatureObjectType.POSTSCRIPT_XOBJECT);
 		FeatureExtractorConfig config = configMissingFeatures(xobjs);
 		FeatureExtractionResult collection = PBFeatureParser.getFeaturesCollection(document, config);
 		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.FORM_XOBJECT).isEmpty());
 		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.IMAGE_XOBJECT).isEmpty());
 		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.POSTSCRIPT_XOBJECT).isEmpty());
-		assertTrue(collection.getFeatureTreesForType(FeatureObjectType.FAILED_XOBJECT).isEmpty());
 		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.EXT_G_STATE),
 				"parents", "xobject"));
 		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.COLORSPACE),
@@ -268,8 +260,6 @@ public class FeaturesConfigTest {
 		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.IMAGE_XOBJECT),
 				"parents", "font"));
 		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.POSTSCRIPT_XOBJECT),
-				"parents", "font"));
-		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.FAILED_XOBJECT),
 				"parents", "font"));
 		assertNull(getFirstNodeFromListWithPath(collection.getFeatureTreesForType(FeatureObjectType.PROPERTIES),
 				"parents", "font"));
