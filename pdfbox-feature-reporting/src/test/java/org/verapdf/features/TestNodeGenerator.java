@@ -350,6 +350,7 @@ public final class TestNodeGenerator {
 		FeatureTreeNode root = FeatureTreeNode.createRootNode("xobject");
 		root.setAttribute(ID, id);
 		root.setAttribute("errorId", errorid);
+		root.setAttribute("type", "form");
 		return root;
 	}
 

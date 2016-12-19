@@ -1,26 +1,8 @@
 package org.verapdf.features.pb;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.log4j.Logger;
-import org.apache.pdfbox.cos.COSArray;
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSObject;
-import org.apache.pdfbox.cos.COSStream;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
-import org.apache.pdfbox.pdmodel.PDEmbeddedFilesNameTreeNode;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageTree;
-import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.cos.*;
+import org.apache.pdfbox.pdmodel.*;
 import org.apache.pdfbox.pdmodel.common.PDNameTreeNode;
 import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.common.filespecification.PDComplexFileSpecification;
@@ -31,15 +13,7 @@ import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.font.PDType3Font;
 import org.apache.pdfbox.pdmodel.graphics.PDPostScriptXObject;
 import org.apache.pdfbox.pdmodel.graphics.PDXObject;
-import org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace;
-import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceCMYK;
-import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceGray;
-import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceN;
-import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
-import org.apache.pdfbox.pdmodel.graphics.color.PDICCBased;
-import org.apache.pdfbox.pdmodel.graphics.color.PDIndexed;
-import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent;
-import org.apache.pdfbox.pdmodel.graphics.color.PDSeparation;
+import org.apache.pdfbox.pdmodel.graphics.color.*;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.graphics.form.PDGroup;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObjectProxy;
@@ -56,13 +30,12 @@ import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
-import org.verapdf.features.FeatureExtractorConfig;
-import org.verapdf.features.FeatureObjectType;
-import org.verapdf.features.AbstractFeaturesExtractor;
-import org.verapdf.features.FeatureExtractionResult;
-import org.verapdf.features.FeaturesReporter;
+import org.verapdf.features.*;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Parses PDFBox PDDocument to generate features collection
@@ -71,7 +44,7 @@ import org.verapdf.features.tools.FeatureTreeNode;
  */
 public final class PBFeatureParser {
 	private static final EnumSet<FeatureObjectType> XOBJECTS = EnumSet.of(FeatureObjectType.FORM_XOBJECT,
-			FeatureObjectType.IMAGE_XOBJECT, FeatureObjectType.POSTSCRIPT_XOBJECT, FeatureObjectType.FAILED_XOBJECT);
+			FeatureObjectType.IMAGE_XOBJECT, FeatureObjectType.POSTSCRIPT_XOBJECT);
 	private static final Logger LOGGER = Logger.getLogger(PBFeatureParser.class);
 	private static final String ID = "id";
 	private static final String DEVICEGRAY_ID = "devgray";
@@ -428,13 +401,13 @@ public final class PBFeatureParser {
 	}
 
 	private void xobjectCreationProblem(final String nodeID, String errorMessage) {
-		creationProblem(nodeID, errorMessage, FeatureObjectType.FAILED_XOBJECT, false);
+		creationProblem(nodeID, errorMessage, FeatureObjectType.FORM_XOBJECT, false);
 	}
 
 	private void creationProblem(final String nodeID, final String errorMessage, final FeatureObjectType type, final boolean isTypeError) {
 		if (config.isFeatureEnabled(type)) {
 			if (!isTypeError) {
-				FeatureTreeNode node = FeatureTreeNode.createRootNode(type.getNodeName());
+				FeatureTreeNode node = createNodeWithType(type);
 				if (nodeID != null) {
 					node.setAttribute(ID, nodeID);
 				}
@@ -446,6 +419,16 @@ public final class PBFeatureParser {
 
 			}
 		}
+	}
+
+	private FeatureTreeNode createNodeWithType(FeatureObjectType type) {
+		if (type == FeatureObjectType.FORM_XOBJECT) {
+			FeatureTreeNode res = FeatureTreeNode.createRootNode("xobject");
+			res.setAttribute("type", "form");
+			return res;
+		}
+
+		return FeatureTreeNode.createRootNode(type.getNodeName());
 	}
 
 	private Set<String> parseColorSpaceFromResources(PDResources resources) {
