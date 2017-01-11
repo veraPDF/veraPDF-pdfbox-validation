@@ -3,6 +3,7 @@
  */
 package org.verapdf.pdfa;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 
@@ -55,6 +56,21 @@ class PdfBoxFoundry extends AbstractFoundry {
 	public PDFAParser createParser(InputStream pdfStream, PDFAFlavour flavour)
 			throws ModelParsingException, EncryptedPdfException {
 		return ModelParser.createModelWithFlavour(pdfStream, flavour);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PDFAParser createParser(File file, PDFAFlavour pdfaFlavour)
+			throws ModelParsingException, EncryptedPdfException {
+		return ModelParser.createModelWithFlavour(file, pdfaFlavour);
+	}
+
+	@Override
+	public PDFAParser createParser(File file)
+			throws ModelParsingException, EncryptedPdfException {
+		return createParser(file, PDFAFlavour.NO_FLAVOUR);
 	}
 
 	/**

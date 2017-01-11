@@ -1,5 +1,6 @@
 package org.verapdf.model;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -52,11 +53,28 @@ public final class ModelParser implements PDFAParser {
 		this.flavour = (flavour == PDFAFlavour.NO_FLAVOUR) ? obtainFlavour(this.document) : flavour;
 	}
 
+	private ModelParser(final File pdfFile, PDFAFlavour flavour) throws IOException {
+		this.document = PDDocument.load(pdfFile);
+		this.flavour = (flavour == PDFAFlavour.NO_FLAVOUR) ? obtainFlavour(this.document) : flavour;
+	}
+
 	public static ModelParser createModelWithFlavour(InputStream toLoad, PDFAFlavour flavour)
 			throws ModelParsingException, EncryptedPdfException {
 		try {
 			cleanUp();
 			return new ModelParser(toLoad, flavour);
+		} catch (InvalidPasswordException excep) {
+			throw new EncryptedPdfException("The PDF stream appears to be encrypted.", excep);
+		} catch (IOException excep) {
+			throw new ModelParsingException("Couldn't parse stream", excep);
+		}
+	}
+
+	public static ModelParser createModelWithFlavour(File pdfFile, PDFAFlavour flavour)
+			throws ModelParsingException, EncryptedPdfException {
+		try {
+			cleanUp();
+			return new ModelParser(pdfFile, flavour);
 		} catch (InvalidPasswordException excep) {
 			throw new EncryptedPdfException("The PDF stream appears to be encrypted.", excep);
 		} catch (IOException excep) {
