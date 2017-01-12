@@ -96,8 +96,18 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 		this.headerCommentByte4 = cosDocument.getHeaderCommentByte4();
 		this.isOptionalContentPresent = parseOptionalContentPresent();
 		this.postEOFDataSize = cosDocument.getPostEOFDataSize();
-		this.lastID = getTrailerID((COSArray) cosDocument.getLastTrailer().getDictionaryObject(ID));
-		this.firstPageID = getTrailerID((COSArray) cosDocument.getFirstPageTrailer().getDictionaryObject(ID));
+		if (cosDocument.getLastTrailer() != null) {
+			this.lastID = getTrailerID((COSArray)
+					cosDocument.getLastTrailer().getDictionaryObject(ID));
+		} else {
+			this.lastID = null;
+		}
+		if (cosDocument.getFirstPageTrailer() != null) {
+			this.firstPageID = getTrailerID((COSArray)
+					cosDocument.getFirstPageTrailer().getDictionaryObject(ID));
+		} else {
+			this.firstPageID = null;
+		}
 		this.isLinearised = cosDocument.getTrailer() != cosDocument.getLastTrailer() && cosDocument.isLinearized();
 		this.doesInfoMatchXMP = XMPChecker.doesInfoMatchXMP(cosDocument);
 		this.needsRendering = this.getNeedsRenderingValue();
