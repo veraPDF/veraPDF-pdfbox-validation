@@ -95,7 +95,8 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 		for (int i = 0; i < ((COSArray) colorantsArray).size(); i++) {
 			COSBase object = ((COSArray) colorantsArray).getObject(i);
 			if (object instanceof COSName &&
-					!colorantDictionaryEntries.contains(object)) {
+					!colorantDictionaryEntries.contains(object) &&
+					object != COSName.NONE) {
 				return false;
 			}
 		}
