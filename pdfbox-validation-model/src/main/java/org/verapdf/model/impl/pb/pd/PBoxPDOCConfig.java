@@ -25,7 +25,7 @@ import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.common.COSObjectable;
 import org.verapdf.model.pdlayer.PDOCConfig;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Timur Kamalov
@@ -43,44 +43,33 @@ public class PBoxPDOCConfig extends PBoxPDObject implements PDOCConfig {
 
 	public PBoxPDOCConfig(COSObjectable simplePDObject) {
 		super(simplePDObject, OC_CONFIG_TYPE);
-		this.groupNames = null;
+		this.groupNames = Collections.emptyList();
 		this.duplicateName = false;
 	}
 
 	public PBoxPDOCConfig(COSObjectable simplePDObject, List<String> groupNames, boolean duplicateName) {
 		super(simplePDObject, OC_CONFIG_TYPE);
-		this.groupNames = groupNames;
+		this.groupNames = groupNames == null ? Collections.<String>emptyList() : groupNames;
 		this.duplicateName = duplicateName;
 	}
 
 	@Override
 	public Boolean getdoesOrderContainAllOCGs() {
+		Set<String> groupNamesSet = new TreeSet<>(groupNames);
 		COSBase order = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.ORDER);
 		if (order != null) {
 			if (order instanceof COSArray) {
-				int groupsInOrder = 0;
 				for (int i = 0; i < ((COSArray) order).size(); i++) {
 					COSBase element = ((COSArray) order).getObject(i);
 					if (element instanceof COSArray) {
-						groupsInOrder += getLenghtOfFlattenArray((COSArray) element);
-						if (!checkCOSArrayInOrder((COSArray) element).booleanValue()) {
-							return Boolean.FALSE;
-						}
-					} else if (element instanceof COSString) {
-						groupsInOrder++;
-						if (!checkCOSStringInOrder((COSString) element).booleanValue()) {
-							return Boolean.FALSE;
-						}
+						processCOSArrayInOrder((COSArray) element, groupNamesSet);
 					} else if (element instanceof COSDictionary) {
-						groupsInOrder++;
-						if (!checkCOSDictionaryInOrder((COSDictionary) element).booleanValue()) {
-							return Boolean.FALSE;
-						}
+						processCOSDictionaryInOrder((COSDictionary) element, groupNamesSet);
 					} else {
 						LOGGER.debug("Invalid object type in order array. Ignoring the object.");
 					}
 				}
-				if (groupsInOrder < groupNames.size()) {
+				if (!groupNamesSet.isEmpty()) {
 					return Boolean.FALSE;
 				}
 			} else {
@@ -125,32 +114,19 @@ public class PBoxPDOCConfig extends PBoxPDObject implements PDOCConfig {
 		return ((COSDictionary) this.simplePDObject).getString(COSName.NAME);
 	}
 
-	private Boolean checkCOSArrayInOrder(COSArray array) {
+	private void processCOSArrayInOrder(COSArray array, Set<String> groupNames) {
 		for (int i = 0; i < array.size(); i++) {
 			COSBase element = array.getObject(i);
 			if (element instanceof COSArray) {
-				if (!checkCOSArrayInOrder((COSArray) element).booleanValue()) {
-					return Boolean.FALSE;
-				}
-			} else if (element instanceof COSString) {
-				if (!checkCOSStringInOrder((COSString) element).booleanValue()) {
-					return Boolean.FALSE;
-				}
+				processCOSArrayInOrder((COSArray) element, groupNames);
 			} else if (element instanceof COSDictionary) {
-				if (!checkCOSDictionaryInOrder((COSDictionary) element).booleanValue()) {
-					return Boolean.FALSE;
-				}
+				processCOSDictionaryInOrder((COSDictionary) element, groupNames);
 			}
 		}
-		return Boolean.TRUE;
 	}
 
-	private Boolean checkCOSStringInOrder(COSString element) {
-		return (!groupNames.contains((element).getString())) ? Boolean.FALSE : Boolean.TRUE;
-	}
-
-	private Boolean checkCOSDictionaryInOrder(COSDictionary element) {
-		return (!groupNames.contains(element.getString(COSName.NAME))) ? Boolean.FALSE : Boolean.TRUE;
+	private void processCOSDictionaryInOrder(COSDictionary element, Set<String> groupNames) {
+		groupNames.remove(element.getString(COSName.NAME));
 	}
 
 	private static int getLenghtOfFlattenArray(COSArray array) {
