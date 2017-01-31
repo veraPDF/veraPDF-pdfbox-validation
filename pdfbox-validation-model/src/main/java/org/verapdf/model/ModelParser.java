@@ -74,7 +74,7 @@ public final class ModelParser implements PDFAParser {
 	}
 
 	private ModelParser(final File pdfFile, PDFAFlavour flavour) throws IOException {
-		this.document = PDDocument.load(pdfFile);
+		this.document = PDDocument.load(pdfFile, false, true);
 		this.flavour = (flavour == PDFAFlavour.NO_FLAVOUR) ? obtainFlavour(this.document) : flavour;
 	}
 
