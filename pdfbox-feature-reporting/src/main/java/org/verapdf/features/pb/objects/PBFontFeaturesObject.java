@@ -262,7 +262,9 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 			PBCreateNodeHelper.addNotEmptyNode("fontName", descriptor.getFontName(), descriptorNode);
 			PBCreateNodeHelper.addNotEmptyNode("fontFamily", descriptor.getFontFamily(), descriptorNode);
 			PBCreateNodeHelper.addNotEmptyNode("fontStretch", descriptor.getFontStretch(), descriptorNode);
-			descriptorNode.addChild("fontWeight").setValue(String.valueOf(descriptor.getFontWeight()));
+			if (descriptor.getCOSObject().containsKey(COSName.FONT_WEIGHT)) {
+				descriptorNode.addChild("fontWeight").setValue(String.valueOf(descriptor.getFontWeight()));
+			}
 			descriptorNode.addChild("fixedPitch").setValue(String.valueOf(descriptor.isFixedPitch()));
 			descriptorNode.addChild("serif").setValue(String.valueOf(descriptor.isSerif()));
 			descriptorNode.addChild("symbolic").setValue(String.valueOf(descriptor.isSymbolic()));
@@ -280,7 +282,9 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 			descriptorNode.addChild("leading").setValue(String.valueOf(descriptor.getLeading()));
 			descriptorNode.addChild("capHeight").setValue(String.valueOf(descriptor.getCapHeight()));
 			descriptorNode.addChild("xHeight").setValue(String.valueOf(descriptor.getXHeight()));
-			descriptorNode.addChild("stemV").setValue(String.valueOf(descriptor.getStemV()));
+			if (descriptor.getCOSObject().containsKey(COSName.STEM_V)) {
+				descriptorNode.addChild("stemV").setValue(String.valueOf(descriptor.getStemV()));
+			}
 			descriptorNode.addChild("stemH").setValue(String.valueOf(descriptor.getStemH()));
 			descriptorNode.addChild("averageWidth").setValue(String.valueOf(descriptor.getAverageWidth()));
 			descriptorNode.addChild("maxWidth").setValue(String.valueOf(descriptor.getMaxWidth()));
