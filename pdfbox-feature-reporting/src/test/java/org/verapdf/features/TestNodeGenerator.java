@@ -159,8 +159,6 @@ public final class TestNodeGenerator {
 		FeatureTreeNode fontDescriptor = font.addChild("fontDescriptor");
 		FeatureTreeNode fontName = fontDescriptor.addChild("fontName");
 		fontName.setValue("Arial");
-		FeatureTreeNode fontWeight = fontDescriptor.addChild("fontWeight");
-		fontWeight.setValue("0.0");
 		FeatureTreeNode fixedPitch = fontDescriptor.addChild("fixedPitch");
 		fixedPitch.setValue("false");
 		FeatureTreeNode serif = fontDescriptor.addChild("serif");
@@ -568,25 +566,25 @@ public final class TestNodeGenerator {
 	public static FeatureTreeNode getOutlines() throws FeatureParsingException {
 		FeatureTreeNode root = FeatureTreeNode.createRootNode("outlines");
 		FeatureTreeNode out1 = root.addChild("outline");
-		makeOutline("1 - COLOR", "1.0", "0.0", "0.0", "false", "false", out1);
+		makeOutline("1 - COLOR", "1.000000", "0.000000", "0.000000", "false", "false", out1);
 		FeatureTreeNode out1_1 = out1.addChild("outline");
-		makeOutline("1.1", "0.0", "0.0", "1.0", "false", "false", out1_1);
+		makeOutline("1.1", "0.000000", "0.000000", "1.000000", "false", "false", out1_1);
 		FeatureTreeNode out2 = root.addChild("outline");
-		makeOutline("2 - ITALIC", "0.0", "0.0", "0.0", "true", "false", out2);
+		makeOutline("2 - ITALIC", "0.000000", "0.000000", "0.000000", "true", "false", out2);
 		FeatureTreeNode out2_2 = out2.addChild("outline");
-		makeOutline("2.2", "0.0", "0.0", "0.0", "true", "false", out2_2);
+		makeOutline("2.2", "0.000000", "0.000000", "0.000000", "true", "false", out2_2);
 		FeatureTreeNode out2_2_1 = out2_2.addChild("outline");
-		makeOutline("2.2.1", "0.0", "0.0", "0.0", "true", "false", out2_2_1);
+		makeOutline("2.2.1", "0.000000", "0.000000", "0.000000", "true", "false", out2_2_1);
 		FeatureTreeNode out2_2_2 = out2_2.addChild("outline");
-		makeOutline("2.2.2", "0.0", "0.0", "0.0", "true", "false", out2_2_2);
+		makeOutline("2.2.2", "0.000000", "0.000000", "0.000000", "true", "false", out2_2_2);
 		FeatureTreeNode out2_2_2_1 = out2_2_2.addChild("outline");
-		makeOutline("2.2.2.1", "0.0", "0.0", "0.0", "true", "false", out2_2_2_1);
+		makeOutline("2.2.2.1", "0.000000", "0.000000", "0.000000", "true", "false", out2_2_2_1);
 		FeatureTreeNode out2_1 = out2.addChild("outline");
-		makeOutline("2.1", "0.0", "0.0", "0.0", "true", "false", out2_1);
+		makeOutline("2.1", "0.000000", "0.000000", "0.000000", "true", "false", out2_1);
 		FeatureTreeNode out3 = root.addChild("outline");
-		makeOutline("3 - BOLD", "0.0", "0.0", "0.0", "false", "true", out3);
+		makeOutline("3 - BOLD", "0.000000", "0.000000", "0.000000", "false", "true", out3);
 		FeatureTreeNode out4 = root.addChild("outline");
-		makeOutline("4", "0.0", "0.0", "0.0", "false", "false", out4);
+		makeOutline("4", "0.000000", "0.000000", "0.000000", "false", "false", out4);
 		return root;
 	}
 
