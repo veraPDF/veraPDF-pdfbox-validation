@@ -166,7 +166,7 @@ public class PBFeatureParserTest {
 		List<FeatureTreeNode> treeNodes = collection.getFeatureTreesForType(FeatureObjectType.ANNOTATION);
 		assertTrue(treeNodes.contains(TestNodeGenerator.getAnnotation("annotIndir37", "Text", "368.092", "423.522",
 				"386.092", "441.522", "Annotation with pop-up window", "d48d8e43-b22c-41ce-8cfa-28c1ca955d97",
-				"D:20150822140440+03'00'", xobj37, "annotIndir38", "1.0", "1.0", "0.0", null, "false", "false", "true",
+				"D:20150822140440+03'00'", xobj37, "annotIndir38", "1.000000", "1.000000", "0.000000", null, "false", "false", "true",
 				"true", "true", "false", "false", "false", "false", "false")));
 		assertTrue(treeNodes.contains(TestNodeGenerator.getAnnotation("annotIndir38", "Popup", "370.08", "265.547",
 				"550.081", "385.984", null, null, null, null, null, null, null, null, null, "false", "false", "true",
@@ -188,13 +188,13 @@ public class PBFeatureParserTest {
 		xobj41.add("xobjIndir27");
 		assertTrue(treeNodes.contains(TestNodeGenerator.getAnnotation("annotIndir41", "Text", "338.339", "452.004",
 				"356.339", "470.004", "annotation with CMYK colorspace\r", "a21bf4d8-e9fe-4e29-89a0-26e416fc8ca7",
-				"D:20150831140530+03'00'", xobj41, "annotIndir42", "1.0", "0.0", "0.0", "0.0", "false", "false", "true",
+				"D:20150831140530+03'00'", xobj41, "annotIndir42", "1.000000", "0.000000", "0.000000", "0.000000", "false", "false", "true",
 				"true", "true", "false", "false", "false", "false", "false")));
 		Set<String> xobj39 = new HashSet<>();
 		xobj39.add("xobjIndir27");
 		assertTrue(treeNodes.contains(TestNodeGenerator.getAnnotation("annotIndir39", "Text", "307.974", "424.78",
 				"325.974", "442.78", "annotation with gray colorspace\r", "85f36ad6-ae92-479e-9b24-ba07c8702837",
-				"D:20150831140515+03'00'", xobj39, "annotIndir40", "1.0", null, null, null, "false", "false", "true",
+				"D:20150831140515+03'00'", xobj39, "annotIndir40", "1.000000", null, null, null, "false", "false", "true",
 				"true", "true", "false", "false", "false", "false", "false")));
 	}
 

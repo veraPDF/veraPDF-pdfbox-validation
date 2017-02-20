@@ -124,7 +124,9 @@ public class PBPageFeaturesObject implements IFeaturesObject {
 			PBCreateNodeHelper.addBoxFeature("bleedBox", page.getBleedBox(), root);
 			PBCreateNodeHelper.addBoxFeature("artBox", page.getArtBox(), root);
 
-			root.addChild("rotation").setValue(String.valueOf(page.getRotation()));
+			if (page.hasRotation()) {
+				root.addChild("rotation").setValue(String.valueOf(page.getRotation()));
+			}
 
 			COSBase base = page.getCOSObject().getDictionaryObject(COSName.getPDFName("PZ"));
 			if (base != null) {

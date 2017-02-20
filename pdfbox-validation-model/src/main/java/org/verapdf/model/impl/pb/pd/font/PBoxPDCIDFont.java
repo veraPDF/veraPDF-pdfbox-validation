@@ -106,19 +106,9 @@ public class PBoxPDCIDFont extends PBoxPDFont implements PDCIDFont {
 					// on this levels we need to ensure that all glyphs
 					// present
 					// in font program are described in cid set
-					if (cidFont instanceof PDCIDFontType0) {
-						CFFFont cffFont = ((PDCIDFontType0) cidFont).getCFFFont();
-						if (cffFont == null) {
+					for (int i = 1; i < bitSet.size(); ++i) {
+						if (!bitSet.get(i) && cidFont.hasGlyph(i)) {
 							return Boolean.FALSE;
-						}
-						if (bitSet.cardinality() < cffFont.getNumCharStrings()) {
-							return Boolean.FALSE;
-						}
-					} else if (cidFont instanceof PDCIDFontType2) {
-						try (TrueTypeFont trueTypeFont = ((PDCIDFontType2) cidFont).getTrueTypeFont()) {
-							if (bitSet.cardinality() < trueTypeFont.getNumberOfGlyphs()) {
-								return Boolean.FALSE;
-							}
 						}
 					}
 				}
