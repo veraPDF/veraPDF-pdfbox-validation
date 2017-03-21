@@ -94,7 +94,7 @@ public class PBoxPDSignature extends PBoxPDObject implements PDSignature {
                     parser.getByteRangeBySignatureOffset(signatureOffset);
             int[] byteRange = ((org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature)
                     this.simplePDObject).getByteRange();
-            for (int i = 0; i < 3; ++i) {
+            for (int i = 0; i < 4; ++i) {
                 if (byteRange[i] != actualByteRange[i]) {
                     return Boolean.FALSE;
                 }
