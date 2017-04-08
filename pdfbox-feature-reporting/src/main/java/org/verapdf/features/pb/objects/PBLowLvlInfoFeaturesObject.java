@@ -20,27 +20,18 @@
  */
 package org.verapdf.features.pb.objects;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.pdfbox.cos.COSArray;
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSDocument;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSObject;
-import org.apache.pdfbox.cos.COSStream;
+import org.apache.pdfbox.cos.*;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.FeaturesData;
 import org.verapdf.features.IFeaturesObject;
-import org.verapdf.features.pb.tools.PBCreateNodeHelper;
+import org.verapdf.features.pb.tools.PBAdapterHelper;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Feature object for low level info part of the features report
@@ -163,8 +154,8 @@ public class PBLowLvlInfoFeaturesObject implements IFeaturesObject {
 	private void addDocumentId(FeatureTreeNode root, FeatureExtractionResult collection) throws FeatureParsingException {
 		COSArray ids = document.getDocumentID();
 		if (ids != null) {
-			String creationId = PBCreateNodeHelper.getStringFromBase(ids.get(0));
-			String modificationId = PBCreateNodeHelper.getStringFromBase(ids.get(1));
+			String creationId = PBAdapterHelper.getStringFromBase(ids.get(0));
+			String modificationId = PBAdapterHelper.getStringFromBase(ids.get(1));
 
 			FeatureTreeNode documentId = root.addChild("documentId");
 

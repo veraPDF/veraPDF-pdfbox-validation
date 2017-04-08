@@ -24,6 +24,7 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.verapdf.features.objects.AnnotationFeaturesObjectAdapter;
+import org.verapdf.features.pb.tools.PBAdapterHelper;
 
 import java.util.Collections;
 import java.util.List;
@@ -129,14 +130,7 @@ public class PBAnnotationFeaturesObjectAdapter implements AnnotationFeaturesObje
 		if (annot != null) {
 			PDColor color = annot.getColor();
 			if (color != null) {
-				float[] comp = color.getComponents();
-				if (comp != null) {
-					double[] res = new double[comp.length];
-					for (int i = 0; i < comp.length; ++i) {
-						res[i] = comp[i];
-					}
-					return res;
-				}
+				return PBAdapterHelper.castFloatArrayToDouble(color.getComponents());
 			}
 		}
 		return null;

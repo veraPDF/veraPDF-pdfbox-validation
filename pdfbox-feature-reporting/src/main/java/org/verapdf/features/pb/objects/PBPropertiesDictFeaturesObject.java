@@ -24,11 +24,11 @@ import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.verapdf.core.FeatureParsingException;
-import org.verapdf.features.FeaturesData;
 import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeatureObjectType;
+import org.verapdf.features.FeaturesData;
 import org.verapdf.features.IFeaturesObject;
-import org.verapdf.features.pb.tools.PBCreateNodeHelper;
+import org.verapdf.features.pb.tools.PBAdapterHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 
 /**
@@ -75,7 +75,7 @@ public class PBPropertiesDictFeaturesObject implements IFeaturesObject {
 
 			COSBase type = properties.getDictionaryObject(COSName.TYPE);
 			if (type instanceof COSName) {
-				PBCreateNodeHelper.addNotEmptyNode("type", ((COSName) type).getName(), root);
+				PBAdapterHelper.addNotEmptyNode("type", ((COSName) type).getName(), root);
 			}
 
 			collection.addNewFeatureTree(FeatureObjectType.PROPERTIES, root);

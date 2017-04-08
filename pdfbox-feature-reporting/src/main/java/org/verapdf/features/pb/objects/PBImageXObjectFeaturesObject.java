@@ -23,12 +23,8 @@ package org.verapdf.features.pb.objects;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObjectProxy;
 import org.verapdf.core.FeatureParsingException;
-import org.verapdf.features.FeaturesData;
-import org.verapdf.features.FeatureExtractionResult;
-import org.verapdf.features.FeatureObjectType;
-import org.verapdf.features.IFeaturesObject;
-import org.verapdf.features.ImageFeaturesData;
-import org.verapdf.features.pb.tools.PBCreateNodeHelper;
+import org.verapdf.features.*;
+import org.verapdf.features.pb.tools.PBAdapterHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 
 import java.io.IOException;
@@ -130,7 +126,7 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 
 			root.addChild("interpolate")
 					.setValue(String.valueOf(imageXObject.getInterpolate()));
-			PBCreateNodeHelper.parseIDSet(alternatesChild, "alternate", "alternates", root);
+			PBAdapterHelper.parseIDSet(alternatesChild, "alternate", "alternates", root);
 			if (sMaskChild != null) {
 				FeatureTreeNode mask = root.addChild("sMask");
 				mask.setAttribute(ID, sMaskChild);
@@ -145,14 +141,14 @@ public class PBImageXObjectFeaturesObject implements IFeaturesObject {
 				if (imageXObject.getStream().getFilters() != null && !imageXObject.getStream().getFilters().isEmpty()) {
 					FeatureTreeNode filters = root.addChild("filters");
 					for (COSName name : imageXObject.getStream().getFilters()) {
-						PBCreateNodeHelper.addNotEmptyNode("filter", name.getName(), filters);
+						PBAdapterHelper.addNotEmptyNode("filter", name.getName(), filters);
 					}
 				}
 			} catch (IOException e) {
 				LOGGER.info(e);
 			}
 
-			PBCreateNodeHelper.parseMetadata(imageXObject.getMetadata(), "metadata", root, collection);
+			PBAdapterHelper.parseMetadata(imageXObject.getMetadata(), "metadata", root, collection);
 
 			collection.addNewFeatureTree(FeatureObjectType.IMAGE_XOBJECT, root);
 			return root;

@@ -28,12 +28,8 @@ import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.common.filespecification.PDComplexFileSpecification;
 import org.apache.pdfbox.pdmodel.common.filespecification.PDEmbeddedFile;
 import org.verapdf.core.FeatureParsingException;
-import org.verapdf.features.EmbeddedFileFeaturesData;
-import org.verapdf.features.FeatureExtractionResult;
-import org.verapdf.features.FeaturesData;
-import org.verapdf.features.FeatureObjectType;
-import org.verapdf.features.IFeaturesObject;
-import org.verapdf.features.pb.tools.PBCreateNodeHelper;
+import org.verapdf.features.*;
+import org.verapdf.features.pb.tools.PBAdapterHelper;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 
@@ -89,21 +85,21 @@ public class PBEmbeddedFileFeaturesObject implements IFeaturesObject {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("embeddedFile");
 			root.setAttribute("id", "file" + index);
 
-			PBCreateNodeHelper.addNotEmptyNode("fileName", embFile.getFilename(), root);
-			PBCreateNodeHelper.addNotEmptyNode("description", embFile.getFileDescription(), root);
+			PBAdapterHelper.addNotEmptyNode("fileName", embFile.getFilename(), root);
+			PBAdapterHelper.addNotEmptyNode("description", embFile.getFileDescription(), root);
 			COSDictionary dict = embFile.getCOSObject();
 			if (dict != null) {
-				PBCreateNodeHelper.addNotEmptyNode("afRelationship", dict.getNameAsString(COSName.getPDFName("AFRelationship")), root);
+				PBAdapterHelper.addNotEmptyNode("afRelationship", dict.getNameAsString(COSName.getPDFName("AFRelationship")), root);
 			}
 
 			PDEmbeddedFile ef = embFile.getEmbeddedFile();
 			if (ef != null) {
-				PBCreateNodeHelper.addNotEmptyNode("subtype", ef.getSubtype(), root);
+				PBAdapterHelper.addNotEmptyNode("subtype", ef.getSubtype(), root);
 
-				PBCreateNodeHelper.addNotEmptyNode("filter", getFilters(ef.getFilters()), root);
+				PBAdapterHelper.addNotEmptyNode("filter", getFilters(ef.getFilters()), root);
 
 				try {
-					PBCreateNodeHelper.createDateNode(CREATION_DATE, root, ef.getCreationDate(), collection);
+					PBAdapterHelper.createDateNode(CREATION_DATE, root, ef.getCreationDate(), collection);
 				} catch (IOException e) {
 					LOGGER.debug("PDFBox error obtaining creation date", e);
 					FeatureTreeNode creationDate = root.addChild(CREATION_DATE);
@@ -113,7 +109,7 @@ public class PBEmbeddedFileFeaturesObject implements IFeaturesObject {
 				}
 
 				try {
-					PBCreateNodeHelper.createDateNode(MOD_DATE, root, ef.getModDate(), collection);
+					PBAdapterHelper.createDateNode(MOD_DATE, root, ef.getModDate(), collection);
 				} catch (IOException e) {
 					LOGGER.debug("PDFBox error obtaining modification date", e);
 					FeatureTreeNode modDate = root.addChild(MOD_DATE);
@@ -128,13 +124,13 @@ public class PBEmbeddedFileFeaturesObject implements IFeaturesObject {
 					if (baseChecksum instanceof COSString) {
 						COSString str = (COSString) baseChecksum;
 						if (str.isHex()) {
-							PBCreateNodeHelper.addNotEmptyNode("checkSum", str.toHexString(), root);
+							PBAdapterHelper.addNotEmptyNode("checkSum", str.toHexString(), root);
 						} else {
-							PBCreateNodeHelper.addNotEmptyNode("checkSum", str.getString(), root);
+							PBAdapterHelper.addNotEmptyNode("checkSum", str.getString(), root);
 						}
 					}
 				}
-				PBCreateNodeHelper.addNotEmptyNode("size", String.valueOf(ef.getSize()), root);
+				PBAdapterHelper.addNotEmptyNode("size", String.valueOf(ef.getSize()), root);
 			}
 
 			collection.addNewFeatureTree(FeatureObjectType.EMBEDDED_FILE, root);

@@ -26,7 +26,7 @@ import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.FeaturesData;
 import org.verapdf.features.IFeaturesObject;
-import org.verapdf.features.pb.tools.PBCreateNodeHelper;
+import org.verapdf.features.pb.tools.PBAdapterHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 
 /**
@@ -87,7 +87,7 @@ public class PBShadingPatternFeaturesObject implements IFeaturesObject {
 				shading.setAttribute(ID, shadingChild);
 			}
 
-			PBCreateNodeHelper.parseFloatMatrix(shadingPattern.getMatrix().getValues(), root.addChild("matrix"));
+			PBAdapterHelper.parseFloatMatrix(shadingPattern.getMatrix().getValues(), root.addChild("matrix"));
 
 			if (extGStateChild != null) {
 				FeatureTreeNode exGState = root.addChild("graphicsState");

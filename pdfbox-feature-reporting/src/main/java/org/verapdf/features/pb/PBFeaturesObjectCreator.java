@@ -76,13 +76,14 @@ public final class PBFeaturesObjectCreator {
 	}
 
 	/**
-	 * Creates new PBDocSecurityFeaturesObject
+	 * Creates new PBDocSecurityFeaturesObjectAdapter
 	 *
 	 * @param encryption PDEncryption class from pdfbox, which represents an encryption for feature report
-	 * @return created PBDocSecurityFeaturesObject
+	 * @return created PBDocSecurityFeaturesObjectAdapter
 	 */
 	public static DocSecurityFeaturesObject createDocSecurityFeaturesObject(PDEncryption encryption) {
-		return new PBDocSecurityFeaturesObject(encryption);
+		PBDocSecurityFeaturesObjectAdapter adapter = new PBDocSecurityFeaturesObjectAdapter(encryption);
+		return new DocSecurityFeaturesObject(adapter);
 	}
 
 	/**
@@ -204,19 +205,20 @@ public final class PBFeaturesObjectCreator {
 	}
 
 	/**
-	 * Constructs new PBColorSpaceFeaturesObject
+	 * Constructs new PBColorSpaceFeaturesObjectAdapter
 	 *
 	 * @param colorSpace        PDColorSpace which represents colorspace for feature report
 	 * @param id                id of the object
 	 * @param iccProfileChild   id of the iccprofile child
 	 * @param colorSpaceChild   id of the colorspace child
-	 * @return created PBColorSpaceFeaturesObject
+	 * @return created PBColorSpaceFeaturesObjectAdapter
 	 */
 	public static ColorSpaceFeaturesObject createColorSpaceFeaturesObject(PDColorSpace colorSpace,
 																			String id,
 																			String iccProfileChild,
 																			String colorSpaceChild) {
-		return new PBColorSpaceFeaturesObject(colorSpace, id, iccProfileChild, colorSpaceChild);
+		PBColorSpaceFeaturesObjectAdapter adapter = new PBColorSpaceFeaturesObjectAdapter(colorSpace, id, iccProfileChild, colorSpaceChild);
+		return new ColorSpaceFeaturesObject(adapter);
 	}
 
 	/**

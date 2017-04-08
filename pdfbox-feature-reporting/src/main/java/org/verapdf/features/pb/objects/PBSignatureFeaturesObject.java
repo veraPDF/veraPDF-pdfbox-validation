@@ -20,20 +20,15 @@
  */
 package org.verapdf.features.pb.objects;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
-import javax.xml.bind.DatatypeConverter;
-
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.verapdf.core.FeatureParsingException;
-import org.verapdf.features.FeatureExtractionResult;
-import org.verapdf.features.FeatureObjectType;
-import org.verapdf.features.FeaturesData;
-import org.verapdf.features.IFeaturesObject;
-import org.verapdf.features.SignatureFeaturesData;
-import org.verapdf.features.pb.tools.PBCreateNodeHelper;
+import org.verapdf.features.*;
+import org.verapdf.features.pb.tools.PBAdapterHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
+
+import javax.xml.bind.DatatypeConverter;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 /**
  * @author Maksim Bezrukov
@@ -57,19 +52,19 @@ public class PBSignatureFeaturesObject implements IFeaturesObject {
         if (signature != null) {
             FeatureTreeNode root = FeatureTreeNode.createRootNode("signature");
 
-            PBCreateNodeHelper.addNotEmptyNode("filter", signature.getFilter(), root);
-            PBCreateNodeHelper.addNotEmptyNode("subFilter", signature.getSubFilter(), root);
+            PBAdapterHelper.addNotEmptyNode("filter", signature.getFilter(), root);
+            PBAdapterHelper.addNotEmptyNode("subFilter", signature.getSubFilter(), root);
 
             byte[] contents = signature.getContents();
             if (contents != null) {
-                PBCreateNodeHelper.addNotEmptyNode("contents", DatatypeConverter.printHexBinary(contents), root);
+                PBAdapterHelper.addNotEmptyNode("contents", DatatypeConverter.printHexBinary(contents), root);
             }
 
-            PBCreateNodeHelper.addNotEmptyNode("name", signature.getName(), root);
-            PBCreateNodeHelper.createDateNode("signDate", root, signature.getSignDate(), collection);
-            PBCreateNodeHelper.addNotEmptyNode("location", signature.getLocation(), root);
-            PBCreateNodeHelper.addNotEmptyNode("reason", signature.getReason(), root);
-            PBCreateNodeHelper.addNotEmptyNode("contactInfo", signature.getContactInfo(), root);
+            PBAdapterHelper.addNotEmptyNode("name", signature.getName(), root);
+            PBAdapterHelper.createDateNode("signDate", root, signature.getSignDate(), collection);
+            PBAdapterHelper.addNotEmptyNode("location", signature.getLocation(), root);
+            PBAdapterHelper.addNotEmptyNode("reason", signature.getReason(), root);
+            PBAdapterHelper.addNotEmptyNode("contactInfo", signature.getContactInfo(), root);
 
             collection.addNewFeatureTree(FeatureObjectType.SIGNATURE, root);
 

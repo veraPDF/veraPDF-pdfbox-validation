@@ -26,11 +26,11 @@ import org.apache.pdfbox.cos.COSNumber;
 import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.verapdf.core.FeatureParsingException;
-import org.verapdf.features.FeaturesData;
 import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeatureObjectType;
+import org.verapdf.features.FeaturesData;
 import org.verapdf.features.IFeaturesObject;
-import org.verapdf.features.pb.tools.PBCreateNodeHelper;
+import org.verapdf.features.pb.tools.PBAdapterHelper;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 
@@ -118,11 +118,11 @@ public class PBPageFeaturesObject implements IFeaturesObject {
 
 			root.setAttribute("orderNumber", Integer.toString(index));
 
-			PBCreateNodeHelper.addBoxFeature("mediaBox", page.getMediaBox(), root);
-			PBCreateNodeHelper.addBoxFeature("cropBox", page.getCropBox(), root);
-			PBCreateNodeHelper.addBoxFeature("trimBox", page.getTrimBox(), root);
-			PBCreateNodeHelper.addBoxFeature("bleedBox", page.getBleedBox(), root);
-			PBCreateNodeHelper.addBoxFeature("artBox", page.getArtBox(), root);
+			PBAdapterHelper.addBoxFeature("mediaBox", page.getMediaBox(), root);
+			PBAdapterHelper.addBoxFeature("cropBox", page.getCropBox(), root);
+			PBAdapterHelper.addBoxFeature("trimBox", page.getTrimBox(), root);
+			PBAdapterHelper.addBoxFeature("bleedBox", page.getBleedBox(), root);
+			PBAdapterHelper.addBoxFeature("artBox", page.getArtBox(), root);
 
 			if (page.hasRotation()) {
 				root.addChild("rotation").setValue(String.valueOf(page.getRotation()));
@@ -151,9 +151,9 @@ public class PBPageFeaturesObject implements IFeaturesObject {
 				thumbNode.setAttribute(ID, thumb);
 			}
 
-			PBCreateNodeHelper.parseMetadata(page.getMetadata(), "metadata", root, collection);
+			PBAdapterHelper.parseMetadata(page.getMetadata(), "metadata", root, collection);
 
-			PBCreateNodeHelper.parseIDSet(annotsId, "annotation", "annotations", root);
+			PBAdapterHelper.parseIDSet(annotsId, "annotation", "annotations", root);
 
 			parseResources(root);
 
@@ -183,13 +183,13 @@ public class PBPageFeaturesObject implements IFeaturesObject {
 				(propertiesChild != null && !propertiesChild.isEmpty())) {
 			FeatureTreeNode resources = root.addChild("resources");
 
-			PBCreateNodeHelper.parseIDSet(extGStateChild, "graphicsState", "graphicsStates", resources);
-			PBCreateNodeHelper.parseIDSet(colorSpaceChild, "colorSpace", "colorSpaces", resources);
-			PBCreateNodeHelper.parseIDSet(patternChild, "pattern", "patterns", resources);
-			PBCreateNodeHelper.parseIDSet(shadingChild, "shading", "shadings", resources);
-			PBCreateNodeHelper.parseIDSet(xobjectChild, "xobject", "xobjects", resources);
-			PBCreateNodeHelper.parseIDSet(fontChild, "font", "fonts", resources);
-			PBCreateNodeHelper.parseIDSet(propertiesChild, "propertiesDict", "propertiesDicts", resources);
+			PBAdapterHelper.parseIDSet(extGStateChild, "graphicsState", "graphicsStates", resources);
+			PBAdapterHelper.parseIDSet(colorSpaceChild, "colorSpace", "colorSpaces", resources);
+			PBAdapterHelper.parseIDSet(patternChild, "pattern", "patterns", resources);
+			PBAdapterHelper.parseIDSet(shadingChild, "shading", "shadings", resources);
+			PBAdapterHelper.parseIDSet(xobjectChild, "xobject", "xobjects", resources);
+			PBAdapterHelper.parseIDSet(fontChild, "font", "fonts", resources);
+			PBAdapterHelper.parseIDSet(propertiesChild, "propertiesDict", "propertiesDicts", resources);
 		}
 	}
 }

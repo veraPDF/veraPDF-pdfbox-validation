@@ -23,12 +23,8 @@ package org.verapdf.features.pb.objects;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.verapdf.core.FeatureParsingException;
-import org.verapdf.features.FeaturesData;
-import org.verapdf.features.FeatureExtractionResult;
-import org.verapdf.features.FeatureObjectType;
-import org.verapdf.features.IFeaturesObject;
-import org.verapdf.features.MetadataFeaturesData;
-import org.verapdf.features.pb.tools.PBCreateNodeHelper;
+import org.verapdf.features.*;
+import org.verapdf.features.pb.tools.PBAdapterHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 
 import java.io.IOException;
@@ -74,7 +70,7 @@ public class PBMetadataFeaturesObject implements IFeaturesObject {
 	public FeatureTreeNode reportFeatures(FeatureExtractionResult collection) throws FeatureParsingException {
 		if (metadata != null) {
 			FeatureTreeNode root = FeatureTreeNode.createRootNode("metadata");
-			PBCreateNodeHelper.parseMetadata(metadata, "xmpPackage", root, collection);
+			PBAdapterHelper.parseMetadata(metadata, "xmpPackage", root, collection);
 
 			collection.addNewFeatureTree(FeatureObjectType.METADATA, root);
 			return root;

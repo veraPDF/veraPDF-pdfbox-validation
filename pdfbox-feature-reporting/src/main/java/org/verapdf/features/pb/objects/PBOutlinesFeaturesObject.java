@@ -29,7 +29,7 @@ import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.FeaturesData;
 import org.verapdf.features.IFeaturesObject;
 import org.verapdf.features.pb.tools.ColorComponent;
-import org.verapdf.features.pb.tools.PBCreateNodeHelper;
+import org.verapdf.features.pb.tools.PBAdapterHelper;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 
@@ -107,7 +107,7 @@ public class PBOutlinesFeaturesObject implements IFeaturesObject {
 			FeatureTreeNode itemNode = root.addChild(
 					"outline");
 
-			PBCreateNodeHelper.addNotEmptyNode("title", item.getTitle(),
+			PBAdapterHelper.addNotEmptyNode("title", item.getTitle(),
 					itemNode);
 
 

@@ -20,34 +20,19 @@
  */
 package org.verapdf.features.pb.objects;
 
+import org.apache.log4j.Logger;
+import org.apache.pdfbox.cos.*;
+import org.apache.pdfbox.pdmodel.common.PDMetadata;
+import org.verapdf.core.FeatureParsingException;
+import org.verapdf.features.*;
+import org.verapdf.features.pb.tools.PBAdapterHelper;
+import org.verapdf.features.tools.ErrorsHelper;
+import org.verapdf.features.tools.FeatureTreeNode;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
-
-import org.apache.log4j.Logger;
-import org.apache.pdfbox.cos.COSArray;
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSInteger;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSNumber;
-import org.apache.pdfbox.cos.COSStream;
-import org.apache.pdfbox.pdmodel.common.PDMetadata;
-import org.verapdf.core.FeatureParsingException;
-import org.verapdf.features.FeatureExtractionResult;
-import org.verapdf.features.FeatureObjectType;
-import org.verapdf.features.FeaturesData;
-import org.verapdf.features.ICCProfileFeaturesData;
-import org.verapdf.features.IFeaturesObject;
-import org.verapdf.features.pb.tools.PBCreateNodeHelper;
-import org.verapdf.features.tools.ErrorsHelper;
-import org.verapdf.features.tools.FeatureTreeNode;
+import java.util.*;
 
 /**
  * Feature object for icc profile
@@ -137,7 +122,7 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 			COSBase cosBase = profile.getDictionaryObject(COSName.METADATA);
 			if (cosBase instanceof COSStream) {
 				PDMetadata meta = new PDMetadata((COSStream) cosBase);
-				PBCreateNodeHelper.parseMetadata(meta, "metadata", root, collection);
+				PBAdapterHelper.parseMetadata(meta, "metadata", root, collection);
 			}
 
 			collection.addNewFeatureTree(FeatureObjectType.ICCPROFILE, root);
@@ -201,25 +186,25 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 
 	private void parseProfileHeader(FeatureTreeNode root, FeatureExtractionResult collection) throws FeatureParsingException {
 		try {
-			byte[] profileBytes = PBCreateNodeHelper.inputStreamToByteArray(profile.getUnfilteredStream());
+			byte[] profileBytes = PBAdapterHelper.inputStreamToByteArray(profile.getUnfilteredStream());
 
 			if (profileBytes.length < HEADER_SIZE) {
 				ErrorsHelper.addErrorIntoCollection(collection,
 						root,
 						"ICCProfile contains less than " + HEADER_SIZE + " bytes");
 			} else {
-				PBCreateNodeHelper.addNotEmptyNode("version", getVersion(profileBytes), root);
-				PBCreateNodeHelper.addNotEmptyNode("cmmType", getString(profileBytes, CMMTYPE_BEGIN, CMMTYPE_END), root);
-				PBCreateNodeHelper.addNotEmptyNode("dataColorSpace", getString(profileBytes, DATACOLORSPACE_BEGIN, DATACOLORSPACE_END), root);
-				PBCreateNodeHelper.addNotEmptyNode("creator", getString(profileBytes, CREATOR_BEGIN, CREATOR_END), root);
-				PBCreateNodeHelper.createDateNode("creationDate", root, getCreationDate(profileBytes), collection);
+				PBAdapterHelper.addNotEmptyNode("version", getVersion(profileBytes), root);
+				PBAdapterHelper.addNotEmptyNode("cmmType", getString(profileBytes, CMMTYPE_BEGIN, CMMTYPE_END), root);
+				PBAdapterHelper.addNotEmptyNode("dataColorSpace", getString(profileBytes, DATACOLORSPACE_BEGIN, DATACOLORSPACE_END), root);
+				PBAdapterHelper.addNotEmptyNode("creator", getString(profileBytes, CREATOR_BEGIN, CREATOR_END), root);
+				PBAdapterHelper.createDateNode("creationDate", root, getCreationDate(profileBytes), collection);
 				String intent = getIntent(getString(profileBytes, RENDERINGINTENT_BEGIN, RENDERINGINTENT_END));
-				PBCreateNodeHelper.addNotEmptyNode("defaultRenderingIntent", intent, root);
-				PBCreateNodeHelper.addNotEmptyNode("copyright", getStringTag(profileBytes, "cprt", true), root);
-				PBCreateNodeHelper.addNotEmptyNode("description", getStringTag(profileBytes, "desc", false), root);
-				PBCreateNodeHelper.addNotEmptyNode("profileId", getString(profileBytes, PROFILEID_BEGIN, PROFILEID_END), root);
-				PBCreateNodeHelper.addNotEmptyNode("deviceModel", getString(profileBytes, DEVICEMODEL_BEGIN, DEVICEMODEL_END), root);
-				PBCreateNodeHelper.addNotEmptyNode("deviceManufacturer", getString(profileBytes, DEVICEMANUFACTURER_BEGIN, DEVICEMANUFACTURER_END), root);
+				PBAdapterHelper.addNotEmptyNode("defaultRenderingIntent", intent, root);
+				PBAdapterHelper.addNotEmptyNode("copyright", getStringTag(profileBytes, "cprt", true), root);
+				PBAdapterHelper.addNotEmptyNode("description", getStringTag(profileBytes, "desc", false), root);
+				PBAdapterHelper.addNotEmptyNode("profileId", getString(profileBytes, PROFILEID_BEGIN, PROFILEID_END), root);
+				PBAdapterHelper.addNotEmptyNode("deviceModel", getString(profileBytes, DEVICEMODEL_BEGIN, DEVICEMODEL_END), root);
+				PBAdapterHelper.addNotEmptyNode("deviceManufacturer", getString(profileBytes, DEVICEMANUFACTURER_BEGIN, DEVICEMANUFACTURER_END), root);
 			}
 
 		} catch (IOException e) {
