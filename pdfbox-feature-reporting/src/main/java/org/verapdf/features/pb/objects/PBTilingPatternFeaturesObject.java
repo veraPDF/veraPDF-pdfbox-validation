@@ -26,7 +26,7 @@ import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.FeaturesData;
 import org.verapdf.features.IFeaturesObject;
-import org.verapdf.features.pb.tools.PBCreateNodeHelper;
+import org.verapdf.features.pb.tools.PBAdapterHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 
 import java.util.Set;
@@ -104,12 +104,12 @@ public class PBTilingPatternFeaturesObject implements IFeaturesObject {
 			root.addChild("paintType").setValue(String.valueOf(tilingPattern.getPaintType()));
 			root.addChild("tilingType").setValue(String.valueOf(tilingPattern.getTilingType()));
 
-			PBCreateNodeHelper.addBoxFeature("bbox", tilingPattern.getBBox(), root);
+			PBAdapterHelper.addBoxFeature("bbox", tilingPattern.getBBox(), root);
 
 			root.addChild("xStep").setValue(String.valueOf(tilingPattern.getXStep()));
 			root.addChild("yStep").setValue(String.valueOf(tilingPattern.getYStep()));
 
-			PBCreateNodeHelper.parseFloatMatrix(tilingPattern.getMatrix().getValues(), root.addChild("matrix"));
+			PBAdapterHelper.parseFloatMatrix(tilingPattern.getMatrix().getValues(), root.addChild("matrix"));
 
 			parseResources(root);
 
@@ -139,13 +139,13 @@ public class PBTilingPatternFeaturesObject implements IFeaturesObject {
 				(propertiesChild != null && !propertiesChild.isEmpty())) {
 			FeatureTreeNode resources = root.addChild("resources");
 
-			PBCreateNodeHelper.parseIDSet(extGStateChild, "graphicsState", "graphicsStates", resources);
-			PBCreateNodeHelper.parseIDSet(colorSpaceChild, "colorSpace", "colorSpaces", resources);
-			PBCreateNodeHelper.parseIDSet(patternChild, "pattern", "patterns", resources);
-			PBCreateNodeHelper.parseIDSet(shadingChild, "shading", "shadings", resources);
-			PBCreateNodeHelper.parseIDSet(xobjectChild, "xobject", "xobjects", resources);
-			PBCreateNodeHelper.parseIDSet(fontChild, "font", "fonts", resources);
-			PBCreateNodeHelper.parseIDSet(propertiesChild, "propertiesDict", "propertiesDicts", resources);
+			PBAdapterHelper.parseIDSet(extGStateChild, "graphicsState", "graphicsStates", resources);
+			PBAdapterHelper.parseIDSet(colorSpaceChild, "colorSpace", "colorSpaces", resources);
+			PBAdapterHelper.parseIDSet(patternChild, "pattern", "patterns", resources);
+			PBAdapterHelper.parseIDSet(shadingChild, "shading", "shadings", resources);
+			PBAdapterHelper.parseIDSet(xobjectChild, "xobject", "xobjects", resources);
+			PBAdapterHelper.parseIDSet(fontChild, "font", "fonts", resources);
+			PBAdapterHelper.parseIDSet(propertiesChild, "propertiesDict", "propertiesDicts", resources);
 		}
 	}
 }

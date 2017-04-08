@@ -21,7 +21,7 @@
 package org.verapdf.features;
 
 import org.verapdf.core.FeatureParsingException;
-import org.verapdf.features.pb.tools.PBCreateNodeHelper;
+import org.verapdf.features.pb.tools.PBAdapterHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 
 import javax.xml.bind.DatatypeConverter;
@@ -511,15 +511,15 @@ public final class TestNodeGenerator {
 			String lockedContents) throws FeatureParsingException {
 		FeatureTreeNode root = FeatureTreeNode.createRootNode("annotation");
 		root.setAttribute(ID, id);
-		PBCreateNodeHelper.addNotEmptyNode("subType", subtype, root);
+		PBAdapterHelper.addNotEmptyNode("subType", subtype, root);
 		FeatureTreeNode rec = root.addChild("rectangle");
 		rec.setAttribute(LLX, llx);
 		rec.setAttribute(LLY, lly);
 		rec.setAttribute(URX, urx);
 		rec.setAttribute(URY, ury);
-		PBCreateNodeHelper.addNotEmptyNode("contents", contents, root);
-		PBCreateNodeHelper.addNotEmptyNode("annotationName", annotationName, root);
-		PBCreateNodeHelper.addNotEmptyNode("modifiedDate", modifiedDate, root);
+		PBAdapterHelper.addNotEmptyNode("contents", contents, root);
+		PBAdapterHelper.addNotEmptyNode("annotationName", annotationName, root);
+		PBAdapterHelper.addNotEmptyNode("modifiedDate", modifiedDate, root);
 
 		if (xobj != null && !xobj.isEmpty()) {
 			FeatureTreeNode resources = root.addChild("resources");
@@ -619,17 +619,17 @@ public final class TestNodeGenerator {
 		FeatureTreeNode root = FeatureTreeNode.createRootNode("iccProfile");
 		root.setAttribute(ID, id);
 
-		PBCreateNodeHelper.addNotEmptyNode("version", version, root);
-		PBCreateNodeHelper.addNotEmptyNode("cmmType", cmmType, root);
-		PBCreateNodeHelper.addNotEmptyNode("dataColorSpace", dataColorSpace, root);
-		PBCreateNodeHelper.addNotEmptyNode("creator", creator, root);
-		PBCreateNodeHelper.addNotEmptyNode("creationDate", creationDate, root);
-		PBCreateNodeHelper.addNotEmptyNode("defaultRenderingIntent", defaultRenderingIntent, root);
-		PBCreateNodeHelper.addNotEmptyNode("copyright", copyright, root);
-		PBCreateNodeHelper.addNotEmptyNode("description", description, root);
-		PBCreateNodeHelper.addNotEmptyNode("profileId", profileId, root);
-		PBCreateNodeHelper.addNotEmptyNode("deviceModel", deviceModel, root);
-		PBCreateNodeHelper.addNotEmptyNode("deviceManufacturer", deviceManufacturer, root);
+		PBAdapterHelper.addNotEmptyNode("version", version, root);
+		PBAdapterHelper.addNotEmptyNode("cmmType", cmmType, root);
+		PBAdapterHelper.addNotEmptyNode("dataColorSpace", dataColorSpace, root);
+		PBAdapterHelper.addNotEmptyNode("creator", creator, root);
+		PBAdapterHelper.addNotEmptyNode("creationDate", creationDate, root);
+		PBAdapterHelper.addNotEmptyNode("defaultRenderingIntent", defaultRenderingIntent, root);
+		PBAdapterHelper.addNotEmptyNode("copyright", copyright, root);
+		PBAdapterHelper.addNotEmptyNode("description", description, root);
+		PBAdapterHelper.addNotEmptyNode("profileId", profileId, root);
+		PBAdapterHelper.addNotEmptyNode("deviceModel", deviceModel, root);
+		PBAdapterHelper.addNotEmptyNode("deviceManufacturer", deviceManufacturer, root);
 		if (metadata != null) {
 			root.addMetadataChild("metadata")
 					.setValue(DatatypeConverter.printHexBinary(metadata));
@@ -757,19 +757,19 @@ public final class TestNodeGenerator {
 		public FeatureTreeNode generateNode(FeatureTreeNode parent) throws FeatureParsingException {
 			FeatureTreeNode root = parent.addChild("fontDescriptor");
 
-			PBCreateNodeHelper.addNotEmptyNode("fontName", fontName, root);
-			PBCreateNodeHelper.addNotEmptyNode("fontFamily", fontFamily, root);
-			PBCreateNodeHelper.addNotEmptyNode("fontStretch", fontStretch, root);
-			PBCreateNodeHelper.addNotEmptyNode("fontWeight", fontWeight, root);
-			PBCreateNodeHelper.addNotEmptyNode("fixedPitch", fixedPitch, root);
-			PBCreateNodeHelper.addNotEmptyNode("serif", serif, root);
-			PBCreateNodeHelper.addNotEmptyNode("symbolic", symbolic, root);
-			PBCreateNodeHelper.addNotEmptyNode("script", script, root);
-			PBCreateNodeHelper.addNotEmptyNode("nonsymbolic", nonsymbolic, root);
-			PBCreateNodeHelper.addNotEmptyNode("italic", italic, root);
-			PBCreateNodeHelper.addNotEmptyNode("allCap", allCap, root);
-			PBCreateNodeHelper.addNotEmptyNode("smallCap", smallCap, root);
-			PBCreateNodeHelper.addNotEmptyNode("forceBold", forceBold, root);
+			PBAdapterHelper.addNotEmptyNode("fontName", fontName, root);
+			PBAdapterHelper.addNotEmptyNode("fontFamily", fontFamily, root);
+			PBAdapterHelper.addNotEmptyNode("fontStretch", fontStretch, root);
+			PBAdapterHelper.addNotEmptyNode("fontWeight", fontWeight, root);
+			PBAdapterHelper.addNotEmptyNode("fixedPitch", fixedPitch, root);
+			PBAdapterHelper.addNotEmptyNode("serif", serif, root);
+			PBAdapterHelper.addNotEmptyNode("symbolic", symbolic, root);
+			PBAdapterHelper.addNotEmptyNode("script", script, root);
+			PBAdapterHelper.addNotEmptyNode("nonsymbolic", nonsymbolic, root);
+			PBAdapterHelper.addNotEmptyNode("italic", italic, root);
+			PBAdapterHelper.addNotEmptyNode("allCap", allCap, root);
+			PBAdapterHelper.addNotEmptyNode("smallCap", smallCap, root);
+			PBAdapterHelper.addNotEmptyNode("forceBold", forceBold, root);
 
 			FeatureTreeNode bbox = root.addChild("fontBBox");
 			bbox.setAttribute(LLX, fontBBox_llx);
@@ -777,17 +777,17 @@ public final class TestNodeGenerator {
 			bbox.setAttribute(URX, fontBBox_urx);
 			bbox.setAttribute(URY, fontBBox_ury);
 
-			PBCreateNodeHelper.addNotEmptyNode("italicAngle", italicAngle, root);
-			PBCreateNodeHelper.addNotEmptyNode("ascent", ascent, root);
-			PBCreateNodeHelper.addNotEmptyNode("descent", descent, root);
-			PBCreateNodeHelper.addNotEmptyNode("leading", leading, root);
-			PBCreateNodeHelper.addNotEmptyNode("capHeight", capHeight, root);
-			PBCreateNodeHelper.addNotEmptyNode("xHeight", xHeight, root);
-			PBCreateNodeHelper.addNotEmptyNode("stemV", stemV, root);
-			PBCreateNodeHelper.addNotEmptyNode("stemH", stemH, root);
-			PBCreateNodeHelper.addNotEmptyNode("averageWidth", averageWidth, root);
-			PBCreateNodeHelper.addNotEmptyNode("maxWidth", maxWidth, root);
-			PBCreateNodeHelper.addNotEmptyNode("missingWidth", missingWidth, root);
+			PBAdapterHelper.addNotEmptyNode("italicAngle", italicAngle, root);
+			PBAdapterHelper.addNotEmptyNode("ascent", ascent, root);
+			PBAdapterHelper.addNotEmptyNode("descent", descent, root);
+			PBAdapterHelper.addNotEmptyNode("leading", leading, root);
+			PBAdapterHelper.addNotEmptyNode("capHeight", capHeight, root);
+			PBAdapterHelper.addNotEmptyNode("xHeight", xHeight, root);
+			PBAdapterHelper.addNotEmptyNode("stemV", stemV, root);
+			PBAdapterHelper.addNotEmptyNode("stemH", stemH, root);
+			PBAdapterHelper.addNotEmptyNode("averageWidth", averageWidth, root);
+			PBAdapterHelper.addNotEmptyNode("maxWidth", maxWidth, root);
+			PBAdapterHelper.addNotEmptyNode("missingWidth", missingWidth, root);
 			return parent;
 		}
 	}

@@ -22,11 +22,11 @@ package org.verapdf.features.pb.objects;
 
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.verapdf.core.FeatureParsingException;
-import org.verapdf.features.FeaturesData;
 import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeatureObjectType;
+import org.verapdf.features.FeaturesData;
 import org.verapdf.features.IFeaturesObject;
-import org.verapdf.features.pb.tools.PBCreateNodeHelper;
+import org.verapdf.features.pb.tools.PBAdapterHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 
 import java.util.Arrays;
@@ -84,12 +84,12 @@ public class PBInfoDictFeaturesObject implements IFeaturesObject {
 			addEntry("Creator", info.getCreator(), root);
 			addEntry("Producer", info.getProducer(), root);
 
-			FeatureTreeNode creationDate = PBCreateNodeHelper.createDateNode(ENTRY, root, info.getCreationDate(), collection);
+			FeatureTreeNode creationDate = PBAdapterHelper.createDateNode(ENTRY, root, info.getCreationDate(), collection);
 			if (creationDate != null) {
 				creationDate.setAttribute(KEY, "CreationDate");
 			}
 
-			FeatureTreeNode modificationDate = PBCreateNodeHelper.createDateNode(ENTRY, root, info.getModificationDate(), collection);
+			FeatureTreeNode modificationDate = PBAdapterHelper.createDateNode(ENTRY, root, info.getModificationDate(), collection);
 			if (modificationDate != null) {
 				modificationDate.setAttribute(KEY, "ModDate");
 			}

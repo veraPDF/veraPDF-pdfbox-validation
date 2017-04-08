@@ -26,11 +26,11 @@ import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent;
 import org.verapdf.core.FeatureParsingException;
-import org.verapdf.features.FeaturesData;
 import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeatureObjectType;
+import org.verapdf.features.FeaturesData;
 import org.verapdf.features.IFeaturesObject;
-import org.verapdf.features.pb.tools.PBCreateNodeHelper;
+import org.verapdf.features.pb.tools.PBAdapterHelper;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 
@@ -77,10 +77,10 @@ public class PBOutputIntentsFeaturesObject implements IFeaturesObject {
 
 			addSubtype(collection, root);
 
-			PBCreateNodeHelper.addNotEmptyNode("outputCondition", outInt.getOutputCondition(), root);
-			PBCreateNodeHelper.addNotEmptyNode("outputConditionIdentifier", outInt.getOutputConditionIdentifier(), root);
-			PBCreateNodeHelper.addNotEmptyNode("registryName", outInt.getRegistryName(), root);
-			PBCreateNodeHelper.addNotEmptyNode("info", outInt.getInfo(), root);
+			PBAdapterHelper.addNotEmptyNode("outputCondition", outInt.getOutputCondition(), root);
+			PBAdapterHelper.addNotEmptyNode("outputConditionIdentifier", outInt.getOutputConditionIdentifier(), root);
+			PBAdapterHelper.addNotEmptyNode("registryName", outInt.getRegistryName(), root);
+			PBAdapterHelper.addNotEmptyNode("info", outInt.getInfo(), root);
 
 			if (iccProfileID != null) {
 				FeatureTreeNode destOutInt = root.addChild("destOutputIntent");

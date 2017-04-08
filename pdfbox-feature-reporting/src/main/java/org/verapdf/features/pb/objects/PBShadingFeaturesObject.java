@@ -22,11 +22,11 @@ package org.verapdf.features.pb.objects;
 
 import org.apache.pdfbox.pdmodel.graphics.shading.PDShading;
 import org.verapdf.core.FeatureParsingException;
-import org.verapdf.features.FeaturesData;
 import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeatureObjectType;
+import org.verapdf.features.FeaturesData;
 import org.verapdf.features.IFeaturesObject;
-import org.verapdf.features.pb.tools.PBCreateNodeHelper;
+import org.verapdf.features.pb.tools.PBAdapterHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 
 /**
@@ -85,7 +85,7 @@ public class PBShadingFeaturesObject implements IFeaturesObject {
 				shadingClr.setAttribute(ID, colorSpaceChild);
 			}
 
-			PBCreateNodeHelper.addBoxFeature("bbox", shading.getBBox(), root);
+			PBAdapterHelper.addBoxFeature("bbox", shading.getBBox(), root);
 
 			root.addChild("antiAlias").setValue(String.valueOf(shading.getAntiAlias()));
 

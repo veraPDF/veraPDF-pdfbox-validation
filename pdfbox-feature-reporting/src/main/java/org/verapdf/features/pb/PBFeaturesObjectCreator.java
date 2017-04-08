@@ -40,6 +40,7 @@ import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
+import org.verapdf.features.objects.*;
 import org.verapdf.features.pb.objects.*;
 
 import java.util.Set;
@@ -60,7 +61,7 @@ public final class PBFeaturesObjectCreator {
 	 * @param info PDDocumentInformation class from pdfbox, which represents a document info dictionary for feature report
 	 * @return created PBInfoDictFeaturesObject
 	 */
-	public static PBInfoDictFeaturesObject createInfoDictFeaturesObject(PDDocumentInformation info) {
+	public static InfoDictFeaturesObject createInfoDictFeaturesObject(PDDocumentInformation info) {
 		return new PBInfoDictFeaturesObject(info);
 	}
 
@@ -70,18 +71,19 @@ public final class PBFeaturesObjectCreator {
 	 * @param metadata PDMetadata class from pdfbox, which represents a metadata for feature report
 	 * @return created PBMetadataFeaturesObject
 	 */
-	public static PBMetadataFeaturesObject createMetadataFeaturesObject(PDMetadata metadata) {
+	public static MetadataFeaturesObject createMetadataFeaturesObject(PDMetadata metadata) {
 		return new PBMetadataFeaturesObject(metadata);
 	}
 
 	/**
-	 * Creates new PBDocSecurityFeaturesObject
+	 * Creates new PBDocSecurityFeaturesObjectAdapter
 	 *
 	 * @param encryption PDEncryption class from pdfbox, which represents an encryption for feature report
-	 * @return created PBDocSecurityFeaturesObject
+	 * @return created PBDocSecurityFeaturesObjectAdapter
 	 */
-	public static PBDocSecurityFeaturesObject createDocSecurityFeaturesObject(PDEncryption encryption) {
-		return new PBDocSecurityFeaturesObject(encryption);
+	public static DocSecurityFeaturesObject createDocSecurityFeaturesObject(PDEncryption encryption) {
+		PBDocSecurityFeaturesObjectAdapter adapter = new PBDocSecurityFeaturesObjectAdapter(encryption);
+		return new DocSecurityFeaturesObject(adapter);
 	}
 
 	/**
@@ -90,7 +92,7 @@ public final class PBFeaturesObjectCreator {
 	 * @param document COSDocument class from pdfbox, which represents a document for feature report
 	 * @return created PBLowLvlInfoFeaturesObject
 	 */
-	public static PBLowLvlInfoFeaturesObject createLowLvlInfoFeaturesObject(COSDocument document) {
+	public static LowLvlInfoFeaturesObject createLowLvlInfoFeaturesObject(COSDocument document) {
 		return new PBLowLvlInfoFeaturesObject(document);
 	}
 
@@ -101,7 +103,7 @@ public final class PBFeaturesObjectCreator {
 	 *                file for feature report
 	 * @return created PBEmbeddedFileFeaturesObject
 	 */
-	public static PBEmbeddedFileFeaturesObject createEmbeddedFileFeaturesObject(PDComplexFileSpecification embFile,
+	public static EmbeddedFileFeaturesObject createEmbeddedFileFeaturesObject(PDComplexFileSpecification embFile,
 																				int index) {
 		return new PBEmbeddedFileFeaturesObject(embFile, index);
 	}
@@ -113,7 +115,7 @@ public final class PBFeaturesObjectCreator {
 	 * @param iccProfileID id of the icc profile which use in this outputIntent
 	 * @return created PBOutputIntentsFeaturesObject
 	 */
-	public static PBOutputIntentsFeaturesObject createOutputIntentFeaturesObject(PDOutputIntent outInt,
+	public static OutputIntentFeaturesObject createOutputIntentFeaturesObject(PDOutputIntent outInt,
 																				 String iccProfileID) {
 		return new PBOutputIntentsFeaturesObject(outInt, iccProfileID);
 	}
@@ -124,24 +126,25 @@ public final class PBFeaturesObjectCreator {
 	 * @param outlines PDPage class from pdfbox, which represents a page for feature report
 	 * @return created PBOutlinesFeaturesObject
 	 */
-	public static PBOutlinesFeaturesObject createOutlinesFeaturesObject(PDDocumentOutline outlines) {
+	public static OutlinesFeaturesObject createOutlinesFeaturesObject(PDDocumentOutline outlines) {
 		return new PBOutlinesFeaturesObject(outlines);
 	}
 
 	/**
-	 * Creates new PBAnnotationFeaturesObject
+	 * Creates new PBAnnotationFeaturesObjectAdapter
 	 *
 	 * @param annot        PDAnnotation class from pdfbox, which represents an annotation for feature report
 	 * @param id           page id
 	 * @param popupId      id of the popup annotation for this annotation
 	 * @param formXObjects set of id of the form XObjects which used in appearance stream of this annotation
-	 * @return created PBAnnotationFeaturesObject
+	 * @return created PBAnnotationFeaturesObjectAdapter
 	 */
-	public static PBAnnotationFeaturesObject createAnnotFeaturesObject(PDAnnotation annot,
-																	   String id,
-																	   String popupId,
-																	   Set<String> formXObjects) {
-		return new PBAnnotationFeaturesObject(annot, id, popupId, formXObjects);
+	public static AnnotationFeaturesObject createAnnotFeaturesObject(PDAnnotation annot,
+																	 String id,
+																	 String popupId,
+																	 Set<String> formXObjects) {
+		PBAnnotationFeaturesObjectAdapter adapter = new PBAnnotationFeaturesObjectAdapter(annot, id, popupId, formXObjects);
+		return new AnnotationFeaturesObject(adapter);
 	}
 
 	/**
@@ -160,7 +163,7 @@ public final class PBFeaturesObjectCreator {
 	 * @param index           page index
 	 * @return created PBPageFeaturesObject
 	 */
-	public static PBPageFeaturesObject createPageFeaturesObject(PDPage page,
+	public static PageFeaturesObject createPageFeaturesObject(PDPage page,
 																String thumb,
 																Set<String> annotsId,
 																Set<String> extGStateChild,
@@ -183,7 +186,7 @@ public final class PBFeaturesObjectCreator {
 	 * @param id        id of the profile
 	 * @return created PBICCProfileFeaturesObject
 	 */
-	public static PBICCProfileFeaturesObject createICCProfileFeaturesObject(COSStream profile, String id) {
+	public static ICCProfileFeaturesObject createICCProfileFeaturesObject(COSStream profile, String id) {
 		return new PBICCProfileFeaturesObject(profile, id);
 	}
 
@@ -195,26 +198,27 @@ public final class PBFeaturesObjectCreator {
 	 * @param fontChildID      id of the font child
 	 * @return created PBExtGStateFeaturesObject
 	 */
-	public static PBExtGStateFeaturesObject createExtGStateFeaturesObject(PDExtendedGraphicsState exGState,
+	public static ExtGStateFeaturesObject createExtGStateFeaturesObject(PDExtendedGraphicsState exGState,
 																		  String id,
 																		  String fontChildID) {
 		return new PBExtGStateFeaturesObject(exGState, id, fontChildID);
 	}
 
 	/**
-	 * Constructs new PBColorSpaceFeaturesObject
+	 * Constructs new PBColorSpaceFeaturesObjectAdapter
 	 *
 	 * @param colorSpace        PDColorSpace which represents colorspace for feature report
 	 * @param id                id of the object
 	 * @param iccProfileChild   id of the iccprofile child
 	 * @param colorSpaceChild   id of the colorspace child
-	 * @return created PBColorSpaceFeaturesObject
+	 * @return created PBColorSpaceFeaturesObjectAdapter
 	 */
-	public static PBColorSpaceFeaturesObject createColorSpaceFeaturesObject(PDColorSpace colorSpace,
+	public static ColorSpaceFeaturesObject createColorSpaceFeaturesObject(PDColorSpace colorSpace,
 																			String id,
 																			String iccProfileChild,
 																			String colorSpaceChild) {
-		return new PBColorSpaceFeaturesObject(colorSpace, id, iccProfileChild, colorSpaceChild);
+		PBColorSpaceFeaturesObjectAdapter adapter = new PBColorSpaceFeaturesObjectAdapter(colorSpace, id, iccProfileChild, colorSpaceChild);
+		return new ColorSpaceFeaturesObject(adapter);
 	}
 
 	/**
@@ -231,7 +235,7 @@ public final class PBFeaturesObjectCreator {
 	 * @param propertiesChild set of properties id which contains in resource dictionary of this pattern
 	 * @return created PBTilingPatternFeaturesObject
 	 */
-	public static PBTilingPatternFeaturesObject createTilingPatternFeaturesObject(PDTilingPattern tilingPattern,
+	public static TilingPatternFeaturesObject createTilingPatternFeaturesObject(PDTilingPattern tilingPattern,
 																				  String id,
 																				  Set<String> extGStateChild,
 																				  Set<String> colorSpaceChild,
@@ -252,7 +256,7 @@ public final class PBFeaturesObjectCreator {
 	 * @param shadingChild   shading id which contains in this shading pattern
 	 * @return created PBShadingPatternFeaturesObject
 	 */
-	public static PBShadingPatternFeaturesObject createShadingPatternFeaturesObject(PDShadingPattern shadingPattern,
+	public static ShadingPatternFeaturesObject createShadingPatternFeaturesObject(PDShadingPattern shadingPattern,
 																					String id,
 																					String shadingChild,
 																					String extGStateChild) {
@@ -267,7 +271,7 @@ public final class PBFeaturesObjectCreator {
 	 * @param colorSpaceChild colorSpace id which contains in this shading pattern
 	 * @return created PBShadingFeaturesObject
 	 */
-	public static PBShadingFeaturesObject createShadingFeaturesObject(PDShading shading,
+	public static ShadingFeaturesObject createShadingFeaturesObject(PDShading shading,
 																	  String id,
 																	  String colorSpaceChild) {
 		return new PBShadingFeaturesObject(shading, id, colorSpaceChild);
@@ -284,7 +288,7 @@ public final class PBFeaturesObjectCreator {
 	 * @param alternatesChild set of image xobject ids which contains in this image xobject as alternates
 	 * @return created PBImageXObjectFeaturesObject
 	 */
-	public static PBImageXObjectFeaturesObject createImageXObjectFeaturesObject(PDImageXObjectProxy imageXObject,
+	public static ImageXObjectFeaturesObject createImageXObjectFeaturesObject(PDImageXObjectProxy imageXObject,
 																				String id,
 																				String colorSpaceChild,
 																				String maskChild,
@@ -308,7 +312,7 @@ public final class PBFeaturesObjectCreator {
 	 * @param propertiesChild  set of properties id which contains in resource dictionary of this xobject
 	 * @return created PBFormXObjectFeaturesObject
 	 */
-	public static PBFormXObjectFeaturesObject createFormXObjectFeaturesObject(PDFormXObject formXObject,
+	public static FormXObjectFeaturesObject createFormXObjectFeaturesObject(PDFormXObject formXObject,
 																			  String id,
 																			  String groupChild,
 																			  Set<String> extGStateChild,
@@ -335,7 +339,7 @@ public final class PBFeaturesObjectCreator {
 	 * @param propertiesChild set of properties id which contains in resource dictionary of this font
 	 * @return created PBFontFeaturesObject
 	 */
-	public static PBFontFeaturesObject createFontFeaturesObject(PDFontLike fontLike,
+	public static FontFeaturesObject createFontFeaturesObject(PDFontLike fontLike,
 																String id,
 																Set<String> extGStateChild,
 																Set<String> colorSpaceChild,
@@ -354,7 +358,7 @@ public final class PBFeaturesObjectCreator {
 	 * @param id            id of the object
 	 * @return created PBPropertiesDictFeaturesObject
 	 */
-	public static PBPropertiesDictFeaturesObject createPropertiesDictFeaturesObject(COSDictionary properties,
+	public static PropertiesDictFeaturesObject createPropertiesDictFeaturesObject(COSDictionary properties,
 																					String id) {
 		return new PBPropertiesDictFeaturesObject(properties, id);
 	}
@@ -365,7 +369,7 @@ public final class PBFeaturesObjectCreator {
 	 * @param id            id of the object
 	 * @return created PBPostScriptXObjectFeaturesObject
 	 */
-	public static PBPostScriptXObjectFeaturesObject createPostScriptXObjectFeaturesObject(String id) {
+	public static PostScriptFeaturesObject createPostScriptXObjectFeaturesObject(String id) {
 		return new PBPostScriptXObjectFeaturesObject(id);
 	}
 
@@ -375,7 +379,7 @@ public final class PBFeaturesObjectCreator {
 	 * @param signature pdfbox signature object
 	 * @return created PBSignatureFeaturesObject
      */
-	public static PBSignatureFeaturesObject createSignatureFeaturesObject(PDSignature signature) {
+	public static SignatureFeaturesObject createSignatureFeaturesObject(PDSignature signature) {
 		return new PBSignatureFeaturesObject(signature);
 	}
 }

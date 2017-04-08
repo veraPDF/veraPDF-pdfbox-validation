@@ -49,16 +49,16 @@ import java.util.Set;
  *
  * @author Maksim Bezrukov
  */
-public final class PBCreateNodeHelper {
+public final class PBAdapterHelper {
 
-	private static final Logger LOGGER = Logger.getLogger(PBCreateNodeHelper.class);
+	private static final Logger LOGGER = Logger.getLogger(PBAdapterHelper.class);
 
 	private static final String LLX = "llx";
 	private static final String LLY = "lly";
 	private static final String URX = "urx";
 	private static final String URY = "ury";
 
-	private PBCreateNodeHelper() {
+	private PBAdapterHelper() {
 	}
 
 	private static String getXMLFormat(Calendar calendar) throws DatatypeConfigurationException {
@@ -316,5 +316,16 @@ public final class PBCreateNodeHelper {
 				element.setAttribute("value", String.valueOf(array[i][j]));
 			}
 		}
+	}
+
+	public static double[] castFloatArrayToDouble(float[] array) {
+		if (array != null) {
+			double[] res = new double[array.length];
+			for (int i = 0; i < array.length; ++i) {
+				res[i] = array[i];
+			}
+			return res;
+		}
+		return null;
 	}
 }

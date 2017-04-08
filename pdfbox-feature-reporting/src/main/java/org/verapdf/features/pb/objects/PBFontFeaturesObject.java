@@ -26,8 +26,11 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.font.*;
 import org.verapdf.core.FeatureParsingException;
-import org.verapdf.features.*;
-import org.verapdf.features.pb.tools.PBCreateNodeHelper;
+import org.verapdf.features.FeatureExtractionResult;
+import org.verapdf.features.FeatureObjectType;
+import org.verapdf.features.FeaturesData;
+import org.verapdf.features.FontFeaturesData;
+import org.verapdf.features.pb.tools.PBAdapterHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 
 import java.io.IOException;
@@ -110,14 +113,14 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 
 			if (fontLike instanceof PDFont) {
 				PDFont font = (PDFont) fontLike;
-				PBCreateNodeHelper.addNotEmptyNode("type", font.getSubType(), root);
+				PBAdapterHelper.addNotEmptyNode("type", font.getSubType(), root);
 
 				if (!(font instanceof PDType3Font)) {
-					PBCreateNodeHelper.addNotEmptyNode("baseFont", font.getName(), root);
+					PBAdapterHelper.addNotEmptyNode("baseFont", font.getName(), root);
 				}
 
 				if (font instanceof PDType0Font) {
-					PBCreateNodeHelper.parseIDSet(fontChild, "descendantFont", null, root.addChild("descendantFonts"));
+					PBAdapterHelper.parseIDSet(fontChild, "descendantFont", null, root.addChild("descendantFonts"));
 					parseFontDescriptior(fontLike.getFontDescriptor(), root, collection);
 				} else if (font instanceof PDSimpleFont) {
 					PDSimpleFont sFont = (PDSimpleFont) font;
@@ -135,11 +138,11 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 
 					COSBase enc = sFont.getCOSObject().getDictionaryObject(COSName.ENCODING);
 					if (enc instanceof COSName) {
-						PBCreateNodeHelper.addNotEmptyNode("encoding", ((COSName) enc).getName(), root);
+						PBAdapterHelper.addNotEmptyNode("encoding", ((COSName) enc).getName(), root);
 					} else if (enc instanceof COSDictionary) {
 						COSBase name = ((COSDictionary) enc).getDictionaryObject(COSName.BASE_ENCODING);
 						if (name instanceof COSName) {
-							PBCreateNodeHelper.addNotEmptyNode("encoding", ((COSName) name).getName(), root);
+							PBAdapterHelper.addNotEmptyNode("encoding", ((COSName) name).getName(), root);
 						}
 					}
 
@@ -148,8 +151,8 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 					if (sFont instanceof PDType3Font) {
 						PDType3Font type3 = (PDType3Font) sFont;
 
-						PBCreateNodeHelper.addBoxFeature("fontBBox", type3.getFontBBox(), root);
-						PBCreateNodeHelper.parseFloatMatrix(type3.getFontMatrix().getValues(), root.addChild("fontMatrix"));
+						PBAdapterHelper.addBoxFeature("fontBBox", type3.getFontBBox(), root);
+						PBAdapterHelper.parseFloatMatrix(type3.getFontMatrix().getValues(), root.addChild("fontMatrix"));
 
 						parseResources(root);
 					}
@@ -157,8 +160,8 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 
 			} else if (fontLike instanceof PDCIDFont) {
 				PDCIDFont cid = (PDCIDFont) fontLike;
-				PBCreateNodeHelper.addNotEmptyNode("type", cid.getCOSObject().getNameAsString(COSName.SUBTYPE), root);
-				PBCreateNodeHelper.addNotEmptyNode("baseFont", cid.getBaseFont(), root);
+				PBAdapterHelper.addNotEmptyNode("type", cid.getCOSObject().getNameAsString(COSName.SUBTYPE), root);
+				PBAdapterHelper.addNotEmptyNode("baseFont", cid.getBaseFont(), root);
 				COSBase dw = cid.getCOSObject().getDictionaryObject(COSName.DW);
 				if (dw instanceof COSInteger) {
 					root.addChild("defaultWidth").setValue(String.valueOf(((COSNumber) dw).intValue()));
@@ -166,8 +169,8 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 
 				if (cid.getCIDSystemInfo() != null) {
 					FeatureTreeNode cidS = root.addChild("cidSystemInfo");
-					PBCreateNodeHelper.addNotEmptyNode("registry", cid.getCIDSystemInfo().getRegistry(), cidS);
-					PBCreateNodeHelper.addNotEmptyNode("ordering", cid.getCIDSystemInfo().getOrdering(), cidS);
+					PBAdapterHelper.addNotEmptyNode("registry", cid.getCIDSystemInfo().getRegistry(), cidS);
+					PBAdapterHelper.addNotEmptyNode("ordering", cid.getCIDSystemInfo().getOrdering(), cidS);
 					cidS.addChild("supplement").setValue(String.valueOf(cid.getCIDSystemInfo().getSupplement()));
 
 				}
@@ -259,9 +262,9 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 		if (descriptor != null) {
 			FeatureTreeNode descriptorNode = root.addChild("fontDescriptor");
 
-			PBCreateNodeHelper.addNotEmptyNode("fontName", descriptor.getFontName(), descriptorNode);
-			PBCreateNodeHelper.addNotEmptyNode("fontFamily", descriptor.getFontFamily(), descriptorNode);
-			PBCreateNodeHelper.addNotEmptyNode("fontStretch", descriptor.getFontStretch(), descriptorNode);
+			PBAdapterHelper.addNotEmptyNode("fontName", descriptor.getFontName(), descriptorNode);
+			PBAdapterHelper.addNotEmptyNode("fontFamily", descriptor.getFontFamily(), descriptorNode);
+			PBAdapterHelper.addNotEmptyNode("fontStretch", descriptor.getFontStretch(), descriptorNode);
 			if (descriptor.getCOSObject().containsKey(COSName.FONT_WEIGHT)) {
 				descriptorNode.addChild("fontWeight").setValue(String.valueOf(descriptor.getFontWeight()));
 			}
@@ -274,7 +277,7 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 			descriptorNode.addChild("allCap").setValue(String.valueOf(descriptor.isAllCap()));
 			descriptorNode.addChild("smallCap").setValue(String.valueOf(descriptor.isScript()));
 			descriptorNode.addChild("forceBold").setValue(String.valueOf(descriptor.isForceBold()));
-			PBCreateNodeHelper.addBoxFeature("fontBBox", descriptor.getFontBoundingBox(), descriptorNode);
+			PBAdapterHelper.addBoxFeature("fontBBox", descriptor.getFontBoundingBox(), descriptorNode);
 
 			descriptorNode.addChild("italicAngle").setValue(String.valueOf(descriptor.getItalicAngle()));
 			descriptorNode.addChild("ascent").setValue(String.valueOf(descriptor.getAscent()));
@@ -289,7 +292,7 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 			descriptorNode.addChild("averageWidth").setValue(String.valueOf(descriptor.getAverageWidth()));
 			descriptorNode.addChild("maxWidth").setValue(String.valueOf(descriptor.getMaxWidth()));
 			descriptorNode.addChild("missingWidth").setValue(String.valueOf(descriptor.getMissingWidth()));
-			PBCreateNodeHelper.addNotEmptyNode("charSet", descriptor.getCharSet(), descriptorNode);
+			PBAdapterHelper.addNotEmptyNode("charSet", descriptor.getCharSet(), descriptorNode);
 
 			PDStream file = descriptor.getFontFile();
 			if (file == null) {
@@ -301,7 +304,7 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 
 			descriptorNode.addChild("embedded").setValue(String.valueOf(file != null));
 			if (file != null) {
-				PBCreateNodeHelper.parseMetadata(file.getMetadata(), "embeddedFileMetadata", descriptorNode, collection);
+				PBAdapterHelper.parseMetadata(file.getMetadata(), "embeddedFileMetadata", descriptorNode, collection);
 			}
 		}
 	}
@@ -326,13 +329,13 @@ public class PBFontFeaturesObject implements IFeaturesObject {
 				(propertiesChild != null && !propertiesChild.isEmpty())) {
 			FeatureTreeNode resources = root.addChild("resources");
 
-			PBCreateNodeHelper.parseIDSet(extGStateChild, "graphicsState", "graphicsStates", resources);
-			PBCreateNodeHelper.parseIDSet(colorSpaceChild, "colorSpace", "colorSpaces", resources);
-			PBCreateNodeHelper.parseIDSet(patternChild, "pattern", "patterns", resources);
-			PBCreateNodeHelper.parseIDSet(shadingChild, "shading", "shadings", resources);
-			PBCreateNodeHelper.parseIDSet(xobjectChild, "xobject", "xobjects", resources);
-			PBCreateNodeHelper.parseIDSet(fontChild, "font", "fonts", resources);
-			PBCreateNodeHelper.parseIDSet(propertiesChild, "propertiesDict", "propertiesDicts", resources);
+			PBAdapterHelper.parseIDSet(extGStateChild, "graphicsState", "graphicsStates", resources);
+			PBAdapterHelper.parseIDSet(colorSpaceChild, "colorSpace", "colorSpaces", resources);
+			PBAdapterHelper.parseIDSet(patternChild, "pattern", "patterns", resources);
+			PBAdapterHelper.parseIDSet(shadingChild, "shading", "shadings", resources);
+			PBAdapterHelper.parseIDSet(xobjectChild, "xobject", "xobjects", resources);
+			PBAdapterHelper.parseIDSet(fontChild, "font", "fonts", resources);
+			PBAdapterHelper.parseIDSet(propertiesChild, "propertiesDict", "propertiesDicts", resources);
 		}
 	}
 }

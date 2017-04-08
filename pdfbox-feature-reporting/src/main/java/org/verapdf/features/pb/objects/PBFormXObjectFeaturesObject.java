@@ -31,7 +31,7 @@ import org.verapdf.features.FeatureExtractionResult;
 import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.FeaturesData;
 import org.verapdf.features.IFeaturesObject;
-import org.verapdf.features.pb.tools.PBCreateNodeHelper;
+import org.verapdf.features.pb.tools.PBAdapterHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 
 import java.util.Set;
@@ -110,14 +110,14 @@ public class PBFormXObjectFeaturesObject implements IFeaturesObject {
 				root.setAttribute(ID, id);
 			}
 
-			PBCreateNodeHelper.addBoxFeature("bbox", formXObject.getBBox(), root);
-			PBCreateNodeHelper.parseFloatMatrix(formXObject.getMatrix().getValues(), root.addChild("matrix"));
+			PBAdapterHelper.addBoxFeature("bbox", formXObject.getBBox(), root);
+			PBAdapterHelper.parseFloatMatrix(formXObject.getMatrix().getValues(), root.addChild("matrix"));
 
 			PDGroup group = formXObject.getGroup();
 			if (group != null) {
 				FeatureTreeNode groupNode = root.addChild("group");
 				if (group.getSubType() != null) {
-					PBCreateNodeHelper.addNotEmptyNode("subtype", group.getSubType().getName(), groupNode);
+					PBAdapterHelper.addNotEmptyNode("subtype", group.getSubType().getName(), groupNode);
 					if ("Transparency".equals(group.getSubType().getName())) {
 						if (groupColorSpaceChild != null) {
 							FeatureTreeNode clr = groupNode.addChild("colorSpace");
@@ -139,7 +139,7 @@ public class PBFormXObjectFeaturesObject implements IFeaturesObject {
 			COSBase cosBase = formXObject.getCOSStream().getDictionaryObject(COSName.METADATA);
 			if (cosBase instanceof COSStream) {
 				PDMetadata meta = new PDMetadata((COSStream) cosBase);
-				PBCreateNodeHelper.parseMetadata(meta, "metadata", root, collection);
+				PBAdapterHelper.parseMetadata(meta, "metadata", root, collection);
 			}
 
 			parseResources(root);
@@ -170,13 +170,13 @@ public class PBFormXObjectFeaturesObject implements IFeaturesObject {
 				(propertiesChild != null && !propertiesChild.isEmpty())) {
 			FeatureTreeNode resources = root.addChild("resources");
 
-			PBCreateNodeHelper.parseIDSet(extGStateChild, "graphicsState", "graphicsStates", resources);
-			PBCreateNodeHelper.parseIDSet(colorSpaceChild, "colorSpace", "colorSpaces", resources);
-			PBCreateNodeHelper.parseIDSet(patternChild, "pattern", "patterns", resources);
-			PBCreateNodeHelper.parseIDSet(shadingChild, "shading", "shadings", resources);
-			PBCreateNodeHelper.parseIDSet(xobjectChild, "xobject", "xobjects", resources);
-			PBCreateNodeHelper.parseIDSet(fontChild, "font", "fonts", resources);
-			PBCreateNodeHelper.parseIDSet(propertiesChild, "propertiesDict", "propertiesDicts", resources);
+			PBAdapterHelper.parseIDSet(extGStateChild, "graphicsState", "graphicsStates", resources);
+			PBAdapterHelper.parseIDSet(colorSpaceChild, "colorSpace", "colorSpaces", resources);
+			PBAdapterHelper.parseIDSet(patternChild, "pattern", "patterns", resources);
+			PBAdapterHelper.parseIDSet(shadingChild, "shading", "shadings", resources);
+			PBAdapterHelper.parseIDSet(xobjectChild, "xobject", "xobjects", resources);
+			PBAdapterHelper.parseIDSet(fontChild, "font", "fonts", resources);
+			PBAdapterHelper.parseIDSet(propertiesChild, "propertiesDict", "propertiesDicts", resources);
 		}
 	}
 }
