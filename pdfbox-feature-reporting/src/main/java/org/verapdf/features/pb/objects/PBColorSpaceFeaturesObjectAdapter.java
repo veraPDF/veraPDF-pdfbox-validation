@@ -34,7 +34,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Features object for ColorSpace
+ * Features object adapter for ColorSpace
  *
  * @author Maksim Bezrukov
  */
@@ -52,7 +52,7 @@ public class PBColorSpaceFeaturesObjectAdapter implements ColorSpaceFeaturesObje
 	private List<String> errors;
 
 	/**
-	 * Constructs new colorspace features object
+	 * Constructs new colorspace features object adapter
 	 *
 	 * @param colorSpace        PDColorSpace which represents colorspace for feature report
 	 * @param id                id of the object
@@ -110,6 +110,17 @@ public class PBColorSpaceFeaturesObjectAdapter implements ColorSpaceFeaturesObje
 		}
 	}
 
+	private static double[] parseTristimulus(PDTristimulus tris) {
+		if (tris != null) {
+			double[] res = new double[3];
+			res[0] = tris.getX();
+			res[1] = tris.getY();
+			res[2] = tris.getZ();
+			return res;
+		}
+		return null;
+	}
+
 	@Override
 	public String getId() {
 		return id;
@@ -137,12 +148,7 @@ public class PBColorSpaceFeaturesObjectAdapter implements ColorSpaceFeaturesObje
 	public double[] getWhitePoint() {
 		if (colorSpace instanceof PDCIEDictionaryBasedColorSpace) {
 			PDCIEDictionaryBasedColorSpace cie = (PDCIEDictionaryBasedColorSpace) colorSpace;
-			PDTristimulus tris = cie.getWhitepoint();
-			double[] res = new double[3];
-			res[0] = tris.getX();
-			res[1] = tris.getY();
-			res[2] = tris.getZ();
-			return res;
+			parseTristimulus(cie.getWhitepoint());
 		}
 		return null;
 	}
@@ -151,12 +157,7 @@ public class PBColorSpaceFeaturesObjectAdapter implements ColorSpaceFeaturesObje
 	public double[] getBlackPoint() {
 		if (colorSpace instanceof PDCIEDictionaryBasedColorSpace) {
 			PDCIEDictionaryBasedColorSpace cie = (PDCIEDictionaryBasedColorSpace) colorSpace;
-			PDTristimulus tris = cie.getBlackPoint();
-			double[] res = new double[3];
-			res[0] = tris.getX();
-			res[1] = tris.getY();
-			res[2] = tris.getZ();
-			return res;
+			parseTristimulus(cie.getBlackPoint());
 		}
 		return null;
 	}

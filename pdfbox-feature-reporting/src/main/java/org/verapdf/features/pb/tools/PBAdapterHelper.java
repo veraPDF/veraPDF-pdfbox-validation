@@ -23,6 +23,7 @@ package org.verapdf.features.pb.tools;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSObject;
+import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
@@ -270,52 +271,30 @@ public final class PBAdapterHelper {
 		return baos.toByteArray();
 	}
 
-	/**
-	 * Creates FeatureTreeNode with name {@code nodeName}, parent
-	 * {@code parent}, and content which is a stream r epresentation of the
-	 * {@code metadata} content. If there is an exception during getting
-	 * metadata, then it will create node with errorID and error for this
-	 * situation.
-	 *
-	 * @param metadata
-	 *            PDMetadata class from which metadata will be taken
-	 * @param nodeName
-	 *            name for the created node
-	 * @param collection
-	 *            collection for the created node
-	 * @return created node
-	 * @throws FeatureParsingException
-	 *             occurs when wrong features tree node constructs
-	 */
-	public static FeatureTreeNode parseMetadata(PDMetadata metadata, String nodeName, FeatureTreeNode parent,
-			FeatureExtractionResult collection) throws FeatureParsingException {
-		if (metadata == null) {
-			return null;
-		}
-		FeatureTreeNode node;
-		node = parent.addMetadataChild(nodeName);
-		try {
-			byte[] bStream = metadata.getByteArray();
-			if (bStream != null) {
-				String hexString = DatatypeConverter.printHexBinary(bStream);
-				node.setValue(hexString);
+	public static InputStream getMetadataStream(PDMetadata metadata) {
+		if (metadata != null) {
+			COSStream stream = metadata.getStream();
+			if (stream != null) {
+				try {
+					return stream.getUnfilteredStream();
+				} catch (IOException e) {
+					LOGGER.debug("Error while obtaining unfiltered metadata stream", e);
+				}
 			}
-		} catch (IOException e) {
-			LOGGER.debug("Error while obtaining unfiltered metadata stream", e);
-			ErrorsHelper.addErrorIntoCollection(collection, node, e.getMessage());
 		}
-
-		return node;
+		return null;
 	}
 
-	public static void parseFloatMatrix(float[][] array, FeatureTreeNode parent) throws FeatureParsingException {
-		for (int i = 0; i < 3; ++i) {
-			for (int j = 0; j < 2; ++j) {
-				FeatureTreeNode element = parent.addChild("element");
-				element.setAttribute("index", String.valueOf(2*i+j+1));
-				element.setAttribute("value", String.valueOf(array[i][j]));
+	public static double[] parseFloatMatrix(float[][] array) {
+		if (array != null) {
+			double[] res = new double[6];
+			for (int i = 0; i < 3; ++i) {
+				for (int j = 0; j < 2; ++j) {
+					res[2 * i + j] = array[i][j];
+				}
 			}
 		}
+		return null;
 	}
 
 	public static double[] castFloatArrayToDouble(float[] array) {
@@ -324,6 +303,18 @@ public final class PBAdapterHelper {
 			for (int i = 0; i < array.length; ++i) {
 				res[i] = array[i];
 			}
+			return res;
+		}
+		return null;
+	}
+
+	public static double[] parseRectangle(PDRectangle rect) {
+		if (rect != null) {
+			double[] res = new double[4];
+			res[0] = rect.getLowerLeftX();
+			res[1] = rect.getLowerLeftY();
+			res[2] = rect.getUpperRightX();
+			res[3] = rect.getUpperRightY();
 			return res;
 		}
 		return null;

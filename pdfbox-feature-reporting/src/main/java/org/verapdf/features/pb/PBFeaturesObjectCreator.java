@@ -56,23 +56,25 @@ public final class PBFeaturesObjectCreator {
 	}
 
 	/**
-	 * Creates new PBInfoDictFeaturesObject
+	 * Creates new PBInfoDictFeaturesObjectAdapter
 	 *
 	 * @param info PDDocumentInformation class from pdfbox, which represents a document info dictionary for feature report
-	 * @return created PBInfoDictFeaturesObject
+	 * @return created PBInfoDictFeaturesObjectAdapter
 	 */
 	public static InfoDictFeaturesObject createInfoDictFeaturesObject(PDDocumentInformation info) {
-		return new PBInfoDictFeaturesObject(info);
+		PBInfoDictFeaturesObjectAdapter adapter = new PBInfoDictFeaturesObjectAdapter(info);
+		return new InfoDictFeaturesObject(adapter);
 	}
 
 	/**
-	 * Creates new PBMetadataFeaturesObject
+	 * Creates new PBMetadataFeaturesObjectAdapter
 	 *
 	 * @param metadata PDMetadata class from pdfbox, which represents a metadata for feature report
-	 * @return created PBMetadataFeaturesObject
+	 * @return created PBMetadataFeaturesObjectAdapter
 	 */
 	public static MetadataFeaturesObject createMetadataFeaturesObject(PDMetadata metadata) {
-		return new PBMetadataFeaturesObject(metadata);
+		PBMetadataFeaturesObjectAdapter adapter = new PBMetadataFeaturesObjectAdapter(metadata);
+		return new MetadataFeaturesObject(adapter);
 	}
 
 	/**
@@ -87,25 +89,27 @@ public final class PBFeaturesObjectCreator {
 	}
 
 	/**
-	 * Creates new PBLowLvlInfoFeaturesObject
+	 * Creates new PBLowLvlInfoFeaturesObjectAdapter
 	 *
 	 * @param document COSDocument class from pdfbox, which represents a document for feature report
-	 * @return created PBLowLvlInfoFeaturesObject
+	 * @return created PBLowLvlInfoFeaturesObjectAdapter
 	 */
 	public static LowLvlInfoFeaturesObject createLowLvlInfoFeaturesObject(COSDocument document) {
-		return new PBLowLvlInfoFeaturesObject(document);
+		PBLowLvlInfoFeaturesObjectAdapter adapter = new PBLowLvlInfoFeaturesObjectAdapter(document);
+		return new LowLvlInfoFeaturesObject(adapter);
 	}
 
 	/**
-	 * Creates new PBEmbeddedFileFeaturesObject
+	 * Creates new PBEmbeddedFileFeaturesObjectAdapter
 	 *
 	 * @param embFile PDComplexFileSpecification class from pdfbox, which represents a file specification with embedded
 	 *                file for feature report
-	 * @return created PBEmbeddedFileFeaturesObject
+	 * @return created PBEmbeddedFileFeaturesObjectAdapter
 	 */
 	public static EmbeddedFileFeaturesObject createEmbeddedFileFeaturesObject(PDComplexFileSpecification embFile,
 																				int index) {
-		return new PBEmbeddedFileFeaturesObject(embFile, index);
+		PBEmbeddedFileFeaturesObjectAdapter adapter = new PBEmbeddedFileFeaturesObjectAdapter(embFile, index);
+		return new EmbeddedFileFeaturesObject(adapter);
 	}
 
 	/**
@@ -180,28 +184,30 @@ public final class PBFeaturesObjectCreator {
 	}
 
 	/**
-	 * Creates new PBICCProfileFeaturesObject
+	 * Creates new PBICCProfileFeaturesObjectAdapter
 	 *
 	 * @param profile   COSStream which represents the icc profile for feature report
 	 * @param id        id of the profile
-	 * @return created PBICCProfileFeaturesObject
+	 * @return created PBICCProfileFeaturesObjectAdapter
 	 */
 	public static ICCProfileFeaturesObject createICCProfileFeaturesObject(COSStream profile, String id) {
-		return new PBICCProfileFeaturesObject(profile, id);
+		PBICCProfileFeaturesObjectAdapter adapter = new PBICCProfileFeaturesObjectAdapter(profile, id);
+		return new ICCProfileFeaturesObject(adapter);
 	}
 
 	/**
-	 * Creates new PBExtGStateFeaturesObject
+	 * Creates new PBExtGStateFeaturesObjectAdapter
 	 *
 	 * @param exGState         PDExtendedGraphicsState which represents extended graphics state for feature report
 	 * @param id               id of the object
 	 * @param fontChildID      id of the font child
-	 * @return created PBExtGStateFeaturesObject
+	 * @return created PBExtGStateFeaturesObjectAdapter
 	 */
 	public static ExtGStateFeaturesObject createExtGStateFeaturesObject(PDExtendedGraphicsState exGState,
 																		  String id,
 																		  String fontChildID) {
-		return new PBExtGStateFeaturesObject(exGState, id, fontChildID);
+		PBExtGStateFeaturesObjectAdapter adapter = new PBExtGStateFeaturesObjectAdapter(exGState, id, fontChildID);
+		return new ExtGStateFeaturesObject(adapter);
 	}
 
 	/**
@@ -298,7 +304,7 @@ public final class PBFeaturesObjectCreator {
 	}
 
 	/**
-	 * Constructs new PBFormXObjectFeaturesObject
+	 * Constructs new PBFormXObjectFeaturesObjectAdapter
 	 *
 	 * @param formXObject      PDFormXObject which represents form xobject for feature report
 	 * @param id               id of the object
@@ -310,7 +316,7 @@ public final class PBFeaturesObjectCreator {
 	 * @param xobjectChild     set of XObject id which contains in resource dictionary of this xobject
 	 * @param fontChild        set of font id which contains in resource dictionary of this pattern
 	 * @param propertiesChild  set of properties id which contains in resource dictionary of this xobject
-	 * @return created PBFormXObjectFeaturesObject
+	 * @return created PBFormXObjectFeaturesObjectAdapter
 	 */
 	public static FormXObjectFeaturesObject createFormXObjectFeaturesObject(PDFormXObject formXObject,
 																			  String id,
@@ -322,11 +328,12 @@ public final class PBFeaturesObjectCreator {
 																			  Set<String> xobjectChild,
 																			  Set<String> fontChild,
 																			  Set<String> propertiesChild) {
-		return new PBFormXObjectFeaturesObject(formXObject, id, groupChild, extGStateChild, colorSpaceChild, patternChild, shadingChild, xobjectChild, fontChild, propertiesChild);
+		PBFormXObjectFeaturesObjectAdapter adapter = new PBFormXObjectFeaturesObjectAdapter(formXObject, id, groupChild, extGStateChild, colorSpaceChild, patternChild, shadingChild, xobjectChild, fontChild, propertiesChild);
+		return new FormXObjectFeaturesObject(adapter);
 	}
 
 	/**
-	 * Constructs new PBFontFeaturesObject
+	 * Constructs new PBFontFeaturesObjectAdapter
 	 *
 	 * @param fontLike        PDFontLike which represents font for feature report
 	 * @param id              id of the object
@@ -337,7 +344,7 @@ public final class PBFeaturesObjectCreator {
 	 * @param xobjectChild    set of XObject id which contains in resource dictionary of this font
 	 * @param fontChild       set of font id which contains in resource dictionary of this font
 	 * @param propertiesChild set of properties id which contains in resource dictionary of this font
-	 * @return created PBFontFeaturesObject
+	 * @return created PBFontFeaturesObjectAdapter
 	 */
 	public static FontFeaturesObject createFontFeaturesObject(PDFontLike fontLike,
 																String id,
@@ -348,7 +355,8 @@ public final class PBFeaturesObjectCreator {
 																Set<String> xobjectChild,
 																Set<String> fontChild,
 																Set<String> propertiesChild) {
-		return new PBFontFeaturesObject(fontLike, id, extGStateChild, colorSpaceChild, patternChild, shadingChild, xobjectChild, fontChild, propertiesChild);
+		PBFontFeaturesObjectAdapter adapter = new PBFontFeaturesObjectAdapter(fontLike, id, extGStateChild, colorSpaceChild, patternChild, shadingChild, xobjectChild, fontChild, propertiesChild);
+		return new FontFeaturesObject(adapter);
 	}
 
 	/**

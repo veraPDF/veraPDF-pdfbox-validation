@@ -23,11 +23,8 @@ package org.verapdf.features.pb.objects;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
-import org.verapdf.core.FeatureParsingException;
-import org.verapdf.features.*;
+import org.verapdf.features.objects.ICCProfileFeaturesObjectAdapter;
 import org.verapdf.features.pb.tools.PBAdapterHelper;
-import org.verapdf.features.tools.ErrorsHelper;
-import org.verapdf.features.tools.FeatureTreeNode;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,16 +32,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
- * Feature object for icc profile
+ * Feature object adapter for icc profile
  *
  * @author Maksim Bezrukov
  */
-public class PBICCProfileFeaturesObject implements IFeaturesObject {
+public class PBICCProfileFeaturesObjectAdapter implements ICCProfileFeaturesObjectAdapter {
 
 	private static final Logger LOGGER = Logger
-			.getLogger(PBICCProfileFeaturesObject.class);
+			.getLogger(PBICCProfileFeaturesObjectAdapter.class);
 
-	private static final String ID = "id";
 	private static final int HEADER_SIZE = 128;
 	private static final int FF_FLAG = 0xFF;
 	private static final int REQUIRED_LENGTH = 4;
@@ -80,139 +76,184 @@ public class PBICCProfileFeaturesObject implements IFeaturesObject {
 
 	private COSStream profile;
 	private String id;
+	private String version;
+	private String cmmType;
+	private String dataColorSpace;
+	private String creator;
+	private Calendar creationDate;
+	private String defaultRenderingIntent;
+	private String copyright;
+	private String description;
+	private String profileID;
+	private String deviceModel;
+	private String deviceManufacturer;
+	private List<String> errors;
 
 	/**
-	 * Constructs new icc profile feature object
+	 * Constructs new icc profile feature object adapter
 	 *
 	 * @param profile   COSStream which represents the icc profile for feature report
 	 * @param id        id of the profile
 	 */
-	public PBICCProfileFeaturesObject(COSStream profile, String id) {
+	public PBICCProfileFeaturesObjectAdapter(COSStream profile, String id) {
 		this.profile = profile;
 		this.id = id;
+		init();
 	}
 
-	/**
-	 * @return ICCPROFILE instance of the FeaturesObjectTypesEnum enumeration
-	 */
-	@Override
-	public FeatureObjectType getType() {
-		return FeatureObjectType.ICCPROFILE;
-	}
-
-	/**
-	 * Reports all features from the object into the collection
-	 *
-	 * @param collection collection for feature report
-	 * @return FeatureTreeNode class which represents a root node of the constructed collection tree
-	 * @throws FeatureParsingException occurs when wrong features tree node constructs
-	 */
-	@Override
-	public FeatureTreeNode reportFeatures(FeatureExtractionResult collection) throws FeatureParsingException {
-
+	private void init() {
 		if (profile != null) {
-			FeatureTreeNode root = FeatureTreeNode.createRootNode("iccProfile");
+			this.errors = new ArrayList<>();
+			try {
+				byte[] profileBytes = PBAdapterHelper.inputStreamToByteArray(profile.getUnfilteredStream());
+				if (profileBytes.length < HEADER_SIZE) {
+					this.errors.add("ICCProfile contains less than " + HEADER_SIZE + " bytes");
+				} else {
+					this.version = getVersion(profileBytes);
+					this.cmmType = getString(profileBytes, CMMTYPE_BEGIN, CMMTYPE_END);
+					this.dataColorSpace = getString(profileBytes, DATACOLORSPACE_BEGIN, DATACOLORSPACE_END);
+					this.creator = getString(profileBytes, CREATOR_BEGIN, CREATOR_END);
+					this.creationDate = getCreationDate(profileBytes);
+					this.defaultRenderingIntent = getIntent(getString(profileBytes, RENDERINGINTENT_BEGIN, RENDERINGINTENT_END));
+					this.copyright = getStringTag(profileBytes, "cprt", true);
+					this.description = getStringTag(profileBytes, "desc", false);
+					this.profileID = getString(profileBytes, PROFILEID_BEGIN, PROFILEID_END);
+					this.deviceModel = getString(profileBytes, DEVICEMODEL_BEGIN, DEVICEMODEL_END);
+					this.deviceManufacturer = getString(profileBytes, DEVICEMANUFACTURER_BEGIN, DEVICEMANUFACTURER_END);
+				}
 
-			if (id != null) {
-				root.setAttribute(ID, id);
+			} catch (IOException e) {
+				LOGGER.debug("Reading byte array from InputStream error", e);
+				this.errors.add(e.getMessage());
 			}
+		}
+	}
 
-			parseProfileHeader(root, collection);
+	@Override
+	public String getId() {
+		return id;
+	}
 
+	@Override
+	public String getVersion() {
+		return version;
+	}
+
+	@Override
+	public String getCMMType() {
+		return cmmType;
+	}
+
+	@Override
+	public String getDataColorSpace() {
+		return dataColorSpace;
+	}
+
+	@Override
+	public String getCreator() {
+		return creator;
+	}
+
+	@Override
+	public Calendar getCreationDate() {
+		return creationDate;
+	}
+
+	@Override
+	public String getDefaultRenderingIntent() {
+		return defaultRenderingIntent;
+	}
+
+	@Override
+	public String getCopyright() {
+		return copyright;
+	}
+
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+	@Override
+	public String getProfileID() {
+		return profileID;
+	}
+
+	@Override
+	public String getDeviceModel() {
+		return deviceModel;
+	}
+
+	@Override
+	public String getDeviceManufacturer() {
+		return deviceManufacturer;
+	}
+
+	@Override
+	public List<String> getErrors() {
+		return errors == null ? Collections.<String>emptyList() : Collections.unmodifiableList(errors);
+	}
+
+	@Override
+	public InputStream getMetadataStream() {
+		if (this.profile != null) {
 			COSBase cosBase = profile.getDictionaryObject(COSName.METADATA);
 			if (cosBase instanceof COSStream) {
-				PDMetadata meta = new PDMetadata((COSStream) cosBase);
-				PBAdapterHelper.parseMetadata(meta, "metadata", root, collection);
+				PBAdapterHelper.getMetadataStream(new PDMetadata((COSStream) cosBase));
 			}
-
-			collection.addNewFeatureTree(FeatureObjectType.ICCPROFILE, root);
-			return root;
 		}
 		return null;
 	}
 
-	/**
-	 * @return null if it can not get iccProfile stream and features data of the profile in other case.
-	 */
 	@Override
-	public FeaturesData getData() {
-		try {
-			InputStream stream = profile.getUnfilteredStream();
-
-			InputStream metadata = null;
-			COSBase cosBase = profile.getDictionaryObject(COSName.METADATA);
-			if (cosBase instanceof COSStream) {
-				try {
-					metadata = ((COSStream) cosBase).getUnfilteredStream();
-				} catch (IOException e) {
-					LOGGER.debug("Can not get metadata stream for iccProfile", e);
-				}
+	public InputStream getData() {
+		if (profile != null) {
+			try {
+				return profile.getUnfilteredStream();
+			} catch (IOException e) {
+				LOGGER.debug("Can not get iccProfile stream", e);
 			}
+		}
+		return null;
+	}
 
-			Integer n = null;
-			List<Double> range = null;
-
+	@Override
+	public Integer getN() {
+		if (profile != null) {
 			COSBase nBase = profile.getDictionaryObject(COSName.N);
 			if (nBase instanceof COSInteger) {
-				n = Integer.valueOf(((COSInteger) nBase).intValue());
+				return Integer.valueOf(((COSInteger) nBase).intValue());
+			}
+		}
+		return null;
+	}
 
-				COSBase rangeBase = profile.getDictionaryObject(COSName.RANGE);
-				if (rangeBase instanceof COSArray) {
-					COSArray array = (COSArray) rangeBase;
-					range = new ArrayList<>();
-					for (COSBase baseNumb : array) {
-						if (baseNumb instanceof COSNumber) {
-							range.add(Double.valueOf(((COSNumber) baseNumb).doubleValue()));
-						} else {
-							range.add(null);
-						}
+	@Override
+	public List<Double> getRange() {
+		if (profile != null) {
+			List<Double> range = new ArrayList<>();;
+			COSBase rangeBase = profile.getDictionaryObject(COSName.RANGE);
+			if (rangeBase instanceof COSArray) {
+				COSArray array = (COSArray) rangeBase;
+				for (COSBase baseNumb : array) {
+					if (baseNumb instanceof COSNumber) {
+						range.add(Double.valueOf(((COSNumber) baseNumb).doubleValue()));
+					} else {
+						range.add(null);
 					}
-				} else {
-					range = new ArrayList<>();
+				}
+			} else {
+				Integer n = getN();
+				if (n != null) {
 					for (int i = 0; i < n.intValue(); ++i) {
 						range.add(Double.valueOf(0.));
 						range.add(Double.valueOf(1.));
 					}
 				}
 			}
-
-			return ICCProfileFeaturesData.newInstance(metadata, stream, n, range);
-
-		} catch (IOException e) {
-			LOGGER.debug("Can not get iccProfile stream", e);
-			return null;
+			return Collections.unmodifiableList(range);
 		}
-	}
-
-	private void parseProfileHeader(FeatureTreeNode root, FeatureExtractionResult collection) throws FeatureParsingException {
-		try {
-			byte[] profileBytes = PBAdapterHelper.inputStreamToByteArray(profile.getUnfilteredStream());
-
-			if (profileBytes.length < HEADER_SIZE) {
-				ErrorsHelper.addErrorIntoCollection(collection,
-						root,
-						"ICCProfile contains less than " + HEADER_SIZE + " bytes");
-			} else {
-				PBAdapterHelper.addNotEmptyNode("version", getVersion(profileBytes), root);
-				PBAdapterHelper.addNotEmptyNode("cmmType", getString(profileBytes, CMMTYPE_BEGIN, CMMTYPE_END), root);
-				PBAdapterHelper.addNotEmptyNode("dataColorSpace", getString(profileBytes, DATACOLORSPACE_BEGIN, DATACOLORSPACE_END), root);
-				PBAdapterHelper.addNotEmptyNode("creator", getString(profileBytes, CREATOR_BEGIN, CREATOR_END), root);
-				PBAdapterHelper.createDateNode("creationDate", root, getCreationDate(profileBytes), collection);
-				String intent = getIntent(getString(profileBytes, RENDERINGINTENT_BEGIN, RENDERINGINTENT_END));
-				PBAdapterHelper.addNotEmptyNode("defaultRenderingIntent", intent, root);
-				PBAdapterHelper.addNotEmptyNode("copyright", getStringTag(profileBytes, "cprt", true), root);
-				PBAdapterHelper.addNotEmptyNode("description", getStringTag(profileBytes, "desc", false), root);
-				PBAdapterHelper.addNotEmptyNode("profileId", getString(profileBytes, PROFILEID_BEGIN, PROFILEID_END), root);
-				PBAdapterHelper.addNotEmptyNode("deviceModel", getString(profileBytes, DEVICEMODEL_BEGIN, DEVICEMODEL_END), root);
-				PBAdapterHelper.addNotEmptyNode("deviceManufacturer", getString(profileBytes, DEVICEMANUFACTURER_BEGIN, DEVICEMANUFACTURER_END), root);
-			}
-
-		} catch (IOException e) {
-			LOGGER.debug("Reading byte array from InputStream error", e);
-			ErrorsHelper.addErrorIntoCollection(collection,
-					root,
-					e.getMessage());
-		}
+		return Collections.emptyList();
 	}
 
 	private static String getIntent(String str) {

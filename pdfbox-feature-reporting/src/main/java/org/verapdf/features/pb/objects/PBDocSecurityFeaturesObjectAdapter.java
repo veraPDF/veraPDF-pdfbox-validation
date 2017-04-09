@@ -33,7 +33,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Features object for document security
+ * Features object adapter for document security
  *
  * @author Maksim Bezrukov
  */
@@ -57,7 +57,7 @@ public class PBDocSecurityFeaturesObjectAdapter implements DocSecurityFeaturesOb
 	private List<String> errors;
 
 	/**
-	 * Constructs new Document Security Feature Object
+	 * Constructs new Document Security Feature Object adapter
 	 *
 	 * @param encryption pdfbox class represents Encryption object
 	 */
