@@ -113,25 +113,27 @@ public final class PBFeaturesObjectCreator {
 	}
 
 	/**
-	 * Creates new PBOutputIntentsFeaturesObject
+	 * Creates new PBOutputIntentsFeaturesObjectAdapter
 	 *
 	 * @param outInt       PDOutputIntent class from pdfbox, which represents an outputIntent for feature report
 	 * @param iccProfileID id of the icc profile which use in this outputIntent
-	 * @return created PBOutputIntentsFeaturesObject
+	 * @return created PBOutputIntentsFeaturesObjectAdapter
 	 */
 	public static OutputIntentFeaturesObject createOutputIntentFeaturesObject(PDOutputIntent outInt,
 																				 String iccProfileID) {
-		return new PBOutputIntentsFeaturesObject(outInt, iccProfileID);
+		PBOutputIntentsFeaturesObjectAdapter adapter = new PBOutputIntentsFeaturesObjectAdapter(outInt, iccProfileID);
+		return new OutputIntentFeaturesObject(adapter);
 	}
 
 	/**
-	 * Creates new PBOutlinesFeaturesObject
+	 * Creates new PBOutlinesFeaturesObjectAdapter
 	 *
 	 * @param outlines PDPage class from pdfbox, which represents a page for feature report
-	 * @return created PBOutlinesFeaturesObject
+	 * @return created PBOutlinesFeaturesObjectAdapter
 	 */
 	public static OutlinesFeaturesObject createOutlinesFeaturesObject(PDDocumentOutline outlines) {
-		return new PBOutlinesFeaturesObject(outlines);
+		PBOutlinesFeaturesObjectAdapter adapter = new PBOutlinesFeaturesObjectAdapter(outlines);
+		return new OutlinesFeaturesObject(adapter);
 	}
 
 	/**
@@ -152,7 +154,7 @@ public final class PBFeaturesObjectCreator {
 	}
 
 	/**
-	 * Creates new PBPageFeaturesObject
+	 * Creates new PBPageFeaturesObjectAdapter
 	 *
 	 * @param page            pdfbox class represents page object
 	 * @param thumb           thumbnail image id
@@ -165,7 +167,7 @@ public final class PBFeaturesObjectCreator {
 	 * @param fontChild       set of font id which contains in resource dictionary of this page
 	 * @param propertiesChild set of properties id which contains in resource dictionary of this page
 	 * @param index           page index
-	 * @return created PBPageFeaturesObject
+	 * @return created PBPageFeaturesObjectAdapter
 	 */
 	public static PageFeaturesObject createPageFeaturesObject(PDPage page,
 																String thumb,
@@ -178,9 +180,10 @@ public final class PBFeaturesObjectCreator {
 																Set<String> fontChild,
 																Set<String> propertiesChild,
 																int index) {
-		return new PBPageFeaturesObject(page, thumb, annotsId, extGStateChild,
+		PBPageFeaturesObjectAdapter adapter = new PBPageFeaturesObjectAdapter(page, thumb, annotsId, extGStateChild,
 				colorSpaceChild, patternChild, shadingChild, xobjectChild,
 				fontChild, propertiesChild, index);
+		return new PageFeaturesObject(adapter);
 	}
 
 	/**
@@ -228,7 +231,7 @@ public final class PBFeaturesObjectCreator {
 	}
 
 	/**
-	 * Constructs new PBTilingPatternFeaturesObject
+	 * Constructs new PBTilingPatternFeaturesObjectAdapter
 	 *
 	 * @param tilingPattern   PDTilingPattern which represents tilling pattern for feature report
 	 * @param id              id of the object
@@ -239,7 +242,7 @@ public final class PBFeaturesObjectCreator {
 	 * @param xobjectChild    set of XObject id which contains in resource dictionary of this pattern
 	 * @param fontChild       set of font id which contains in resource dictionary of this pattern
 	 * @param propertiesChild set of properties id which contains in resource dictionary of this pattern
-	 * @return created PBTilingPatternFeaturesObject
+	 * @return created PBTilingPatternFeaturesObjectAdapter
 	 */
 	public static TilingPatternFeaturesObject createTilingPatternFeaturesObject(PDTilingPattern tilingPattern,
 																				  String id,
@@ -250,37 +253,40 @@ public final class PBFeaturesObjectCreator {
 																				  Set<String> xobjectChild,
 																				  Set<String> fontChild,
 																				  Set<String> propertiesChild) {
-		return new PBTilingPatternFeaturesObject(tilingPattern, id, extGStateChild, colorSpaceChild, patternChild, shadingChild, xobjectChild, fontChild, propertiesChild);
+		PBTilingPatternFeaturesObjectAdapter adapter = new PBTilingPatternFeaturesObjectAdapter(tilingPattern, id, extGStateChild, colorSpaceChild, patternChild, shadingChild, xobjectChild, fontChild, propertiesChild);
+		return new TilingPatternFeaturesObject(adapter);
 	}
 
 	/**
-	 * Constructs new PBShadingPatternFeaturesObject
+	 * Constructs new PBShadingPatternFeaturesObjectAdapter
 	 *
 	 * @param shadingPattern PDShadingPattern which represents shading pattern for feature report
 	 * @param id             id of the object
 	 * @param extGStateChild external graphics state id which contains in this shading pattern
 	 * @param shadingChild   shading id which contains in this shading pattern
-	 * @return created PBShadingPatternFeaturesObject
+	 * @return created PBShadingPatternFeaturesObjectAdapter
 	 */
 	public static ShadingPatternFeaturesObject createShadingPatternFeaturesObject(PDShadingPattern shadingPattern,
 																					String id,
 																					String shadingChild,
 																					String extGStateChild) {
-		return new PBShadingPatternFeaturesObject(shadingPattern, id, shadingChild, extGStateChild);
+		PBShadingPatternFeaturesObjectAdapter adapter = new PBShadingPatternFeaturesObjectAdapter(shadingPattern, id, shadingChild, extGStateChild);
+		return new ShadingPatternFeaturesObject(adapter);
 	}
 
 	/**
-	 * Constructs new PBShadingFeaturesObject
+	 * Constructs new PBShadingFeaturesObjectAdapter
 	 *
 	 * @param shading         PDShading which represents shading for feature report
 	 * @param id              id of the object
 	 * @param colorSpaceChild colorSpace id which contains in this shading pattern
-	 * @return created PBShadingFeaturesObject
+	 * @return created PBShadingFeaturesObjectAdapter
 	 */
 	public static ShadingFeaturesObject createShadingFeaturesObject(PDShading shading,
 																	  String id,
 																	  String colorSpaceChild) {
-		return new PBShadingFeaturesObject(shading, id, colorSpaceChild);
+		PBShadingFeaturesObjectAdapter adapter = new PBShadingFeaturesObjectAdapter(shading, id, colorSpaceChild);
+		return new ShadingFeaturesObject(adapter);
 	}
 
 	/**
@@ -360,34 +366,37 @@ public final class PBFeaturesObjectCreator {
 	}
 
 	/**
-	 * Constructs new PBPropertiesDictFeaturesObject
+	 * Constructs new PBPropertiesDictFeaturesObjectAdapter
 	 *
 	 * @param properties    COSDictionary which represents properties for feature report
 	 * @param id            id of the object
-	 * @return created PBPropertiesDictFeaturesObject
+	 * @return created PBPropertiesDictFeaturesObjectAdapter
 	 */
 	public static PropertiesDictFeaturesObject createPropertiesDictFeaturesObject(COSDictionary properties,
 																					String id) {
-		return new PBPropertiesDictFeaturesObject(properties, id);
+		PBPropertiesDictFeaturesObjectAdapter adapter = new PBPropertiesDictFeaturesObjectAdapter(properties, id);
+		return new PropertiesDictFeaturesObject(adapter);
 	}
 
 	/**
-	 * Constructs new PBPostScriptXObjectFeaturesObject
+	 * Constructs new PBPostScriptXObjectFeaturesObjectAdapter
 	 *
 	 * @param id            id of the object
-	 * @return created PBPostScriptXObjectFeaturesObject
+	 * @return created PBPostScriptXObjectFeaturesObjectAdapter
 	 */
 	public static PostScriptFeaturesObject createPostScriptXObjectFeaturesObject(String id) {
-		return new PBPostScriptXObjectFeaturesObject(id);
+		PBPostScriptXObjectFeaturesObjectAdapter adapter = new PBPostScriptXObjectFeaturesObjectAdapter(id);
+		return new PostScriptFeaturesObject(adapter);
 	}
 
 	/**
-	 * Constructs new PBSignatureFeaturesObject
+	 * Constructs new PBSignatureFeaturesObjectAdapter
 	 *
 	 * @param signature pdfbox signature object
-	 * @return created PBSignatureFeaturesObject
+	 * @return created PBSignatureFeaturesObjectAdapter
      */
 	public static SignatureFeaturesObject createSignatureFeaturesObject(PDSignature signature) {
-		return new PBSignatureFeaturesObject(signature);
+		PBSignatureFeaturesObjectAdapter adapter = new PBSignatureFeaturesObjectAdapter(signature);
+		return new SignatureFeaturesObject(adapter);
 	}
 }
