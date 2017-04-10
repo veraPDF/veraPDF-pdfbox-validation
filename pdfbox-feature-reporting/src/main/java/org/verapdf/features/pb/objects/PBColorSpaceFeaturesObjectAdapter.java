@@ -148,7 +148,7 @@ public class PBColorSpaceFeaturesObjectAdapter implements ColorSpaceFeaturesObje
 	public double[] getWhitePoint() {
 		if (colorSpace instanceof PDCIEDictionaryBasedColorSpace) {
 			PDCIEDictionaryBasedColorSpace cie = (PDCIEDictionaryBasedColorSpace) colorSpace;
-			parseTristimulus(cie.getWhitepoint());
+			return parseTristimulus(cie.getWhitepoint());
 		}
 		return null;
 	}
@@ -157,7 +157,7 @@ public class PBColorSpaceFeaturesObjectAdapter implements ColorSpaceFeaturesObje
 	public double[] getBlackPoint() {
 		if (colorSpace instanceof PDCIEDictionaryBasedColorSpace) {
 			PDCIEDictionaryBasedColorSpace cie = (PDCIEDictionaryBasedColorSpace) colorSpace;
-			parseTristimulus(cie.getBlackPoint());
+			return parseTristimulus(cie.getBlackPoint());
 		}
 		return null;
 	}

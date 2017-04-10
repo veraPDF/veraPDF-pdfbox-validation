@@ -164,36 +164,36 @@ public class PBFeatureParserTest {
 		Set<String> xobj37 = new HashSet<>();
 		xobj37.add("xobjIndir28");
 		List<FeatureTreeNode> treeNodes = collection.getFeatureTreesForType(FeatureObjectType.ANNOTATION);
-		assertTrue(treeNodes.contains(TestNodeGenerator.getAnnotation("annotIndir37", "Text", "368.0920104980469", "423.5220031738281",
-				"386.0920104980469", "441.5220031738281", "Annotation with pop-up window", "d48d8e43-b22c-41ce-8cfa-28c1ca955d97",
+		assertTrue(treeNodes.contains(TestNodeGenerator.getAnnotation("annotIndir37", "Text", "368.092", "423.522",
+				"386.092", "441.522", "Annotation with pop-up window", "d48d8e43-b22c-41ce-8cfa-28c1ca955d97",
 				"D:20150822140440+03'00'", xobj37, "annotIndir38", "1.000000", "1.000000", "0.000000", null, "false", "false", "true",
 				"true", "true", "false", "false", "false", "false", "false")));
-		assertTrue(treeNodes.contains(TestNodeGenerator.getAnnotation("annotIndir38", "Popup", "370.0799865722656", "265.5469970703125",
-				"550.0809936523438", "385.9840087890625", null, null, null, null, null, null, null, null, null, "false", "false", "true",
+		assertTrue(treeNodes.contains(TestNodeGenerator.getAnnotation("annotIndir38", "Popup", "370.080", "265.547",
+				"550.081", "385.984", null, null, null, null, null, null, null, null, null, "false", "false", "true",
 				"true", "true", "false", "false", "false", "false", "false")));
 		Set<String> xobj13 = new HashSet<>();
 		xobj13.add("xobjIndir22");
 		xobj13.add("xobjIndir21");
 		xobj13.add("xobjIndir23");
-		assertTrue(treeNodes.contains(TestNodeGenerator.getAnnotation("annotIndir13", "Widget", "112.56199645996094", "398.9330139160156",
-				"161.25100708007812", "450.7640075683594", null, null, null, xobj13, null, null, null, null, null, "false", "false", "true",
+		assertTrue(treeNodes.contains(TestNodeGenerator.getAnnotation("annotIndir13", "Widget", "112.562", "398.933",
+				"161.251", "450.764", null, null, null, xobj13, null, null, null, null, null, "false", "false", "true",
 				"false", "false", "false", "false", "false", "false", "false")));
-		assertTrue(treeNodes.contains(TestNodeGenerator.getAnnotation("annotIndir42", "Popup", "499.97698974609375", "350.0039978027344",
-				"679.9769897460938", "470.0039978027344", null, null, null, null, null, null, null, null, null, "false", "false", "true",
+		assertTrue(treeNodes.contains(TestNodeGenerator.getAnnotation("annotIndir42", "Popup", "499.977", "350.004",
+				"679.977", "470.004", null, null, null, null, null, null, null, null, null, "false", "false", "true",
 				"true", "true", "false", "false", "false", "false", "false")));
-		assertTrue(treeNodes.contains(TestNodeGenerator.getAnnotation("annotIndir40", "Popup", "499.97698974609375", "322.7799987792969",
-				"679.9769897460938", "442.7799987792969", null, null, null, null, null, null, null, null, null, "false", "false", "true",
+		assertTrue(treeNodes.contains(TestNodeGenerator.getAnnotation("annotIndir40", "Popup", "499.977", "322.780",
+				"679.977", "442.780", null, null, null, null, null, null, null, null, null, "false", "false", "true",
 				"true", "true", "false", "false", "false", "false", "false")));
 		Set<String> xobj41 = new HashSet<>();
 		xobj41.add("xobjIndir27");
-		assertTrue(treeNodes.contains(TestNodeGenerator.getAnnotation("annotIndir41", "Text", "338.3389892578125", "452.0039978027344",
-				"356.3389892578125", "470.0039978027344", "annotation with CMYK colorspace\r", "a21bf4d8-e9fe-4e29-89a0-26e416fc8ca7",
+		assertTrue(treeNodes.contains(TestNodeGenerator.getAnnotation("annotIndir41", "Text", "338.339", "452.004",
+				"356.339", "470.004", "annotation with CMYK colorspace\r", "a21bf4d8-e9fe-4e29-89a0-26e416fc8ca7",
 				"D:20150831140530+03'00'", xobj41, "annotIndir42", "1.000000", "0.000000", "0.000000", "0.000000", "false", "false", "true",
 				"true", "true", "false", "false", "false", "false", "false")));
 		Set<String> xobj39 = new HashSet<>();
 		xobj39.add("xobjIndir27");
-		assertTrue(treeNodes.contains(TestNodeGenerator.getAnnotation("annotIndir39", "Text", "307.9739990234375", "424.7799987792969",
-				"325.9739990234375", "442.7799987792969", "annotation with gray colorspace\r", "85f36ad6-ae92-479e-9b24-ba07c8702837",
+		assertTrue(treeNodes.contains(TestNodeGenerator.getAnnotation("annotIndir39", "Text", "307.974", "424.780",
+				"325.974", "442.780", "annotation with gray colorspace\r", "85f36ad6-ae92-479e-9b24-ba07c8702837",
 				"D:20150831140515+03'00'", xobj39, "annotIndir40", "1.000000", null, null, null, "false", "false", "true",
 				"true", "true", "false", "false", "false", "false", "false")));
 	}

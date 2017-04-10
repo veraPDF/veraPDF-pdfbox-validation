@@ -201,7 +201,7 @@ public class PBPageFeaturesObjectAdapter implements PageFeaturesObjectAdapter {
 
 	@Override
 	public Long getRotation() {
-		if (page != null) {
+		if (page != null && page.hasRotation()) {
 			return Long.valueOf(page.getRotation());
 		}
 		return null;
