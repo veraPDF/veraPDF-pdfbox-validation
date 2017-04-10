@@ -20,32 +20,33 @@
  */
 package org.verapdf.features.pb.objects;
 
+import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.*;
-import org.verapdf.core.FeatureParsingException;
-import org.verapdf.features.FeatureExtractionResult;
-import org.verapdf.features.FeatureObjectType;
-import org.verapdf.features.FeaturesData;
-import org.verapdf.features.IFeaturesObject;
+import org.verapdf.features.objects.LowLvlInfoFeaturesObjectAdapter;
 import org.verapdf.features.pb.tools.PBAdapterHelper;
-import org.verapdf.features.tools.ErrorsHelper;
-import org.verapdf.features.tools.FeatureTreeNode;
 
 import java.io.IOException;
 import java.util.*;
 
 /**
- * Feature object for low level info part of the features report
+ * Feature object adapter for low level info part of the features report
  *
  * @author Maksim Bezrukov
  */
-public class PBLowLvlInfoFeaturesObject implements IFeaturesObject {
+public class PBLowLvlInfoFeaturesObjectAdapter implements LowLvlInfoFeaturesObjectAdapter {
 
-	private COSDocument document;
+	private static final Logger LOGGER = Logger
+			.getLogger(PBLowLvlInfoFeaturesObjectAdapter.class);
+
+	private int objectsNumber;
+	private String creationId;
+	private String modId;
+	private Set<String> filters;
+	private List<String> errors;
 	private static final Map<String, String> filtersAbbreviations;
 
 	static {
 		Map<String, String> filtersAbbreviationsTemp = new HashMap<>();
-
 		filtersAbbreviationsTemp.put("AHx", "ASCIIHexDecode");
 		filtersAbbreviationsTemp.put("A85", "ASCII85Decode");
 		filtersAbbreviationsTemp.put("LZW", "LZWDecode");
@@ -57,120 +58,50 @@ public class PBLowLvlInfoFeaturesObject implements IFeaturesObject {
 	}
 
 	/**
-	 * Constructs new low level info feature object.
+	 * Constructs new low level info feature object adapter.
 	 *
 	 * @param document
 	 *            pdfbox class represents document object
 	 */
-	public PBLowLvlInfoFeaturesObject(COSDocument document) {
-		this.document = document;
-	}
-
-	/**
-	 * @return LOW_LVL_INFO instance of the FeatureObjectType enumeration
-	 */
-	@Override
-	public FeatureObjectType getType() {
-		return FeatureObjectType.LOW_LEVEL_INFO;
-	}
-
-	/**
-	 * Reports all features from the object into the collection
-	 *
-	 * @param collection
-	 *            collection for feature report
-	 * @return FeatureTreeNode class which represents a root node of the
-	 *         constructed collection tree
-	 * @throws FeatureParsingException
-	 *             occurs when wrong features tree node constructs
-	 */
-	@Override
-	public FeatureTreeNode reportFeatures(FeatureExtractionResult collection) throws FeatureParsingException {
+	public PBLowLvlInfoFeaturesObjectAdapter(COSDocument document) {
 		if (document != null) {
-			FeatureTreeNode root = FeatureTreeNode.createRootNode("lowLevelInfo");
-
-			if (document.getObjects() != null) {
-				root.addChild("indirectObjectsNumber")
-						.setValue(String.valueOf(document.getObjects().size()));
+			List<COSObject> objects = document.getObjects();
+			this.errors = new ArrayList<>();
+			if (objects != null) {
+				this.objectsNumber = objects.size();
 			}
-
-			addDocumentId(root, collection);
-
-			Set<String> filters = getAllFilters();
-
-			if (!filters.isEmpty()) {
-				FeatureTreeNode filtersNode = root.addChild("filters");
-
-				for (String filter : filters) {
-					if (filter != null) {
-						FeatureTreeNode filterNode = filtersNode.addChild("filter");
-						filterNode.setAttribute("name", filter);
-					}
-				}
-			}
-
-			collection.addNewFeatureTree(FeatureObjectType.LOW_LEVEL_INFO, root);
-			return root;
-
+			addDocumentId(document.getDocumentID());
+			this.filters = getAllFilters(document);
 		}
-		return null;
 	}
 
-	/**
-	 * @return null
-	 */
-	@Override
-	public FeaturesData getData() {
-		return null;
-	}
-
-	private Set<String> getAllFilters() {
+	private Set<String> getAllFilters(COSDocument document) {
 		Set<String> res = new HashSet<>();
-
 		for (COSBase base : document.getObjects()) {
-
 			while (base instanceof COSObject) {
 				base = ((COSObject) base).getObject();
 			}
-
 			if (base instanceof COSStream) {
 				try (COSStream stream = (COSStream) base) {
-
 					COSBase baseFilter = stream.getFilters();
-
 					if (baseFilter != null) {
 						addFiltersFromBase(res, baseFilter);
 					}
 				} catch (IOException excep) {
-					// TODO Auto-generated catch block
-					excep.printStackTrace();
+					LOGGER.debug(excep);
+					this.errors.add(excep.getMessage());
 				}
 			}
 		}
-
 		return res;
 	}
 
-	private void addDocumentId(FeatureTreeNode root, FeatureExtractionResult collection) throws FeatureParsingException {
-		COSArray ids = document.getDocumentID();
+	private void addDocumentId(COSArray ids) {
 		if (ids != null) {
-			String creationId = PBAdapterHelper.getStringFromBase(ids.get(0));
-			String modificationId = PBAdapterHelper.getStringFromBase(ids.get(1));
-
-			FeatureTreeNode documentId = root.addChild("documentId");
-
-			if (creationId != null || modificationId != null) {
-				if (creationId != null) {
-					documentId.setAttribute("creationId", creationId);
-				}
-				if (modificationId != null) {
-					documentId.setAttribute("modificationId", modificationId);
-				}
-			}
-
-			if (ids.size() != 2 || creationId == null || modificationId == null) {
-				ErrorsHelper.addErrorIntoCollection(collection, documentId,
-						"Document's ID must be an array of two not null elements");
+			this.creationId = PBAdapterHelper.getStringFromBase(ids.get(0));
+			this.modId = PBAdapterHelper.getStringFromBase(ids.get(1));
+			if (ids.size() != 2 || creationId == null || modId == null) {
+				this.errors.add("Document's ID must be an array of two not null elements");
 			}
 		}
 	}
@@ -182,9 +113,7 @@ public class PBLowLvlInfoFeaturesObject implements IFeaturesObject {
 				name = filtersAbbreviations.get(name);
 			}
 			res.add(name);
-
 		} else if (base instanceof COSArray) {
-
 			for (COSBase baseElement : (COSArray) base) {
 				if (baseElement instanceof COSName) {
 					String name = ((COSName) baseElement).getName();
@@ -195,5 +124,32 @@ public class PBLowLvlInfoFeaturesObject implements IFeaturesObject {
 				}
 			}
 		}
+	}
+
+	@Override
+	public int getIndirectObjectsNumber() {
+		return this.objectsNumber;
+	}
+
+	@Override
+	public String getCreationId() {
+		return this.creationId;
+	}
+
+	@Override
+	public String getModificationId() {
+		return this.modId;
+	}
+
+	@Override
+	public Set<String> getFilters() {
+		return this.filters == null ?
+				Collections.<String>emptySet() : Collections.unmodifiableSet(this.filters);
+	}
+
+	@Override
+	public List<String> getErrors() {
+		return this.errors == null ?
+				Collections.<String>emptyList() : Collections.unmodifiableList(this.errors);
 	}
 }

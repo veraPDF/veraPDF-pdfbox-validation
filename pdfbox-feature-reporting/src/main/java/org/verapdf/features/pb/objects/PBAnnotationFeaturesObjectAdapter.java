@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Feature object for annotation
+ * Feature object adapter for annotation
  *
  * @author Maksim Bezrukov
  */
@@ -46,7 +46,7 @@ public class PBAnnotationFeaturesObjectAdapter implements AnnotationFeaturesObje
 
 
 	/**
-	 * Constructs new Annotation Feature Object
+	 * Constructs new Annotation Feature Object adapter
 	 *
 	 * @param annot        pdfbox class represents annotation object
 	 * @param id           annotation id
@@ -88,15 +88,7 @@ public class PBAnnotationFeaturesObjectAdapter implements AnnotationFeaturesObje
 	@Override
 	public double[] getRectangle() {
 		if (annot != null) {
-			PDRectangle box = annot.getRectangle();
-			if (box != null) {
-				double[] res = new double[4];
-				res[0] = box.getLowerLeftX();
-				res[1] = box.getLowerLeftY();
-				res[2] = box.getUpperRightX();
-				res[3] = box.getUpperRightY();
-				return res;
-			}
+			PBAdapterHelper.parseRectangle(annot.getRectangle());
 		}
 		return null;
 	}
