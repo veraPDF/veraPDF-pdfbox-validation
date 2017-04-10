@@ -22,7 +22,6 @@ package org.verapdf.features.pb.objects;
 
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.*;
-import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.font.*;
 import org.verapdf.features.objects.FontFeaturesObjectAdapter;
@@ -325,7 +324,7 @@ public class PBFontFeaturesObjectAdapter implements FontFeaturesObjectAdapter {
 		@Override
 		public Double getFontWeight() {
 			if (descriptor.getCOSObject().containsKey(COSName.FONT_WEIGHT)) {
-				Double.valueOf(descriptor.getFontWeight());
+				return Double.valueOf(descriptor.getFontWeight());
 			}
 			return null;
 		}

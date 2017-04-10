@@ -20,7 +20,6 @@
  */
 package org.verapdf.features.pb.objects;
 
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.verapdf.features.objects.AnnotationFeaturesObjectAdapter;
@@ -88,7 +87,7 @@ public class PBAnnotationFeaturesObjectAdapter implements AnnotationFeaturesObje
 	@Override
 	public double[] getRectangle() {
 		if (annot != null) {
-			PBAdapterHelper.parseRectangle(annot.getRectangle());
+			return PBAdapterHelper.parseRectangle(annot.getRectangle());
 		}
 		return null;
 	}

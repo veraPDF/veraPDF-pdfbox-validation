@@ -199,7 +199,7 @@ public class PBICCProfileFeaturesObjectAdapter implements ICCProfileFeaturesObje
 		if (this.profile != null) {
 			COSBase cosBase = profile.getDictionaryObject(COSName.METADATA);
 			if (cosBase instanceof COSStream) {
-				PBAdapterHelper.getMetadataStream(new PDMetadata((COSStream) cosBase));
+				return PBAdapterHelper.getMetadataStream(new PDMetadata((COSStream) cosBase));
 			}
 		}
 		return null;

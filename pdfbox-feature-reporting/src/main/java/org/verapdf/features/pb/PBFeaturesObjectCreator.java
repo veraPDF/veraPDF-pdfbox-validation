@@ -306,7 +306,8 @@ public final class PBFeaturesObjectCreator {
 																				String maskChild,
 																				String sMaskChild,
 																				Set<String> alternatesChild) {
-		return new PBImageXObjectFeaturesObject(imageXObject, id, colorSpaceChild, maskChild, sMaskChild, alternatesChild);
+		PBImageXObjectFeaturesObjectAdapter adapter = new PBImageXObjectFeaturesObjectAdapter(imageXObject, id, colorSpaceChild, maskChild, sMaskChild, alternatesChild);
+		return new ImageXObjectFeaturesObject(adapter);
 	}
 
 	/**

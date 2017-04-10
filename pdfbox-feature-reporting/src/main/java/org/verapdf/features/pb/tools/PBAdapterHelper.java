@@ -110,6 +110,7 @@ public final class PBAdapterHelper {
 					res[2 * i + j] = array[i][j];
 				}
 			}
+			return res;
 		}
 		return null;
 	}

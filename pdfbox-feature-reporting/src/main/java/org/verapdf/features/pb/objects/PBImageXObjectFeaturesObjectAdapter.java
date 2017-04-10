@@ -75,7 +75,6 @@ public class PBImageXObjectFeaturesObjectAdapter implements ImageXObjectFeatures
         this.alternatesChild = alternatesChild;
         this.errors = new ArrayList<>();
         this.filterNames = new ArrayList<>();
-
         init();
     }
 
@@ -175,7 +174,7 @@ public class PBImageXObjectFeaturesObjectAdapter implements ImageXObjectFeatures
 
     @Override
     public List<String> getErrors() {
-        return Collections.unmodifiableSet(this.errors);
+        return Collections.emptyList();
     }
 
     @Override
