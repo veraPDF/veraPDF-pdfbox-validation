@@ -81,8 +81,10 @@ public class PBImageXObjectFeaturesObjectAdapter implements ImageXObjectFeatures
     private void init() {
         try {
             List<COSName> filters = imageXObject.getStream().getFilters();
-            for (COSName filter : filters) {
-                this.filterNames.add(filter.getName());
+            if(filters != null) {
+                for (COSName filter : filters) {
+                    this.filterNames.add(filter.getName());
+                }
             }
         } catch (IOException e) {
             this.errors.add("Can't get image stream filters");
