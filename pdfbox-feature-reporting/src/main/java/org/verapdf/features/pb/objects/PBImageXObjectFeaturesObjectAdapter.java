@@ -21,9 +21,9 @@
 package org.verapdf.features.pb.objects;
 
 import org.apache.pdfbox.cos.*;
-import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObjectProxy;
 import org.verapdf.features.objects.ImageXObjectFeaturesObjectAdapter;
+import org.verapdf.features.pb.tools.PBAdapterHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,8 +48,6 @@ public class PBImageXObjectFeaturesObjectAdapter implements ImageXObjectFeatures
     private String maskChild;
     private String sMaskChild;
     private Set<String> alternatesChild;
-    private InputStream metadata;
-    private InputStream imageStream;
     private List<String> errors;
     private List<String> filterNames;
 
@@ -82,23 +80,6 @@ public class PBImageXObjectFeaturesObjectAdapter implements ImageXObjectFeatures
     }
 
     private void init() {
-        try {
-            if (imageXObject != null) {
-                PDMetadata pdMetadata = imageXObject.getMetadata();
-                this.metadata = pdMetadata == null ? null : pdMetadata.getStream().getUnfilteredStream();
-            }
-        } catch (IOException e) {
-            LOGGER.info(e);
-            this.errors.add("Can't decode metadata stream");
-        }
-        try {
-            if (imageXObject != null) {
-                this.imageStream = imageXObject.getStream().getStream().getFilteredStream();
-            }
-        } catch (IOException e) {
-            LOGGER.info(e);
-            this.errors.add("Can't get image stream");
-        }
         try {
             List<COSName> filters = imageXObject.getStream().getFilters();
             for (COSName filter : filters) {
@@ -172,12 +153,24 @@ public class PBImageXObjectFeaturesObjectAdapter implements ImageXObjectFeatures
 
     @Override
     public InputStream getMetadata() {
-        return this.metadata;
+        if (imageXObject != null) {
+            return PBAdapterHelper.getMetadataStream(imageXObject.getMetadata());
+        }
+        return null;
     }
 
     @Override
     public InputStream getRawStreamData() {
-        return this.imageStream;
+        if (imageXObject != null) {
+            try {
+                if (imageXObject.getStream() != null && imageXObject.getStream().getStream() != null) {
+                    return imageXObject.getStream().getStream().getFilteredStream();
+                }
+            } catch (IOException e) {
+                LOGGER.info(e);
+            }
+        }
+        return null;
     }
 
     @Override
