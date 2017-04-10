@@ -51,6 +51,7 @@ public class PBImageXObjectFeaturesObjectAdapter implements ImageXObjectFeatures
     private InputStream metadata;
     private InputStream imageStream;
     private List<String> errors;
+    private List<String> filterNames;
 
     /**
      * Constructs new shading features object
@@ -75,32 +76,37 @@ public class PBImageXObjectFeaturesObjectAdapter implements ImageXObjectFeatures
         this.sMaskChild = sMaskChild;
         this.alternatesChild = alternatesChild;
         this.errors = new ArrayList<>();
+        this.filterNames = new ArrayList<>();
 
-        try {
-            if (imageXObject != null) {
-                PDMetadata pdMetadata = imageXObject.getMetadata();
-                this.metadata = pdMetadata == null ? null : pdMetadata.getStream().getFilteredStream();
-            }
-        } catch (IOException e) {
-            this.errors.add("Can't decode metadata stream");
-        }
+        init();
     }
 
     private void init() {
         try {
             if (imageXObject != null) {
                 PDMetadata pdMetadata = imageXObject.getMetadata();
-                this.metadata = pdMetadata == null ? null : pdMetadata.getStream().getFilteredStream();
+                this.metadata = pdMetadata == null ? null : pdMetadata.getStream().getUnfilteredStream();
             }
         } catch (IOException e) {
+            LOGGER.info(e);
             this.errors.add("Can't decode metadata stream");
         }
         try {
             if (imageXObject != null) {
-                this.imageStream = imageXObject.getStream().getStream().getUnfilteredStream();
+                this.imageStream = imageXObject.getStream().getStream().getFilteredStream();
             }
         } catch (IOException e) {
+            LOGGER.info(e);
             this.errors.add("Can't get image stream");
+        }
+        try {
+            List<COSName> filters = imageXObject.getStream().getFilters();
+            for (COSName filter : filters) {
+                this.filterNames.add(filter.getName());
+            }
+        } catch (IOException e) {
+            this.errors.add("Can't get image stream filters");
+            LOGGER.info(e);
         }
     }
 
@@ -111,12 +117,12 @@ public class PBImageXObjectFeaturesObjectAdapter implements ImageXObjectFeatures
 
     @Override
     public Long getWidth() {
-        return imageXObject == null ? null : new Long(imageXObject.getWidth());
+        return imageXObject == null ? null : Long.valueOf(imageXObject.getWidth());
     }
 
     @Override
     public Long getHeight() {
-        return imageXObject == null ? null : new Long(imageXObject.getHeight());
+        return imageXObject == null ? null : Long.valueOf(imageXObject.getHeight());
     }
 
     @Override
@@ -126,7 +132,7 @@ public class PBImageXObjectFeaturesObjectAdapter implements ImageXObjectFeatures
 
     @Override
     public Long getBitsPerComponent() {
-        return imageXObject == null ? null : new Long(imageXObject.getBitsPerComponent());
+        return imageXObject == null ? null : Long.valueOf(imageXObject.getBitsPerComponent());
     }
 
     @Override
@@ -146,7 +152,7 @@ public class PBImageXObjectFeaturesObjectAdapter implements ImageXObjectFeatures
 
     @Override
     public Set<String> getAlternatesChild() {
-        return this.alternatesChild;
+        return Collections.unmodifiableSet(this.alternatesChild);
     }
 
     @Override
@@ -156,22 +162,12 @@ public class PBImageXObjectFeaturesObjectAdapter implements ImageXObjectFeatures
 
     @Override
     public Long getStructParent() {
-        return imageXObject == null ? null : new Long(imageXObject.getStructParent());
+        return imageXObject == null ? null : Long.valueOf(imageXObject.getStructParent());
     }
 
     @Override
     public List<String> getFilters() {
-        try {
-            List<COSName> filters = imageXObject.getStream().getFilters();
-            List<String> res = new ArrayList<>(filters.size());
-            for (COSName filter : filters) {
-                res.add(filter.getName());
-            }
-            return res;
-        } catch (IOException e) {
-            LOGGER.info(e);
-            return Collections.emptyList();
-        }
+        return Collections.unmodifiableList(filterNames);
     }
 
     @Override
@@ -186,7 +182,7 @@ public class PBImageXObjectFeaturesObjectAdapter implements ImageXObjectFeatures
 
     @Override
     public List<String> getErrors() {
-        return this.errors;
+        return Collections.unmodifiableSet(this.errors);
     }
 
     @Override
@@ -207,7 +203,7 @@ public class PBImageXObjectFeaturesObjectAdapter implements ImageXObjectFeatures
                 }
             }
 
-            return res;
+            return Collections.unmodifiableList(res);
         }
         return Collections.emptyList();
     }
@@ -222,67 +218,83 @@ public class PBImageXObjectFeaturesObjectAdapter implements ImageXObjectFeatures
 
         @Override
         public Long getCCITTK() {
-            return ((COSInteger) base.getDictionaryObject(COSName.K)).longValue();
+            COSBase k = base.getDictionaryObject(COSName.K);
+            return k instanceof COSInteger ? ((COSInteger) k).longValue() : null;
         }
 
         @Override
         public boolean getCCITTEndOfLine() {
-            return ((COSBoolean) base.getDictionaryObject(COSName.COLORS)).getValue();
+            COSBase colors = base.getDictionaryObject(COSName.COLORS);
+            return colors instanceof COSBoolean ? ((COSBoolean) colors).getValue() : false;
         }
 
         @Override
         public boolean getCCITTEncodedByteAlign() {
-            return ((COSBoolean) base.getDictionaryObject(COSName.BITS_PER_COMPONENT)).getValue();
+            COSBase bitsPerComponent = base.getDictionaryObject(COSName.BITS_PER_COMPONENT);
+            return bitsPerComponent instanceof COSBoolean ? ((COSBoolean) bitsPerComponent).getValue() :
+                    false;
         }
 
         @Override
         public Long getCCITTColumns() {
-            return ((COSInteger) base.getDictionaryObject(COSName.COLUMNS)).longValue();
+            COSBase columns = base.getDictionaryObject(COSName.COLUMNS);
+            return columns instanceof COSInteger ? ((COSInteger) columns).longValue() : null;
         }
 
         @Override
         public Long getCCITTRows() {
-            return ((COSInteger) base.getDictionaryObject(COSName.ROWS)).longValue();
+            COSBase rows = base.getDictionaryObject(COSName.ROWS);
+            return rows instanceof COSInteger ? ((COSInteger) rows).longValue() : null;
         }
 
         @Override
         public boolean getCCITTEndOfBlock() {
-            return ((COSBoolean) base.getDictionaryObject(COSName.getPDFName("EndOfBlock"))).getValue();
+            COSBase endOfBlock = base.getDictionaryObject(COSName.getPDFName("EndOfBlock"));
+            return endOfBlock instanceof COSBoolean ? ((COSBoolean) endOfBlock).getValue() : true;
         }
 
         @Override
         public boolean getCCITTBlackIs1() {
-            return ((COSBoolean) base.getDictionaryObject(COSName.BLACK_IS_1)).getValue();
+            COSBase blackIs1 = base.getDictionaryObject(COSName.BLACK_IS_1);
+            return blackIs1 instanceof COSBoolean ? ((COSBoolean) blackIs1).getValue() : false;
         }
 
         @Override
         public Long getCCITTDamagedRowsBeforeError() {
-            return ((COSInteger) base.getDictionaryObject(COSName.getPDFName("DamagedRowsBeforeError"))).longValue();
+            COSBase damgedRowsBeforeError =
+                    base.getDictionaryObject(COSName.getPDFName("DamagedRowsBeforeError"));
+            return damgedRowsBeforeError instanceof COSInteger ? ((COSInteger) damgedRowsBeforeError).longValue() :
+                    null;
         }
 
         @Override
         public Long getDCTColorTransform() {
-            return ((COSInteger) base.getDictionaryObject(COSName.getPDFName("ColorTransform"))).longValue();
+            COSBase colorTransform = base.getDictionaryObject(COSName.getPDFName("ColorTransform"));
+            return colorTransform instanceof COSInteger ? ((COSInteger) colorTransform).longValue() : null;
         }
 
         @Override
         public Long getLZWEarlyChange() {
-            return ((COSInteger) base.getDictionaryObject(COSName.EARLY_CHANGE)).longValue();
+            COSBase earlyChange = base.getDictionaryObject(COSName.EARLY_CHANGE);
+            return earlyChange instanceof COSInteger ? ((COSInteger) earlyChange).longValue() : null;
         }
 
         @Override
         public Long getFlatePredictor() {
-            return ((COSInteger) base.getDictionaryObject(COSName.PREDICTOR)).longValue();
+            COSBase predictor = base.getDictionaryObject(COSName.PREDICTOR);
+            return predictor instanceof COSInteger ? ((COSInteger) predictor).longValue() : null;
         }
 
         @Override
         public Long getFlateColors() {
-            return ((COSInteger) base.getDictionaryObject(COSName.COLORS)).longValue();
+            COSBase colors = base.getDictionaryObject(COSName.COLORS);
+            return colors instanceof COSInteger ? ((COSInteger) colors).longValue() : null;
         }
 
         @Override
         public Long getFlateBitsPerComponent() {
-            return ((COSInteger) base.getDictionaryObject(COSName.BITS_PER_COMPONENT)).longValue();
+            COSBase bitsPerComponent = base.getDictionaryObject(COSName.BITS_PER_COMPONENT);
+            return bitsPerComponent instanceof COSInteger ? ((COSInteger) bitsPerComponent).longValue() : null;
         }
 
         @Override
