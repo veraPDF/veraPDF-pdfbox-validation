@@ -21,7 +21,6 @@
 package org.verapdf.features;
 
 import org.verapdf.core.FeatureParsingException;
-import org.verapdf.features.pb.tools.PBCreateNodeHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 
 import javax.xml.bind.DatatypeConverter;
@@ -87,7 +86,7 @@ public final class TestNodeGenerator {
 		FeatureTreeNode fontStretch = fontDescriptor.addChild("fontStretch");
 		fontStretch.setValue("Normal");
 		FeatureTreeNode fontWeight = fontDescriptor.addChild("fontWeight");
-		fontWeight.setValue("400.0");
+		fontWeight.setValue("400.000");
 		FeatureTreeNode fixedPitch = fontDescriptor.addChild("fixedPitch");
 		fixedPitch.setValue("false");
 		FeatureTreeNode serif = fontDescriptor.addChild("serif");
@@ -107,32 +106,32 @@ public final class TestNodeGenerator {
 		FeatureTreeNode forceBold = fontDescriptor.addChild("forceBold");
 		forceBold.setValue("false");
 		FeatureTreeNode fontBBox = fontDescriptor.addChild("fontBBox");
-		fontBBox.setAttribute("lly", "-250.0");
-		fontBBox.setAttribute("llx", "-157.0");
-		fontBBox.setAttribute("urx", "1126.0");
-		fontBBox.setAttribute("ury", "952.0");
+		fontBBox.setAttribute("lly", "-250.000");
+		fontBBox.setAttribute("llx", "-157.000");
+		fontBBox.setAttribute("urx", "1126.000");
+		fontBBox.setAttribute("ury", "952.000");
 		FeatureTreeNode italicAngle = fontDescriptor.addChild("italicAngle");
-		italicAngle.setValue("0.0");
+		italicAngle.setValue("0.000");
 		FeatureTreeNode ascent = fontDescriptor.addChild("ascent");
-		ascent.setValue("952.0");
+		ascent.setValue("952.000");
 		FeatureTreeNode descent = fontDescriptor.addChild("descent");
-		descent.setValue("-250.0");
+		descent.setValue("-250.000");
 		FeatureTreeNode leading = fontDescriptor.addChild("leading");
-		leading.setValue("0.0");
+		leading.setValue("0.000");
 		FeatureTreeNode capHeight = fontDescriptor.addChild("capHeight");
-		capHeight.setValue("674.0");
+		capHeight.setValue("674.000");
 		FeatureTreeNode xHeight = fontDescriptor.addChild("xHeight");
-		xHeight.setValue("484.0");
+		xHeight.setValue("484.000");
 		FeatureTreeNode stemV = fontDescriptor.addChild("stemV");
-		stemV.setValue("88.0");
+		stemV.setValue("88.000");
 		FeatureTreeNode stemH = fontDescriptor.addChild("stemH");
-		stemH.setValue("0.0");
+		stemH.setValue("0.000");
 		FeatureTreeNode averageWidth = fontDescriptor.addChild("averageWidth");
-		averageWidth.setValue("0.0");
+		averageWidth.setValue("0.000");
 		FeatureTreeNode maxWidth = fontDescriptor.addChild("maxWidth");
-		maxWidth.setValue("0.0");
+		maxWidth.setValue("0.000");
 		FeatureTreeNode missingWidth = fontDescriptor.addChild("missingWidth");
-		missingWidth.setValue("0.0");
+		missingWidth.setValue("0.000");
 		FeatureTreeNode charSet = fontDescriptor.addChild("charSet");
 		charSet.setValue("/space/one/E/T/b/d/e/f/m/n/o/p/t/y");
 		FeatureTreeNode embedded = fontDescriptor.addChild("embedded");
@@ -178,32 +177,32 @@ public final class TestNodeGenerator {
 		FeatureTreeNode forceBold = fontDescriptor.addChild("forceBold");
 		forceBold.setValue("false");
 		FeatureTreeNode fontBBox = fontDescriptor.addChild("fontBBox");
-		fontBBox.setAttribute("lly", "-325.0");
-		fontBBox.setAttribute("llx", "-665.0");
-		fontBBox.setAttribute("urx", "2000.0");
-		fontBBox.setAttribute("ury", "1006.0");
+		fontBBox.setAttribute("lly", "-325.000");
+		fontBBox.setAttribute("llx", "-665.000");
+		fontBBox.setAttribute("urx", "2000.000");
+		fontBBox.setAttribute("ury", "1006.000");
 		FeatureTreeNode italicAngle = fontDescriptor.addChild("italicAngle");
-		italicAngle.setValue("0.0");
+		italicAngle.setValue("0.000");
 		FeatureTreeNode ascent = fontDescriptor.addChild("ascent");
-		ascent.setValue("728.0");
+		ascent.setValue("728.000");
 		FeatureTreeNode descent = fontDescriptor.addChild("descent");
-		descent.setValue("-210.0");
+		descent.setValue("-210.000");
 		FeatureTreeNode leading = fontDescriptor.addChild("leading");
-		leading.setValue("0.0");
+		leading.setValue("0.000");
 		FeatureTreeNode capHeight = fontDescriptor.addChild("capHeight");
-		capHeight.setValue("677.0");
+		capHeight.setValue("677.000");
 		FeatureTreeNode xHeight = fontDescriptor.addChild("xHeight");
-		xHeight.setValue("480.0");
+		xHeight.setValue("480.000");
 		FeatureTreeNode stemV = fontDescriptor.addChild("stemV");
-		stemV.setValue("88.0");
+		stemV.setValue("88.000");
 		FeatureTreeNode stemH = fontDescriptor.addChild("stemH");
-		stemH.setValue("0.0");
+		stemH.setValue("0.000");
 		FeatureTreeNode averageWidth = fontDescriptor.addChild("averageWidth");
-		averageWidth.setValue("0.0");
+		averageWidth.setValue("0.000");
 		FeatureTreeNode maxWidth = fontDescriptor.addChild("maxWidth");
-		maxWidth.setValue("0.0");
+		maxWidth.setValue("0.000");
 		FeatureTreeNode missingWidth = fontDescriptor.addChild("missingWidth");
-		missingWidth.setValue("0.0");
+		missingWidth.setValue("0.000");
 		FeatureTreeNode embedded = fontDescriptor.addChild("embedded");
 		embedded.setValue("true");
 		return font;
@@ -233,7 +232,7 @@ public final class TestNodeGenerator {
 		FeatureTreeNode fontStretch = fontDescriptor.addChild("fontStretch");
 		fontStretch.setValue("Normal");
 		FeatureTreeNode fontWeight = fontDescriptor.addChild("fontWeight");
-		fontWeight.setValue("600.0");
+		fontWeight.setValue("600.000");
 		FeatureTreeNode fixedPitch = fontDescriptor.addChild("fixedPitch");
 		fixedPitch.setValue("false");
 		FeatureTreeNode serif = fontDescriptor.addChild("serif");
@@ -253,32 +252,32 @@ public final class TestNodeGenerator {
 		FeatureTreeNode forceBold = fontDescriptor.addChild("forceBold");
 		forceBold.setValue("false");
 		FeatureTreeNode fontBBox = fontDescriptor.addChild("fontBBox");
-		fontBBox.setAttribute("lly", "-283.0");
-		fontBBox.setAttribute("llx", "-163.0");
-		fontBBox.setAttribute("urx", "1087.0");
-		fontBBox.setAttribute("ury", "967.0");
+		fontBBox.setAttribute("lly", "-283.000");
+		fontBBox.setAttribute("llx", "-163.000");
+		fontBBox.setAttribute("urx", "1087.000");
+		fontBBox.setAttribute("ury", "967.000");
 		FeatureTreeNode italicAngle = fontDescriptor.addChild("italicAngle");
-		italicAngle.setValue("0.0");
+		italicAngle.setValue("0.000");
 		FeatureTreeNode ascent = fontDescriptor.addChild("ascent");
-		ascent.setValue("967.0");
+		ascent.setValue("967.000");
 		FeatureTreeNode descent = fontDescriptor.addChild("descent");
-		descent.setValue("-283.0");
+		descent.setValue("-283.000");
 		FeatureTreeNode leading = fontDescriptor.addChild("leading");
-		leading.setValue("0.0");
+		leading.setValue("0.000");
 		FeatureTreeNode capHeight = fontDescriptor.addChild("capHeight");
-		capHeight.setValue("766.0");
+		capHeight.setValue("766.000");
 		FeatureTreeNode xHeight = fontDescriptor.addChild("xHeight");
-		xHeight.setValue("551.0");
+		xHeight.setValue("551.000");
 		FeatureTreeNode stemV = fontDescriptor.addChild("stemV");
-		stemV.setValue("116.0");
+		stemV.setValue("116.000");
 		FeatureTreeNode stemH = fontDescriptor.addChild("stemH");
-		stemH.setValue("0.0");
+		stemH.setValue("0.000");
 		FeatureTreeNode averageWidth = fontDescriptor.addChild("averageWidth");
-		averageWidth.setValue("0.0");
+		averageWidth.setValue("0.000");
 		FeatureTreeNode maxWidth = fontDescriptor.addChild("maxWidth");
-		maxWidth.setValue("1000.0");
+		maxWidth.setValue("1000.000");
 		FeatureTreeNode missingWidth = fontDescriptor.addChild("missingWidth");
-		missingWidth.setValue("800.0");
+		missingWidth.setValue("800.000");
 		FeatureTreeNode embedded = fontDescriptor.addChild("embedded");
 		embedded.setValue("true");
 
@@ -299,12 +298,12 @@ public final class TestNodeGenerator {
 		root.addChild("paintType").setValue("2");
 		root.addChild("tilingType").setValue("1");
 		FeatureTreeNode bbox = root.addChild("bbox");
-		bbox.setAttribute(LLX, "0.0");
-		bbox.setAttribute(LLY, "0.0");
-		bbox.setAttribute(URX, "5.0");
-		bbox.setAttribute(URY, "10.0");
-		root.addChild("xStep").setValue("5.0");
-		root.addChild("yStep").setValue("10.0");
+		bbox.setAttribute(LLX, "0.000");
+		bbox.setAttribute(LLY, "0.000");
+		bbox.setAttribute(URX, "5.000");
+		bbox.setAttribute(URY, "10.000");
+		root.addChild("xStep").setValue("5.000");
+		root.addChild("yStep").setValue("10.000");
 		getStandartMatrix(root);
 		FeatureTreeNode resources = root.addChild("resources");
 		FeatureTreeNode colorSpaces = resources.addChild("colorSpaces");
@@ -334,12 +333,12 @@ public final class TestNodeGenerator {
 
 	public static void getStandartMatrix(FeatureTreeNode root) throws FeatureParsingException {
 		FeatureTreeNode matr = root.addChild("matrix");
-		addElement("1", "1.0", matr);
-		addElement("2", "0.0", matr);
-		addElement("3", "0.0", matr);
-		addElement("4", "1.0", matr);
-		addElement("5", "0.0", matr);
-		addElement("6", "0.0", matr);
+		addElement("1", "1.000", matr);
+		addElement("2", "0.000", matr);
+		addElement("3", "0.000", matr);
+		addElement("4", "1.000", matr);
+		addElement("5", "0.000", matr);
+		addElement("6", "0.000", matr);
 	}
 
 	public static void addElement(String index, String value, FeatureTreeNode parent)
@@ -356,10 +355,10 @@ public final class TestNodeGenerator {
 		FeatureTreeNode clr = root.addChild("colorSpace");
 		clr.setAttribute(ID, "devrgb");
 		FeatureTreeNode bbox = root.addChild("bbox");;
-		bbox.setAttribute(LLX, "0.0");
-		bbox.setAttribute(LLY, "0.0");
-		bbox.setAttribute(URX, "400.0");
-		bbox.setAttribute(URY, "400.0");
+		bbox.setAttribute(LLX, "0.000");
+		bbox.setAttribute(LLY, "0.000");
+		bbox.setAttribute(URX, "400.000");
+		bbox.setAttribute(URY, "400.000");
 		root.addChild("antiAlias").setValue("false");
 		return root;
 	}
@@ -407,7 +406,7 @@ public final class TestNodeGenerator {
 		addBox("bleedBox", root);
 		addBox("artBox", root);
 		root.addChild("rotation").setValue("0");
-		root.addChild("scaling").setValue("75.0");
+		root.addChild("scaling").setValue("75.000");
 		FeatureTreeNode thumb = root.addChild("thumbnail");
 		thumb.setAttribute(ID, "xobjIndir126");
 		root.addMetadataChild("metadata")
@@ -498,8 +497,8 @@ public final class TestNodeGenerator {
 
 	public static void addBox(String name, FeatureTreeNode parent) throws FeatureParsingException {
 		FeatureTreeNode box = parent.addChild(name);
-		box.setAttribute(LLX, "0.0");
-		box.setAttribute(LLY, "0.0");
+		box.setAttribute(LLX, "0.000");
+		box.setAttribute(LLY, "0.000");
 		box.setAttribute(URX, "499.977");
 		box.setAttribute(URY, "499.977");
 	}
@@ -511,15 +510,15 @@ public final class TestNodeGenerator {
 			String lockedContents) throws FeatureParsingException {
 		FeatureTreeNode root = FeatureTreeNode.createRootNode("annotation");
 		root.setAttribute(ID, id);
-		PBCreateNodeHelper.addNotEmptyNode("subType", subtype, root);
+		addNotEmptyNode("subType", subtype, root);
 		FeatureTreeNode rec = root.addChild("rectangle");
 		rec.setAttribute(LLX, llx);
 		rec.setAttribute(LLY, lly);
 		rec.setAttribute(URX, urx);
 		rec.setAttribute(URY, ury);
-		PBCreateNodeHelper.addNotEmptyNode("contents", contents, root);
-		PBCreateNodeHelper.addNotEmptyNode("annotationName", annotationName, root);
-		PBCreateNodeHelper.addNotEmptyNode("modifiedDate", modifiedDate, root);
+		addNotEmptyNode("contents", contents, root);
+		addNotEmptyNode("annotationName", annotationName, root);
+		addNotEmptyNode("modifiedDate", modifiedDate, root);
 
 		if (xobj != null && !xobj.isEmpty()) {
 			FeatureTreeNode resources = root.addChild("resources");
@@ -619,17 +618,17 @@ public final class TestNodeGenerator {
 		FeatureTreeNode root = FeatureTreeNode.createRootNode("iccProfile");
 		root.setAttribute(ID, id);
 
-		PBCreateNodeHelper.addNotEmptyNode("version", version, root);
-		PBCreateNodeHelper.addNotEmptyNode("cmmType", cmmType, root);
-		PBCreateNodeHelper.addNotEmptyNode("dataColorSpace", dataColorSpace, root);
-		PBCreateNodeHelper.addNotEmptyNode("creator", creator, root);
-		PBCreateNodeHelper.addNotEmptyNode("creationDate", creationDate, root);
-		PBCreateNodeHelper.addNotEmptyNode("defaultRenderingIntent", defaultRenderingIntent, root);
-		PBCreateNodeHelper.addNotEmptyNode("copyright", copyright, root);
-		PBCreateNodeHelper.addNotEmptyNode("description", description, root);
-		PBCreateNodeHelper.addNotEmptyNode("profileId", profileId, root);
-		PBCreateNodeHelper.addNotEmptyNode("deviceModel", deviceModel, root);
-		PBCreateNodeHelper.addNotEmptyNode("deviceManufacturer", deviceManufacturer, root);
+		addNotEmptyNode("version", version, root);
+		addNotEmptyNode("cmmType", cmmType, root);
+		addNotEmptyNode("dataColorSpace", dataColorSpace, root);
+		addNotEmptyNode("creator", creator, root);
+		addNotEmptyNode("creationDate", creationDate, root);
+		addNotEmptyNode("defaultRenderingIntent", defaultRenderingIntent, root);
+		addNotEmptyNode("copyright", copyright, root);
+		addNotEmptyNode("description", description, root);
+		addNotEmptyNode("profileId", profileId, root);
+		addNotEmptyNode("deviceModel", deviceModel, root);
+		addNotEmptyNode("deviceManufacturer", deviceManufacturer, root);
 		if (metadata != null) {
 			root.addMetadataChild("metadata")
 					.setValue(DatatypeConverter.printHexBinary(metadata));
@@ -757,19 +756,19 @@ public final class TestNodeGenerator {
 		public FeatureTreeNode generateNode(FeatureTreeNode parent) throws FeatureParsingException {
 			FeatureTreeNode root = parent.addChild("fontDescriptor");
 
-			PBCreateNodeHelper.addNotEmptyNode("fontName", fontName, root);
-			PBCreateNodeHelper.addNotEmptyNode("fontFamily", fontFamily, root);
-			PBCreateNodeHelper.addNotEmptyNode("fontStretch", fontStretch, root);
-			PBCreateNodeHelper.addNotEmptyNode("fontWeight", fontWeight, root);
-			PBCreateNodeHelper.addNotEmptyNode("fixedPitch", fixedPitch, root);
-			PBCreateNodeHelper.addNotEmptyNode("serif", serif, root);
-			PBCreateNodeHelper.addNotEmptyNode("symbolic", symbolic, root);
-			PBCreateNodeHelper.addNotEmptyNode("script", script, root);
-			PBCreateNodeHelper.addNotEmptyNode("nonsymbolic", nonsymbolic, root);
-			PBCreateNodeHelper.addNotEmptyNode("italic", italic, root);
-			PBCreateNodeHelper.addNotEmptyNode("allCap", allCap, root);
-			PBCreateNodeHelper.addNotEmptyNode("smallCap", smallCap, root);
-			PBCreateNodeHelper.addNotEmptyNode("forceBold", forceBold, root);
+			addNotEmptyNode("fontName", fontName, root);
+			addNotEmptyNode("fontFamily", fontFamily, root);
+			addNotEmptyNode("fontStretch", fontStretch, root);
+			addNotEmptyNode("fontWeight", fontWeight, root);
+			addNotEmptyNode("fixedPitch", fixedPitch, root);
+			addNotEmptyNode("serif", serif, root);
+			addNotEmptyNode("symbolic", symbolic, root);
+			addNotEmptyNode("script", script, root);
+			addNotEmptyNode("nonsymbolic", nonsymbolic, root);
+			addNotEmptyNode("italic", italic, root);
+			addNotEmptyNode("allCap", allCap, root);
+			addNotEmptyNode("smallCap", smallCap, root);
+			addNotEmptyNode("forceBold", forceBold, root);
 
 			FeatureTreeNode bbox = root.addChild("fontBBox");
 			bbox.setAttribute(LLX, fontBBox_llx);
@@ -777,18 +776,28 @@ public final class TestNodeGenerator {
 			bbox.setAttribute(URX, fontBBox_urx);
 			bbox.setAttribute(URY, fontBBox_ury);
 
-			PBCreateNodeHelper.addNotEmptyNode("italicAngle", italicAngle, root);
-			PBCreateNodeHelper.addNotEmptyNode("ascent", ascent, root);
-			PBCreateNodeHelper.addNotEmptyNode("descent", descent, root);
-			PBCreateNodeHelper.addNotEmptyNode("leading", leading, root);
-			PBCreateNodeHelper.addNotEmptyNode("capHeight", capHeight, root);
-			PBCreateNodeHelper.addNotEmptyNode("xHeight", xHeight, root);
-			PBCreateNodeHelper.addNotEmptyNode("stemV", stemV, root);
-			PBCreateNodeHelper.addNotEmptyNode("stemH", stemH, root);
-			PBCreateNodeHelper.addNotEmptyNode("averageWidth", averageWidth, root);
-			PBCreateNodeHelper.addNotEmptyNode("maxWidth", maxWidth, root);
-			PBCreateNodeHelper.addNotEmptyNode("missingWidth", missingWidth, root);
+			addNotEmptyNode("italicAngle", italicAngle, root);
+			addNotEmptyNode("ascent", ascent, root);
+			addNotEmptyNode("descent", descent, root);
+			addNotEmptyNode("leading", leading, root);
+			addNotEmptyNode("capHeight", capHeight, root);
+			addNotEmptyNode("xHeight", xHeight, root);
+			addNotEmptyNode("stemV", stemV, root);
+			addNotEmptyNode("stemH", stemH, root);
+			addNotEmptyNode("averageWidth", averageWidth, root);
+			addNotEmptyNode("maxWidth", maxWidth, root);
+			addNotEmptyNode("missingWidth", missingWidth, root);
 			return parent;
 		}
+	}
+
+	private static FeatureTreeNode addNotEmptyNode(String name, String value, FeatureTreeNode parent)
+			throws FeatureParsingException {
+		if (name != null && value != null) {
+			FeatureTreeNode node = parent.addChild(name);
+			node.setValue(value);
+			return node;
+		}
+		return null;
 	}
 }
