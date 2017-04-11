@@ -231,7 +231,7 @@ public class PBICCProfileFeaturesObjectAdapter implements ICCProfileFeaturesObje
 	@Override
 	public List<Double> getRange() {
 		if (profile != null) {
-			List<Double> range = new ArrayList<>();;
+			List<Double> range = new ArrayList<>();
 			COSBase rangeBase = profile.getDictionaryObject(COSName.RANGE);
 			if (rangeBase instanceof COSArray) {
 				COSArray array = (COSArray) rangeBase;

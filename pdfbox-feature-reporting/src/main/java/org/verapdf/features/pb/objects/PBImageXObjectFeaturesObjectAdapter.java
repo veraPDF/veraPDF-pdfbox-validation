@@ -204,7 +204,7 @@ public class PBImageXObjectFeaturesObjectAdapter implements ImageXObjectFeatures
 
     class PBStreamFilterAdapter implements StreamFilterAdapter {
 
-        COSDictionary base;
+        private COSDictionary base;
 
         public PBStreamFilterAdapter(COSBase base) {
             this.base = base == null ? new COSDictionary() : (COSDictionary) base;
