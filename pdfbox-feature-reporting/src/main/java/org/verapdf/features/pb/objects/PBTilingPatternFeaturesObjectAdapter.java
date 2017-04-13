@@ -168,6 +168,11 @@ public class PBTilingPatternFeaturesObjectAdapter implements TilingPatternFeatur
 	}
 
 	@Override
+	public boolean isPDFObjectPresent() {
+		return this.tilingPattern != null;
+	}
+
+	@Override
 	public List<String> getErrors() {
 		return Collections.emptyList();
 	}

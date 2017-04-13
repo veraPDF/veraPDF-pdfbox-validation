@@ -175,6 +175,11 @@ public class PBImageXObjectFeaturesObjectAdapter implements ImageXObjectFeatures
     }
 
     @Override
+    public boolean isPDFObjectPresent() {
+        return this.imageXObject != null;
+    }
+
+    @Override
     public List<String> getErrors() {
         return Collections.emptyList();
     }

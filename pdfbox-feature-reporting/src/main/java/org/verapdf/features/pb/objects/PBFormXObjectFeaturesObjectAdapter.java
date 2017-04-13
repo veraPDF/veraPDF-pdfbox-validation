@@ -200,6 +200,11 @@ public class PBFormXObjectFeaturesObjectAdapter implements FormXObjectFeaturesOb
 	}
 
 	@Override
+	public boolean isPDFObjectPresent() {
+		return this.formXObject != null;
+	}
+
+	@Override
 	public List<String> getErrors() {
 		return Collections.emptyList();
 	}

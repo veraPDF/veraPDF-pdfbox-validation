@@ -118,6 +118,11 @@ public class PBSignatureFeaturesObjectAdapter implements SignatureFeaturesObject
     }
 
     @Override
+    public boolean isPDFObjectPresent() {
+        return this.signature != null;
+    }
+
+    @Override
     public List<String> getErrors() {
         return Collections.emptyList();
     }

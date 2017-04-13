@@ -160,6 +160,11 @@ public class PBDocSecurityFeaturesObjectAdapter implements DocSecurityFeaturesOb
 	}
 
 	@Override
+	public boolean isPDFObjectPresent() {
+		return this.encryption != null;
+	}
+
+	@Override
 	public List<String> getErrors() {
 		return errors == null ? Collections.<String>emptyList() : Collections.unmodifiableList(errors);
 	}

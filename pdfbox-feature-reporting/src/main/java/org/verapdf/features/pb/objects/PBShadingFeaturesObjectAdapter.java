@@ -83,6 +83,11 @@ public class PBShadingFeaturesObjectAdapter implements ShadingFeaturesObjectAdap
 	}
 
 	@Override
+	public boolean isPDFObjectPresent() {
+		return this.shading != null;
+	}
+
+	@Override
 	public List<String> getErrors() {
 		return Collections.emptyList();
 	}

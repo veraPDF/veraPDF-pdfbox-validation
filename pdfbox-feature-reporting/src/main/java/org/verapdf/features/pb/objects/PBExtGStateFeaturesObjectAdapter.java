@@ -95,6 +95,11 @@ public class PBExtGStateFeaturesObjectAdapter implements ExtGStateFeaturesObject
 	}
 
 	@Override
+	public boolean isPDFObjectPresent() {
+		return this.exGState != null;
+	}
+
+	@Override
 	public List<String> getErrors() {
 		return Collections.emptyList();
 	}

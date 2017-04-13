@@ -286,6 +286,11 @@ public class PBFontFeaturesObjectAdapter implements FontFeaturesObjectAdapter {
 	}
 
 	@Override
+	public boolean isPDFObjectPresent() {
+		return this.fontLike != null;
+	}
+
+	@Override
 	public List<String> getErrors() {
 		return Collections.emptyList();
 	}

@@ -138,6 +138,11 @@ public class PBEmbeddedFileFeaturesObjectAdapter implements EmbeddedFileFeatures
     }
 
     @Override
+    public boolean isPDFObjectPresent() {
+        return this.embFile != null;
+    }
+
+    @Override
     public List<String> getErrors() {
         return this.errors == null ?
                 Collections.<String>emptyList() : Collections.unmodifiableList(this.errors);
