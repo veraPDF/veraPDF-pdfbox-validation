@@ -63,6 +63,11 @@ public class PBOutlinesFeaturesObjectAdapter implements OutlinesFeaturesObjectAd
 	}
 
 	@Override
+	public boolean isPDFObjectPresent() {
+		return this.outline != null;
+	}
+
+	@Override
 	public List<String> getErrors() {
 		return Collections.emptyList();
 	}

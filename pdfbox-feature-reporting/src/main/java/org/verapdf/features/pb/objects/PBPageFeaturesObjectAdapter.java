@@ -201,7 +201,7 @@ public class PBPageFeaturesObjectAdapter implements PageFeaturesObjectAdapter {
 
 	@Override
 	public Long getRotation() {
-		if (page != null && page.hasRotation()) {
+		if (page != null) {
 			return Long.valueOf(page.getRotation());
 		}
 		return null;
@@ -218,6 +218,11 @@ public class PBPageFeaturesObjectAdapter implements PageFeaturesObjectAdapter {
 			return PBAdapterHelper.getMetadataStream(page.getMetadata());
 		}
 		return null;
+	}
+
+	@Override
+	public boolean isPDFObjectPresent() {
+		return this.page != null;
 	}
 
 	@Override

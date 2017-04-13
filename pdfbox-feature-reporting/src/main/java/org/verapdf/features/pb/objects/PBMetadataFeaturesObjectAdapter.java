@@ -52,6 +52,11 @@ public class PBMetadataFeaturesObjectAdapter implements MetadataFeaturesObjectAd
 	}
 
 	@Override
+	public boolean isPDFObjectPresent() {
+		return this.metadata != null;
+	}
+
+	@Override
 	public List<String> getErrors() {
 		return Collections.emptyList();
 	}

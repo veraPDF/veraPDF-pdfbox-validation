@@ -135,6 +135,11 @@ public class PBInfoDictFeaturesObjectAdapter implements InfoDictFeaturesObjectAd
 	}
 
 	@Override
+	public boolean isPDFObjectPresent() {
+		return this.info != null;
+	}
+
+	@Override
 	public List<String> getErrors() {
 		return Collections.emptyList();
 	}

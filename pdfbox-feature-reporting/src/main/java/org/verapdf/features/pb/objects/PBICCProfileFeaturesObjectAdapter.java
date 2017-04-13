@@ -190,6 +190,11 @@ public class PBICCProfileFeaturesObjectAdapter implements ICCProfileFeaturesObje
 	}
 
 	@Override
+	public boolean isPDFObjectPresent() {
+		return this.profile != null;
+	}
+
+	@Override
 	public List<String> getErrors() {
 		return errors == null ? Collections.<String>emptyList() : Collections.unmodifiableList(errors);
 	}

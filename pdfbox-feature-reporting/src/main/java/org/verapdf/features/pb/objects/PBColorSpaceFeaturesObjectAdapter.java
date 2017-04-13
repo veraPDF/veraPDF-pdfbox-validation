@@ -248,6 +248,11 @@ public class PBColorSpaceFeaturesObjectAdapter implements ColorSpaceFeaturesObje
 	}
 
 	@Override
+	public boolean isPDFObjectPresent() {
+		return this.colorSpace != null;
+	}
+
+	@Override
 	public List<String> getErrors() {
 		return this.errors == null ? Collections.<String>emptyList() : Collections.unmodifiableList(this.errors);
 	}

@@ -181,6 +181,11 @@ public class PBAnnotationFeaturesObjectAdapter implements AnnotationFeaturesObje
 	}
 
 	@Override
+	public boolean isPDFObjectPresent() {
+		return this.annot != null;
+	}
+
+	@Override
 	public List<String> getErrors() {
 		return Collections.emptyList();
 	}

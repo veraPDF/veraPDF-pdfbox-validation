@@ -38,6 +38,7 @@ public class PBLowLvlInfoFeaturesObjectAdapter implements LowLvlInfoFeaturesObje
 	private static final Logger LOGGER = Logger
 			.getLogger(PBLowLvlInfoFeaturesObjectAdapter.class);
 
+	private boolean isPresent;
 	private int objectsNumber;
 	private String creationId;
 	private String modId;
@@ -64,6 +65,7 @@ public class PBLowLvlInfoFeaturesObjectAdapter implements LowLvlInfoFeaturesObje
 	 *            pdfbox class represents document object
 	 */
 	public PBLowLvlInfoFeaturesObjectAdapter(COSDocument document) {
+		this.isPresent = document != null;
 		if (document != null) {
 			List<COSObject> objects = document.getObjects();
 			this.errors = new ArrayList<>();
@@ -145,6 +147,11 @@ public class PBLowLvlInfoFeaturesObjectAdapter implements LowLvlInfoFeaturesObje
 	public Set<String> getFilters() {
 		return this.filters == null ?
 				Collections.<String>emptySet() : Collections.unmodifiableSet(this.filters);
+	}
+
+	@Override
+	public boolean isPDFObjectPresent() {
+		return this.isPresent;
 	}
 
 	@Override

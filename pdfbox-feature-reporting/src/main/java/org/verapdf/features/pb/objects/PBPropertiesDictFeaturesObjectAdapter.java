@@ -64,6 +64,11 @@ public class PBPropertiesDictFeaturesObjectAdapter implements PropertiesDictFeat
 	}
 
 	@Override
+	public boolean isPDFObjectPresent() {
+		return this.properties != null;
+	}
+
+	@Override
 	public List<String> getErrors() {
 		return Collections.emptyList();
 	}
