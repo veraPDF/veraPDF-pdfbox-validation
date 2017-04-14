@@ -59,28 +59,13 @@ public final class TestNodeGenerator {
 		firstChar.setValue("32");
 		FeatureTreeNode lastChar = font.addChild("lastChar");
 		lastChar.setValue("121");
-		FeatureTreeNode widths = font.addChild("widths");
-		String[] chars = new String[] { "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44",
-				"45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61",
-				"62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77", "78",
-				"79", "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "90", "91", "92", "93", "94", "95",
-				"96", "97", "98", "99", "100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110",
-				"111", "112", "113", "114", "115", "116", "117", "118", "119", "120", "121" };
-		String[] values = new String[] { "212", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0",
-				"0", "0", "513", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0",
-				"0", "0", "492", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "497", "0", "0",
-				"0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "569", "0", "564", "501", "292", "0", "0", "0",
-				"0", "0", "0", "834", "555", "549", "569", "0", "0", "0", "331", "0", "0", "0", "0", "471" };
-		for (int i = 0; i < values.length; ++i) {
-			FeatureTreeNode width = widths.addChild("width");
-			width.setValue(values[i]);
-			width.setAttribute("char", chars[i]);
-		}
 		FeatureTreeNode encoding = font.addChild("encoding");
 		encoding.setValue("WinAnsiEncoding");
 		FeatureTreeNode fontDescriptor = font.addChild("fontDescriptor");
 		FeatureTreeNode fontName = fontDescriptor.addChild("fontName");
-		fontName.setValue("OLXYQW+MyriadPro-Regular");
+		fontName.setValue("MyriadPro-Regular");
+		FeatureTreeNode subset = fontDescriptor.addChild("subset");
+		subset.setValue("true");
 		FeatureTreeNode fontFamily = fontDescriptor.addChild("fontFamily");
 		fontFamily.setValue("Myriad Pro");
 		FeatureTreeNode fontStretch = fontDescriptor.addChild("fontStretch");
@@ -158,6 +143,8 @@ public final class TestNodeGenerator {
 		FeatureTreeNode fontDescriptor = font.addChild("fontDescriptor");
 		FeatureTreeNode fontName = fontDescriptor.addChild("fontName");
 		fontName.setValue("Arial");
+		FeatureTreeNode subset = fontDescriptor.addChild("subset");
+		subset.setValue("false");
 		FeatureTreeNode fixedPitch = fontDescriptor.addChild("fixedPitch");
 		fixedPitch.setValue("false");
 		FeatureTreeNode serif = fontDescriptor.addChild("serif");
@@ -226,7 +213,9 @@ public final class TestNodeGenerator {
 		supplement.setValue("6");
 		FeatureTreeNode fontDescriptor = font.addChild("fontDescriptor");
 		FeatureTreeNode fontName = fontDescriptor.addChild("fontName");
-		fontName.setValue("IIWNIN+AdobeFanHeitiStd-Bold");
+		fontName.setValue("AdobeFanHeitiStd-Bold");
+		FeatureTreeNode subset = fontDescriptor.addChild("subset");
+		subset.setValue("true");
 		FeatureTreeNode fontFamily = fontDescriptor.addChild("fontFamily");
 		fontFamily.setValue("Adobe Fan Heiti Std B");
 		FeatureTreeNode fontStretch = fontDescriptor.addChild("fontStretch");
@@ -503,7 +492,7 @@ public final class TestNodeGenerator {
 		box.setAttribute(URY, "499.977");
 	}
 
-	public static FeatureTreeNode getAnnotation(String id, String subtype, String llx, String lly, String urx,
+	public static FeatureTreeNode getAnnotation(String id, String subtype, String width, String height, String llx, String lly, String urx,
 			String ury, String contents, String annotationName, String modifiedDate, Set<String> xobj, String popup,
 			String red, String green, String blue, String kayan, String invisible, String hidden, String print,
 			String noZoom, String noRotate, String noView, String readOnly, String locked, String toggleNoView,
@@ -511,6 +500,8 @@ public final class TestNodeGenerator {
 		FeatureTreeNode root = FeatureTreeNode.createRootNode("annotation");
 		root.setAttribute(ID, id);
 		addNotEmptyNode("subType", subtype, root);
+		root.addChild("width").setValue(width);
+		root.addChild("height").setValue(height);
 		FeatureTreeNode rec = root.addChild("rectangle");
 		rec.setAttribute(LLX, llx);
 		rec.setAttribute(LLY, lly);

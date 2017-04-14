@@ -29,7 +29,6 @@ import org.verapdf.features.pb.tools.PBAdapterHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -58,7 +57,6 @@ public class PBFontFeaturesObjectAdapter implements FontFeaturesObjectAdapter {
 	private String baseFont;
 	private Long firstChar;
 	private Long lastChar;
-	private List<Long> widths;
 	private String encoding;
 	private double[] bbox;
 	private double[] matrix;
@@ -116,13 +114,6 @@ public class PBFontFeaturesObjectAdapter implements FontFeaturesObjectAdapter {
 					int lc = sFont.getCOSObject().getInt(COSName.LAST_CHAR);
 					if (lc != -1) {
 						this.lastChar = Long.valueOf(lc);
-					}
-					List<Integer> widths = sFont.getWidths();
-					if (widths != null) {
-						this.widths = new ArrayList<>(widths.size());
-						for (Integer numb : widths) {
-							this.widths.add(Long.valueOf(numb));
-						}
 					}
 					COSBase enc = sFont.getCOSObject().getDictionaryObject(COSName.ENCODING);
 					if (enc instanceof COSName) {
@@ -232,12 +223,6 @@ public class PBFontFeaturesObjectAdapter implements FontFeaturesObjectAdapter {
 	@Override
 	public Long getLastChar() {
 		return this.lastChar;
-	}
-
-	@Override
-	public List<Long> getWidth() {
-		return this.widths == null ?
-				Collections.<Long>emptyList() : Collections.unmodifiableList(this.widths);
 	}
 
 	@Override
