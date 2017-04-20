@@ -124,15 +124,16 @@ public final class OperatorFactory {
                     parser.parseOperator(result,
                             (org.apache.pdfbox.contentstream.operator.Operator) pdfBoxToken,
                             resources, arguments);
-
-                    String parsedOperatorType = ((org.apache.pdfbox.contentstream.operator.Operator) pdfBoxToken).getName();
-                    GraphicState graphicState = parser.getGraphicState();
-                    if (PAINT_OPERATORS_WITHOUT_TEXT.containsKey(parsedOperatorType)) {
-                        isLastParsedContainsTransparency |= PAINT_OPERATORS_WITHOUT_TEXT.get(parsedOperatorType).containsTransparency(graphicState);
-                    } else {
-                        RenderingMode renderingMode = graphicState.getRenderingMode();
-                        if (PAINT_OPERATORS_TEXT.contains(parsedOperatorType) && RENDERING_MODE.containsKey(renderingMode)) {
-                            isLastParsedContainsTransparency |= RENDERING_MODE.get(renderingMode).containsTransparency(graphicState);
+                    if (flavour != null && flavour.getPart().getPartNumber() != 1) {
+                        String parsedOperatorType = ((org.apache.pdfbox.contentstream.operator.Operator) pdfBoxToken).getName();
+                        GraphicState graphicState = parser.getGraphicState();
+                        if (PAINT_OPERATORS_WITHOUT_TEXT.containsKey(parsedOperatorType)) {
+                            isLastParsedContainsTransparency |= PAINT_OPERATORS_WITHOUT_TEXT.get(parsedOperatorType).containsTransparency(graphicState);
+                        } else {
+                            RenderingMode renderingMode = graphicState.getRenderingMode();
+                            if (PAINT_OPERATORS_TEXT.contains(parsedOperatorType) && RENDERING_MODE.containsKey(renderingMode)) {
+                                isLastParsedContainsTransparency |= RENDERING_MODE.get(renderingMode).containsTransparency(graphicState);
+                            }
                         }
                     }
                 } catch (CloneNotSupportedException e) {
