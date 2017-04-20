@@ -1,10 +1,26 @@
+/**
+ * This file is part of veraPDF PDF Box PDF/A Validation Model Implementation, a module of the veraPDF project.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+ * All rights reserved.
+ *
+ * veraPDF PDF Box PDF/A Validation Model Implementation is free software: you can redistribute it and/or modify
+ * it under the terms of either:
+ *
+ * The GNU General public license GPLv3+.
+ * You should have received a copy of the GNU General Public License
+ * along with veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.GPL file in the root of the source
+ * tree.  If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ *
+ * The Mozilla Public License MPLv2+.
+ * You should have received a copy of the Mozilla Public License along with
+ * veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.MPL file in the root of the source tree.
+ * If a copy of the MPL was not distributed with this file, you can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
 package org.verapdf.model.tools;
 
-import org.apache.log4j.Logger;
-import org.apache.pdfbox.cos.COSArray;
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.*;
 import org.verapdf.model.impl.pb.pd.PBoxPDStructElem;
 import org.verapdf.model.pdlayer.PDStructElem;
 
@@ -25,53 +41,64 @@ public class TaggedPDFHelper {
 		// disable default constructor
 	}
 
+	public static List<PDStructElem> getStructTreeRootChildren(COSDictionary parent,
+															   TaggedPDFRoleMapHelper roleMapHelper) {
+		return getChildren(parent, roleMapHelper, false);
+	}
+
+	public static List<PDStructElem> getStructElemChildren(COSDictionary parent,
+														   TaggedPDFRoleMapHelper roleMapHelper) {
+		return getChildren(parent, roleMapHelper, true);
+	}
+
 	/**
 	 * Get all structure elements for current dictionary
 	 *
 	 * @param parent parent dictionary
-	 * @param logger for obtain problems report
 	 * @return list of structure elements
 	 */
-	public static List<PDStructElem> getChildren(COSDictionary parent, Logger logger) {
+	private static List<PDStructElem> getChildren(COSDictionary parent, TaggedPDFRoleMapHelper roleMapHelper, boolean checkType) {
 		COSBase children = parent.getDictionaryObject(COSName.K);
-		if (children == null) {
-			return Collections.emptyList();
-		} else if (children instanceof COSDictionary) {
-			List<PDStructElem> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			list.add(new PBoxPDStructElem((COSDictionary) children));
-			return Collections.unmodifiableList(list);
-		} else if (children instanceof COSArray) {
-			return getChildrenFromArray((COSArray) children, logger);
-		} else {
-			logger.warn("Children type of Structure Tree Root or Structure Element " +
-					"must be 'COSDictionary' or 'COSArray' but got: "
-					+ children.getClass().getSimpleName());
-			return Collections.emptyList();
+		if (children != null) {
+			if (children instanceof COSDictionary && isStructElem((COSDictionary) children, checkType)) {
+				List<PDStructElem> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+				list.add(new PBoxPDStructElem((COSDictionary) children, roleMapHelper));
+				return Collections.unmodifiableList(list);
+			} else if (children instanceof COSArray) {
+				return getChildrenFromArray((COSArray) children, roleMapHelper, checkType);
+			}
 		}
+		return Collections.emptyList();
 	}
 
 	/**
 	 * Transform array of dictionaries to list of structure elements
 	 *
 	 * @param children array of children structure elements
-	 * @param logger for obtain problems report
 	 * @return list of structure elements
 	 */
-	public static List<PDStructElem> getChildrenFromArray(COSArray children, Logger logger) {
+	private static List<PDStructElem> getChildrenFromArray(COSArray children, TaggedPDFRoleMapHelper roleMapHelper, boolean checkType) {
 		if (children.size() > 0) {
-			List<PDStructElem> list = new ArrayList<>(children.size());
+			List<PDStructElem> list = new ArrayList<>();
 			for (COSBase element : children) {
-				if (element instanceof COSDictionary) {
-					list.add(new PBoxPDStructElem((COSDictionary) element));
-				} else {
-					logger.warn("Children type of Structure Tree Root or Structure Element " +
-							"in array must be 'COSDictionary' but got: "
-							+ children.getClass().getSimpleName());
+				COSBase directElem = element;
+				if (directElem instanceof COSObject) {
+					directElem = ((COSObject) directElem).getObject();
+				}
+				if (directElem instanceof COSDictionary && isStructElem((COSDictionary) directElem, checkType)) {
+					list.add(new PBoxPDStructElem((COSDictionary) directElem, roleMapHelper));
 				}
 			}
 			return Collections.unmodifiableList(list);
-		} else {
-			return Collections.emptyList();
 		}
+		return Collections.emptyList();
+	}
+
+	private static boolean isStructElem(COSDictionary dictionary, boolean checkType) {
+		if (dictionary == null) {
+			return false;
+		}
+		COSName type = dictionary.getCOSName(COSName.TYPE);
+		return !checkType || type == null || type.equals(COSName.getPDFName("StructElem"));
 	}
 }

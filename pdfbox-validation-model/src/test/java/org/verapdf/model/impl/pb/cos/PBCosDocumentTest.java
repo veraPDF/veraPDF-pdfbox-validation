@@ -1,19 +1,42 @@
+/**
+ * This file is part of veraPDF PDF Box PDF/A Validation Model Implementation, a module of the veraPDF project.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+ * All rights reserved.
+ *
+ * veraPDF PDF Box PDF/A Validation Model Implementation is free software: you can redistribute it and/or modify
+ * it under the terms of either:
+ *
+ * The GNU General public license GPLv3+.
+ * You should have received a copy of the GNU General Public License
+ * along with veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.GPL file in the root of the source
+ * tree.  If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ *
+ * The Mozilla Public License MPLv2+.
+ * You should have received a copy of the Mozilla Public License along with
+ * veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.MPL file in the root of the source tree.
+ * If a copy of the MPL was not distributed with this file, you can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
 package org.verapdf.model.impl.pb.cos;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.coslayer.CosDocument;
+import org.verapdf.model.coslayer.CosTrailer;
+import org.verapdf.model.coslayer.CosXRef;
+import org.verapdf.model.impl.BaseTest;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.junit.*;
-import org.verapdf.model.baselayer.Object;
-import org.verapdf.model.coslayer.CosDocument;
-import org.verapdf.model.coslayer.CosTrailer;
-import org.verapdf.model.coslayer.CosXRef;
-import org.verapdf.model.impl.BaseTest;
-
-import static org.verapdf.model.impl.pb.cos.PBCosDocument.*;
+import static org.verapdf.model.impl.pb.cos.PBCosDocument.COS_DOCUMENT_TYPE;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -23,10 +46,8 @@ public class PBCosDocumentTest extends BaseTest {
     public static final String FILE_RELATIVE_PATH = "/model/impl/pb/cos/veraPDF test suite 6-1-2-t02-fail-a.pdf";
 
     private static final Long expectedNumberOfIndirects = Long.valueOf(17);
-    private static final Long expectedSizeOfDocument = Long.valueOf(9437);
 	private static final double expectedDocumentVersion = 1.4;
-    private static final String[] expectedIDS = new String[]{"D6CF927DCF82444068EB69A5914F8070",
-            "A2A7539F7C71DEBB6A4A6B418235962D"};
+    private static final String expectedIDS = "D6CF927DCF82444068EB69A5914F8070A2A7539F7C71DEBB6A4A6B418235962D";
 
 
     @BeforeClass
@@ -37,7 +58,7 @@ public class PBCosDocumentTest extends BaseTest {
         String fileAbsolutePath = getSystemIndependentPath(FILE_RELATIVE_PATH);
         final File file = new File(fileAbsolutePath);
         try (PDDocument doc = PDDocument.load(file, false, true)) {
-            actual = new PBCosDocument(doc, file.length());
+            actual = new PBCosDocument(doc, PDFAFlavour.PDFA_1_B);
         }
     }
 
@@ -51,12 +72,6 @@ public class PBCosDocumentTest extends BaseTest {
 		double actualVersion = ((CosDocument) actual).getversion().doubleValue();
 		Assert.assertEquals(expectedDocumentVersion, actualVersion, 0.01);
 	}
-
-    @Test
-    public void testSizeMethod() {
-		Long actual = ((CosDocument) BaseTest.actual).getsize();
-		Assert.assertEquals(expectedSizeOfDocument, actual);
-    }
 
 	@Test
 	public void testHeaderOffset() {
@@ -106,27 +121,21 @@ public class PBCosDocumentTest extends BaseTest {
 
     @Test
     public void testFirstPageTrailer() {
-        String[] actualIDs = ((CosDocument) actual).getfirstPageID().split(" ");
-        Assert.assertEquals(expectedIDS.length, actualIDs.length);
-        for (int index = 0; index < actualIDs.length; index++) {
-            Assert.assertEquals(getExpectedID(index), actualIDs[index]);
-        }
+        String ids = ((CosDocument) actual).getfirstPageID();
+        Assert.assertEquals(getExpectedID(), ids);
     }
 
     @Test
     public void testLastTrailer() {
-        String[] actualIDs = ((CosDocument) actual).getlastID().split(" ");
-        Assert.assertEquals(expectedIDS.length, actualIDs.length);
-        for (int index = 0; index < actualIDs.length; index++) {
-            Assert.assertEquals(getExpectedID(index), actualIDs[index]);
-        }
+        String ids = ((CosDocument) actual).getlastID();
+        Assert.assertEquals(getExpectedID(), ids);
     }
 
     // problems with code symbols
-    private static String getExpectedID(int index) {
-        StringBuilder builder = new StringBuilder(16);
-        for (int i = 0; i < expectedIDS[index].length(); i += 2) {
-            builder.append((char) Integer.parseInt(expectedIDS[index].substring(i, i + 2), 16));
+    private static String getExpectedID() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < expectedIDS.length(); i += 2) {
+            builder.append((char) Integer.parseInt(expectedIDS.substring(i, i + 2), 16));
         }
         return builder.toString();
     }

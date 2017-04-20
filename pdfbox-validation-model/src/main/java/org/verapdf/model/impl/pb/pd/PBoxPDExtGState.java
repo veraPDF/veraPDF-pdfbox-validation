@@ -1,18 +1,40 @@
+/**
+ * This file is part of veraPDF PDF Box PDF/A Validation Model Implementation, a module of the veraPDF project.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+ * All rights reserved.
+ *
+ * veraPDF PDF Box PDF/A Validation Model Implementation is free software: you can redistribute it and/or modify
+ * it under the terms of either:
+ *
+ * The GNU General public license GPLv3+.
+ * You should have received a copy of the GNU General Public License
+ * along with veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.GPL file in the root of the source
+ * tree.  If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ *
+ * The Mozilla Public License MPLv2+.
+ * You should have received a copy of the Mozilla Public License along with
+ * veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.MPL file in the root of the source tree.
+ * If a copy of the MPL was not distributed with this file, you can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
 package org.verapdf.model.impl.pb.pd;
 
 import org.apache.pdfbox.cos.*;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.graphics.PDFontSetting;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingIntent;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.coslayer.CosObject;
-import org.verapdf.model.coslayer.CosReal;
 import org.verapdf.model.coslayer.CosRenderingIntent;
+import org.verapdf.model.impl.pb.cos.PBCosNumber;
 import org.verapdf.model.impl.pb.cos.PBCosObject;
-import org.verapdf.model.pdlayer.PDHalftone;
-import org.verapdf.model.impl.pb.cos.PBCosReal;
 import org.verapdf.model.impl.pb.cos.PBCosRenderingIntent;
 import org.verapdf.model.pdlayer.PDExtGState;
+import org.verapdf.model.pdlayer.PDHalftone;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,14 +61,19 @@ public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
 	private final Double ca;
 	private final Double CA;
 
-    public PBoxPDExtGState(PDExtendedGraphicsState state) {
+	private final PDDocument document;
+	private final PDFAFlavour flavour;
+
+    public PBoxPDExtGState(PDExtendedGraphicsState state, PDDocument document, PDFAFlavour flavour) {
         super(state, EXT_G_STATE_TYPE);
-		this.tr = this.getStringProperty(state, COSName.TR);
-		this.tr2 = this.getStringProperty(state, COSName.getPDFName("TR2"));
-		this.sMask = this.getStringProperty(state, COSName.SMASK);
-		this.BM = this.getStringProperty(state, COSName.BM);
-		this.ca = this.getDoubleProperty(state, COSName.CA_NS);
-		this.CA = this.getDoubleProperty(state, COSName.CA);
+		this.tr = PBoxPDExtGState.getStringProperty(state, COSName.TR);
+		this.tr2 = PBoxPDExtGState.getStringProperty(state, COSName.getPDFName("TR2"));
+		this.sMask = PBoxPDExtGState.getStringProperty(state, COSName.SMASK);
+		this.BM = PBoxPDExtGState.getStringProperty(state, COSName.BM);
+		this.ca = PBoxPDExtGState.getDoubleProperty(state, COSName.CA_NS);
+		this.CA = PBoxPDExtGState.getDoubleProperty(state, COSName.CA);
+		this.document = document;
+		this.flavour = flavour;
     }
 
 	@Override
@@ -79,13 +106,13 @@ public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
         return this.CA;
     }
 
-    private String getStringProperty(PDExtendedGraphicsState state, COSName key) {
+    private static String getStringProperty(PDExtendedGraphicsState state, COSName key) {
 		COSBase base = state.getCOSObject().getDictionaryObject(key);
 		return base == null ? null : base instanceof COSName ?
 				((COSName) base).getName() : base.toString();
     }
 
-	private Double getDoubleProperty(PDExtendedGraphicsState state, COSName key) {
+	private static Double getDoubleProperty(PDExtendedGraphicsState state, COSName key) {
 		COSBase base = state.getCOSObject().getDictionaryObject(key);
 		return !(base instanceof COSNumber) ? null :
 				Double.valueOf(((COSNumber) base).doubleValue());
@@ -119,12 +146,13 @@ public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
         return Collections.emptyList();
     }
 
-    private List<CosReal> getFontSize() {
+    private List<CosNumber> getFontSize() {
         PDFontSetting fontSetting = ((PDExtendedGraphicsState) this.simplePDObject)
                 .getFontSetting();
         if (fontSetting != null) {
-			List<CosReal> result = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			result.add(new PBCosReal(new COSFloat(fontSetting.getFontSize())));
+			List<CosNumber> result = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+			COSNumber size = (COSNumber) ((COSArray) fontSetting.getCOSObject()).get(1);
+			result.add(PBCosNumber.fromPDFBoxNumber(size));
 			return Collections.unmodifiableList(result);
         }
 
@@ -150,7 +178,7 @@ public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
 	private List<CosObject> getHalftonePhase() {
 		COSDictionary dict = ((PDExtendedGraphicsState) this.simplePDObject).getCOSObject();
 		COSBase halftonePhase = dict.getDictionaryObject(COSName.getPDFName("HTP"));
-		CosObject value = PBCosObject.getFromValue(halftonePhase);
+		CosObject value = PBCosObject.getFromValue(halftonePhase, document, flavour);
 		if (value != null) {
 			ArrayList<CosObject> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 			list.add(value);

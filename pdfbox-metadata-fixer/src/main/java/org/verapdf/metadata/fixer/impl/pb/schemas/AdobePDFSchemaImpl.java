@@ -1,3 +1,23 @@
+/**
+ * This file is part of veraPDF Metadata Fixer, a module of the veraPDF project.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+ * All rights reserved.
+ *
+ * veraPDF Metadata Fixer is free software: you can redistribute it and/or modify
+ * it under the terms of either:
+ *
+ * The GNU General public license GPLv3+.
+ * You should have received a copy of the GNU General Public License
+ * along with veraPDF Metadata Fixer as the LICENSE.GPL file in the root of the source
+ * tree.  If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ *
+ * The Mozilla Public License MPLv2+.
+ * You should have received a copy of the Mozilla Public License along with
+ * veraPDF Metadata Fixer as the LICENSE.MPL file in the root of the source tree.
+ * If a copy of the MPL was not distributed with this file, you can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
 package org.verapdf.metadata.fixer.impl.pb.schemas;
 
 import com.adobe.xmp.XMPException;
@@ -21,7 +41,7 @@ public class AdobePDFSchemaImpl extends BasicSchemaImpl implements AdobePDF {
 		try {
 			return this.meta.getProducer();
 		} catch (XMPException e) {
-			LOGGER.error("Can not get producer.", e);
+			LOGGER.debug("Can not get producer.", e);
 			throw new IllegalStateException(e);
 		}
 	}
@@ -31,7 +51,7 @@ public class AdobePDFSchemaImpl extends BasicSchemaImpl implements AdobePDF {
 		try {
 			this.meta.setProducer(producer);
 		} catch (XMPException e) {
-			LOGGER.error("Can not set producer.", e);
+			LOGGER.debug("Can not set producer.", e);
 			throw new IllegalStateException(e);
 		}
 	}
@@ -41,7 +61,7 @@ public class AdobePDFSchemaImpl extends BasicSchemaImpl implements AdobePDF {
 		try {
 			return this.meta.getKeywords();
 		} catch (XMPException e) {
-			LOGGER.error("Can not get keywords.", e);
+			LOGGER.debug("Can not get keywords.", e);
 			throw new IllegalStateException(e);
 		}
 	}
@@ -51,7 +71,7 @@ public class AdobePDFSchemaImpl extends BasicSchemaImpl implements AdobePDF {
 		try {
 			this.meta.setKeywords(keywords);
 		} catch (XMPException e) {
-			LOGGER.error("Can not set keywords.", e);
+			LOGGER.debug("Can not set keywords.", e);
 			throw new IllegalStateException(e);
 		}
 	}

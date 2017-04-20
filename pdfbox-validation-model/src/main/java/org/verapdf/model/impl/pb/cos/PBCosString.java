@@ -1,3 +1,23 @@
+/**
+ * This file is part of veraPDF PDF Box PDF/A Validation Model Implementation, a module of the veraPDF project.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+ * All rights reserved.
+ *
+ * veraPDF PDF Box PDF/A Validation Model Implementation is free software: you can redistribute it and/or modify
+ * it under the terms of either:
+ *
+ * The GNU General public license GPLv3+.
+ * You should have received a copy of the GNU General Public License
+ * along with veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.GPL file in the root of the source
+ * tree.  If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ *
+ * The Mozilla Public License MPLv2+.
+ * You should have received a copy of the Mozilla Public License along with
+ * veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.MPL file in the root of the source tree.
+ * If a copy of the MPL was not distributed with this file, you can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
 package org.verapdf.model.impl.pb.cos;
 
 import org.apache.pdfbox.cos.COSString;
@@ -16,14 +36,18 @@ public class PBCosString extends PBCosObject implements CosString {
     private final String value;
     private final boolean isHex;
     private final boolean containsOnlyHex;
-    private final long hexCount;
+    private final Long hexCount;
 
     /**
      * Default constructor
      * @param cosString pdfbox COSString
      */
     public PBCosString(COSString cosString) {
-        super(cosString, COS_STRING_TYPE);
+        this(cosString, COS_STRING_TYPE);
+    }
+
+    protected PBCosString(COSString cosString, String type) {
+        super(cosString, type);
         this.value = cosString.getASCII();
         this.isHex = cosString.isHex();
         this.containsOnlyHex = cosString.isContainsOnlyHex();
@@ -43,7 +67,7 @@ public class PBCosString extends PBCosObject implements CosString {
      */
     @Override
     public Boolean getisHex() {
-        return this.isHex;
+        return Boolean.valueOf(this.isHex);
     }
 
     /**
@@ -51,7 +75,7 @@ public class PBCosString extends PBCosObject implements CosString {
      */
     @Override
     public Boolean getcontainsOnlyHex() {
-        return this.containsOnlyHex;
+        return Boolean.valueOf(this.containsOnlyHex);
     }
 
     /**

@@ -1,3 +1,23 @@
+/**
+ * This file is part of veraPDF PDF Box PDF/A Validation Model Implementation, a module of the veraPDF project.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+ * All rights reserved.
+ *
+ * veraPDF PDF Box PDF/A Validation Model Implementation is free software: you can redistribute it and/or modify
+ * it under the terms of either:
+ *
+ * The GNU General public license GPLv3+.
+ * You should have received a copy of the GNU General Public License
+ * along with veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.GPL file in the root of the source
+ * tree.  If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ *
+ * The Mozilla Public License MPLv2+.
+ * You should have received a copy of the Mozilla Public License along with
+ * veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.MPL file in the root of the source tree.
+ * If a copy of the MPL was not distributed with this file, you can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
 package org.verapdf.model.impl.pb.pd;
 
 import org.apache.log4j.Logger;
@@ -6,12 +26,15 @@ import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.common.PDDestinationOrAction;
 import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureTreeRoot;
+import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentProperties;
 import org.apache.pdfbox.pdmodel.interactive.action.PDDocumentCatalogAdditionalActions;
 import org.verapdf.model.baselayer.Object;
-import org.verapdf.model.coslayer.CosDict;
-import org.verapdf.model.impl.pb.cos.PBCosDict;
+import org.verapdf.model.coslayer.CosLang;
+import org.verapdf.model.impl.pb.cos.PBCosLang;
+import org.verapdf.model.impl.pb.pd.signatures.PBoxPDPerms;
 import org.verapdf.model.pdlayer.*;
 import org.verapdf.model.tools.OutlinesHelper;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,45 +49,80 @@ import java.util.List;
  */
 public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 
-    private static final Logger LOGGER = Logger.getLogger(PBoxPDDocument.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDDocument.class);
 
-	/** Type name for {@code PBoxPDDocument} */
+	/**
+	 * Type name for {@code PBoxPDDocument}
+	 */
 	public static final String PD_DOCUMENT_TYPE = "PDDocument";
 
-	/** Link name for pages */
+	/**
+	 * Link name for pages
+	 */
 	public static final String PAGES = "pages";
-	/** Link name for main metadata of document*/
+	/**
+	 * Link name for main metadata of document
+	 */
 	public static final String METADATA = "metadata";
-	/** Link name for all output intents */
+	/**
+	 * Link name for all output intents
+	 */
 	public static final String OUTPUT_INTENTS = "outputIntents";
-	/** Link name for acro forms */
+	/**
+	 * Link name for acro forms
+	 */
 	public static final String ACRO_FORMS = "AcroForm";
-	/** Link name for additional actions of document */
+	/**
+	 * Link name for additional actions of document
+	 */
 	public static final String ACTIONS = "AA";
-	/** Link name for open action of document */
+	/**
+	 * Link name for open action of document
+	 */
 	public static final String OPEN_ACTION = "OpenAction";
-	/** Link name for all outlines of document */
-    public static final String OUTLINES = "Outlines";
-	/** Link name for annotations structure tree root of document */
+	/**
+	 * Link name for all outlines of document
+	 */
+	public static final String OUTLINES = "Outlines";
+	/**
+	 * Link name for annotations structure tree root of document
+	 */
 	public static final String STRUCTURE_TREE_ROOT = "StructTreeRoot";
-	/** Link name for alternate presentation of names tree of document */
+	/**
+	 * Link name for alternate presentation of names tree of document
+	 */
 	public static final String ALTERNATE_PRESENTATIONS = "AlternatePresentations";
-	/** Link name for optional content properties of the document */
+	/**
+	 * Link name for optional content properties of the document
+	 */
 	public static final String OC_PROPERTIES = "OCProperties";
+	/**
+	 * Name of link to Lang value from the document catalog dictionary
+	 */
+	public static final String LANG = "Lang";
+	/**
+	 * Name of link to Perms value
+	 */
+	public static final String PERMS = "Perms";
 
-	/** Maximal number of additional actions for AA key */
+	/**
+	 * Maximal number of additional actions for AA key
+	 */
 	public static final int MAX_NUMBER_OF_ACTIONS = 5;
 
 	private final PDDocumentCatalog catalog;
+	private final PDFAFlavour flavour;
 
 	/**
 	 * Default constructor
+	 *
 	 * @param document high level document representation
 	 */
-    public PBoxPDDocument(org.apache.pdfbox.pdmodel.PDDocument document) {
-        super(document, PD_DOCUMENT_TYPE);
+	public PBoxPDDocument(org.apache.pdfbox.pdmodel.PDDocument document, PDFAFlavour flavour) {
+		super(document, PD_DOCUMENT_TYPE);
 		this.catalog = this.getDocumentCatalog();
-    }
+		this.flavour = flavour;
+	}
 
 	private PDDocumentCatalog getDocumentCatalog() {
 		try {
@@ -72,7 +130,8 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 					this.document.getDocument().getCatalog().getObject();
 			return new PDDocumentCatalog(this.document, object);
 		} catch (IOException e) {
-			LOGGER.warn("Problems with catalog obtain.", e);
+			LOGGER.debug("Catalog cannot be found.");
+			LOGGER.debug(e);
 		}
 		return null;
 	}
@@ -96,10 +155,12 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 				return this.getAcroForms();
 			case STRUCTURE_TREE_ROOT:
 				return this.getStructureTreeRoot();
-			case ALTERNATE_PRESENTATIONS:
-				return this.getAlternatePresentations();
 			case OC_PROPERTIES:
 				return this.getOCProperties();
+			case LANG:
+				return this.getLang();
+			case PERMS:
+				return this.getPerms();
 			default:
 				return super.getLinkedObjects(link);
 		}
@@ -120,39 +181,39 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 					return Collections.unmodifiableList(actions);
 				}
 			} catch (IOException e) {
-				LOGGER.error(
+				LOGGER.debug(
 						"Problems with open action obtaining. " + e.getMessage(), e);
 			}
 		}
 		return Collections.emptyList();
 	}
 
-    private List<PDAction> getActions() {
+	private List<PDAction> getActions() {
 		PDDocumentCatalogAdditionalActions pbActions = this.getAdditionalAction();
 		if (pbActions != null) {
 			List<PDAction> actions = new ArrayList<>(MAX_NUMBER_OF_ACTIONS);
 
 			org.apache.pdfbox.pdmodel.interactive.action.PDAction buffer;
 
-            buffer = pbActions.getDP();
-            this.addAction(actions, buffer);
+			buffer = pbActions.getDP();
+			this.addAction(actions, buffer);
 
-            buffer = pbActions.getDS();
-            this.addAction(actions, buffer);
+			buffer = pbActions.getDS();
+			this.addAction(actions, buffer);
 
-            buffer = pbActions.getWP();
-            this.addAction(actions, buffer);
+			buffer = pbActions.getWP();
+			this.addAction(actions, buffer);
 
-            buffer = pbActions.getWS();
-            this.addAction(actions, buffer);
+			buffer = pbActions.getWS();
+			this.addAction(actions, buffer);
 
-            buffer = pbActions.getWC();
-            this.addAction(actions, buffer);
+			buffer = pbActions.getWC();
+			this.addAction(actions, buffer);
 
 			return Collections.unmodifiableList(actions);
-        }
-        return Collections.emptyList();
-    }
+		}
+		return Collections.emptyList();
+	}
 
 	private PDDocumentCatalogAdditionalActions getAdditionalAction() {
 		if (this.catalog != null) {
@@ -169,108 +230,117 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 		PDPageTree pageTree = this.document.getPages();
 		List<PDPage> pages = new ArrayList<>(pageTree.getCount());
 		for (org.apache.pdfbox.pdmodel.PDPage page : pageTree) {
-			pages.add(new PBoxPDPage(page));
+			pages.add(new PBoxPDPage(page, this.document, this.flavour));
 		}
 		return Collections.unmodifiableList(pages);
 	}
 
-    private List<PDMetadata> getMetadata() {
+	private List<PDMetadata> getMetadata() {
 		if (this.catalog != null) {
 			org.apache.pdfbox.pdmodel.common.PDMetadata meta = this.catalog.getMetadata();
 			if (meta != null && meta.getCOSObject() != null) {
 				List<PDMetadata> metadata = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-				metadata.add(new PBoxPDMetadata(meta, Boolean.TRUE));
+				metadata.add(new PBoxPDMetadata(meta, Boolean.TRUE, this.document, this.flavour));
 				return Collections.unmodifiableList(metadata);
 			}
 		}
-        return Collections.emptyList();
-    }
+		return Collections.emptyList();
+	}
 
-    private List<PDOutputIntent> getOutputIntents() {
+	private List<PDOutputIntent> getOutputIntents() {
 		if (this.catalog != null) {
 			List<org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent> pdfboxOutputIntents =
 					this.catalog.getOutputIntents();
 			List<PDOutputIntent> outputIntents = new ArrayList<>(pdfboxOutputIntents.size());
 			for (org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent intent : pdfboxOutputIntents) {
-				outputIntents.add(new PBoxPDOutputIntent(intent));
+				outputIntents.add(new PBoxPDOutputIntent(intent, this.document, this.flavour));
 			}
 			return Collections.unmodifiableList(outputIntents);
 		}
 		return Collections.emptyList();
-    }
+	}
 
-    private List<PDAcroForm> getAcroForms() {
+	private List<PDAcroForm> getAcroForms() {
 		if (this.catalog != null) {
 			org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm form =
 					this.catalog.getAcroForm();
 			if (form != null) {
 				List<PDAcroForm> forms = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-				forms.add(new PBoxPDAcroForm(form));
+				forms.add(new PBoxPDAcroForm(form, this.document, this.flavour));
 				return Collections.unmodifiableList(forms);
 			}
 		}
-        return Collections.emptyList();
-    }
+		return Collections.emptyList();
+	}
 
 	private List<PDStructTreeRoot> getStructureTreeRoot() {
 		if (this.catalog != null) {
 			PDStructureTreeRoot root = this.catalog.getStructureTreeRoot();
 			if (root != null) {
 				List<PDStructTreeRoot> treeRoot = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-				treeRoot.add(new PBoxPDStructTreeRoot(root));
+				treeRoot.add(new PBoxPDStructTreeRoot(root, this.flavour));
 				return Collections.unmodifiableList(treeRoot);
 			}
 		}
 		return Collections.emptyList();
 	}
 
-	private List<CosDict> getAlternatePresentations() {
-		if (this.catalog != null) {
-			COSDictionary buffer = this.catalog.getCOSObject();
-			buffer = (COSDictionary) buffer.getDictionaryObject(
-					COSName.NAMES);
-			if (buffer != null) {
-				COSName key = COSName.getPDFName(ALTERNATE_PRESENTATIONS);
-				COSBase base = buffer.getDictionaryObject(key);
-				if (base instanceof COSDictionary) {
-					List<CosDict> presentations = new ArrayList<>();
-					this.getAlternatePresentations(presentations, (COSDictionary) base);
-					return Collections.unmodifiableList(presentations);
-				}
+	private List<PDPerms> getPerms() {
+		if(this.catalog != null) {
+			COSDictionary perms = (COSDictionary)
+					this.catalog.getCOSObject().getDictionaryObject(COSName.PERMS);
+			if (perms != null) {
+				List<PDPerms> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+				list.add(new PBoxPDPerms(perms));
+				return Collections.unmodifiableList(list);
 			}
 		}
 		return Collections.emptyList();
+	}
+
+	@Override
+	public Boolean getcontainsAlternatePresentations() {
+		if (this.catalog != null) {
+			COSDictionary rawCatalog = this.catalog.getCOSObject();
+
+			COSDictionary namesDictionary = (COSDictionary) rawCatalog.getDictionaryObject(COSName.NAMES);
+			if (namesDictionary != null) {
+
+				COSBase alternatePresentations = namesDictionary.getDictionaryObject(COSName.getPDFName(ALTERNATE_PRESENTATIONS));
+
+				if (alternatePresentations != null) {
+					return Boolean.TRUE;
+				}
+			}
+		}
+		return Boolean.FALSE;
 	}
 
 	private List<PDOCProperties> getOCProperties() {
-		//TODO : implement
+		if (this.catalog != null) {
+			PDOptionalContentProperties pBoxOCProperties = this.catalog.getOCProperties();
+			if (pBoxOCProperties != null) {
+				List<PDOCProperties> result = new ArrayList<>();
+
+				PDOCProperties ocProperties = new PBoxPDOCProperties(pBoxOCProperties);
+				result.add(ocProperties);
+
+				return result;
+			}
+		}
 		return Collections.emptyList();
 	}
 
-	private void getAlternatePresentations(List<CosDict> presentations, COSDictionary base) {
-		COSBase tmp = base.getDictionaryObject(COSName.NAMES);
-		this.getAlternatesDictionaries(presentations, tmp);
-		tmp = base.getDictionaryObject(COSName.RESOURCES);
-		if (tmp instanceof COSDictionary) {
-			this.getAlternatesDictionaries(presentations,
-					((COSDictionary) tmp).getDictionaryObject(COSName.NAMES));
-		}
-	}
-
-	private void getAlternatesDictionaries(List<CosDict> presentations, COSBase names) {
-		if (names instanceof COSArray) {
-			COSArray array = (COSArray) names;
-			for (int i = 1; i < array.size(); i += 2) {
-				COSBase element = array.get(i);
-				if (element instanceof COSObject) {
-					element = ((COSObject) element).getObject();
-				}
-				if (element instanceof COSDictionary) {
-					presentations.add(new PBCosDict((COSDictionary) element));
-					this.getAlternatePresentations(presentations, (COSDictionary) element);
-				}
+	private List<CosLang> getLang() {
+		if (this.catalog != null) {
+			COSBase baseLang = catalog.getCOSObject().getDictionaryObject(COSName.LANG);
+			if (baseLang instanceof COSString) {
+				List<CosLang> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+				list.add(new PBCosLang((COSString) baseLang));
+				return Collections.unmodifiableList(list);
 			}
 		}
+		return Collections.emptyList();
 	}
 
 }

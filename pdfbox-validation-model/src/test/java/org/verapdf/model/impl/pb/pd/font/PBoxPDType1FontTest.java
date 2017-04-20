@@ -1,3 +1,23 @@
+/**
+ * This file is part of veraPDF PDF Box PDF/A Validation Model Implementation, a module of the veraPDF project.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+ * All rights reserved.
+ *
+ * veraPDF PDF Box PDF/A Validation Model Implementation is free software: you can redistribute it and/or modify
+ * it under the terms of either:
+ *
+ * The GNU General public license GPLv3+.
+ * You should have received a copy of the GNU General Public License
+ * along with veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.GPL file in the root of the source
+ * tree.  If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ *
+ * The Mozilla Public License MPLv2+.
+ * You should have received a copy of the Mozilla Public License along with
+ * veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.MPL file in the root of the source tree.
+ * If a copy of the MPL was not distributed with this file, you can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
 package org.verapdf.model.impl.pb.pd.font;
 
 import org.apache.pdfbox.cos.COSName;
@@ -20,15 +40,14 @@ import java.util.List;
 public class PBoxPDType1FontTest extends PBoxPDSimpleFontTest {
 
 	private static final String TYPE1_FONT_NAME = "T1_0";
-	private static final String TYPE1_BASE_FONT = "OLXYQW+MyriadPro-Regular";
 	private static final String TYPE1_SUBTYPE = "Type1";
 
 	private static final String CHAR_SET = "/space/one/E/T/b/d/e/f/m/n/o/p/t/y";
 	private static final String ENCODING = "WinAnsiEncoding";
 
-	private static final Long WIDTHS_SIZE = 90l;
-	private static final Long FIRST_CHAR = 32l;
-	private static final Long LAST_CHAR = 121l;
+	private static final Long WIDTHS_SIZE = new Long(90l);
+	private static final Long FIRST_CHAR = new Long(32l);
+	private static final Long LAST_CHAR = new Long(121l);
 
 	@BeforeClass
 	public static void setUp() throws IOException, URISyntaxException {
@@ -36,14 +55,14 @@ public class PBoxPDType1FontTest extends PBoxPDSimpleFontTest {
 
 		setUp(FILE_RELATIVE_PATH);
 		PDType1CFont type1Font = (PDType1CFont) document.getPage(0).getResources().getFont(COSName.getPDFName(TYPE1_FONT_NAME));
-		actual = new PBoxPDType1Font(type1Font);
+		actual = new PBoxPDType1Font(type1Font, defaultRenderingMode);
 
 		expectedID = type1Font.getCOSObject().hashCode() + " OLXYQW+MyriadPro-Regular";
 	}
 
 	@Override
 	public void testBaseFont() {
-		List<? extends Object> baseFonts = actual.getLinkedObjects(PBoxPDType1Font.BASE_FONT);
+		List<? extends Object> baseFonts = actual.getLinkedObjects(PBoxPDFont.BASE_FONT);
 		Object object = baseFonts.get(0);
 		Assert.assertEquals("CosUnicodeName", object.getObjectType());
 		Assert.assertEquals("OLXYQW+MyriadPro-Regular", ((CosName) object).getinternalRepresentation());
@@ -71,7 +90,7 @@ public class PBoxPDType1FontTest extends PBoxPDSimpleFontTest {
 
 	@Override
 	public void testIsStandard() {
-		Assert.assertFalse(((PDSimpleFont) actual).getisStandard());
+		Assert.assertFalse(((PDSimpleFont) actual).getisStandard().booleanValue());
 	}
 
 	@Override

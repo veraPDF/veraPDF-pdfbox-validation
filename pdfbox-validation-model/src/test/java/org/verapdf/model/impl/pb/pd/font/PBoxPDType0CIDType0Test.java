@@ -1,3 +1,23 @@
+/**
+ * This file is part of veraPDF PDF Box PDF/A Validation Model Implementation, a module of the veraPDF project.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+ * All rights reserved.
+ *
+ * veraPDF PDF Box PDF/A Validation Model Implementation is free software: you can redistribute it and/or modify
+ * it under the terms of either:
+ *
+ * The GNU General public license GPLv3+.
+ * You should have received a copy of the GNU General Public License
+ * along with veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.GPL file in the root of the source
+ * tree.  If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ *
+ * The Mozilla Public License MPLv2+.
+ * You should have received a copy of the Mozilla Public License along with
+ * veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.MPL file in the root of the source tree.
+ * If a copy of the MPL was not distributed with this file, you can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
 package org.verapdf.model.impl.pb.pd.font;
 
 import org.apache.pdfbox.cos.COSName;
@@ -19,7 +39,6 @@ import java.util.List;
 public class PBoxPDType0CIDType0Test extends PBoxPDType0FontTest {
 
 	private static final String TYPE0_FONT_NAME = "C0_0";
-	private static final String TYPE0_BASE_FONT = "IIWNIN+AdobeFanHeitiStd-Bold";
 	private static final String TYPE0_SUBTYPE = "Type0";
 
 	@BeforeClass
@@ -28,14 +47,14 @@ public class PBoxPDType0CIDType0Test extends PBoxPDType0FontTest {
 
 		setUp(FILE_RELATIVE_PATH);
 		PDFont type0Font = document.getPage(0).getResources().getFont(COSName.getPDFName(TYPE0_FONT_NAME));
-		actual = new PBoxPDType0Font(type0Font);
+		actual = new PBoxPDType0Font(type0Font, defaultRenderingMode, document, null);
 
 		expectedID = type0Font.getCOSObject().hashCode() + " IIWNIN+AdobeFanHeitiStd-Bold";
 	}
 
 	@Override
 	public void testBaseFont() {
-		List<? extends Object> baseFonts = actual.getLinkedObjects(PBoxPDType1Font.BASE_FONT);
+		List<? extends Object> baseFonts = actual.getLinkedObjects(PBoxPDFont.BASE_FONT);
 		Object object = baseFonts.get(0);
 		Assert.assertEquals("CosUnicodeName", object.getObjectType());
 		Assert.assertEquals("IIWNIN+AdobeFanHeitiStd-Bold", ((CosName) object).getinternalRepresentation());
@@ -62,7 +81,7 @@ public class PBoxPDType0CIDType0Test extends PBoxPDType0FontTest {
 
 	@Override
 	public void testAreRegistryOrderingCompatible() {
-		Assert.assertTrue(((PDType0Font) actual).getareRegistryOrderingCompatible());
+		Assert.assertTrue(((PDType0Font) actual).getareRegistryOrderingCompatible().booleanValue());
 	}
 
 }

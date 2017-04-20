@@ -1,8 +1,26 @@
+/**
+ * This file is part of veraPDF PDF Box PDF/A Validation Model Implementation, a module of the veraPDF project.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+ * All rights reserved.
+ *
+ * veraPDF PDF Box PDF/A Validation Model Implementation is free software: you can redistribute it and/or modify
+ * it under the terms of either:
+ *
+ * The GNU General public license GPLv3+.
+ * You should have received a copy of the GNU General Public License
+ * along with veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.GPL file in the root of the source
+ * tree.  If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ *
+ * The Mozilla Public License MPLv2+.
+ * You should have received a copy of the Mozilla Public License along with
+ * veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.MPL file in the root of the source tree.
+ * If a copy of the MPL was not distributed with this file, you can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
 package org.verapdf.model.impl.pb.pd;
 
-import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,7 +32,6 @@ import org.verapdf.model.impl.pb.pd.actions.PBoxPDGoToAction;
 import org.verapdf.model.impl.pb.pd.actions.PBoxPDGoToRemoteAction;
 import org.verapdf.model.impl.pb.pd.actions.PBoxPDNamedAction;
 import org.verapdf.model.pdlayer.PDAnnot;
-import org.verapdf.model.tools.resources.PDInheritableResources;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -30,22 +47,12 @@ public class PBoxPDAnnotTest extends BaseTest {
 	@BeforeClass
 	public static void setUp() throws URISyntaxException, IOException {
 		expectedType = TYPES.contains(PBoxPDAnnot.ANNOTATION_TYPE) ? PBoxPDAnnot.ANNOTATION_TYPE : null;
-		expectedID = null;
+		expectedID = "11 0 obj PDAnnot";
 
 		setUp(FILE_RELATIVE_PATH);
 		List<PDAnnotation> annotations = document.getPage(0).getAnnotations();
 		PDAnnotation annot = annotations.get(annotations.size() - 1);
-		actual = new PBoxPDAnnot(annot, getResources(annot));
-	}
-
-	private static PDInheritableResources getResources(PDAnnotation annot) {
-		PDResources pageResources = document.getPage(0).getResources();
-		PDAppearanceStream stream = annot.getNormalAppearanceStream();
-		if (stream != null) {
-			return PDInheritableResources.getInstance(pageResources, stream.getResources());
-		} else {
-			return PDInheritableResources.getInstance(pageResources);
-		}
+		actual = new PBoxPDAnnot(annot, document.getPage(0).getResources(), document, null);
 	}
 
 	@Test

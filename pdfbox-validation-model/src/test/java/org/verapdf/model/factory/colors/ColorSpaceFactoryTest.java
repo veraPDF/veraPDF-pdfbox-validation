@@ -1,3 +1,23 @@
+/**
+ * This file is part of veraPDF PDF Box PDF/A Validation Model Implementation, a module of the veraPDF project.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+ * All rights reserved.
+ *
+ * veraPDF PDF Box PDF/A Validation Model Implementation is free software: you can redistribute it and/or modify
+ * it under the terms of either:
+ *
+ * The GNU General public license GPLv3+.
+ * You should have received a copy of the GNU General Public License
+ * along with veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.GPL file in the root of the source
+ * tree.  If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ *
+ * The Mozilla Public License MPLv2+.
+ * You should have received a copy of the Mozilla Public License along with
+ * veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.MPL file in the root of the source tree.
+ * If a copy of the MPL was not distributed with this file, you can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
 package org.verapdf.model.factory.colors;
 
 import org.apache.pdfbox.cos.COSName;
@@ -44,61 +64,61 @@ public class ColorSpaceFactoryTest {
 	@Test
 	public void testCalGrayGenerating() throws IOException {
 		PDColorSpace colorSpace = resources.getColorSpace(COSName.getPDFName("CalGrayCS"));
-		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace) instanceof PDCalGray);
+		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace, document, null) instanceof PDCalGray);
 	}
 
 	@Test
 	public void testCalRGBGenerating() throws IOException {
 		PDColorSpace colorSpace = resources.getColorSpace(COSName.getPDFName("CalRGBCS"));
-		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace) instanceof PDCalRGB);
+		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace, document, null) instanceof PDCalRGB);
 	}
 
 	@Test
 	public void testDeviceCMYKGenerating() {
 		PDColorSpace colorSpace = org.apache.pdfbox.pdmodel.graphics.color.PDDeviceCMYK.INSTANCE;
-		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace) instanceof PDDeviceCMYK);
+		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace, document, null) instanceof PDDeviceCMYK);
 	}
 
 	@Test
 	public void testDeviceGrayGenerating() {
 		PDColorSpace colorSpace = org.apache.pdfbox.pdmodel.graphics.color.PDDeviceGray.INSTANCE;
-		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace) instanceof PDDeviceGray);
+		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace, document, null) instanceof PDDeviceGray);
 	}
 
 	@Test
 	public void testDeviceRGBGenerating() {
 		PDColorSpace colorSpace = org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB.INSTANCE;
-		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace) instanceof PDDeviceRGB);
+		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace, document, null) instanceof PDDeviceRGB);
 	}
 
 	@Test
 	public void testICCBasedGenerating() throws IOException {
 		PDColorSpace colorSpace = resources.getColorSpace(COSName.getPDFName("ICCBasedCS"));
-		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace) instanceof PDICCBased);
+		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace, document, null) instanceof PDICCBased);
 	}
 
 	@Test
 	public void testLabGenerating() throws IOException {
 		PDColorSpace colorSpace = resources.getColorSpace(COSName.getPDFName("LabCS"));
-		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace) instanceof PDLab);
+		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace, document, null) instanceof PDLab);
 	}
 
 	@Test
 	public void testSeparationGenerating() throws IOException {
 		PDColorSpace colorSpace = resources.getColorSpace(COSName.getPDFName("SeparationCS"));
-		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace) instanceof PDSeparation);
+		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace, document, null) instanceof PDSeparation);
 	}
 
 	@Test
 	public void testIndexedGenerating() throws IOException {
 		PDColorSpace colorSpace = resources.getColorSpace(COSName.getPDFName("IndexedCS"));
-		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace) instanceof PDIndexed);
+		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace, document, null) instanceof PDIndexed);
 	}
 
 	@Test
 	public void testDeviceNGenerating() throws IOException {
 		PDColorSpace colorSpace = resources.getColorSpace(COSName.getPDFName("DeviceNCS"));
-		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace) instanceof PDDeviceN);
+		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace, document, null) instanceof PDDeviceN);
 	}
 
 	@Test
@@ -106,18 +126,18 @@ public class ColorSpaceFactoryTest {
 		PDColorSpace colorSpace = resources.getColorSpace(COSName.getPDFName("PatternCS"));
 		PDAbstractPattern pattern = resources.getPattern(COSName.getPDFName("P0"));
 		PDInheritableResources extRes = PDInheritableResources.getInstance(resources);
-		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace, pattern, extRes) instanceof PDTilingPattern);
+		Assert.assertTrue(ColorSpaceFactory.getColorSpace(colorSpace, pattern, extRes, 0, false, document, null) instanceof PDTilingPattern);
 	}
 
 	@Test
 	public void testNullGenerating() {
-		Assert.assertNull(ColorSpaceFactory.getColorSpace(null));
+		Assert.assertNull(ColorSpaceFactory.getColorSpace(null, document, null));
 	}
 
 	@Test
 	public void testUnsupportedColorSpaceGenerating() {
 		PDColorSpace colorSpace = new PDJPXColorSpace(ColorSpace.getInstance(CS_GRAY));
-		Assert.assertNull(ColorSpaceFactory.getColorSpace(colorSpace));
+		Assert.assertNull(ColorSpaceFactory.getColorSpace(colorSpace, document, null));
 	}
 
 	protected static String getSystemIndependentPath(String path) throws URISyntaxException {

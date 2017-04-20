@@ -1,15 +1,37 @@
+/**
+ * This file is part of veraPDF PDF Box PDF/A Validation Model Implementation, a module of the veraPDF project.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+ * All rights reserved.
+ *
+ * veraPDF PDF Box PDF/A Validation Model Implementation is free software: you can redistribute it and/or modify
+ * it under the terms of either:
+ *
+ * The GNU General public license GPLv3+.
+ * You should have received a copy of the GNU General Public License
+ * along with veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.GPL file in the root of the source
+ * tree.  If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ *
+ * The Mozilla Public License MPLv2+.
+ * You should have received a copy of the Mozilla Public License along with
+ * veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.MPL file in the root of the source tree.
+ * If a copy of the MPL was not distributed with this file, you can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
 package org.verapdf.model.impl.pb.operator.inlineimage;
 
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.impl.pb.pd.images.PBoxPDInlineImage;
 import org.verapdf.model.operator.Op_EI;
 import org.verapdf.model.pdlayer.PDInlineImage;
 import org.verapdf.model.tools.resources.PDInheritableResources;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,11 +52,16 @@ public class PBOp_EI extends PBOpInlineImage implements Op_EI {
 	private final byte[] imageData;
 	private final PDResources resources;
 
+	private final PDDocument document;
+	private final PDFAFlavour flavour;
+
 	public PBOp_EI(List<COSBase> arguments, byte[] imageData,
-				   PDInheritableResources resources) {
+				   PDInheritableResources resources, PDDocument document, PDFAFlavour flavour) {
 		super(arguments, OP_EI_TYPE);
 		this.imageData = imageData;
-		this.resources = this.getResources(resources);
+		this.resources = PBOp_EI.getResources(resources);
+		this.document = document;
+		this.flavour = flavour;
 	}
 
 	@Override
@@ -56,24 +83,24 @@ public class PBOp_EI extends PBOpInlineImage implements Op_EI {
 							this.resources);
 
 			List<PDInlineImage> inlineImages = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			inlineImages.add(new PBoxPDInlineImage(inlineImage));
+			inlineImages.add(new PBoxPDInlineImage(inlineImage, this.document, this.flavour));
 			return Collections.unmodifiableList(inlineImages);
 		} catch (IOException e) {
-			LOGGER.error(e);
+			LOGGER.debug(e);
 		}
 		return Collections.emptyList();
 	}
 
-	private PDResources getResources(PDInheritableResources resources) {
+	private static PDResources getResources(PDInheritableResources resources) {
 		PDResources currRes = resources.getCurrentResources();
-		COSDictionary dictionary = resources.getPageResources().getCOSObject();
+		COSDictionary dictionary = resources.getInheritedResources().getCOSObject();
 		PDResources pageRes = new PDResources(new COSDictionary(dictionary));
 
 		for (COSName name : currRes.getColorSpaceNames()) {
 			try {
 				pageRes.put(name, currRes.getColorSpace(name));
 			} catch (IOException e) {
-				LOGGER.warn("Problem with color space coping.", e);
+				LOGGER.debug("Problem with color space coping.", e);
 			}
 		}
 

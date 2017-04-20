@@ -1,7 +1,28 @@
+/**
+ * This file is part of veraPDF Metadata Fixer, a module of the veraPDF project.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+ * All rights reserved.
+ *
+ * veraPDF Metadata Fixer is free software: you can redistribute it and/or modify
+ * it under the terms of either:
+ *
+ * The GNU General public license GPLv3+.
+ * You should have received a copy of the GNU General Public License
+ * along with veraPDF Metadata Fixer as the LICENSE.GPL file in the root of the source
+ * tree.  If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ *
+ * The Mozilla Public License MPLv2+.
+ * You should have received a copy of the Mozilla Public License along with
+ * veraPDF Metadata Fixer as the LICENSE.MPL file in the root of the source tree.
+ * If a copy of the MPL was not distributed with this file, you can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
 package org.verapdf.metadata.fixer.impl.pb.model;
 
-import com.adobe.xmp.XMPException;
-import com.adobe.xmp.impl.VeraPDFMeta;
+import java.io.IOException;
+import java.io.OutputStream;
+
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
@@ -19,9 +40,8 @@ import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.results.MetadataFixerResult;
 import org.verapdf.pdfa.results.MetadataFixerResultImpl;
 
-import javax.xml.transform.TransformerException;
-import java.io.IOException;
-import java.io.OutputStream;
+import com.adobe.xmp.XMPException;
+import com.adobe.xmp.impl.VeraPDFMeta;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -67,8 +87,8 @@ public class MetadataImpl implements Metadata {
                 this.stream.setNeedToBeUpdated(true);
                 resultBuilder.addFix("Metadata stream filtered with FlateDecode");
             } catch (IOException e) {
-                LOGGER.warn("Problems with setting filter for stream.");
-                LOGGER.warn(e);
+                LOGGER.debug("Problems with setting filter for stream.");
+                LOGGER.debug(e);
             }
         }
         this.setRequiredDictionaryValue(COSName.METADATA, COSName.TYPE,
@@ -109,7 +129,7 @@ public class MetadataImpl implements Metadata {
             }
 
         } catch (XMPException e) {
-            LOGGER.warn("Can not obtain identification part.", e);
+            LOGGER.debug("Can not obtain identification part.", e);
         }
     }
 
@@ -138,18 +158,18 @@ public class MetadataImpl implements Metadata {
             resultBuilder.addFix("Identification schema added");
 
         } catch (XMPException e) {
-            LOGGER.warn("Can not obtain identification fields.", e);
+            LOGGER.debug("Can not obtain identification fields.", e);
         }
     }
 
-    private int compare(String conf, String confToCompare) {
+	private static int compare(String conf, String confToCompare) {
         int confInt = confToInt(conf);
         int confToCompareInt = confToInt(confToCompare);
 
         return confInt - confToCompareInt;
     }
 
-    private int confToInt(String conf) {
+    private static int confToInt(String conf) {
         switch (conf) {
             case "A":
                 return 2;
@@ -167,7 +187,7 @@ public class MetadataImpl implements Metadata {
             Integer identificationPart = this.metadata.getIdentificationPart();
             if (identificationPart == null) {
                 return false;
-            } else {
+			}
                 String identificationConformance = this.metadata.getIdentificationConformance();
                 if (identificationPart.intValue() == 1) {
                     return "A".equals(identificationConformance) || "B".equals(identificationConformance);
@@ -178,9 +198,8 @@ public class MetadataImpl implements Metadata {
                 } else {
                     return false;
                 }
-            }
         } catch (XMPException e) {
-            LOGGER.warn("Can not obtain identification fields.", e);
+            LOGGER.debug("Can not obtain identification fields.", e);
             throw new IllegalStateException(e);
         }
     }
@@ -211,7 +230,7 @@ public class MetadataImpl implements Metadata {
     }
 
     @Override
-    public void updateMetadataStream() throws IOException, TransformerException, XMPException {
+    public void updateMetadataStream() throws IOException, XMPException {
         if (!this.stream.isNeedToBeUpdated()) {
             return;
         }

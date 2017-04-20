@@ -1,3 +1,23 @@
+/**
+ * This file is part of veraPDF PDF Box PDF/A Validation Model Implementation, a module of the veraPDF project.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+ * All rights reserved.
+ *
+ * veraPDF PDF Box PDF/A Validation Model Implementation is free software: you can redistribute it and/or modify
+ * it under the terms of either:
+ *
+ * The GNU General public license GPLv3+.
+ * You should have received a copy of the GNU General Public License
+ * along with veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.GPL file in the root of the source
+ * tree.  If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ *
+ * The Mozilla Public License MPLv2+.
+ * You should have received a copy of the Mozilla Public License along with
+ * veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.MPL file in the root of the source tree.
+ * If a copy of the MPL was not distributed with this file, you can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
 package org.verapdf.model.impl.pb.pd.colors;
 
 import org.apache.log4j.Logger;
@@ -5,6 +25,7 @@ import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceNAttributes;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosUnicodeName;
@@ -13,6 +34,7 @@ import org.verapdf.model.impl.pb.cos.PBCosUnicodeName;
 import org.verapdf.model.pdlayer.PDColorSpace;
 import org.verapdf.model.pdlayer.PDDeviceN;
 import org.verapdf.model.pdlayer.PDSeparation;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,13 +61,18 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 
 	private final boolean areColorantsPresent;
 
+	private final PDDocument document;
+	private final PDFAFlavour flavour;
+
 	public PBoxPDDeviceN(
-			org.apache.pdfbox.pdmodel.graphics.color.PDDeviceN simplePDObject) {
+			org.apache.pdfbox.pdmodel.graphics.color.PDDeviceN simplePDObject, PDDocument document, PDFAFlavour flavour) {
 		super(simplePDObject, DEVICE_N_TYPE);
-		this.areColorantsPresent = this.areColorantsPresent(simplePDObject);
+		this.areColorantsPresent = PBoxPDDeviceN.areColorantsPresent(simplePDObject);
+		this.document = document;
+		this.flavour = flavour;
 	}
 
-	private boolean areColorantsPresent(
+	private static boolean areColorantsPresent(
 			org.apache.pdfbox.pdmodel.graphics.color.PDDeviceN simplePDObject) {
 		PDDeviceNAttributes attributes = simplePDObject.getAttributes();
 		if (attributes != null) {
@@ -56,19 +83,20 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 				COSBase colorantsArray = array.get(1);
 
 				if (colorantsArray instanceof COSArray) {
-					return this.areColorantsPresent((COSDictionary) colorantsDict, colorantsArray);
+					return PBoxPDDeviceN.areColorantsPresent((COSDictionary) colorantsDict, colorantsArray);
 				}
 			}
 		}
 		return false;
 	}
 
-	private boolean areColorantsPresent(COSDictionary colorantsDict, COSBase colorantsArray) {
+	private static boolean areColorantsPresent(COSDictionary colorantsDict, COSBase colorantsArray) {
 		Set<COSName> colorantDictionaryEntries = colorantsDict.keySet();
 		for (int i = 0; i < ((COSArray) colorantsArray).size(); i++) {
 			COSBase object = ((COSArray) colorantsArray).getObject(i);
 			if (object instanceof COSName &&
-					!colorantDictionaryEntries.contains(object)) {
+					!colorantDictionaryEntries.contains(object) &&
+					object != COSName.NONE) {
 				return false;
 			}
 		}
@@ -99,14 +127,14 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 			org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace alternateColorSpace =
 					((org.apache.pdfbox.pdmodel.graphics.color.PDDeviceN) this.simplePDObject)
 							.getAlternateColorSpace();
-			PDColorSpace space = ColorSpaceFactory.getColorSpace(alternateColorSpace);
+			PDColorSpace space = ColorSpaceFactory.getColorSpace(alternateColorSpace, this.document, this.flavour);
 			if (space != null) {
 				List<PDColorSpace> colorSpace = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 				colorSpace.add(space);
 				return Collections.unmodifiableList(colorSpace);
 			}
 		} catch (IOException e) {
-			LOGGER.error("Can not get alternate color space from DeviceN. ", e);
+			LOGGER.debug("Can not get alternate color space from DeviceN. ", e);
 		}
 		return Collections.emptyList();
 	}
@@ -146,10 +174,10 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 				org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace colorSpace =
 						org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace.create(value);
 				if (colorSpace instanceof org.apache.pdfbox.pdmodel.graphics.color.PDSeparation) {
-					list.add(new PBoxPDSeparation((org.apache.pdfbox.pdmodel.graphics.color.PDSeparation) colorSpace));
+					list.add((PBoxPDSeparation) ColorSpaceFactory.getColorSpace(colorSpace, this.document, this.flavour));
 				}
 			} catch (IOException e) {
-				LOGGER.warn("Problems with color space obtain.", e);
+				LOGGER.debug("Problems with color space obtain.", e);
 			}
 		}
 		return Collections.unmodifiableList(list);
