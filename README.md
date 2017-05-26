@@ -8,6 +8,7 @@ veraPDF-pdfbox-validation
 [![Maven Central](https://img.shields.io/maven-central/v/org.verapdf/verapdf-pdfbox-validation.svg)](http://repo1.maven.org/maven2/org/verapdf/verapdf-pdfbox-validation/ "Maven central")
 [![CodeCov Coverage](https://img.shields.io/codecov/c/github/veraPDF/veraPDF-pdfbox-validation.svg)](https://codecov.io/gh/veraPDF/veraPDF-pdfbox-validation/ "CodeCov coverage")
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9fddd0a05e5b4c4ea57240c2eee55c16)](https://www.codacy.com/app/carlwilson/veraPDF-pdfbox-validation?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=veraPDF/veraPDF-pdfbox-validation&amp;utm_campaign=Badge_Grade "Codacy grade")
+
 Licensing
 ---------
 The veraPDF Parser is dual-licensed, see:
