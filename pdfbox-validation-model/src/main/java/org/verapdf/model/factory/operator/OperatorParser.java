@@ -39,6 +39,7 @@ import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.verapdf.model.factory.colors.ColorSpaceFactory;
 import org.verapdf.model.impl.pb.operator.color.PBOpColor;
+import org.verapdf.model.impl.pb.operator.color.PBOpSetColor;
 import org.verapdf.model.impl.pb.operator.generalgs.*;
 import org.verapdf.model.impl.pb.operator.inlineimage.PBOp_BI;
 import org.verapdf.model.impl.pb.operator.inlineimage.PBOp_EI;
@@ -172,53 +173,53 @@ class OperatorParser {
 				cs = resources == null ? PDDeviceGray.INSTANCE :
 						resources.getColorSpace(COSName.DEVICEGRAY);
 				this.graphicState.setStrokeColorSpace(cs);
-				operators.add(new PBOpColor(arguments));
+				operators.add(this.getStrokeColorOperator(arguments));
 				break;
 			}
 			case Operators.G_FILL: {
 				cs = resources == null ? PDDeviceGray.INSTANCE :
 						resources.getColorSpace(COSName.DEVICEGRAY);
 				this.graphicState.setFillColorSpace(cs);
-				operators.add(new PBOpColor(arguments));
+				operators.add(this.getFillColorOperator(arguments));
 				break;
 			}
 			case Operators.RG_STROKE: {
 				cs = resources == null ? PDDeviceRGB.INSTANCE :
 						resources.getColorSpace(COSName.DEVICERGB);
 				this.graphicState.setStrokeColorSpace(cs);
-				operators.add(new PBOpColor(arguments));
+				operators.add(this.getStrokeColorOperator(arguments));
 				break;
 			}
 			case Operators.RG_FILL: {
 				cs = resources == null ? PDDeviceRGB.INSTANCE :
 						resources.getColorSpace(COSName.DEVICERGB);
 				this.graphicState.setFillColorSpace(cs);
-				operators.add(new PBOpColor(arguments));
+				operators.add(this.getFillColorOperator(arguments));
 				break;
 			}
 			case Operators.K_STROKE: {
 				cs = resources == null ? PDDeviceCMYK.INSTANCE :
 						resources.getColorSpace(COSName.DEVICECMYK);
 				this.graphicState.setStrokeColorSpace(cs);
-				operators.add(new PBOpColor(arguments));
+				operators.add(this.getStrokeColorOperator(arguments));
 				break;
 			}
 			case Operators.K_FILL: {
 				cs = resources == null ? PDDeviceCMYK.INSTANCE :
 						resources.getColorSpace(COSName.DEVICECMYK);
 				this.graphicState.setFillColorSpace(cs);
-				operators.add(new PBOpColor(arguments));
+				operators.add(this.getFillColorOperator(arguments));
 				break;
 			}
 			case Operators.CS_STROKE:
 				this.graphicState.setStrokeColorSpace(getColorSpaceFromResources(
 						resources, getLastCOSName(arguments)));
-				operators.add(new PBOpColor(arguments));
+				operators.add(this.getStrokeColorOperator(arguments));
 				break;
 			case Operators.CS_FILL:
 				this.graphicState.setFillColorSpace(getColorSpaceFromResources(
 						resources, getLastCOSName(arguments)));
-				operators.add(new PBOpColor(arguments));
+				operators.add(this.getFillColorOperator(arguments));
 				break;
 			case Operators.SCN_STROKE:
 				this.setStrokePatternColorSpace(operators, graphicState.getStrokeColorSpace(),
@@ -229,10 +230,10 @@ class OperatorParser {
 						resources, arguments);
 				break;
 			case Operators.SC_STROKE:
-				operators.add(new PBOpColor(arguments));
+				operators.add(new PBOpSetColor(arguments));
 				break;
 			case Operators.SC_FILL:
-				operators.add(new PBOpColor(arguments));
+				operators.add(new PBOpSetColor(arguments));
 				break;
 
 			// TEXT OBJECT
@@ -445,6 +446,18 @@ class OperatorParser {
 		}
 	}
 
+	private PBOpColor getStrokeColorOperator(List<COSBase> arguments) {
+		org.verapdf.model.pdlayer.PDColorSpace colorSpace = ColorSpaceFactory.getColorSpace(
+				graphicState.getStrokeColorSpace(), document, flavour);
+		return new PBOpColor(arguments, colorSpace);
+	}
+
+	private PBOpColor getFillColorOperator(List<COSBase> arguments) {
+		org.verapdf.model.pdlayer.PDColorSpace colorSpace = ColorSpaceFactory.getColorSpace(
+				graphicState.getFillColorSpace(), document, flavour);
+		return new PBOpColor(arguments, colorSpace);
+	}
+
 	private void setFillPatternColorSpace(List<Operator> operators, PDColorSpace colorSpace,
 										  PDInheritableResources resources, List<COSBase> arguments) {
 		if (colorSpace != null &&
@@ -452,7 +465,9 @@ class OperatorParser {
 			graphicState.setFillPattern(getPatternFromResources(resources,
 					getLastCOSName(arguments)));
 		}
-		operators.add(new PBOpColor(arguments));
+		org.verapdf.model.pdlayer.PDColorSpace modelColorSpace = ColorSpaceFactory.getColorSpace(
+				graphicState.getFillColorSpace(), document, flavour);
+		operators.add(new PBOpColor(arguments, modelColorSpace));
 	}
 
 	private void setStrokePatternColorSpace(List<Operator> operators, PDColorSpace colorSpace,
@@ -462,7 +477,9 @@ class OperatorParser {
 			graphicState.setStrokePattern(getPatternFromResources(resources,
 					getLastCOSName(arguments)));
 		}
-		operators.add(new PBOpColor(arguments));
+		org.verapdf.model.pdlayer.PDColorSpace modelColorSpace = ColorSpaceFactory.getColorSpace(
+				graphicState.getStrokeColorSpace(), document, flavour);
+		operators.add(new PBOpColor(arguments, modelColorSpace));
 	}
 
 	private void addExtGState(List<Operator> operators,
