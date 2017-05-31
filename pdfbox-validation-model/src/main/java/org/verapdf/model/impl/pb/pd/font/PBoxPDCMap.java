@@ -31,6 +31,7 @@ import org.verapdf.model.external.CMapFile;
 import org.verapdf.model.impl.pb.external.PBoxCMapFile;
 import org.verapdf.model.impl.pb.pd.PBoxPDObject;
 import org.verapdf.model.pdlayer.PDCMap;
+import org.verapdf.model.pdlayer.PDReferencedCMap;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,6 +52,10 @@ public class PBoxPDCMap extends PBoxPDObject implements PDCMap {
 
     public PBoxPDCMap(CMap cMap, COSStream cMapFile) {
         super(cMap, cMapFile, CMAP_TYPE);
+    }
+
+    public PBoxPDCMap(CMap cMap, COSStream cMapFile, String type) {
+        super(cMap, cMapFile, type);
     }
 
 	@Override
@@ -79,24 +84,24 @@ public class PBoxPDCMap extends PBoxPDObject implements PDCMap {
 		return Collections.emptyList();
     }
 
-    private List<PDCMap> getUseCMap() {
+    private List<PDReferencedCMap> getUseCMap() {
         if (this.simplePDObject instanceof COSStream) {
             COSBase useCMap = ((COSStream) this.simplePDObject).getDictionaryObject(USE_C_MAP);
             try {
                 CMapParser cMapParser = new CMapParser();
-                PBoxPDCMap pBoxPDCMap = null;
+                PDReferencedCMap pBoxPDCMap = null;
                 CMap pdfboxCMap;
 
                 if (useCMap instanceof COSName) {
                     pdfboxCMap = cMapParser.parsePredefined(((COSName) useCMap).getName());
-                    pBoxPDCMap = new PBoxPDCMap(pdfboxCMap, null);
+                    pBoxPDCMap = new PBoxPDReferencedCMap(pdfboxCMap, null);
                 } else if (useCMap instanceof COSStream) {
                     pdfboxCMap = cMapParser.parse(((COSStream) useCMap).getUnfilteredStream());
-                    pBoxPDCMap = new PBoxPDCMap(pdfboxCMap, (COSStream) useCMap);
+                    pBoxPDCMap = new PBoxPDReferencedCMap(pdfboxCMap, (COSStream) useCMap);
                 }
 
                 if (pBoxPDCMap != null) {
-                    List<PDCMap> result = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+                    List<PDReferencedCMap> result = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
                     result.add(pBoxPDCMap);
                     return Collections.unmodifiableList(result);
                 }
