@@ -71,7 +71,7 @@ public abstract class PBoxPDFont extends PBoxPDResources implements PDFont {
 			}
 			if (fontFile != null) {
 				COSBase subtype = ((COSStream) fontFile.getCOSObject()).getItem(COSName.SUBTYPE);
-				return ((COSName) subtype).getName();
+				return subtype == null ? null : ((COSName) subtype).getName();
 			}
 		}
 		return null;
