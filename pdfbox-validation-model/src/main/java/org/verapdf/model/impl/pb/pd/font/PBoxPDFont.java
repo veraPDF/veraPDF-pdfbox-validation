@@ -60,19 +60,21 @@ public abstract class PBoxPDFont extends PBoxPDResources implements PDFont {
 
 	@Override
 	public String getfontFileSubtype() {
-		PDFontDescriptor fontDescriptor = pdFontLike.getFontDescriptor();
-		PDStream fontFile = fontDescriptor.getFontFile();
-		if (fontFile == null) {
-			fontFile = fontDescriptor.getFontFile2();
+		if (this.pdFontLike != null && this.pdFontLike.getFontDescriptor() != null) {
+			PDFontDescriptor fontDescriptor = pdFontLike.getFontDescriptor();
+			PDStream fontFile = fontDescriptor.getFontFile();
 			if (fontFile == null) {
-				fontFile = fontDescriptor.getFontFile3();
+				fontFile = fontDescriptor.getFontFile2();
+				if (fontFile == null) {
+					fontFile = fontDescriptor.getFontFile3();
+				}
+			}
+			if (fontFile != null) {
+				COSBase subtype = ((COSStream) fontFile.getCOSObject()).getItem(COSName.SUBTYPE);
+				return ((COSName) subtype).getName();
 			}
 		}
-		if (fontFile == null) {
-			return null;
-		}
-		COSBase subtype = ((COSStream) fontFile.getCOSObject()).getItem(COSName.SUBTYPE);
-		return ((COSName) subtype).getName();
+		return null;
 	}
 
 	@Override
