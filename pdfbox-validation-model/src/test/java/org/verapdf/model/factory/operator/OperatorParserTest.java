@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.verapdf.model.impl.pb.operator.color.PBOpColor;
+import org.verapdf.model.impl.pb.operator.color.PBOpSetColor;
 import org.verapdf.model.impl.pb.operator.generalgs.*;
 import org.verapdf.model.impl.pb.operator.inlineimage.PBOp_BI;
 import org.verapdf.model.impl.pb.operator.inlineimage.PBOp_EI;
@@ -100,8 +101,8 @@ public class OperatorParserTest {
 		parameters.add(new Object[] {Operator.getOperator(Operators.CS_FILL), PBOpColor.OP_COLOR_TYPE});
 		parameters.add(new Object[] {Operator.getOperator(Operators.SCN_STROKE), PBOpColor.OP_COLOR_TYPE});
 		parameters.add(new Object[] {Operator.getOperator(Operators.SCN_FILL), PBOpColor.OP_COLOR_TYPE});
-		parameters.add(new Object[] {Operator.getOperator(Operators.SC_STROKE), PBOpColor.OP_COLOR_TYPE});
-		parameters.add(new Object[] {Operator.getOperator(Operators.SC_FILL), PBOpColor.OP_COLOR_TYPE});
+		parameters.add(new Object[] {Operator.getOperator(Operators.SC_STROKE), PBOpSetColor.OP_SET_COLOR_TYPE});
+		parameters.add(new Object[] {Operator.getOperator(Operators.SC_FILL), PBOpSetColor.OP_SET_COLOR_TYPE});
 		parameters.add(new Object[] {Operator.getOperator(Operators.ET), PBOpTextObject.OP_TEXT_OBJECT_TYPE});
 		parameters.add(new Object[] {Operator.getOperator(Operators.BT), PBOpTextObject.OP_TEXT_OBJECT_TYPE});
 		parameters.add(new Object[] {Operator.getOperator(Operators.TD_MOVE), PBOp_Td.OP_TD_TYPE});

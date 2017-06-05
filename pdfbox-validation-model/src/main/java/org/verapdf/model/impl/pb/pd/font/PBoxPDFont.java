@@ -20,7 +20,9 @@
  */
 package org.verapdf.model.impl.pb.pd.font;
 
+import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.font.*;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
@@ -54,6 +56,25 @@ public abstract class PBoxPDFont extends PBoxPDResources implements PDFont {
 		super(font, type);
 		this.renderingMode = renderingMode;
 		this.id = IDGenerator.generateID(font);
+	}
+
+	@Override
+	public String getfontFileSubtype() {
+		if (this.pdFontLike != null && this.pdFontLike.getFontDescriptor() != null) {
+			PDFontDescriptor fontDescriptor = pdFontLike.getFontDescriptor();
+			PDStream fontFile = fontDescriptor.getFontFile();
+			if (fontFile == null) {
+				fontFile = fontDescriptor.getFontFile2();
+				if (fontFile == null) {
+					fontFile = fontDescriptor.getFontFile3();
+				}
+			}
+			if (fontFile != null) {
+				COSBase subtype = ((COSStream) fontFile.getCOSObject()).getItem(COSName.SUBTYPE);
+				return subtype == null ? null : ((COSName) subtype).getName();
+			}
+		}
+		return null;
 	}
 
 	@Override

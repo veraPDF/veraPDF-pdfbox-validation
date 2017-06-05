@@ -120,20 +120,8 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 	 */
 	public PBoxPDDocument(org.apache.pdfbox.pdmodel.PDDocument document, PDFAFlavour flavour) {
 		super(document, PD_DOCUMENT_TYPE);
-		this.catalog = this.getDocumentCatalog();
+		this.catalog = this.document.getDocumentCatalog();
 		this.flavour = flavour;
-	}
-
-	private PDDocumentCatalog getDocumentCatalog() {
-		try {
-			COSDictionary object = (COSDictionary)
-					this.document.getDocument().getCatalog().getObject();
-			return new PDDocumentCatalog(this.document, object);
-		} catch (IOException e) {
-			LOGGER.debug("Catalog cannot be found.");
-			LOGGER.debug(e);
-		}
-		return null;
 	}
 
 	@Override
