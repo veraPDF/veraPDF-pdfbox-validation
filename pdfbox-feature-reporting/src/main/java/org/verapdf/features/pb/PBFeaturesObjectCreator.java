@@ -2,16 +2,16 @@
  * This file is part of veraPDF Library PDF Box Features Reporting, a module of the veraPDF project.
  * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
  * All rights reserved.
- *
+ * <p>
  * veraPDF Library PDF Box Features Reporting is free software: you can redistribute it and/or modify
  * it under the terms of either:
- *
+ * <p>
  * The GNU General public license GPLv3+.
  * You should have received a copy of the GNU General Public License
  * along with veraPDF Library PDF Box Features Reporting as the LICENSE.GPL file in the root of the source
  * tree.  If not, see http://www.gnu.org/licenses/ or
  * https://www.gnu.org/licenses/gpl-3.0.en.html.
- *
+ * <p>
  * The Mozilla Public License MPLv2+.
  * You should have received a copy of the Mozilla Public License along with
  * veraPDF Library PDF Box Features Reporting as the LICENSE.MPL file in the root of the source tree.
@@ -37,9 +37,11 @@ import org.apache.pdfbox.pdmodel.graphics.pattern.PDShadingPattern;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDTilingPattern;
 import org.apache.pdfbox.pdmodel.graphics.shading.PDShading;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
+import org.apache.pdfbox.pdmodel.interactive.action.PDAction;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
+import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.verapdf.features.objects.*;
 import org.verapdf.features.pb.objects.*;
 
@@ -107,7 +109,7 @@ public final class PBFeaturesObjectCreator {
 	 * @return created PBEmbeddedFileFeaturesObjectAdapter
 	 */
 	public static EmbeddedFileFeaturesObject createEmbeddedFileFeaturesObject(PDComplexFileSpecification embFile,
-																				int index) {
+																			  int index) {
 		PBEmbeddedFileFeaturesObjectAdapter adapter = new PBEmbeddedFileFeaturesObjectAdapter(embFile, index);
 		return new EmbeddedFileFeaturesObject(adapter);
 	}
@@ -120,7 +122,7 @@ public final class PBFeaturesObjectCreator {
 	 * @return created PBOutputIntentsFeaturesObjectAdapter
 	 */
 	public static OutputIntentFeaturesObject createOutputIntentFeaturesObject(PDOutputIntent outInt,
-																				 String iccProfileID) {
+																			  String iccProfileID) {
 		PBOutputIntentsFeaturesObjectAdapter adapter = new PBOutputIntentsFeaturesObjectAdapter(outInt, iccProfileID);
 		return new OutputIntentFeaturesObject(adapter);
 	}
@@ -170,17 +172,18 @@ public final class PBFeaturesObjectCreator {
 	 * @return created PBPageFeaturesObjectAdapter
 	 */
 	public static PageFeaturesObject createPageFeaturesObject(PDPage page,
-																String thumb,
-																Set<String> annotsId,
-																Set<String> extGStateChild,
-																Set<String> colorSpaceChild,
-																Set<String> patternChild,
-																Set<String> shadingChild,
-																Set<String> xobjectChild,
-																Set<String> fontChild,
-																Set<String> propertiesChild,
-																int index) {
-		PBPageFeaturesObjectAdapter adapter = new PBPageFeaturesObjectAdapter(page, thumb, annotsId, extGStateChild,
+															  String label,
+															  String thumb,
+															  Set<String> annotsId,
+															  Set<String> extGStateChild,
+															  Set<String> colorSpaceChild,
+															  Set<String> patternChild,
+															  Set<String> shadingChild,
+															  Set<String> xobjectChild,
+															  Set<String> fontChild,
+															  Set<String> propertiesChild,
+															  int index) {
+		PBPageFeaturesObjectAdapter adapter = new PBPageFeaturesObjectAdapter(page, label, thumb, annotsId, extGStateChild,
 				colorSpaceChild, patternChild, shadingChild, xobjectChild,
 				fontChild, propertiesChild, index);
 		return new PageFeaturesObject(adapter);
@@ -207,8 +210,8 @@ public final class PBFeaturesObjectCreator {
 	 * @return created PBExtGStateFeaturesObjectAdapter
 	 */
 	public static ExtGStateFeaturesObject createExtGStateFeaturesObject(PDExtendedGraphicsState exGState,
-																		  String id,
-																		  String fontChildID) {
+																		String id,
+																		String fontChildID) {
 		PBExtGStateFeaturesObjectAdapter adapter = new PBExtGStateFeaturesObjectAdapter(exGState, id, fontChildID);
 		return new ExtGStateFeaturesObject(adapter);
 	}
@@ -223,9 +226,9 @@ public final class PBFeaturesObjectCreator {
 	 * @return created PBColorSpaceFeaturesObjectAdapter
 	 */
 	public static ColorSpaceFeaturesObject createColorSpaceFeaturesObject(PDColorSpace colorSpace,
-																			String id,
-																			String iccProfileChild,
-																			String colorSpaceChild) {
+																		  String id,
+																		  String iccProfileChild,
+																		  String colorSpaceChild) {
 		PBColorSpaceFeaturesObjectAdapter adapter = new PBColorSpaceFeaturesObjectAdapter(colorSpace, id, iccProfileChild, colorSpaceChild);
 		return new ColorSpaceFeaturesObject(adapter);
 	}
@@ -245,14 +248,14 @@ public final class PBFeaturesObjectCreator {
 	 * @return created PBTilingPatternFeaturesObjectAdapter
 	 */
 	public static TilingPatternFeaturesObject createTilingPatternFeaturesObject(PDTilingPattern tilingPattern,
-																				  String id,
-																				  Set<String> extGStateChild,
-																				  Set<String> colorSpaceChild,
-																				  Set<String> patternChild,
-																				  Set<String> shadingChild,
-																				  Set<String> xobjectChild,
-																				  Set<String> fontChild,
-																				  Set<String> propertiesChild) {
+																				String id,
+																				Set<String> extGStateChild,
+																				Set<String> colorSpaceChild,
+																				Set<String> patternChild,
+																				Set<String> shadingChild,
+																				Set<String> xobjectChild,
+																				Set<String> fontChild,
+																				Set<String> propertiesChild) {
 		PBTilingPatternFeaturesObjectAdapter adapter = new PBTilingPatternFeaturesObjectAdapter(tilingPattern, id, extGStateChild, colorSpaceChild, patternChild, shadingChild, xobjectChild, fontChild, propertiesChild);
 		return new TilingPatternFeaturesObject(adapter);
 	}
@@ -267,9 +270,9 @@ public final class PBFeaturesObjectCreator {
 	 * @return created PBShadingPatternFeaturesObjectAdapter
 	 */
 	public static ShadingPatternFeaturesObject createShadingPatternFeaturesObject(PDShadingPattern shadingPattern,
-																					String id,
-																					String shadingChild,
-																					String extGStateChild) {
+																				  String id,
+																				  String shadingChild,
+																				  String extGStateChild) {
 		PBShadingPatternFeaturesObjectAdapter adapter = new PBShadingPatternFeaturesObjectAdapter(shadingPattern, id, shadingChild, extGStateChild);
 		return new ShadingPatternFeaturesObject(adapter);
 	}
@@ -283,8 +286,8 @@ public final class PBFeaturesObjectCreator {
 	 * @return created PBShadingFeaturesObjectAdapter
 	 */
 	public static ShadingFeaturesObject createShadingFeaturesObject(PDShading shading,
-																	  String id,
-																	  String colorSpaceChild) {
+																	String id,
+																	String colorSpaceChild) {
 		PBShadingFeaturesObjectAdapter adapter = new PBShadingFeaturesObjectAdapter(shading, id, colorSpaceChild);
 		return new ShadingFeaturesObject(adapter);
 	}
@@ -301,11 +304,11 @@ public final class PBFeaturesObjectCreator {
 	 * @return created PBImageXObjectFeaturesObject
 	 */
 	public static ImageXObjectFeaturesObject createImageXObjectFeaturesObject(PDImageXObjectProxy imageXObject,
-																				String id,
-																				String colorSpaceChild,
-																				String maskChild,
-																				String sMaskChild,
-																				Set<String> alternatesChild) {
+																			  String id,
+																			  String colorSpaceChild,
+																			  String maskChild,
+																			  String sMaskChild,
+																			  Set<String> alternatesChild) {
 		PBImageXObjectFeaturesObjectAdapter adapter = new PBImageXObjectFeaturesObjectAdapter(imageXObject, id, colorSpaceChild, maskChild, sMaskChild, alternatesChild);
 		return new ImageXObjectFeaturesObject(adapter);
 	}
@@ -326,15 +329,15 @@ public final class PBFeaturesObjectCreator {
 	 * @return created PBFormXObjectFeaturesObjectAdapter
 	 */
 	public static FormXObjectFeaturesObject createFormXObjectFeaturesObject(PDFormXObject formXObject,
-																			  String id,
-																			  String groupChild,
-																			  Set<String> extGStateChild,
-																			  Set<String> colorSpaceChild,
-																			  Set<String> patternChild,
-																			  Set<String> shadingChild,
-																			  Set<String> xobjectChild,
-																			  Set<String> fontChild,
-																			  Set<String> propertiesChild) {
+																			String id,
+																			String groupChild,
+																			Set<String> extGStateChild,
+																			Set<String> colorSpaceChild,
+																			Set<String> patternChild,
+																			Set<String> shadingChild,
+																			Set<String> xobjectChild,
+																			Set<String> fontChild,
+																			Set<String> propertiesChild) {
 		PBFormXObjectFeaturesObjectAdapter adapter = new PBFormXObjectFeaturesObjectAdapter(formXObject, id, groupChild, extGStateChild, colorSpaceChild, patternChild, shadingChild, xobjectChild, fontChild, propertiesChild);
 		return new FormXObjectFeaturesObject(adapter);
 	}
@@ -354,14 +357,14 @@ public final class PBFeaturesObjectCreator {
 	 * @return created PBFontFeaturesObjectAdapter
 	 */
 	public static FontFeaturesObject createFontFeaturesObject(PDFontLike fontLike,
-																String id,
-																Set<String> extGStateChild,
-																Set<String> colorSpaceChild,
-																Set<String> patternChild,
-																Set<String> shadingChild,
-																Set<String> xobjectChild,
-																Set<String> fontChild,
-																Set<String> propertiesChild) {
+															  String id,
+															  Set<String> extGStateChild,
+															  Set<String> colorSpaceChild,
+															  Set<String> patternChild,
+															  Set<String> shadingChild,
+															  Set<String> xobjectChild,
+															  Set<String> fontChild,
+															  Set<String> propertiesChild) {
 		PBFontFeaturesObjectAdapter adapter = new PBFontFeaturesObjectAdapter(fontLike, id, extGStateChild, colorSpaceChild, patternChild, shadingChild, xobjectChild, fontChild, propertiesChild);
 		return new FontFeaturesObject(adapter);
 	}
@@ -374,7 +377,7 @@ public final class PBFeaturesObjectCreator {
 	 * @return created PBPropertiesDictFeaturesObjectAdapter
 	 */
 	public static PropertiesDictFeaturesObject createPropertiesDictFeaturesObject(COSDictionary properties,
-																					String id) {
+																				  String id) {
 		PBPropertiesDictFeaturesObjectAdapter adapter = new PBPropertiesDictFeaturesObjectAdapter(properties, id);
 		return new PropertiesDictFeaturesObject(adapter);
 	}
@@ -395,9 +398,20 @@ public final class PBFeaturesObjectCreator {
 	 *
 	 * @param signature pdfbox signature object
 	 * @return created PBSignatureFeaturesObjectAdapter
-     */
+	 */
 	public static SignatureFeaturesObject createSignatureFeaturesObject(PDSignature signature) {
 		PBSignatureFeaturesObjectAdapter adapter = new PBSignatureFeaturesObjectAdapter(signature);
 		return new SignatureFeaturesObject(adapter);
+	}
+
+	public static ActionFeaturesObject createActionFeaturesObject(PDAction action,
+																  ActionFeaturesObjectAdapter.Location location) {
+		PBActionFeaturesObjectAdapter adapter = new PBActionFeaturesObjectAdapter(action, location);
+		return new ActionFeaturesObject(adapter);
+	}
+
+	public static InteractiveFormFieldFeaturesObject createInteractiveFormFieldFeaturesObject(PDField formField) {
+		PBInteractiveFormFieldFeaturesObjectAdapter adapter = new PBInteractiveFormFieldFeaturesObjectAdapter(formField);
+		return new InteractiveFormFieldFeaturesObject(adapter);
 	}
 }
