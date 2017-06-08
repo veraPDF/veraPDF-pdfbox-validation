@@ -207,7 +207,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 
 	private List<PDAction> getActions() {
 		PDPageAdditionalActions pbActions = ((org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject)
-				.getActions();
+				.getAdditionalActions();
 		if (pbActions != null) {
 			List<PDAction> actions = new ArrayList<>(MAX_NUMBER_OF_ACTIONS);
 
