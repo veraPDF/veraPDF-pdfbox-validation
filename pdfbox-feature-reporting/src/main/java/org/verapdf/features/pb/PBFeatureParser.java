@@ -50,6 +50,8 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceDictionary;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceEntry;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDNonTerminalField;
@@ -143,11 +145,17 @@ public final class PBFeatureParser {
 
 	private void getCatalogFeatures(PDDocumentCatalog catalog) {
 		reporter.report(PBFeaturesObjectCreator.createMetadataFeaturesObject(catalog.getMetadata()));
-		reporter.report(PBFeaturesObjectCreator.createOutlinesFeaturesObject(catalog.getDocumentOutline()));
+		PDDocumentOutline documentOutline = catalog.getDocumentOutline();
+		reporter.report(PBFeaturesObjectCreator.createOutlinesFeaturesObject(documentOutline));
 
 		PDDocumentNameDictionary names = catalog.getNames();
 
 		if (config.isFeatureEnabled(FeatureObjectType.ACTION)) {
+			if(documentOutline != null) {
+				for (PDOutlineItem item : documentOutline.children()) {
+					reportOutlinesActions(item);
+				}
+			}
 			try {
 				PDDestinationOrAction openAction = catalog.getOpenAction();
 				if (openAction instanceof PDAction) {
@@ -205,6 +213,15 @@ public final class PBFeatureParser {
 		PDPageTree pageTree = catalog.getPages();
 		if (pageTree != null) {
 			getPageTreeFeatures(pageTree, labels);
+		}
+	}
+
+	private void reportOutlinesActions(PDOutlineItem outline) {
+		if (outline != null) {
+			reportAction(outline.getAction(), ActionFeaturesObjectAdapter.Location.DOCUMENT);
+			for (PDOutlineItem item : outline.children()) {
+				reportOutlinesActions(item);
+			}
 		}
 	}
 
