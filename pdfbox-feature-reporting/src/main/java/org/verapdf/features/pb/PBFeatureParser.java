@@ -218,7 +218,7 @@ public final class PBFeatureParser {
 
 	private void reportOutlinesActions(PDOutlineItem outline) {
 		if (outline != null) {
-			reportAction(outline.getAction(), ActionFeaturesObjectAdapter.Location.DOCUMENT);
+			reportAction(outline.getAction(), ActionFeaturesObjectAdapter.Location.OUTLINES);
 			for (PDOutlineItem item : outline.children()) {
 				reportOutlinesActions(item);
 			}
