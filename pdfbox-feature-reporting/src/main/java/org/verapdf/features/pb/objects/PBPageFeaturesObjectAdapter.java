@@ -42,6 +42,7 @@ import java.util.Set;
 public class PBPageFeaturesObjectAdapter implements PageFeaturesObjectAdapter {
 
 	private PDPage page;
+	private String label;
 	private String thumb;
 	private Set<String> annotsId;
 	private Set<String> extGStateChild;
@@ -71,6 +72,7 @@ public class PBPageFeaturesObjectAdapter implements PageFeaturesObjectAdapter {
 	 * @param index           page index
 	 */
 	public PBPageFeaturesObjectAdapter(PDPage page,
+									   String label,
 									   String thumb,
 									   Set<String> annotsId,
 									   Set<String> extGStateChild,
@@ -82,6 +84,7 @@ public class PBPageFeaturesObjectAdapter implements PageFeaturesObjectAdapter {
 									   Set<String> propertiesChild,
 									   int index) {
 		this.page = page;
+		this.label = label;
 		this.thumb = thumb;
 		this.annotsId = annotsId;
 		this.extGStateChild = extGStateChild;
@@ -157,6 +160,11 @@ public class PBPageFeaturesObjectAdapter implements PageFeaturesObjectAdapter {
 	@Override
 	public int getIndex() {
 		return index;
+	}
+
+	@Override
+	public String getLabel() {
+		return this.label;
 	}
 
 	@Override
