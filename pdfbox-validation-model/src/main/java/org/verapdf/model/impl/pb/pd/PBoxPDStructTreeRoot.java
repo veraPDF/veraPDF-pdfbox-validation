@@ -20,13 +20,14 @@
  */
 package org.verapdf.model.impl.pb.pd;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureTreeRoot;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.coslayer.CosUnicodeName;
+import org.verapdf.model.impl.pb.cos.PBCosUnicodeName;
 import org.verapdf.model.pdlayer.PDStructElem;
 import org.verapdf.model.pdlayer.PDStructTreeRoot;
 import org.verapdf.model.tools.TaggedPDFHelper;
@@ -47,6 +48,9 @@ public class PBoxPDStructTreeRoot extends PBoxPDObject implements PDStructTreeRo
 	/** Link name for {@code K} key */
 	public static final String CHILDREN = "K";
 
+	/** Link name for {@code roleMapNames} key */
+	public static final String ROLE_MAP_NAMES = "roleMapNames";
+
 	private List<PDStructElem> children = null;
 
 	private PDFAFlavour flavour;
@@ -64,10 +68,14 @@ public class PBoxPDStructTreeRoot extends PBoxPDObject implements PDStructTreeRo
 
 	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
-		if (CHILDREN.equals(link)) {
-			return this.getChildren();
+		switch (link) {
+			case CHILDREN:
+				return this.getChildren();
+			case ROLE_MAP_NAMES:
+				return getRoleMapNames();
+			default:
+				return super.getLinkedObjects(link);
 		}
-		return super.getLinkedObjects(link);
 	}
 
 	private List<PDStructElem> getChildren() {
@@ -90,6 +98,19 @@ public class PBoxPDStructTreeRoot extends PBoxPDObject implements PDStructTreeRo
 			resMap.put(entry.getKey(), entry.getValue().toString());
 		}
 		return resMap;
+	}
+
+	private List<CosUnicodeName> getRoleMapNames() {
+		Map<String, java.lang.Object> tempMap = ((PDStructureTreeRoot) this.simplePDObject).getRoleMap();
+		if (tempMap != null) {
+			List<CosUnicodeName> res = new ArrayList<>();
+			for (Map.Entry<String, java.lang.Object> entry : tempMap.entrySet()) {
+				res.add(new PBCosUnicodeName(COSName.getPDFName(entry.getKey())));
+				res.add(new PBCosUnicodeName(COSName.getPDFName(entry.getValue().toString())));
+			}
+			return res;
+		}
+		return Collections.emptyList();
 	}
 
 	@Override
