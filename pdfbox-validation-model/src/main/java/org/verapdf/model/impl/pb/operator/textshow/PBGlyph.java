@@ -113,4 +113,20 @@ public class PBGlyph extends GenericModelObject implements Glyph {
 		return id;
 	}
 
+	@Override
+	public Boolean getunicodePUA() {
+		for (int i = 0; i < toUnicode.length(); ++i) {
+			char unicode = this.toUnicode.charAt(0);
+			if (unicode >= 0xE000 && unicode <= 0xF8FF) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public Boolean getactualTextPresent() {
+		// actual text obtaining should be implemented
+		return Boolean.FALSE;
+	}
 }
