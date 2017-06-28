@@ -78,4 +78,8 @@ public class PBoxCMapFile extends PBoxExternal implements CMapFile {
         return Long.valueOf(this.fileStream.getInt(COSName.getPDFName("WMode"), 0));
     }
 
+    @Override
+    public Long getmaximalCID() {
+        return 0L;  // TODO: not implemented yet
+    }
 }
