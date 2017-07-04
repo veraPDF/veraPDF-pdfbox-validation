@@ -181,7 +181,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 			org.apache.pdfbox.pdmodel.graphics.form.PDGroup group =
 					new org.apache.pdfbox.pdmodel.graphics.form.PDGroup(
 							(COSDictionary) groupDictionary);
-			groups.add(new PBoxPDGroup(group, this.document, this.flavour));
+			groups.add(new PBoxPDGroup(group));
 			return Collections.unmodifiableList(groups);
 		}
 		return Collections.emptyList();

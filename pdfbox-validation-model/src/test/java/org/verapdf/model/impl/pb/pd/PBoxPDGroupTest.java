@@ -27,13 +27,10 @@ import org.apache.pdfbox.pdmodel.graphics.form.PDGroup;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.impl.BaseTest;
-import org.verapdf.model.pdlayer.PDColorSpace;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -49,21 +46,12 @@ public class PBoxPDGroupTest extends BaseTest {
 
 		setUp(FILE_RELATIVE_PATH);
 		COSBase groupDictionary = document.getPage(0).getCOSObject().getDictionaryObject(COSName.GROUP);
-		actual = new PBoxPDGroup(new PDGroup((COSDictionary) groupDictionary), document, null);
+		actual = new PBoxPDGroup(new PDGroup((COSDictionary) groupDictionary));
 	}
 
 	@Test
 	public void testSubtypeMethod() {
 		Assert.assertEquals("Transparency", ((org.verapdf.model.pdlayer.PDGroup) actual).getS());
-	}
-
-	@Test
-	public void testColorSpaceLink() {
-		List<? extends Object> colorSpace = actual.getLinkedObjects(PBoxPDGroup.COLOR_SPACE);
-		Assert.assertEquals(1, colorSpace.size());
-		for (Object object : colorSpace) {
-			Assert.assertTrue(object instanceof PDColorSpace);
-		}
 	}
 
 }

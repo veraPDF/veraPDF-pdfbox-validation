@@ -133,7 +133,7 @@ public class PBoxPDXForm extends PBoxPDXObject implements PDXForm {
 		if (group != null) {
 			this.groupContainsTransparency = COSName.TRANSPARENCY.equals(group.getSubType());
 			List<PDGroup> groupsToAdd = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			groupsToAdd.add(new PBoxPDGroup(group, this.document, this.flavour));
+			groupsToAdd.add(new PBoxPDGroup(group));
 			this.groups = Collections.unmodifiableList(groupsToAdd);
 		} else {
 			this.groups = Collections.emptyList();
