@@ -96,7 +96,7 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	public String getstandardType() {
 		COSBase type = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.S);
 		if (type instanceof COSName) {
-			return this.roleMapHelper.getStandartType(((COSName) type).getName());
+			return this.roleMapHelper.getStandardType(((COSName) type).getName());
 		}
 		return null;
 	}

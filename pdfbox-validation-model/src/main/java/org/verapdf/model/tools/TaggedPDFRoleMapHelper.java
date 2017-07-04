@@ -112,7 +112,7 @@ public class TaggedPDFRoleMapHelper {
 	}
 
 	private Map<String, String> roleMap;
-	private Set<String> currentStandartTypes;
+	private PDFAFlavour flavour;
 
 	/**
 	 * Creates new TaggedPDFRoleMapHelper
@@ -124,29 +124,46 @@ public class TaggedPDFRoleMapHelper {
 	 */
 	public TaggedPDFRoleMapHelper(Map<String, String> roleMap, PDFAFlavour flavour) {
 		this.roleMap = roleMap == null ? Collections.<String, String>emptyMap() : new HashMap<>(roleMap);
-		this.currentStandartTypes = flavour.getPart() == PDFAFlavour.Specification.ISO_19005_1
-				? Collections.unmodifiableSet(PDF_1_4_STANDART_ROLE_TYPES)
-				: Collections.unmodifiableSet(PDF_1_7_STANDART_ROLE_TYPES);
+		this.flavour = flavour;
 	}
 
 	/**
-	 * Obtains standart type for the given one
+	 * Obtains standard type for the given one
 	 * 
 	 * @param type
-	 *            the type for obtaining the standart
-	 * @return standart type for the given one or null in cases when there is no
-	 *         standart for the given or there is a cycle of the custom types
+	 *            the type for obtaining the standard
+	 * @return standard type for the given one or null in cases when there is no
+	 *         standard for the given or there is a cycle of the custom types
 	 */
-	public String getStandartType(String type) {
+	public String getStandardType(String type) {
+		if (type == null) {
+			return null;
+		}
+		Set<String> currentStandardTypes;
+		boolean isFastStop;
+		if (flavour != null && flavour.getPart() == PDFAFlavour.Specification.ISO_19005_1) {
+			currentStandardTypes = PDF_1_4_STANDART_ROLE_TYPES;
+			isFastStop = true;
+		} else {
+			currentStandardTypes = PDF_1_7_STANDART_ROLE_TYPES;
+			isFastStop = false;
+		}
+		return getSandartType(type, currentStandardTypes, isFastStop);
+	}
+
+	private String getSandartType(String type, Set<String> currentStandardTypes, boolean isFastStop) {
 		Set<String> visitedTypes = new HashSet<>();
 		String res = type;
 		while (res != null && !visitedTypes.contains(res)) {
-			if (currentStandartTypes.contains(res)) {
+			visitedTypes.add(res);
+			String next = roleMap.get(res);
+			boolean isStop = isFastStop || next == null;
+			if (isStop && currentStandardTypes.contains(res)) {
 				return res;
 			}
-			visitedTypes.add(res);
-			res = roleMap.get(res);
+			res = next;
 		}
+
 		return null;
 	}
 }
