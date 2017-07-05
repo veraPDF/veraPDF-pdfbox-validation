@@ -40,6 +40,8 @@ public class PBGlyph extends GenericModelObject implements Glyph {
 
 	public final static String GLYPH_TYPE = "Glyph";
 
+	private static final int[] UNICODE_PRIVATE_USE_AREA_ARRAY = {0xE000, 0xF8FF, 0xF0000, 0xFFFFD, 0x100000, 0x10FFFD};
+
 	private final String id;
 
 	private Boolean glyphPresent;
@@ -115,9 +117,17 @@ public class PBGlyph extends GenericModelObject implements Glyph {
 
 	@Override
 	public Boolean getunicodePUA() {
+		if (toUnicode == null) {
+			return false;
+		}
 		for (int i = 0; i < toUnicode.length(); ++i) {
-			char unicode = this.toUnicode.charAt(0);
-			if (unicode >= 0xE000 && unicode <= 0xF8FF) {
+			int unicode = this.toUnicode.codePointAt(0);
+			if ((unicode >= UNICODE_PRIVATE_USE_AREA_ARRAY[0] &&
+					unicode <= UNICODE_PRIVATE_USE_AREA_ARRAY[1]) ||
+					(unicode >= UNICODE_PRIVATE_USE_AREA_ARRAY[2] &&
+							unicode <= UNICODE_PRIVATE_USE_AREA_ARRAY[3]) ||
+					(unicode >= UNICODE_PRIVATE_USE_AREA_ARRAY[4] &&
+							unicode <= UNICODE_PRIVATE_USE_AREA_ARRAY[5])){
 				return true;
 			}
 		}
