@@ -40,8 +40,9 @@ public class PBoxPDHalftone extends PBoxPDObject implements PDHalftone {
 
 	public PBoxPDHalftone(COSName name) {
 		super(name, HALFTONE_TYPE);
-		this.halftoneName = name.getName();
-		this.halftoneType = null;
+		boolean isDefault = COSName.getPDFName("Default").equals(name);
+		this.halftoneName = isDefault ? null : name.getName();
+		this.halftoneType = isDefault ? Long.valueOf(1L) : null;
 	}
 
 	private static Long getHalftoneType(COSDictionary dict) {
