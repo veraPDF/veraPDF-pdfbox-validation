@@ -25,6 +25,7 @@ import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSNumber;
 import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.interactive.pagenavigation.PDTransition;
 import org.verapdf.features.objects.PageFeaturesObjectAdapter;
 import org.verapdf.features.pb.tools.PBAdapterHelper;
 
@@ -54,6 +55,7 @@ public class PBPageFeaturesObjectAdapter implements PageFeaturesObjectAdapter {
 	private Set<String> propertiesChild;
 	private int index;
 	private Double scaling;
+	private PDTransition transition;
 	private List<String> errors;
 
 	/**
@@ -96,6 +98,7 @@ public class PBPageFeaturesObjectAdapter implements PageFeaturesObjectAdapter {
 		this.propertiesChild = propertiesChild;
 		this.index = index;
 		if (page != null) {
+			this.transition = this.page.getTransition();
 			COSBase base = page.getCOSObject().getDictionaryObject(COSName.getPDFName("PZ"));
 			if (base != null) {
 				while (base instanceof COSObject) {
@@ -165,6 +168,11 @@ public class PBPageFeaturesObjectAdapter implements PageFeaturesObjectAdapter {
 	@Override
 	public String getLabel() {
 		return this.label;
+	}
+
+	@Override
+	public String getTransitionStyle() {
+		return this.transition == null ? null : this.transition.getStyle();
 	}
 
 	@Override
