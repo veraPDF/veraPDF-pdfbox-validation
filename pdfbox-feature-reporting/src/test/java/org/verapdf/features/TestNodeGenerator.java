@@ -650,6 +650,7 @@ public final class TestNodeGenerator {
 		FeatureTreeNode docID = lli.addChild("documentId");
 		docID.setAttribute("modificationId", "295EBB0E08D32644B7E5C1825F15AD3A");
 		docID.setAttribute("creationId", "85903F3A2C43B1DA24E486CD15B8154E");
+		lli.addChild("tagged").setValue("false");
 		FeatureTreeNode filters = lli.addChild("filters");
 		addFilter("FlateDecode", filters);
 		addFilter("ASCIIHexDecode", filters);
