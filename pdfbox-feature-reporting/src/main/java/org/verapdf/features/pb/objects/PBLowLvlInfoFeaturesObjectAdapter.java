@@ -43,6 +43,7 @@ public class PBLowLvlInfoFeaturesObjectAdapter implements LowLvlInfoFeaturesObje
 	private String creationId;
 	private String modId;
 	private Set<String> filters;
+	private boolean isTagged = false;
 	private List<String> errors;
 	private static final Map<String, String> filtersAbbreviations;
 
@@ -73,6 +74,16 @@ public class PBLowLvlInfoFeaturesObjectAdapter implements LowLvlInfoFeaturesObje
 				this.objectsNumber = objects.size();
 			}
 			addDocumentId(document.getDocumentID());
+			try {
+				COSBase catalog = document.getCatalog().getObject();
+				if (catalog instanceof COSDictionary) {
+					COSBase dict = ((COSDictionary) catalog).getDictionaryObject(COSName.STRUCT_TREE_ROOT);
+					this.isTagged = dict instanceof COSDictionary;
+				}
+			} catch (IOException e) {
+				LOGGER.debug("Can not obtain document catalog", e);
+				this.errors.add("Can not obtain document catalog");
+			}
 			this.filters = getAllFilters(document);
 		}
 	}
@@ -141,6 +152,11 @@ public class PBLowLvlInfoFeaturesObjectAdapter implements LowLvlInfoFeaturesObje
 	@Override
 	public String getModificationId() {
 		return this.modId;
+	}
+
+	@Override
+	public boolean isTagged() {
+		return this.isTagged;
 	}
 
 	@Override
