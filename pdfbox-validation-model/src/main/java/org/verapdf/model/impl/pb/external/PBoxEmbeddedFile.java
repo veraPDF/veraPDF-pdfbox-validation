@@ -49,9 +49,8 @@ public class PBoxEmbeddedFile extends PBoxExternal implements EmbeddedFile {
 
 	private final COSStream stream;
 
-	public PBoxEmbeddedFile(COSDictionary dictionary) {
+	public PBoxEmbeddedFile(COSBase baseStream) {
 		super(EMBEDDED_FILE_TYPE);
-		COSBase baseStream = dictionary.getDictionaryObject(COSName.F);
 		if (baseStream instanceof COSStream) {
 			this.stream = (COSStream) baseStream;
 		} else {

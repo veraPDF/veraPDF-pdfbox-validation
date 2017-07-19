@@ -53,10 +53,7 @@ public class PBCosFileSpecificationTest extends BaseTest {
     @Test
     public void testGetEFMethod() {
 		List<? extends Object> links = actual.getLinkedObjects(PBCosFileSpecification.EF);
-		Assert.assertEquals(1, links.size());
-		Object object = links.get(0);
-		Assert.assertEquals(PBoxEmbeddedFile.EMBEDDED_FILE_TYPE, object.getObjectType());
-		Assert.assertTrue(((EmbeddedFile) object).getisValidPDFA12().booleanValue());
+		Assert.assertEquals(0, links.size());
 	}
 
     @Test
