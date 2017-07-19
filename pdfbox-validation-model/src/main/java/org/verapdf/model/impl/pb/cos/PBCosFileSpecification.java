@@ -97,11 +97,23 @@ public class PBCosFileSpecification extends PBCosDict implements CosFileSpecific
 	private List<EmbeddedFile> getEFFile() {
 		COSBase efDictionary = ((COSDictionary) this.baseObject).getDictionaryObject(COSName.EF);
 		if (efDictionary instanceof COSDictionary) {
-			ArrayList<EmbeddedFile> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			list.add(new PBoxEmbeddedFile((COSDictionary) efDictionary));
+			List<EmbeddedFile> list = new ArrayList<>();
+			COSDictionary dict = (COSDictionary) efDictionary;
+			addEFFile(list, dict, COSName.F);
+			addEFFile(list, dict, COSName.UF);
+			addEFFile(list, dict, COSName.DOS);
+			addEFFile(list, dict, COSName.MAC);
+			addEFFile(list, dict, COSName.UNIX);
 			return Collections.unmodifiableList(list);
 		}
 		return Collections.emptyList();
+	}
+
+	private void addEFFile(List<EmbeddedFile> list, COSDictionary dict, COSName name) {
+		COSBase base = dict.getDictionaryObject(name);
+		if (base != null) {
+			list.add(new PBoxEmbeddedFile(base));
+		}
 	}
 
 	private String getStringValue(COSName key) {
