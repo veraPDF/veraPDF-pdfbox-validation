@@ -206,6 +206,13 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	}
 
 	@Override
+	public Boolean getcontainsAA() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		return pageObject != null && pageObject instanceof COSDictionary &&
+				((COSDictionary) pageObject).containsKey(COSName.AA);
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 		case ADDITIONAL_ACTION:

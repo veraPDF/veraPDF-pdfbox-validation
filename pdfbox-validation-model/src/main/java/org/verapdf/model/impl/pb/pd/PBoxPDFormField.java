@@ -20,6 +20,9 @@
  */
 package org.verapdf.model.impl.pb.pd;
 
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.interactive.action.PDFormFieldAdditionalActions;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.verapdf.model.baselayer.Object;
@@ -52,6 +55,13 @@ public class PBoxPDFormField extends PBoxPDObject implements PDFormField {
     @Override
     public String getFT() {
         return ((PDField) this.simplePDObject).getFieldType();
+    }
+
+    @Override
+    public Boolean getcontainsAA() {
+        COSBase pageObject = this.simplePDObject.getCOSObject();
+        return pageObject != null && pageObject instanceof COSDictionary &&
+                ((COSDictionary) pageObject).containsKey(COSName.AA);
     }
 
     @Override

@@ -87,6 +87,12 @@ public class PBCosFileSpecification extends PBCosDict implements CosFileSpecific
 	}
 
 	@Override
+	public Boolean getcontainsEF() {
+		return this.baseObject != null && this.baseObject instanceof COSDictionary &&
+				((COSDictionary) this.baseObject).containsKey(COSName.EF);
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		if (EF.equals(link)) {
 			return this.getEFFile();
