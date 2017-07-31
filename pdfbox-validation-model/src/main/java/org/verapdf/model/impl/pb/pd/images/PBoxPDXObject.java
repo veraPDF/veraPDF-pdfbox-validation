@@ -88,12 +88,18 @@ public class PBoxPDXObject extends PBoxPDResources implements PDXObject {
 	}
 
 	@Override
+	public Boolean getcontainsOPI() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		return pageObject != null && pageObject instanceof COSDictionary &&
+				((COSDictionary) pageObject).containsKey(COSName.getPDFName("OPI"));
+	}
+
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 		case S_MASK:
 			return this.getSMask();
-		case OPI:
-			return this.getOPI();
 		default:
 			return super.getLinkedObjects(link);
 		}
@@ -149,10 +155,6 @@ public class PBoxPDXObject extends PBoxPDResources implements PDXObject {
 		}
 	}
 
-	protected List<CosDict> getOPI() {
-		return this.getLinkToDictionary(OPI);
-	}
-
 	protected List<CosDict> getLinkToDictionary(String key) {
 		COSDictionary object = ((org.apache.pdfbox.pdmodel.graphics.PDXObject) this.simplePDObject).getCOSStream();
 		COSBase item = object.getDictionaryObject(COSName.getPDFName(key));
@@ -163,5 +165,4 @@ public class PBoxPDXObject extends PBoxPDResources implements PDXObject {
 		}
 		return Collections.emptyList();
 	}
-
 }

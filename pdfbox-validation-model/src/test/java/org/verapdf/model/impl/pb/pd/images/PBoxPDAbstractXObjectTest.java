@@ -42,11 +42,4 @@ public abstract class PBoxPDAbstractXObjectTest extends BaseTest {
 		List<? extends Object> sMask = actual.getLinkedObjects(PBoxPDXObject.S_MASK);
 		Assert.assertEquals(0, sMask.size());
 	}
-
-	@Test
-	public void testOPILink() {
-		List<? extends Object> opi = actual.getLinkedObjects(PBoxPDXObject.OPI);
-		Assert.assertEquals(0, opi.size());
-	}
-
 }

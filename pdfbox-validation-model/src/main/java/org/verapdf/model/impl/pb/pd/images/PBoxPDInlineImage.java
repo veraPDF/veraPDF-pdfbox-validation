@@ -21,6 +21,7 @@
 package org.verapdf.model.impl.pb.pd.images;
 
 import org.apache.log4j.Logger;
+import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -76,6 +77,13 @@ public class PBoxPDInlineImage extends PBoxPDObject implements PDInlineImage {
 	@Override
 	public Boolean getisInherited() {
 		return Boolean.FALSE;
+	}
+
+	@Override
+	public Boolean getcontainsOPI() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		return pageObject != null && pageObject instanceof COSDictionary &&
+				((COSDictionary) pageObject).containsKey(COSName.getPDFName("OPI"));
 	}
 
 	@Override

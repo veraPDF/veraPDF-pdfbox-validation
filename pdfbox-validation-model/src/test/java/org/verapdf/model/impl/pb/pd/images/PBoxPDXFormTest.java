@@ -72,18 +72,6 @@ public class PBoxPDXFormTest extends PBoxPDAbstractXObjectTest {
 	}
 
 	@Test
-	public void testPostScriptStreamLink() {
-		List<? extends Object> psStream = actual.getLinkedObjects(PBoxPDXForm.PS);
-		Assert.assertTrue(psStream.isEmpty());
-	}
-
-	@Test
-	public void testReferenceLink() {
-		List<? extends Object> reference = actual.getLinkedObjects(PBoxPDXForm.REF);
-		Assert.assertTrue(reference.isEmpty());
-	}
-
-	@Test
 	public void testContentStreamLink() {
 		List<? extends Object> contentStream = actual.getLinkedObjects(PBoxPDXForm.CONTENT_STREAM);
 		Assert.assertEquals(1, contentStream.size());
