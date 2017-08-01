@@ -52,7 +52,6 @@ public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
     public static final String RI = "RI";
     public static final String FONT_SIZE = "fontSize";
 	public static final String HALFTONE = "HT";
-	public static final String HALFTONE_PHASE = "HTP";
 
 	private final String tr;
 	private final String tr2;
@@ -106,7 +105,14 @@ public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
         return this.CA;
     }
 
-    private static String getStringProperty(PDExtendedGraphicsState state, COSName key) {
+	@Override
+	public Boolean getcontainsHTP() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		return pageObject != null && pageObject instanceof COSDictionary &&
+				((COSDictionary) pageObject).containsKey(COSName.getPDFName("HTP"));
+	}
+
+	private static String getStringProperty(PDExtendedGraphicsState state, COSName key) {
 		COSBase base = state.getCOSObject().getDictionaryObject(key);
 		return base == null ? null : base instanceof COSName ?
 				((COSName) base).getName() : base.toString();
@@ -127,8 +133,6 @@ public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
 				return this.getFontSize();
 			case HALFTONE:
 				return this.getHalftone();
-			case HALFTONE_PHASE:
-				return this.getHalftonePhase();
 			default:
 				return super.getLinkedObjects(link);
 		}
@@ -170,18 +174,6 @@ public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
 			} else {
 				list.add(new PBoxPDHalftone((COSName) halftone));
 			}
-			return Collections.unmodifiableList(list);
-		}
-		return Collections.emptyList();
-	}
-
-	private List<CosObject> getHalftonePhase() {
-		COSDictionary dict = ((PDExtendedGraphicsState) this.simplePDObject).getCOSObject();
-		COSBase halftonePhase = dict.getDictionaryObject(COSName.getPDFName("HTP"));
-		CosObject value = PBCosObject.getFromValue(halftonePhase, document, flavour);
-		if (value != null) {
-			ArrayList<CosObject> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			list.add(value);
 			return Collections.unmodifiableList(list);
 		}
 		return Collections.emptyList();

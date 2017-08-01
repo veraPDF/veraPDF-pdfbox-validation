@@ -87,6 +87,13 @@ public class PBoxPDInlineImage extends PBoxPDObject implements PDInlineImage {
 	}
 
 	@Override
+	public Boolean getcontainsAlternates() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		return pageObject != null && pageObject instanceof COSDictionary &&
+				((COSDictionary) pageObject).containsKey(COSName.getPDFName("Alternates"));
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 			case PBoxPDXImage.INTENT:
