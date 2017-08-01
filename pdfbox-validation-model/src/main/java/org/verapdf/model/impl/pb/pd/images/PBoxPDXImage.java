@@ -78,6 +78,13 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 	}
 
 	@Override
+	public Boolean getcontainsAlternates() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		return pageObject != null && pageObject instanceof COSDictionary &&
+				((COSDictionary) pageObject).containsKey(COSName.ALTERNATE);
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 		case INTENT:

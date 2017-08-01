@@ -80,4 +80,16 @@ public class PBoxTrueTypeFontProgram extends PBoxFontProgram implements TrueType
 	public Boolean getcmap30Present() {
 		return Boolean.FALSE;
 	}
+
+	@Override
+	// TODO : implement me
+	public Boolean getcmap31Present() {
+		return Boolean.FALSE;
+	}
+
+	@Override
+	// TODO : implement me
+	public Boolean getcmap10Present() {
+		return Boolean.FALSE;
+	}
 }
