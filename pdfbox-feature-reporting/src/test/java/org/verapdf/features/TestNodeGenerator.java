@@ -646,6 +646,7 @@ public final class TestNodeGenerator {
 
 	public static FeatureTreeNode getLowLvlInfo() throws FeatureParsingException {
 		FeatureTreeNode lli = FeatureTreeNode.createRootNode("lowLevelInfo");
+		lli.addChild("pdfVersion").setValue("1.6");
 		lli.addChild("indirectObjectsNumber").setValue("129");
 		FeatureTreeNode docID = lli.addChild("documentId");
 		docID.setAttribute("modificationId", "295EBB0E08D32644B7E5C1825F15AD3A");

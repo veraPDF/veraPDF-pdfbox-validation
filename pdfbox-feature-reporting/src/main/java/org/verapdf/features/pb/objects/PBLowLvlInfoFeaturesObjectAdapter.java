@@ -39,6 +39,8 @@ public class PBLowLvlInfoFeaturesObjectAdapter implements LowLvlInfoFeaturesObje
 			.getLogger(PBLowLvlInfoFeaturesObjectAdapter.class);
 
 	private boolean isPresent;
+	private double headerVersion;
+	private String catalogVersion;
 	private int objectsNumber;
 	private String creationId;
 	private String modId;
@@ -68,6 +70,7 @@ public class PBLowLvlInfoFeaturesObjectAdapter implements LowLvlInfoFeaturesObje
 	public PBLowLvlInfoFeaturesObjectAdapter(COSDocument document) {
 		this.isPresent = document != null;
 		if (document != null) {
+			this.headerVersion = document.getVersion();
 			List<COSObject> objects = document.getObjects();
 			this.errors = new ArrayList<>();
 			if (objects != null) {
@@ -77,6 +80,8 @@ public class PBLowLvlInfoFeaturesObjectAdapter implements LowLvlInfoFeaturesObje
 			try {
 				COSBase catalog = document.getCatalog().getObject();
 				if (catalog instanceof COSDictionary) {
+					COSName name = ((COSDictionary) catalog).getCOSName(COSName.VERSION);
+					this.catalogVersion = name == null ? null : name.getName();
 					COSBase dict = ((COSDictionary) catalog).getDictionaryObject(COSName.STRUCT_TREE_ROOT);
 					this.isTagged = dict instanceof COSDictionary;
 				}
@@ -137,6 +142,16 @@ public class PBLowLvlInfoFeaturesObjectAdapter implements LowLvlInfoFeaturesObje
 				}
 			}
 		}
+	}
+
+	@Override
+	public double getHeaderVersion() {
+		return this.headerVersion;
+	}
+
+	@Override
+	public String getCatalogVersion() {
+		return this.catalogVersion;
 	}
 
 	@Override
