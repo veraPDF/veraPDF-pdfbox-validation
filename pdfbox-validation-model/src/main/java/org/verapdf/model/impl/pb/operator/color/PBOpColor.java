@@ -21,7 +21,10 @@
 package org.verapdf.model.impl.pb.operator.color;
 
 import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSName;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.coslayer.CosName;
+import org.verapdf.model.impl.pb.cos.PBCosName;
 import org.verapdf.model.impl.pb.operator.base.PBOperator;
 import org.verapdf.model.operator.OpColor;
 import org.verapdf.model.pdlayer.PDColorSpace;
@@ -36,11 +39,12 @@ import java.util.List;
  *
  * @author Timur Kamalov
  */
-public class PBOpColor extends PBOperator implements OpColor {
+public class PBOpColor extends PBOpSetColor implements OpColor {
 
 	/** Type name for {@code PBOpColor} */
     public static final String OP_COLOR_TYPE = "OpColor";
     public static final String COLOR_SPACE = "colorSpace";
+    public static final String PATTERN_NAME = "patternName";
 
     private PDColorSpace colorSpace;
 
@@ -54,9 +58,24 @@ public class PBOpColor extends PBOperator implements OpColor {
         switch (link) {
             case COLOR_SPACE:
                 return getColorSpace();
+            case PATTERN_NAME:
+                return getPatternName();
             default:
                 return super.getLinkedObjects(link);
         }
+    }
+
+    private List<CosName> getPatternName() {
+        int size = this.arguments.size();
+        if (size > 0) {
+            COSBase cosBase = this.arguments.get(size - 1);
+            if (cosBase instanceof COSName) {
+                List<CosName> res = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+                res.add(new PBCosName((COSName) cosBase));
+                return Collections.unmodifiableList(res);
+            }
+        }
+        return Collections.emptyList();
     }
 
     private List<PDColorSpace> getColorSpace() {
