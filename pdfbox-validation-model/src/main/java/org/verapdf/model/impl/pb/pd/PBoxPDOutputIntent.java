@@ -77,6 +77,22 @@ public class PBoxPDOutputIntent extends PBoxPDObject implements PDOutputIntent {
 	}
 
 	@Override
+	public String getS() {
+		COSBase dict = this.simplePDObject.getCOSObject();
+		if (dict instanceof COSDictionary) {
+			return ((COSDictionary) dict).getNameAsString(COSName.S);
+		}
+		return null;
+	}
+
+	@Override
+	public String getOutputConditionIdentifier() {
+		org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent outInt =
+				(org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent) simplePDObject;
+		return outInt.getOutputConditionIdentifier();
+	}
+
+	@Override
 	public Boolean getcontainsDestOutputProfileRef() {
 		COSBase pageObject = this.simplePDObject.getCOSObject();
 		return pageObject != null && pageObject instanceof COSDictionary &&
@@ -94,16 +110,11 @@ public class PBoxPDOutputIntent extends PBoxPDObject implements PDOutputIntent {
 	}
 
 	private List<ICCOutputProfile> getDestProfile() {
-		COSBase dict = this.simplePDObject.getCOSObject();
-		String subType = null;
-		if (dict instanceof COSDictionary) {
-			subType = ((COSDictionary) dict).getNameAsString(COSName.S);
-		}
 		try {
 			COSStream dest = ((org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent) this.simplePDObject)
 					.getDestOutputIntent();
 			if (dest != null) {
-				return getDestProfilesFromStream(dest, subType);
+				return getDestProfilesFromStream(dest, getS());
 			}
 		} catch (IOException e) {
 			LOGGER.debug("Can not read dest output profile. " + e.getMessage(),
