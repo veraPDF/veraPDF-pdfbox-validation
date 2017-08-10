@@ -21,7 +21,12 @@
 package org.verapdf.model.impl.pb.pd;
 
 import org.apache.pdfbox.cos.*;
+import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.pdlayer.PDHalftone;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -29,19 +34,30 @@ import org.verapdf.model.pdlayer.PDHalftone;
 public class PBoxPDHalftone extends PBoxPDObject implements PDHalftone {
 
 	public static final String HALFTONE_TYPE = "PDHalftone";
+
+	private static final String HALFTONES = "halftones";
+
 	private final String halftoneName;
 	private final Long halftoneType;
+	private final String colorantName;
 
 	public PBoxPDHalftone(COSDictionary dict) {
+		this(dict, null);
+	}
+
+	public PBoxPDHalftone(COSDictionary dict, String colorantName) {
 		super(dict, HALFTONE_TYPE);
 		this.halftoneName = PBoxPDHalftone.getHalftoneName(dict);
 		this.halftoneType = PBoxPDHalftone.getHalftoneType(dict);
+		this.colorantName = colorantName;
 	}
 
 	public PBoxPDHalftone(COSName name) {
 		super(name, HALFTONE_TYPE);
-		this.halftoneName = name.getName();
-		this.halftoneType = null;
+		boolean isDefault = COSName.getPDFName("Default").equals(name);
+		this.halftoneName = isDefault ? null : name.getName();
+		this.halftoneType = isDefault ? Long.valueOf(1L) : null;
+		this.colorantName = null;
 	}
 
 	private static Long getHalftoneType(COSDictionary dict) {
@@ -71,5 +87,48 @@ public class PBoxPDHalftone extends PBoxPDObject implements PDHalftone {
 	@Override
 	public String getHalftoneName() {
 		return this.halftoneName;
+	}
+
+	@Override
+	public String getcolorantName() {
+		return this.colorantName;
+	}
+
+	@Override
+	public String getTransferFunction() {
+		if (this.simplePDObject instanceof COSDictionary) {
+			COSBase base = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.getPDFName("TransferFunction"));
+			return base == null ? null : base instanceof COSName ?
+					((COSName) base).getName() : base.toString();
+		}
+		return null;
+	}
+
+	@Override
+	public List<? extends Object> getLinkedObjects(String link) {
+		switch (link) {
+			case HALFTONES:
+				return this.getHalftones();
+			default:
+				return super.getLinkedObjects(link);
+		}
+	}
+
+	private List<org.verapdf.model.pdlayer.PDHalftone> getHalftones() {
+		if (halftoneType == null || halftoneType != 5L) {
+			return Collections.emptyList();
+		}
+		List<org.verapdf.model.pdlayer.PDHalftone> halftones = new ArrayList<>();
+		if (this.simplePDObject instanceof COSDictionary) {
+			COSDictionary object = (COSDictionary) this.simplePDObject;
+			for (COSName key : object.keySet()) {
+				COSBase value = object.getDictionaryObject(key);
+				if (value instanceof COSDictionary) {
+					PBoxPDHalftone halftone = new PBoxPDHalftone((COSDictionary) value, key.getName());
+					halftones.add(halftone);
+				}
+			}
+		}
+		return Collections.unmodifiableList(halftones);
 	}
 }

@@ -21,6 +21,7 @@
 package org.verapdf.model.impl.pb.pd.images;
 
 import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -50,8 +51,6 @@ public class PBoxPDXForm extends PBoxPDXObject implements PDXForm {
 	public static final String X_FORM_TYPE = "PDXForm";
 
 	public static final String GROUP = "Group";
-	public static final String PS = "PS";
-	public static final String REF = "Ref";
 	public static final String CONTENT_STREAM = "contentStream";
 
 	private List<PDContentStream> contentStreams = null;
@@ -79,14 +78,24 @@ public class PBoxPDXForm extends PBoxPDXObject implements PDXForm {
 	}
 
 	@Override
+	public Boolean getcontainsPS() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		return pageObject != null && pageObject instanceof COSDictionary &&
+				((COSDictionary) pageObject).containsKey(COSName.PS);
+	}
+
+	@Override
+	public Boolean getcontainsRef() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		return pageObject != null && pageObject instanceof COSDictionary &&
+				((COSDictionary) pageObject).containsKey(COSName.getPDFName("Ref"));
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 		case GROUP:
 			return this.getGroup();
-		case PS:
-			return this.getPS();
-		case REF:
-			return this.getREF();
 		case CONTENT_STREAM:
 			return this.getContentStream();
 		default:
@@ -99,26 +108,6 @@ public class PBoxPDXForm extends PBoxPDXObject implements PDXForm {
 			initializeGroups();
 		}
 		return this.groups;
-	}
-
-	private List<CosStream> getPS() {
-		try (final COSStream cosStream = ((PDFormXObject) this.simplePDObject).getCOSStream();
-				COSStream ps = (COSStream) cosStream.getDictionaryObject(COSName.PS)) {
-			if (ps != null) {
-				List<CosStream> postScript = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-				postScript.add(new PBCosStream(ps, this.document, this.flavour));
-				return Collections.unmodifiableList(postScript);
-			}
-		} catch (IOException excep) {
-			// TODO Auto-generated catch block
-			excep.printStackTrace();
-		}
-		return Collections.emptyList();
-
-	}
-
-	private List<CosDict> getREF() {
-		return this.getLinkToDictionary(REF);
 	}
 
 	private List<PDContentStream> getContentStream() {

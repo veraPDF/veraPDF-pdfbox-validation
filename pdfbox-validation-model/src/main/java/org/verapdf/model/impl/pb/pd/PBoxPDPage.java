@@ -21,10 +21,7 @@
 package org.verapdf.model.impl.pb.pd;
 
 import org.apache.log4j.Logger;
-import org.apache.pdfbox.cos.COSArray;
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.PDResources;
@@ -33,7 +30,6 @@ import org.apache.pdfbox.pdmodel.interactive.action.PDPageAdditionalActions;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosBBox;
-import org.verapdf.model.factory.colors.ColorSpaceFactory;
 import org.verapdf.model.impl.pb.cos.PBCosBBox;
 import org.verapdf.model.pdlayer.*;
 import org.verapdf.model.tools.resources.PDInheritableResources;
@@ -76,8 +72,6 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 	public static final String ART_BOX = "ArtBox";
 	/** Link name for page presentation steps */
 	public static final String PRESENTATION_STEPS = "PresSteps";
-	/** Link name for page group colorspace */
-	public static final String GROUP_CS = "groupCS";
 
 	/** Maximal number of actions in page dictionary */
 	public static final int MAX_NUMBER_OF_ACTIONS = 2;
@@ -122,6 +116,31 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 	}
 
 	@Override
+	public Boolean getcontainsGroupCS() {
+		COSDictionary dictionary = ((org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject)
+				.getCOSObject();
+		COSBase groupDictionary = dictionary.getDictionaryObject(COSName.GROUP);
+		if (groupDictionary instanceof COSDictionary) {
+			org.apache.pdfbox.pdmodel.graphics.form.PDGroup group =
+					new org.apache.pdfbox.pdmodel.graphics.form.PDGroup(
+							(COSDictionary) groupDictionary);
+			try {
+				return Boolean.valueOf(group != null && group.getColorSpace() != null);
+			} catch (IOException e) {
+				LOGGER.debug("Problem with obtaining group colorspace", e);
+			}
+		}
+		return Boolean.FALSE;
+	}
+
+	@Override
+	public Boolean getcontainsAA() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		return pageObject != null && pageObject instanceof COSDictionary &&
+				((COSDictionary) pageObject).containsKey(COSName.AA);
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 			case GROUP:
@@ -142,34 +161,9 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 				return this.getTrimBox();
 			case ART_BOX:
 				return this.getArtBox();
-			case GROUP_CS:
-				return this.getGroupCS();
 			default:
 				return super.getLinkedObjects(link);
 		}
-	}
-
-	private List<PDColorSpace> getGroupCS() {
-		COSDictionary dictionary = ((org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject)
-				.getCOSObject();
-		COSBase groupDictionary = dictionary.getDictionaryObject(COSName.GROUP);
-		if (groupDictionary instanceof COSDictionary) {
-			org.apache.pdfbox.pdmodel.graphics.form.PDGroup group =
-					new org.apache.pdfbox.pdmodel.graphics.form.PDGroup(
-							(COSDictionary) groupDictionary);
-			try {
-				org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace colorSpace = group.getColorSpace();
-				if (colorSpace != null) {
-                    List<PDColorSpace> colorSpaces = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-                    colorSpaces.add(ColorSpaceFactory.getColorSpace(colorSpace, this.document, this.flavour));
-                    return Collections.unmodifiableList(colorSpaces);
-                }
-			} catch (IOException e) {
-				LOGGER.debug("Can not obtain group colorSpace", e);
-				return Collections.emptyList();
-			}
-		}
-		return Collections.emptyList();
 	}
 
 	private List<PDGroup> getGroup() {

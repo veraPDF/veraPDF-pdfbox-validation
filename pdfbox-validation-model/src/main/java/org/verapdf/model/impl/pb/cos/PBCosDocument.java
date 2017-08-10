@@ -303,6 +303,17 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 	}
 
 	@Override
+	public Boolean getcontainsEmbeddedFiles() {
+		if (catalog != null) {
+			COSBase names = this.catalog.getDictionaryObject(COSName.NAMES);
+			if (names != null && names instanceof COSDictionary) {
+				return ((COSDictionary) names).containsKey(COSName.EMBEDDED_FILES);
+			}
+		}
+		return Boolean.valueOf(false);
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 		case TRAILER:

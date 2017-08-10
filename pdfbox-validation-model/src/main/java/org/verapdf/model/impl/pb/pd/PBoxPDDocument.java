@@ -125,6 +125,11 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 	}
 
 	@Override
+	public Boolean getcontainsAA() {
+		return this.catalog != null && this.catalog.getCOSObject().containsKey(COSName.AA);
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 			case OUTLINES:
@@ -302,6 +307,12 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 			}
 		}
 		return Boolean.FALSE;
+	}
+
+	@Override
+	public Boolean getvalidPDF() {
+		// TODO: implement me
+		return Boolean.TRUE;
 	}
 
 	private List<PDOCProperties> getOCProperties() {

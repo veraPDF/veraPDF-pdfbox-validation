@@ -23,7 +23,9 @@ package org.verapdf.features.pb;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.*;
+import org.apache.pdfbox.pdmodel.common.PDDestinationOrAction;
 import org.apache.pdfbox.pdmodel.common.PDNameTreeNode;
+import org.apache.pdfbox.pdmodel.common.PDPageLabels;
 import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.common.filespecification.PDComplexFileSpecification;
 import org.apache.pdfbox.pdmodel.documentinterchange.markedcontent.PDPropertyList;
@@ -42,15 +44,20 @@ import org.apache.pdfbox.pdmodel.graphics.pattern.PDShadingPattern;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDTilingPattern;
 import org.apache.pdfbox.pdmodel.graphics.shading.PDShading;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
+import org.apache.pdfbox.pdmodel.interactive.action.*;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceDictionary;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceEntry;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
+import org.apache.pdfbox.pdmodel.interactive.form.PDNonTerminalField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 import org.verapdf.features.*;
+import org.verapdf.features.objects.ActionFeaturesObjectAdapter;
 import org.verapdf.features.tools.ErrorsHelper;
 import org.verapdf.features.tools.FeatureTreeNode;
 
@@ -138,15 +145,51 @@ public final class PBFeatureParser {
 
 	private void getCatalogFeatures(PDDocumentCatalog catalog) {
 		reporter.report(PBFeaturesObjectCreator.createMetadataFeaturesObject(catalog.getMetadata()));
-		reporter.report(PBFeaturesObjectCreator.createOutlinesFeaturesObject(catalog.getDocumentOutline()));
+		PDDocumentOutline documentOutline = catalog.getDocumentOutline();
+		reporter.report(PBFeaturesObjectCreator.createOutlinesFeaturesObject(documentOutline));
+
+		PDDocumentNameDictionary names = catalog.getNames();
+
+		if (config.isFeatureEnabled(FeatureObjectType.ACTION)) {
+			if(documentOutline != null) {
+				for (PDOutlineItem item : documentOutline.children()) {
+					reportOutlinesActions(item);
+				}
+			}
+			try {
+				PDDestinationOrAction openAction = catalog.getOpenAction();
+				if (openAction instanceof PDAction) {
+					reportAction((PDAction) openAction, ActionFeaturesObjectAdapter.Location.DOCUMENT);
+				}
+			} catch (IOException e) {
+				LOGGER.debug("Can't get open action", e);
+			}
+			PDDocumentCatalogAdditionalActions additionalActions = catalog.getActions();
+			if (additionalActions != null) {
+				reportAction(additionalActions.getDP(), ActionFeaturesObjectAdapter.Location.DOCUMENT);
+				reportAction(additionalActions.getDS(), ActionFeaturesObjectAdapter.Location.DOCUMENT);
+				reportAction(additionalActions.getWS(), ActionFeaturesObjectAdapter.Location.DOCUMENT);
+				reportAction(additionalActions.getWC(), ActionFeaturesObjectAdapter.Location.DOCUMENT);
+				reportAction(additionalActions.getWP(), ActionFeaturesObjectAdapter.Location.DOCUMENT);
+			}
+			if (names != null) {
+				PDJavascriptNameTreeNode javaScript = names.getJavaScript();
+				if (javaScript != null) {
+					reportJavaScripts(javaScript);
+				}
+			}
+		}
+
+		if (config.isFeatureEnabled(FeatureObjectType.EMBEDDED_FILE) && names != null) {
+			PDEmbeddedFilesNameTreeNode embeddedFiles = names.getEmbeddedFiles();
+			if (embeddedFiles != null) {
+				reportEmbeddedFiles(embeddedFiles);
+			}
+		}
 
 		PDAcroForm acroForm = catalog.getAcroForm();
 		if (acroForm != null) {
 			getAcroFormFeatures(acroForm);
-		}
-
-		if (catalog.getNames() != null && catalog.getNames().getEmbeddedFiles() != null) {
-			reportEmbeddedFiles(catalog);
 		}
 
 		if (catalog.getOutputIntents() != null) {
@@ -159,9 +202,38 @@ public final class PBFeatureParser {
 			}
 		}
 
+		PDPageLabels labels = null;
+		try {
+			labels = catalog.getPageLabels();
+		} catch (IOException e) {
+			LOGGER.debug("Can't get page labels", e);
+			reporter.getCollection().addNewError(FeatureObjectType.PAGE, "Can't get page labels");
+		}
+
 		PDPageTree pageTree = catalog.getPages();
 		if (pageTree != null) {
-			getPageTreeFeatures(pageTree);
+			getPageTreeFeatures(pageTree, labels);
+		}
+	}
+
+	private void reportOutlinesActions(PDOutlineItem outline) {
+		if (outline != null) {
+			reportAction(outline.getAction(), ActionFeaturesObjectAdapter.Location.OUTLINES);
+			for (PDOutlineItem item : outline.children()) {
+				reportOutlinesActions(item);
+			}
+		}
+	}
+
+	private void reportAction(PDAction action, ActionFeaturesObjectAdapter.Location location) {
+		if (action != null) {
+			reporter.report(PBFeaturesObjectCreator.createActionFeaturesObject(action, location));
+			List<PDAction> actionNext = action.getNext();
+			if (actionNext != null) {
+				for (PDAction next : actionNext) {
+					reportAction(next, location);
+				}
+			}
 		}
 	}
 
@@ -169,12 +241,45 @@ public final class PBFeatureParser {
 		List<PDField> fields = acroForm.getFields();
 		if (fields != null) {
 			for (PDField field : fields) {
-				getFieldFeatures(field);
+				getSignatureFeatures(field);
+				getRootFormFieldFeatures(field);
 			}
 		}
 	}
 
-	private void getFieldFeatures(PDField field) {
+	private void getRootFormFieldFeatures(PDField field) {
+		if (field == null) {
+			return;
+		}
+		if (config.isFeatureEnabled(FeatureObjectType.INTERACTIVE_FORM_FIELDS)) {
+			reporter.report(PBFeaturesObjectCreator.createInteractiveFormFieldFeaturesObject(field));
+		}
+		if (config.isFeatureEnabled(FeatureObjectType.ACTION)) {
+			getFormFieldActions(field);
+		}
+	}
+
+	private void getFormFieldActions(PDField field) {
+		PDFormFieldAdditionalActions actions = field.getActions();
+		if (actions != null) {
+			reportAction(actions.getK(), ActionFeaturesObjectAdapter.Location.INTERACTIVE_FORM_FIELD);
+			reportAction(actions.getC(), ActionFeaturesObjectAdapter.Location.INTERACTIVE_FORM_FIELD);
+			reportAction(actions.getF(), ActionFeaturesObjectAdapter.Location.INTERACTIVE_FORM_FIELD);
+			reportAction(actions.getV(), ActionFeaturesObjectAdapter.Location.INTERACTIVE_FORM_FIELD);
+		}
+		if (field instanceof PDNonTerminalField) {
+			List<PDField> children = ((PDNonTerminalField) field).getChildren();
+			if (children != null) {
+				for (PDField child : children) {
+					if (child != null) {
+						getFormFieldActions(child);
+					}
+				}
+			}
+		}
+	}
+
+	private void getSignatureFeatures(PDField field) {
 		if (config.isFeatureEnabled(FeatureObjectType.SIGNATURE) && field instanceof PDSignatureField) {
 			PDSignature signature = ((PDSignatureField) field).getSignature();
 			if (signature != null) {
@@ -183,8 +288,10 @@ public final class PBFeatureParser {
 		}
 	}
 
-	private void getPageTreeFeatures(PDPageTree pageTree) {
+	private void getPageTreeFeatures(PDPageTree pageTree, PDPageLabels pageLabels) {
+		String[] labels = pageLabels == null ? null : pageLabels.getLabelsByPageIndices();
 		for (PDPage page : pageTree) {
+			reportPageActions(page);
 			Set<String> annotsId = addAnnotsDependencies(page);
 			annotsId = config.isFeatureEnabled(FeatureObjectType.ANNOTATION) ? annotsId : null;
 
@@ -220,9 +327,37 @@ public final class PBFeatureParser {
 			Set<String> propertiesChild = config.isFeatureEnabled(FeatureObjectType.PROPERTIES)
 					? parsePropertiesFromResources(resources) : null;
 
-			reporter.report(PBFeaturesObjectCreator.createPageFeaturesObject(page, thumbID, annotsId, extGStateChild,
+			int pageIndex = pageTree.indexOf(page);
+			String label = labels != null && pageIndex < labels.length ? labels[pageIndex] : null;
+			reporter.report(PBFeaturesObjectCreator.createPageFeaturesObject(page, label, thumbID, annotsId, extGStateChild,
 					colorSpaceChild, patternChild, shadingChild, xobjectChild, fontChild, propertiesChild,
-					pageTree.indexOf(page) + 1));
+					pageIndex));
+		}
+	}
+
+	private void reportPageActions(PDPage page) {
+		if (config.isFeatureEnabled(FeatureObjectType.ACTION)) {
+			PDPageAdditionalActions additionalActions = page.getActions();
+			if (additionalActions != null) {
+				reportAction(additionalActions.getC(), ActionFeaturesObjectAdapter.Location.PAGE);
+				reportAction(additionalActions.getO(), ActionFeaturesObjectAdapter.Location.PAGE);
+			}
+			Set<COSObjectKey> visitedKeys = new HashSet<>();
+			processNavigationNodeActions(page.getPresSteps(), visitedKeys);
+		}
+	}
+
+	private void processNavigationNodeActions(PDNavigationNode navNode, Set<COSObjectKey> visitedKeys) {
+		if (navNode != null) {
+			COSObjectKey objectKey = navNode.getCOSObject().getKey();
+			if (visitedKeys.contains(objectKey)) {
+				return;
+			}
+			visitedKeys.add(objectKey);
+			reportAction(navNode.getNA(), ActionFeaturesObjectAdapter.Location.PAGE);
+			reportAction(navNode.getPA(), ActionFeaturesObjectAdapter.Location.PAGE);
+			processNavigationNodeActions(navNode.getNext(), visitedKeys);
+			processNavigationNodeActions(navNode.getPrev(), visitedKeys);
 		}
 	}
 
@@ -244,6 +379,7 @@ public final class PBFeatureParser {
 					COSBase base = getBase(item);
 					try {
 						PDAnnotation annotation = PDAnnotation.createAnnotation(base);
+						reportAnnotationActions(annotation);
 						COSBase pop = annotation.getCOSObject().getItem(COSName.getPDFName("Popup"));
 
 						String popupID = null;
@@ -267,6 +403,25 @@ public final class PBFeatureParser {
 		return annotsId;
 	}
 
+	private void reportAnnotationActions(PDAnnotation annot) {
+		if (config.isFeatureEnabled(FeatureObjectType.ACTION) && annot != null) {
+			reportAction(annot.getA(), ActionFeaturesObjectAdapter.Location.ANNOTATION);
+			PDAnnotationAdditionalActions additionalActions = annot.getAdditionalActions();
+			if (additionalActions != null) {
+				reportAction(additionalActions.getBl(), ActionFeaturesObjectAdapter.Location.ANNOTATION);
+				reportAction(additionalActions.getD(), ActionFeaturesObjectAdapter.Location.ANNOTATION);
+				reportAction(additionalActions.getE(), ActionFeaturesObjectAdapter.Location.ANNOTATION);
+				reportAction(additionalActions.getFo(), ActionFeaturesObjectAdapter.Location.ANNOTATION);
+				reportAction(additionalActions.getPC(), ActionFeaturesObjectAdapter.Location.ANNOTATION);
+				reportAction(additionalActions.getPI(), ActionFeaturesObjectAdapter.Location.ANNOTATION);
+				reportAction(additionalActions.getPO(), ActionFeaturesObjectAdapter.Location.ANNOTATION);
+				reportAction(additionalActions.getPV(), ActionFeaturesObjectAdapter.Location.ANNOTATION);
+				reportAction(additionalActions.getU(), ActionFeaturesObjectAdapter.Location.ANNOTATION);
+				reportAction(additionalActions.getX(), ActionFeaturesObjectAdapter.Location.ANNOTATION);
+			}
+		}
+	}
+
 	private String addPopup(COSBase item) {
 		String id = getId(item, FeatureObjectType.ANNOTATION);
 
@@ -274,6 +429,7 @@ public final class PBFeatureParser {
 			COSBase base = getBase(item);
 			try {
 				PDAnnotation annotation = PDAnnotation.createAnnotation(base);
+				reportAnnotationActions(annotation);
 				reporter.report(PBFeaturesObjectCreator.createAnnotFeaturesObject(annotation, id, null, null));
 			} catch (IOException e) {
 				LOGGER.debug("Unknown annotation type detected.", e);
@@ -336,12 +492,10 @@ public final class PBFeatureParser {
 		}
 	}
 
-	private void reportEmbeddedFiles(PDDocumentCatalog catalog) {
+	private void reportEmbeddedFiles(PDEmbeddedFilesNameTreeNode efTree) {
 		int index = 0;
-		PDEmbeddedFilesNameTreeNode efTree = catalog.getNames().getEmbeddedFiles();
-
 		try {
-			if (config.isFeatureEnabled(FeatureObjectType.EMBEDDED_FILE) && efTree.getNames() != null) {
+			if (efTree.getNames() != null) {
 				for (PDComplexFileSpecification file : efTree.getNames().values()) {
 					reporter.report(PBFeaturesObjectCreator.createEmbeddedFileFeaturesObject(file, ++index));
 				}
@@ -356,6 +510,27 @@ public final class PBFeatureParser {
 				if (tree != null) {
 					index = reportEmbeddedFileNode(tree, index);
 				}
+			}
+		}
+	}
+
+	private void reportJavaScripts(final PDNameTreeNode<PDActionJavaScript> node) {
+		try {
+			Map<String, PDActionJavaScript> names = node.getNames();
+			if (names != null) {
+				for (PDActionJavaScript value : names.values()) {
+					if (value != null) {
+						reportAction(value, ActionFeaturesObjectAdapter.Location.DOCUMENT);
+					}
+				}
+			}
+		} catch (IOException e) {
+			LOGGER.debug("Can't get values", e);
+		}
+		List<PDNameTreeNode<PDActionJavaScript>> kids = node.getKids();
+		if (kids != null) {
+			for (PDNameTreeNode<PDActionJavaScript> kid : kids) {
+				reportJavaScripts(kid);
 			}
 		}
 	}

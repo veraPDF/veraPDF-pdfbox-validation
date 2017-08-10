@@ -33,7 +33,7 @@
 
   <groupId>org.verapdf</groupId>
   <artifactId>verapdf-pdfbox-validation</artifactId>
-  <version>1.6.0</version>
+  <version>1.8.0</version>
   <packaging>pom</packaging>
 
   <name>veraPDF PDF-Box PDF/A Validation</name>
@@ -81,8 +81,8 @@
   <properties>
     <sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.itReportPath>
     <sonar.language>java</sonar.language>
-    <verapdf.library.version>[1.6.0,1.7.0)</verapdf.library.version>
-    <verapdf.model.version>[1.6.0,1.7.0)</verapdf.model.version>
+    <verapdf.library.version>[1.8.0,1.9.0)</verapdf.library.version>
+    <verapdf.model.version>[1.8.0,1.9.0)</verapdf.model.version>
     <verapdf.pdfbox.version>[2.0.0,2.1.0)</verapdf.pdfbox.version>
     <verapdf.xmp.version>[0.12.0,0.13.0)</verapdf.xmp.version>
   </properties>

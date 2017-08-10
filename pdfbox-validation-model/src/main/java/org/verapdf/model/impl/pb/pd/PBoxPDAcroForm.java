@@ -20,10 +20,7 @@
  */
 package org.verapdf.model.impl.pb.pd;
 
-import org.apache.pdfbox.cos.COSArray;
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSStream;
+import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
@@ -50,7 +47,6 @@ public class PBoxPDAcroForm extends PBoxPDObject implements PDAcroForm {
 	public static final String ACRO_FORM_TYPE = "PDAcroForm";
 
     public static final String FORM_FIELDS = "formFields";
-	public static final String XFA = "XFA";
 
 	private final boolean needAppearance;
 
@@ -70,13 +66,18 @@ public class PBoxPDAcroForm extends PBoxPDObject implements PDAcroForm {
         return Boolean.valueOf(this.needAppearance);
     }
 
-    @Override
+	@Override
+	public Boolean getcontainsXFA() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		return pageObject != null && pageObject instanceof COSDictionary &&
+				((COSDictionary) pageObject).containsKey(COSName.XFA);
+	}
+
+	@Override
     public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 			case FORM_FIELDS:
 				return this.getFormFields();
-			case XFA:
-				return this.getXFA();
 			default:
 				return super.getLinkedObjects(link);
 		}
@@ -97,23 +98,4 @@ public class PBoxPDAcroForm extends PBoxPDObject implements PDAcroForm {
         }
 		return Collections.unmodifiableList(formFields);
     }
-
-	private List<CosObject> getXFA() {
-		org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm form =
-				(org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm) this.simplePDObject;
-		if (form.hasXFA()) {
-			COSBase value = form.getCOSObject().getDictionaryObject(COSName.XFA);
-			boolean isStream = value instanceof COSStream;
-			if (isStream || value instanceof COSArray) {
-				ArrayList<CosObject> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-				if (isStream) {
-					list.add(new PBCosStream((COSStream) value, this.document, this.flavour));
-				} else {
-					list.add(new PBCosArray((COSArray) value, this.document, this.flavour));
-				}
-				return Collections.unmodifiableList(list);
-			}
-		}
-		return Collections.emptyList();
-	}
 }

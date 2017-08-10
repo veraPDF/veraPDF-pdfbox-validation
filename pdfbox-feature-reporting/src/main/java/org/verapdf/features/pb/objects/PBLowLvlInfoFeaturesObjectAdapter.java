@@ -39,10 +39,13 @@ public class PBLowLvlInfoFeaturesObjectAdapter implements LowLvlInfoFeaturesObje
 			.getLogger(PBLowLvlInfoFeaturesObjectAdapter.class);
 
 	private boolean isPresent;
+	private double headerVersion;
+	private String catalogVersion;
 	private int objectsNumber;
 	private String creationId;
 	private String modId;
 	private Set<String> filters;
+	private boolean isTagged = false;
 	private List<String> errors;
 	private static final Map<String, String> filtersAbbreviations;
 
@@ -67,12 +70,25 @@ public class PBLowLvlInfoFeaturesObjectAdapter implements LowLvlInfoFeaturesObje
 	public PBLowLvlInfoFeaturesObjectAdapter(COSDocument document) {
 		this.isPresent = document != null;
 		if (document != null) {
+			this.headerVersion = document.getVersion();
 			List<COSObject> objects = document.getObjects();
 			this.errors = new ArrayList<>();
 			if (objects != null) {
 				this.objectsNumber = objects.size();
 			}
 			addDocumentId(document.getDocumentID());
+			try {
+				COSBase catalog = document.getCatalog().getObject();
+				if (catalog instanceof COSDictionary) {
+					COSName name = ((COSDictionary) catalog).getCOSName(COSName.VERSION);
+					this.catalogVersion = name == null ? null : name.getName();
+					COSBase dict = ((COSDictionary) catalog).getDictionaryObject(COSName.STRUCT_TREE_ROOT);
+					this.isTagged = dict instanceof COSDictionary;
+				}
+			} catch (IOException e) {
+				LOGGER.debug("Can not obtain document catalog", e);
+				this.errors.add("Can not obtain document catalog");
+			}
 			this.filters = getAllFilters(document);
 		}
 	}
@@ -129,6 +145,16 @@ public class PBLowLvlInfoFeaturesObjectAdapter implements LowLvlInfoFeaturesObje
 	}
 
 	@Override
+	public double getHeaderVersion() {
+		return this.headerVersion;
+	}
+
+	@Override
+	public String getCatalogVersion() {
+		return this.catalogVersion;
+	}
+
+	@Override
 	public int getIndirectObjectsNumber() {
 		return this.objectsNumber;
 	}
@@ -141,6 +167,11 @@ public class PBLowLvlInfoFeaturesObjectAdapter implements LowLvlInfoFeaturesObje
 	@Override
 	public String getModificationId() {
 		return this.modId;
+	}
+
+	@Override
+	public boolean isTagged() {
+		return this.isTagged;
 	}
 
 	@Override
