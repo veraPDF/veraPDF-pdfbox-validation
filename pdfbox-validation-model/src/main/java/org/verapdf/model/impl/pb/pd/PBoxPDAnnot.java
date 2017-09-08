@@ -20,16 +20,7 @@
  */
 package org.verapdf.model.impl.pb.pd;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.pdfbox.cos.COSArray;
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSNumber;
+import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.interactive.action.PDActionFactory;
@@ -47,6 +38,8 @@ import org.verapdf.model.pdlayer.PDAnnot;
 import org.verapdf.model.pdlayer.PDContentStream;
 import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
+
+import java.util.*;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -141,8 +134,26 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	}
 
 	private static String getFT(PDAnnotation annot) {
-		COSBase ftLocal = annot.getCOSObject().getDictionaryObject(COSName.FT);
-		return ftLocal instanceof COSName ? ((COSName) ftLocal).getName() : null;
+		Set<COSObjectKey> visitedKeys = new HashSet<>();
+		COSBase curr = annot.getCOSObject();
+		while (curr instanceof COSDictionary) {
+			COSDictionary currDict = (COSDictionary) curr;
+			COSObjectKey key = currDict.getKey();
+			if (key != null) {
+				if (visitedKeys.contains(key)) {
+					return null;
+				}
+				visitedKeys.add(key);
+			}
+			if (currDict.containsKey(COSName.FT)) {
+				return currDict.getNameAsString(COSName.FT);
+			}
+			curr = currDict.getItem(COSName.PARENT);
+			if (curr instanceof COSObject) {
+				curr = ((COSObject) curr).getObject();
+			}
+		}
+		return null;
 	}
 
 	private static Double getWidth(PDAnnotation annot) {
