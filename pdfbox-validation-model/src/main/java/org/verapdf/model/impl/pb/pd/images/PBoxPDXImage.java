@@ -81,7 +81,7 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 	public Boolean getcontainsAlternates() {
 		COSBase pageObject = this.simplePDObject.getCOSObject();
 		return pageObject != null && pageObject instanceof COSDictionary &&
-				((COSDictionary) pageObject).containsKey(COSName.ALTERNATE);
+				((COSDictionary) pageObject).containsKey(COSName.getPDFName("Alternates"));
 	}
 
 	@Override
