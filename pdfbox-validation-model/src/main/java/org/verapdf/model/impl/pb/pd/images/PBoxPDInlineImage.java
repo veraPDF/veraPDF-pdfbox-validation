@@ -87,6 +87,13 @@ public class PBoxPDInlineImage extends PBoxPDObject implements PDInlineImage {
 	}
 
 	@Override
+	public Boolean getcontainsSMask() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		return pageObject != null && pageObject instanceof COSDictionary &&
+				((COSDictionary) pageObject).containsKey(COSName.SMASK);
+	}
+
+	@Override
 	public Boolean getcontainsAlternates() {
 		COSBase pageObject = this.simplePDObject.getCOSObject();
 		return pageObject != null && pageObject instanceof COSDictionary &&
