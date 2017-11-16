@@ -94,6 +94,13 @@ public class PBoxPDXObject extends PBoxPDResources implements PDXObject {
 				((COSDictionary) pageObject).containsKey(COSName.getPDFName("OPI"));
 	}
 
+	@Override
+	public Boolean getcontainsSMask() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		return pageObject != null && pageObject instanceof COSDictionary &&
+				((COSDictionary) pageObject).containsKey(COSName.SMASK);
+	}
+
 
 	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
