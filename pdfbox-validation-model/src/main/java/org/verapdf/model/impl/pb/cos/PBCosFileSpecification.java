@@ -83,7 +83,7 @@ public class PBCosFileSpecification extends PBCosDict implements CosFileSpecific
 	@Override
 	public Boolean getisAssociatedFile() {
 		return Boolean.valueOf(this.baseObject != null
-				&& StaticContainers.fileSpecificationKeys.contains(this.baseObject.getKey()));
+				&& StaticContainers.getFileSpecificationKeys().contains(this.baseObject.getKey()));
 	}
 
 	@Override

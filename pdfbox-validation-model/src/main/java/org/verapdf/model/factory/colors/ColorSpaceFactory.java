@@ -94,22 +94,22 @@ public class ColorSpaceFactory {
 		if (colorSpace == null) {
 			return null;
 		}
-		if (StaticContainers.cachedColorSpaces.containsKey(colorSpace)) {
-			return StaticContainers.cachedColorSpaces.get(colorSpace);
+		if (StaticContainers.getCachedColorSpaces().containsKey(colorSpace)) {
+			return StaticContainers.getCachedColorSpaces().get(colorSpace);
 		}
 		PDColorSpace result;
 		switch (colorSpace.getName()) {
 		case CAL_GRAY:
 			result = new PBoxPDCalGray((PDCalGray) colorSpace);
-			StaticContainers.cachedColorSpaces.put(colorSpace, result);
+			StaticContainers.getCachedColorSpaces().put(colorSpace, result);
 			return result;
 		case CAL_RGB:
 			result = new PBoxPDCalRGB((PDCalRGB) colorSpace);
-			StaticContainers.cachedColorSpaces.put(colorSpace, result);
+			StaticContainers.getCachedColorSpaces().put(colorSpace, result);
 			return result;
 		case DEVICE_N:
 			result = new PBoxPDDeviceN((PDDeviceN) colorSpace, document, flavour);
-			StaticContainers.cachedColorSpaces.put(colorSpace, result);
+			StaticContainers.getCachedColorSpaces().put(colorSpace, result);
 			return result;
 		case DEVICE_CMYK:
 			if (colorSpace.isInherited()) {
@@ -129,7 +129,7 @@ public class ColorSpaceFactory {
 		case ICC_BASED:
 			if (colorSpace.getNumberOfComponents() != 4) {
 				result = new PBoxPDICCBased((PDICCBased) colorSpace);
-				StaticContainers.cachedColorSpaces.put(colorSpace, result);
+				StaticContainers.getCachedColorSpaces().put(colorSpace, result);
 				return result;
 			}
 			// we don't want to cache ICCBasedCMYK color space because it can be
@@ -138,15 +138,15 @@ public class ColorSpaceFactory {
 			return result;
 		case LAB:
 			result = new PBoxPDLab((PDLab) colorSpace);
-			StaticContainers.cachedColorSpaces.put(colorSpace, result);
+			StaticContainers.getCachedColorSpaces().put(colorSpace, result);
 			return result;
 		case SEPARATION:
 			result = new PBoxPDSeparation((PDSeparation) colorSpace, document, flavour);
-			StaticContainers.cachedColorSpaces.put(colorSpace, result);
+			StaticContainers.getCachedColorSpaces().put(colorSpace, result);
 			return result;
 		case INDEXED:
 			result = new PBoxPDIndexed((PDIndexed) colorSpace, document, flavour);
-			StaticContainers.cachedColorSpaces.put(colorSpace, result);
+			StaticContainers.getCachedColorSpaces().put(colorSpace, result);
 			return result;
 		case PATTERN:
 			return getPattern(pattern, resources, document, flavour);
