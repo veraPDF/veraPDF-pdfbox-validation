@@ -41,12 +41,6 @@ public class StaticContainers {
 
 	private static ThreadLocal<Set<COSObjectKey>> fileSpecificationKeys = new ThreadLocal<>();
 
-	static {
-		separations.set(new HashMap<>());
-		inconsistentSeparations.set(new ArrayList<>());
-		cachedColorSpaces.set(new HashMap<>());
-		fileSpecificationKeys.set(new HashSet<>());
-	}
 	public static void clearAllContainers() {
 		getSeparations().clear();
 		getInconsistentSeparations().clear();
@@ -55,6 +49,7 @@ public class StaticContainers {
 	}
 
 	public static Map<String, List<PBoxPDSeparation>> getSeparations() {
+		checkForNull(separations, new HashMap<String, List<PBoxPDSeparation>>());
 		return separations.get();
 	}
 
@@ -63,6 +58,7 @@ public class StaticContainers {
 	}
 
 	public static List<String> getInconsistentSeparations() {
+		checkForNull(inconsistentSeparations, new ArrayList<String>());
 		return inconsistentSeparations.get();
 	}
 
@@ -71,6 +67,7 @@ public class StaticContainers {
 	}
 
 	public static Map<org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace, PDColorSpace> getCachedColorSpaces() {
+		checkForNull(cachedColorSpaces, new HashMap<org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace, PDColorSpace>());
 		return cachedColorSpaces.get();
 	}
 
@@ -79,10 +76,17 @@ public class StaticContainers {
 	}
 
 	public static Set<COSObjectKey> getFileSpecificationKeys() {
+		checkForNull(fileSpecificationKeys, new HashSet<COSObjectKey>());
 		return fileSpecificationKeys.get();
 	}
 
 	public static void setFileSpecificationKeys(Set<COSObjectKey> fileSpecificationKeys) {
 		StaticContainers.fileSpecificationKeys.set(fileSpecificationKeys);
+	}
+
+	private static void checkForNull(ThreadLocal variable, Object object) {
+		if (variable.get() == null) {
+			variable.set(object);
+		}
 	}
 }
