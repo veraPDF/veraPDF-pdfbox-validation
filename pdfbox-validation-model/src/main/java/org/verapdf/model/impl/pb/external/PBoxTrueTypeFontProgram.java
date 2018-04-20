@@ -21,6 +21,7 @@
 package org.verapdf.model.impl.pb.external;
 
 import org.apache.fontbox.FontBoxFont;
+import org.apache.fontbox.ttf.CmapSubtable;
 import org.apache.fontbox.ttf.CmapTable;
 import org.apache.fontbox.ttf.TrueTypeFont;
 import org.apache.log4j.Logger;
@@ -40,7 +41,11 @@ public class PBoxTrueTypeFontProgram extends PBoxFontProgram implements TrueType
 	/** Type name of {@code PBoxTrueTypeFontProgram} */
 	public static final String TRUE_TYPE_PROGRAM_TYPE = "TrueTypeFontProgram";
 
-	private final Boolean isSymbolic;
+	private Long nrCmaps = 0L;
+	private Boolean cmap30Present = Boolean.FALSE;
+	private Boolean cmap31Present = Boolean.FALSE;
+	private Boolean cmap10Present = Boolean.FALSE;
+	private Boolean isSymbolic;
 
 	/**
 	 * Default constructor.
@@ -51,6 +56,22 @@ public class PBoxTrueTypeFontProgram extends PBoxFontProgram implements TrueType
 	public PBoxTrueTypeFontProgram(FontBoxFont fontProgram, Boolean isSymbolic) {
 		super(fontProgram, TRUE_TYPE_PROGRAM_TYPE);
 		this.isSymbolic = isSymbolic;
+		try {
+			CmapTable cmap = ((TrueTypeFont) this.fontProgram).getCmap();
+			if (cmap != null) {
+				CmapSubtable[] cmaps = cmap.getCmaps();
+				this.nrCmaps = Long.valueOf(cmaps.length);
+				for (CmapSubtable cmapSubtable : cmaps) {
+					int platformId = cmapSubtable.getPlatformId();
+					int platformEncodingId = cmapSubtable.getPlatformEncodingId();
+					this.cmap30Present = platformId == 3 && platformEncodingId == 0;
+					this.cmap31Present = platformId == 3 && platformEncodingId == 1;
+					this.cmap10Present = platformId == 1 && platformEncodingId == 0;
+				}
+			}
+		} catch (IOException e) {
+			LOGGER.debug(e);
+		}
 	}
 
 	/**
@@ -58,16 +79,7 @@ public class PBoxTrueTypeFontProgram extends PBoxFontProgram implements TrueType
 	 */
 	@Override
 	public Long getnrCmaps() {
-		try {
-			CmapTable cmap = ((TrueTypeFont) this.fontProgram).getCmap();
-			if (cmap != null) {
-				int nrCmaps = cmap.getCmaps().length;
-				return Long.valueOf(nrCmaps);
-			}
-		} catch (IOException e) {
-			LOGGER.debug(e);
-		}
-		return null;
+		return this.nrCmaps;
 	}
 
 	@Override
@@ -76,20 +88,17 @@ public class PBoxTrueTypeFontProgram extends PBoxFontProgram implements TrueType
 	}
 
 	@Override
-	// TODO : implement me
 	public Boolean getcmap30Present() {
-		return Boolean.FALSE;
+		return this.cmap30Present;
 	}
 
 	@Override
-	// TODO : implement me
 	public Boolean getcmap31Present() {
-		return Boolean.FALSE;
+		return this.cmap31Present;
 	}
 
 	@Override
-	// TODO : implement me
 	public Boolean getcmap10Present() {
-		return Boolean.FALSE;
+		return this.cmap10Present;
 	}
 }
