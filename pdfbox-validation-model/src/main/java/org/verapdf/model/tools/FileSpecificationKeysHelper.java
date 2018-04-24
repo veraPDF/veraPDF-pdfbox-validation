@@ -273,7 +273,7 @@ public class FileSpecificationKeysHelper {
         if (base != null) {
             COSObjectKey key = base.getKey();
             if (key != null) {
-                StaticContainers.fileSpecificationKeys.add(key);
+                StaticContainers.getFileSpecificationKeys().add(key);
             }
         }
     }
