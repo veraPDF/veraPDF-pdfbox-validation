@@ -37,10 +37,7 @@ import org.verapdf.model.pdlayer.PDSeparation;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * DeviceN color space
@@ -58,6 +55,17 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 	public static final String COLORANTS = "Colorants";
 
 	public static final int COLORANT_NAMES_POSITION = 1;
+
+	public static final Set<COSName> IGNORED_COLORANTS;
+
+	static {
+		Set<COSName> tempIgnore = new HashSet<>();
+		tempIgnore.add(COSName.getPDFName("Cyan"));
+		tempIgnore.add(COSName.getPDFName("Magenta"));
+		tempIgnore.add(COSName.getPDFName("Yellow"));
+		tempIgnore.add(COSName.getPDFName("Black"));
+		IGNORED_COLORANTS = Collections.unmodifiableSet(tempIgnore);
+	}
 
 	private final boolean areColorantsPresent;
 
@@ -95,8 +103,10 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 		for (int i = 0; i < ((COSArray) colorantsArray).size(); i++) {
 			COSBase object = ((COSArray) colorantsArray).getObject(i);
 			if (object instanceof COSName &&
-					!colorantDictionaryEntries.contains(object) &&
-					object != COSName.NONE) {
+					object != COSName.NONE &&
+					!IGNORED_COLORANTS.contains(object) &&
+					!colorantDictionaryEntries.contains(object)
+					) {
 				return false;
 			}
 		}
