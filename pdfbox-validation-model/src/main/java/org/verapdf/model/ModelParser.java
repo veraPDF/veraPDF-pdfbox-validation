@@ -20,12 +20,8 @@
  */
 package org.verapdf.model;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.List;
-
+import com.adobe.xmp.XMPException;
+import com.adobe.xmp.impl.VeraPDFMeta;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
@@ -47,8 +43,11 @@ import org.verapdf.pdfa.Foundries;
 import org.verapdf.pdfa.PDFAParser;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
-import com.adobe.xmp.XMPException;
-import com.adobe.xmp.impl.VeraPDFMeta;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.List;
 
 /**
  * Current class is entry point to model implementation.
@@ -116,6 +115,14 @@ public final class ModelParser implements PDFAParser {
 			Integer identificationPart = veraPDFMeta.getIdentificationPart();
 			String identificationConformance = veraPDFMeta.getIdentificationConformance();
 			PDFAFlavour pdfaFlavour = PDFAFlavour.byFlavourId(identificationPart + identificationConformance);
+			// TODO: remove that logic after updating NO_FLAVOUR into base pdf validation flavour
+			if (pdfaFlavour == PDFAFlavour.NO_FLAVOUR) {
+				return defaultFlavour;
+			}
+			// TODO: remove that logic after adding PDF/A-4 validation profile and implementing its logic
+			if (pdfaFlavour == PDFAFlavour.PDFA_4) {
+				return defaultFlavour;
+			}
 			return pdfaFlavour;
 		} catch (IOException | XMPException e) {
 			logger.error(e);

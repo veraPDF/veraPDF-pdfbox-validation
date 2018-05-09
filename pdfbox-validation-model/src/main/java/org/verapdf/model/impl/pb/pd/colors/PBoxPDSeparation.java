@@ -65,12 +65,12 @@ public class PBoxPDSeparation extends PBoxPDColorSpace implements org.verapdf.mo
 
 		this.colorSpace = (COSArray) simplePDObject.getCOSObject();
 
-		if (StaticContainers.separations.containsKey(simplePDObject.getColorantName())) {
-			StaticContainers.separations.get(simplePDObject.getColorantName()).add(this);
+		if (StaticContainers.getSeparations().containsKey(simplePDObject.getColorantName())) {
+			StaticContainers.getSeparations().get(simplePDObject.getColorantName()).add(this);
 		} else {
 			final List<PBoxPDSeparation> separationList = new ArrayList<>();
 			separationList.add(this);
-			StaticContainers.separations.put(simplePDObject.getColorantName(), separationList);
+			StaticContainers.getSeparations().put(simplePDObject.getColorantName(), separationList);
 		}
 	}
 
@@ -78,12 +78,12 @@ public class PBoxPDSeparation extends PBoxPDColorSpace implements org.verapdf.mo
 	public Boolean getareTintAndAlternateConsistent() {
 		String name = ((PDSeparation) simplePDObject).getColorantName();
 
-		if (StaticContainers.inconsistentSeparations.contains(name)) {
+		if (StaticContainers.getInconsistentSeparations().contains(name)) {
 			return Boolean.FALSE;
 		}
 
-		if (StaticContainers.separations.get(name).size() > 1) {
-			for (PBoxPDSeparation pBoxPDSeparation : StaticContainers.separations.get(name)) {
+		if (StaticContainers.getSeparations().get(name).size() > 1) {
+			for (PBoxPDSeparation pBoxPDSeparation : StaticContainers.getSeparations().get(name)) {
 				if (pBoxPDSeparation.equals(this)) {
 					continue;
 				}
@@ -96,7 +96,7 @@ public class PBoxPDSeparation extends PBoxPDColorSpace implements org.verapdf.mo
 				COSBase tintTransformCurrent = unwrapObject(colorSpace.get(3));
 
 				if (!alternateSpaceToCompare.equals(alternateSpaceCurrent) || !tintTransformToCompare.equals(tintTransformCurrent)) {
-					StaticContainers.inconsistentSeparations.add(name);
+					StaticContainers.getInconsistentSeparations().add(name);
 					return Boolean.FALSE;
 				}
 			}

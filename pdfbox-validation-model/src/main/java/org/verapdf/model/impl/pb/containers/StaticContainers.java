@@ -32,20 +32,61 @@ import java.util.*;
 public class StaticContainers {
 
 	//PBoxPDSeparation
-	public static Map<String, List<PBoxPDSeparation>> separations = new HashMap<>();
-	public static List<String> inconsistentSeparations = new ArrayList<>();
+	private static ThreadLocal<Map<String, List<PBoxPDSeparation>>> separations = new ThreadLocal<>();
+	private static ThreadLocal<List<String>> inconsistentSeparations = new ThreadLocal<>();
 
 	//ColorSpaceFactory
 	//TODO : change key from object reference to something else
-	public static Map<org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace, PDColorSpace> cachedColorSpaces = new HashMap<>();
+	private static ThreadLocal<Map<org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace, PDColorSpace>> cachedColorSpaces = new ThreadLocal<>();
 
-	public static Set<COSObjectKey> fileSpecificationKeys = new HashSet<>();
+	private static ThreadLocal<Set<COSObjectKey>> fileSpecificationKeys = new ThreadLocal<>();
 
 	public static void clearAllContainers() {
-		separations.clear();
-		inconsistentSeparations.clear();
-		cachedColorSpaces.clear();
-		fileSpecificationKeys.clear();
+		getSeparations().clear();
+		getInconsistentSeparations().clear();
+		getCachedColorSpaces().clear();
+		getFileSpecificationKeys().clear();
 	}
 
+	public static Map<String, List<PBoxPDSeparation>> getSeparations() {
+		checkForNull(separations, new HashMap<String, List<PBoxPDSeparation>>());
+		return separations.get();
+	}
+
+	public static void setSeparations(Map<String, List<PBoxPDSeparation>> separations) {
+		StaticContainers.separations.set(separations);
+	}
+
+	public static List<String> getInconsistentSeparations() {
+		checkForNull(inconsistentSeparations, new ArrayList<String>());
+		return inconsistentSeparations.get();
+	}
+
+	public static void setInconsistentSeparations(List<String> inconsistentSeparations) {
+		StaticContainers.inconsistentSeparations.set(inconsistentSeparations);
+	}
+
+	public static Map<org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace, PDColorSpace> getCachedColorSpaces() {
+		checkForNull(cachedColorSpaces, new HashMap<org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace, PDColorSpace>());
+		return cachedColorSpaces.get();
+	}
+
+	public static void setCachedColorSpaces(Map<org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace, PDColorSpace> cachedColorSpaces) {
+		StaticContainers.cachedColorSpaces.set(cachedColorSpaces);
+	}
+
+	public static Set<COSObjectKey> getFileSpecificationKeys() {
+		checkForNull(fileSpecificationKeys, new HashSet<COSObjectKey>());
+		return fileSpecificationKeys.get();
+	}
+
+	public static void setFileSpecificationKeys(Set<COSObjectKey> fileSpecificationKeys) {
+		StaticContainers.fileSpecificationKeys.set(fileSpecificationKeys);
+	}
+
+	private static void checkForNull(ThreadLocal variable, Object object) {
+		if (variable.get() == null) {
+			variable.set(object);
+		}
+	}
 }

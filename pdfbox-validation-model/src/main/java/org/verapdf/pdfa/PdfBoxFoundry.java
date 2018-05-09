@@ -23,10 +23,6 @@
  */
 package org.verapdf.pdfa;
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.URI;
-
 import org.verapdf.ReleaseDetails;
 import org.verapdf.component.ComponentDetails;
 import org.verapdf.component.Components;
@@ -35,6 +31,10 @@ import org.verapdf.core.ModelParsingException;
 import org.verapdf.metadata.fixer.PBoxMetadataFixerImpl;
 import org.verapdf.model.ModelParser;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
+
+import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -99,6 +99,11 @@ class PdfBoxFoundry extends AbstractFoundry {
 	@Override
 	public MetadataFixer createMetadataFixer() {
 		return new PBoxMetadataFixerImpl();
+	}
+
+	@Override
+	public String getParserId() {
+		return "PDFBox";
 	}
 
 	public static ReleaseDetails getReleaseDetails() {
