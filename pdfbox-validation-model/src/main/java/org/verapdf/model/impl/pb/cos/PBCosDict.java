@@ -137,7 +137,7 @@ public class PBCosDict extends PBCosObject implements CosDict {
         COSDictionary dictionary = (COSDictionary) this.baseObject;
         COSBase meta = dictionary.getDictionaryObject(COSName.METADATA);
         COSName type = dictionary.getCOSName(COSName.TYPE);
-        if (meta != null && meta instanceof COSStream
+        if (PBoxPDMetadata.isMetadataObject(meta)
                 && type != COSName.CATALOG) {
             ArrayList<PDMetadata> pdMetadatas = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
             org.apache.pdfbox.pdmodel.common.PDMetadata md = new org.apache.pdfbox.pdmodel.common.PDMetadata(

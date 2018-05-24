@@ -21,7 +21,10 @@
 package org.verapdf.model.impl.pb.pd;
 
 import org.apache.log4j.Logger;
-import org.apache.pdfbox.cos.*;
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.common.PDDestinationOrAction;
@@ -231,7 +234,7 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 	private List<PDMetadata> getMetadata() {
 		if (this.catalog != null) {
 			org.apache.pdfbox.pdmodel.common.PDMetadata meta = this.catalog.getMetadata();
-			if (meta != null && meta.getCOSObject() != null) {
+			if (meta != null && PBoxPDMetadata.isMetadataObject(meta.getCOSObject())) {
 				List<PDMetadata> metadata = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 				metadata.add(new PBoxPDMetadata(meta, Boolean.TRUE, this.document, this.flavour));
 				return Collections.unmodifiableList(metadata);
