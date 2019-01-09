@@ -24,8 +24,8 @@ import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.interactive.action.PDAction;
 import org.apache.pdfbox.pdmodel.interactive.action.PDActionGoTo;
 import org.verapdf.model.baselayer.Object;
-import org.verapdf.model.coslayer.CosReal;
-import org.verapdf.model.impl.pb.cos.PBCosReal;
+import org.verapdf.model.coslayer.CosNumber;
+import org.verapdf.model.impl.pb.cos.PBCosNumber;
 import org.verapdf.model.pdlayer.PDGoToAction;
 
 import java.util.ArrayList;
@@ -57,15 +57,15 @@ public class PBoxPDGoToAction extends PBoxPDAction implements PDGoToAction {
 		return super.getLinkedObjects(link);
 	}
 
-	public List<CosReal> getD() {
+	public List<CosNumber> getD() {
 		COSDictionary cosDictionary = ((PDAction) simplePDObject).getCOSObject();
 		if (cosDictionary != null) {
 			COSBase dEntry = cosDictionary.getDictionaryObject(COSName.D);
-			if (dEntry != null && dEntry instanceof COSArray) {
-				List<CosReal> result = new ArrayList<>();
+			if (dEntry instanceof COSArray) {
+				List<CosNumber> result = new ArrayList<>();
 				for (COSBase cosBase : (COSArray) dEntry) {
 					if (cosBase instanceof COSNumber) {
-						result.add(new PBCosReal((COSNumber) cosBase));
+						result.add(PBCosNumber.fromPDFBoxNumber(cosBase));
 					}
 				}
 				return Collections.unmodifiableList(result);
