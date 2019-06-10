@@ -27,6 +27,7 @@ import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceNAttributes;
+import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceNProcess;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosUnicodeName;
 import org.verapdf.model.factory.colors.ColorSpaceFactory;
@@ -53,6 +54,7 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 	public static final String ALTERNATE = "alternate";
 	public static final String COLORANT_NAMES = "colorantNames";
 	public static final String COLORANTS = "Colorants";
+	public static final String PROCESS_COLOR = "processColor";
 
 	public static final int COLORANT_NAMES_POSITION = 1;
 
@@ -127,10 +129,33 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 				return this.getColorantNames();
 			case COLORANTS:
 				return this.getColorants();
+			case PROCESS_COLOR:
+				return this.getProcessColor();
 			default:
 				return super.getLinkedObjects(link);
 		}
 	}
+	private List<PDColorSpace> getProcessColor() {
+		PDDeviceNAttributes attributes = ((org.apache.pdfbox.pdmodel.graphics.color.PDDeviceN) this.simplePDObject).getAttributes();
+		if (attributes == null) {
+			return Collections.emptyList();
+		}
+		PDDeviceNProcess process = attributes.getProcess();
+		if (process == null) {
+			return Collections.emptyList();
+		}
+		try {
+			org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace colorSpace = process.getColorSpace();
+			if (colorSpace != null) {
+				return Collections.singletonList(
+						ColorSpaceFactory.getColorSpace(colorSpace, this.document, this.flavour));
+			}
+		} catch (IOException e) {
+			LOGGER.debug("Problems with process color space obtain in PDDeviceN.", e);
+		}
+		return Collections.emptyList();
+	}
+
 
 	private List<PDColorSpace> getAlternate() {
 		try {
