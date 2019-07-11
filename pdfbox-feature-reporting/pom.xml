@@ -26,7 +26,7 @@
   <parent>
     <artifactId>verapdf-pdfbox-validation</artifactId>
     <groupId>org.verapdf</groupId>
-    <version>1.14.0-RC</version>
+    <version>1.14.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
