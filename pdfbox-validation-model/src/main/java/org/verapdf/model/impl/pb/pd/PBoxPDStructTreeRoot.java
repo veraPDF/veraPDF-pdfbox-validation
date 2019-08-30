@@ -20,8 +20,8 @@
  */
 package org.verapdf.model.impl.pb.pd;
 
-import java.util.*;
-
+import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureTreeRoot;
@@ -33,6 +33,9 @@ import org.verapdf.model.pdlayer.PDStructTreeRoot;
 import org.verapdf.model.tools.TaggedPDFHelper;
 import org.verapdf.model.tools.TaggedPDFRoleMapHelper;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Current class is representation of PDF`s logical structure facilities.
@@ -67,6 +70,33 @@ public class PBoxPDStructTreeRoot extends PBoxPDObject implements PDStructTreeRo
 	}
 
 	@Override
+	public String getkidsStandardTypes() {
+		return this.getChildren()
+		           .stream()
+		           .map(PDStructElem::getstandardType)
+		           .filter(Objects::nonNull)
+		           .collect(Collectors.joining("&"));
+	}
+
+	@Override
+	public Boolean gethasContentItems() {
+		COSBase children = ((PDStructureTreeRoot) this.simplePDObject).getK();
+		if (children != null) {
+			if (PBoxPDStructElem.isContentItem(children)) {
+				return true;
+			}
+			if (children instanceof COSArray && ((COSArray) children).size() > 0) {
+				for (int i = 0; i < ((COSArray) children).size(); ++i) {
+					if (PBoxPDStructElem.isContentItem(((COSArray) children).get(i))) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 			case CHILDREN:
@@ -88,7 +118,7 @@ public class PBoxPDStructTreeRoot extends PBoxPDObject implements PDStructTreeRo
 	private List<PDStructElem> parseChildren() {
 		COSDictionary parent = ((PDStructureTreeRoot) this.simplePDObject).getCOSObject();
 		return TaggedPDFHelper.getStructTreeRootChildren(parent,
-				new TaggedPDFRoleMapHelper(getRoleMap(), this.flavour));
+		                                                 new TaggedPDFRoleMapHelper(getRoleMap(), this.flavour));
 	}
 
 	private Map<String, String> getRoleMap() {

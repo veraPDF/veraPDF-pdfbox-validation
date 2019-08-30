@@ -21,10 +21,7 @@
 package org.verapdf.model.impl.pb.pd;
 
 import org.apache.log4j.Logger;
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSString;
+import org.apache.pdfbox.cos.*;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosLang;
 import org.verapdf.model.coslayer.CosUnicodeName;
@@ -37,6 +34,8 @@ import org.verapdf.model.tools.TaggedPDFRoleMapHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Current class is representation of node of structure tree root. Implemented
@@ -90,6 +89,43 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 		}
 		LOGGER.debug("In struct element type expected 'COSName' but got: " + value.getClass().getSimpleName());
 		return null;
+	}
+
+	@Override
+	public String getkidsStandardTypes() {
+		return this.getChildren()
+		           .stream()
+		           .map(PDStructElem::getstandardType)
+		           .filter(Objects::nonNull)
+		           .collect(Collectors.joining("&"));
+	}
+
+	@Override
+	public Boolean gethasContentItems() {
+		COSBase children = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.K);
+		if (children != null) {
+			if (isContentItem(children)) {
+				return true;
+			}
+			if (children instanceof COSArray && ((COSArray) children).size() > 0) {
+				for (int i = 0; i < ((COSArray) children).size(); ++i) {
+					if (isContentItem(((COSArray) children).get(i))) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public static boolean isContentItem(COSBase base) {
+		if (base instanceof COSInteger) {
+			return true;
+		} else if (base instanceof COSDictionary) {
+			COSName type = ((COSDictionary) base).getCOSName(COSName.TYPE);
+			return type != null && (type.equals(COSName.getPDFName("MCR")) || type.equals(COSName.getPDFName("OBJR")));
+		}
+		return false;
 	}
 
 	@Override
