@@ -18,11 +18,15 @@
  * If a copy of the MPL was not distributed with this file, you can obtain one at
  * http://mozilla.org/MPL/2.0/.
  */
-package org.verapdf.features;
+package org.verapdf.features.test;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.verapdf.features.FeatureExtractionResult;
+import org.verapdf.features.FeatureExtractorConfig;
+import org.verapdf.features.FeatureFactory;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.pb.PBFeatureParser;
 import org.verapdf.features.tools.FeatureTreeNode;
 
@@ -328,7 +332,7 @@ public class FeaturesConfigTest {
 	private static FeatureExtractorConfig configMissingFeature(FeatureObjectType toExclude) {
 		EnumSet<FeatureObjectType> testSet = EnumSet.allOf(FeatureObjectType.class);
 		testSet.remove(toExclude);
-		return FeatureExtractorConfigImpl.fromFeatureSet(testSet);
+		return FeatureFactory.configFromValues(testSet);
 	}
 
 	private static FeatureExtractorConfig configMissingFeatures(EnumSet<FeatureObjectType> toExclude) {
@@ -336,7 +340,7 @@ public class FeaturesConfigTest {
 		for (FeatureObjectType type : toExclude) {
 			testSet.remove(type);
 		}
-		return FeatureExtractorConfigImpl.fromFeatureSet(testSet);
+		return FeatureFactory.configFromValues(testSet);
 	}
 
 	private static FeatureTreeNode getFirstNodeFromListWithPath(List<FeatureTreeNode> list, String... names) {
