@@ -24,6 +24,7 @@ import com.adobe.xmp.XMPException;
 import com.adobe.xmp.impl.VeraPDFMeta;
 import com.adobe.xmp.impl.VeraPDFXMPNode;
 import org.apache.log4j.Logger;
+import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -134,5 +135,11 @@ public class PBoxPDMetadata extends PBoxPDObject implements PDMetadata {
 			return Collections.unmodifiableList(streams);
 		}
 		return Collections.emptyList();
+	}
+
+	public static boolean isMetadataObject(COSBase obj) {
+		return obj instanceof COSStream
+				&& ((COSStream) obj).getCOSName(COSName.TYPE) == COSName.METADATA
+				&& ((COSStream) obj).getCOSName(COSName.SUBTYPE) == COSName.getPDFName("XML");
 	}
 }

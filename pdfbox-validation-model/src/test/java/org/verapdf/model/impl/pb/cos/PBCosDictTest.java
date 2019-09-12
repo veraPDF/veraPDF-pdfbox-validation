@@ -32,7 +32,6 @@ import org.verapdf.model.coslayer.CosInteger;
 import org.verapdf.model.coslayer.CosName;
 import org.verapdf.model.coslayer.CosStream;
 import org.verapdf.model.impl.BaseTest;
-import org.verapdf.model.pdlayer.PDMetadata;
 
 import java.io.IOException;
 import java.util.List;
@@ -102,8 +101,7 @@ public class PBCosDictTest extends BaseTest {
     @Test
     public void testGetMetadataLink() {
         List<? extends Object> metadata = actual.getLinkedObjects(PBCosDict.METADATA);
-        Assert.assertEquals(1, metadata.size());
-        Assert.assertTrue(metadata.get(0) instanceof PDMetadata);
+        Assert.assertEquals(0, metadata.size());
     }
 
 }

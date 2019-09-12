@@ -18,12 +18,16 @@
  * If a copy of the MPL was not distributed with this file, you can obtain one at
  * http://mozilla.org/MPL/2.0/.
  */
-package org.verapdf.features;
+package org.verapdf.features.test;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.verapdf.core.FeatureParsingException;
+import org.verapdf.features.FeatureExtractionResult;
+import org.verapdf.features.FeatureExtractorConfig;
+import org.verapdf.features.FeatureFactory;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.pb.PBFeatureParser;
 import org.verapdf.features.tools.FeatureTreeNode;
 
@@ -50,7 +54,7 @@ public class PBFeatureParserTest {
 	public static void before() throws URISyntaxException, IOException {
 		File pdf = new File(TestNodeGenerator.getSystemIndependentPath("/FR.pdf"));
 		try (PDDocument document = PDDocument.load(pdf, false, true)) {
-			FeatureExtractorConfig config = FeatureExtractorConfigImpl.fromFeatureSet(EnumSet.allOf(FeatureObjectType.class));
+			FeatureExtractorConfig config = FeatureFactory.configFromValues(EnumSet.allOf(FeatureObjectType.class));
 			collection = PBFeatureParser.getFeaturesCollection(document, config);
 		}
 	}
