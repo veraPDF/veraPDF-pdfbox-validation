@@ -31,6 +31,7 @@ import org.verapdf.model.coslayer.CosUnicodeName;
 import org.verapdf.model.factory.colors.ColorSpaceFactory;
 import org.verapdf.model.impl.pb.containers.StaticContainers;
 import org.verapdf.model.impl.pb.cos.PBCosUnicodeName;
+import org.verapdf.model.impl.pb.pd.functions.PBoxPDFunction;
 import org.verapdf.model.pdlayer.PDColorSpace;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
@@ -47,6 +48,7 @@ public class PBoxPDSeparation extends PBoxPDColorSpace implements org.verapdf.mo
 
 	public static final String SEPARATION_TYPE = "PDSeparation";
 
+	public static final String TINT_TRANSFORM = "tintTransform";
 	public static final String ALTERNATE = "alternate";
 	public static final String COLORANT_NAME = "colorantName";
 
@@ -119,6 +121,8 @@ public class PBoxPDSeparation extends PBoxPDColorSpace implements org.verapdf.mo
 				return this.getAlternate();
 			case COLORANT_NAME:
 				return this.getColorantName();
+			case TINT_TRANSFORM:
+				return this.getTintTransform();
 			default:
 				return super.getLinkedObjects(link);
 		}
@@ -150,6 +154,10 @@ public class PBoxPDSeparation extends PBoxPDColorSpace implements org.verapdf.mo
 				return Collections.unmodifiableList(list);
 			}
 		}
+		return Collections.emptyList();
+	}
+	//Stub
+	private List<PBoxPDFunction> getTintTransform() {
 		return Collections.emptyList();
 	}
 }
