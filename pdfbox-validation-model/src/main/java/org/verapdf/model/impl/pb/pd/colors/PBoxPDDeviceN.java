@@ -32,6 +32,7 @@ import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosUnicodeName;
 import org.verapdf.model.factory.colors.ColorSpaceFactory;
 import org.verapdf.model.impl.pb.cos.PBCosUnicodeName;
+import org.verapdf.model.impl.pb.pd.functions.PBoxPDFunction;
 import org.verapdf.model.pdlayer.PDColorSpace;
 import org.verapdf.model.pdlayer.PDDeviceN;
 import org.verapdf.model.pdlayer.PDSeparation;
@@ -51,6 +52,7 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 
 	public static final String DEVICE_N_TYPE = "PDDeviceN";
 
+	public static final String TINT_TRANSFORM = "tintTransform";
 	public static final String ALTERNATE = "alternate";
 	public static final String COLORANT_NAMES = "colorantNames";
 	public static final String COLORANTS = "Colorants";
@@ -131,6 +133,8 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 				return this.getColorants();
 			case PROCESS_COLOR:
 				return this.getProcessColor();
+			case TINT_TRANSFORM:
+				return this.getTintTransform();
 			default:
 				return super.getLinkedObjects(link);
 		}
@@ -216,5 +220,9 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 			}
 		}
 		return Collections.unmodifiableList(list);
+	}
+	//Stub
+	private List<PBoxPDFunction> getTintTransform() {
+		return Collections.emptyList();
 	}
 }
