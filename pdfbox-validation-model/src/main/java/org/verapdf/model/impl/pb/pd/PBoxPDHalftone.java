@@ -22,6 +22,7 @@ package org.verapdf.model.impl.pb.pd;
 
 import org.apache.pdfbox.cos.*;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.impl.pb.pd.functions.PBoxPDFunction;
 import org.verapdf.model.pdlayer.PDHalftone;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class PBoxPDHalftone extends PBoxPDObject implements PDHalftone {
 	public static final String HALFTONE_TYPE = "PDHalftone";
 
 	private static final String HALFTONES = "halftones";
+	private static final String CUSTOM_FUNCTION = "customFunction";
 
 	private final String halftoneName;
 	private final Long halftoneType;
@@ -109,6 +111,8 @@ public class PBoxPDHalftone extends PBoxPDObject implements PDHalftone {
 		switch (link) {
 			case HALFTONES:
 				return this.getHalftones();
+			case CUSTOM_FUNCTION:
+				return this.getCustomFunction();
 			default:
 				return super.getLinkedObjects(link);
 		}
@@ -130,5 +134,9 @@ public class PBoxPDHalftone extends PBoxPDObject implements PDHalftone {
 			}
 		}
 		return Collections.unmodifiableList(halftones);
+	}
+	//Stub
+	private List<PBoxPDFunction> getCustomFunction() {
+		return Collections.emptyList();
 	}
 }
