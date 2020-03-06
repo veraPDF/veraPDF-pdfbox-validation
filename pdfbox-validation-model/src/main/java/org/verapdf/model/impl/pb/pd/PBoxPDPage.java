@@ -141,6 +141,15 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 	}
 
 	@Override
+	public String getTabs() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		if (pageObject != null && pageObject instanceof COSDictionary) {
+			return ((COSDictionary) pageObject).getNameAsString(COSName.getPDFName("Tabs"));
+		}
+		return null;
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 			case GROUP:
