@@ -21,17 +21,29 @@
 package org.verapdf.model.impl.pb.cos;
 
 import org.apache.pdfbox.cos.COSString;
-import org.verapdf.model.coslayer.CosLang;
+import org.verapdf.model.coslayer.CosTextString;
 
 /**
- * @author Maksim Bezrukov
+ * @author Maxim Plushchov
  */
-public class PBCosLang extends PBCosTextString implements CosLang {
+public class PBCosTextString extends PBCosString implements CosTextString{
 
-	/** Type name for PBCosLang */
-	public static final String COS_LANG_TYPE = "CosLang";
+    /** Type name for GFCosTextString */
+    public static final String COS_TEXT_STRING_TYPE = "CosTextString";
+    private final String unicodeValue;
 
-	public PBCosLang(COSString cosString) {
-		super(cosString, COS_LANG_TYPE);
-	}
+
+    public PBCosTextString(COSString cosString) {
+        this(cosString, COS_TEXT_STRING_TYPE);
+    }
+
+    protected PBCosTextString(COSString cosString, String type) {
+        super(cosString, type);
+        this.unicodeValue = cosString.getString();
+    }
+
+    @Override
+    public String getunicodeValue() {
+        return this.unicodeValue;
+    }
 }
