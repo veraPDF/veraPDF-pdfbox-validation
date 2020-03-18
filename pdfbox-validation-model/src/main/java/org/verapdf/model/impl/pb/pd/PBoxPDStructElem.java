@@ -138,6 +138,33 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	}
 
 	@Override
+	public String getAlt() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		if (pageObject != null && pageObject instanceof COSDictionary) {
+			return ((COSDictionary) pageObject).getNameAsString(COSName.ALT);
+		}
+		return null;
+	}
+
+	@Override
+	public String getActualText() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		if (pageObject != null && pageObject instanceof COSDictionary) {
+			return ((COSDictionary) pageObject).getNameAsString(COSName.ACTUAL_TEXT);
+		}
+		return null;
+	}
+
+	@Override
+	public String getE() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		if (pageObject != null && pageObject instanceof COSDictionary) {
+			return ((COSDictionary) pageObject).getNameAsString(COSName.E);
+		}
+		return null;
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 		case CHILDREN:
