@@ -101,6 +101,18 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	}
 
 	@Override
+	public String getparentStandardType() {
+		COSBase parent = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.P);
+		if (parent != null) {
+			COSBase type = ((COSDictionary) parent).getDictionaryObject(COSName.S);
+			if (type instanceof COSName) {
+				return this.roleMapHelper.getStandardType(((COSName) type).getName());
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public Boolean gethasContentItems() {
 		COSBase children = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.K);
 		if (children != null) {
@@ -133,6 +145,20 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 		COSBase type = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.S);
 		if (type instanceof COSName) {
 			return this.roleMapHelper.getStandardType(((COSName) type).getName());
+		}
+		return null;
+	}
+
+	@Override
+	public Boolean gethasCorrectNumberedHeadings() {
+		return true;
+	}
+
+	@Override
+	public Boolean getisRemappedStandardType() {
+		COSBase type = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.S);
+		if (type instanceof COSName) {
+			return this.roleMapHelper.isRemappedStandardType(((COSName) type).getName());
 		}
 		return null;
 	}

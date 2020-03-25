@@ -224,6 +224,16 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	}
 
 	@Override
+	public String getstructParentType() {
+		return null;
+	}
+
+	@Override
+	public String getContents() {
+		return ((PDAnnotation) simplePDObject).getContents();
+	}
+
+	@Override
 	public Boolean getcontainsA() {
 		COSBase pageObject = this.simplePDObject.getCOSObject();
 		return pageObject != null && pageObject instanceof COSDictionary &&

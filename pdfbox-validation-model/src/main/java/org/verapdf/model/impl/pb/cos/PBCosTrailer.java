@@ -45,6 +45,7 @@ public class PBCosTrailer extends PBCosDict implements CosTrailer {
     public static final String COS_TRAILER_TYPE = "CosTrailer";
 
     public static final String CATALOG = "Catalog";
+    public static final String ENCRYPT = "Encrypt";
 
     private final boolean isEncrypted;
 
@@ -69,6 +70,9 @@ public class PBCosTrailer extends PBCosDict implements CosTrailer {
     public List<? extends Object> getLinkedObjects(String link) {
         if (CATALOG.equals(link)) {
             return this.getCatalog();
+        }
+        if (ENCRYPT.equals(link)) {
+            return Collections.emptyList();
         }
         return super.getLinkedObjects(link);
     }
