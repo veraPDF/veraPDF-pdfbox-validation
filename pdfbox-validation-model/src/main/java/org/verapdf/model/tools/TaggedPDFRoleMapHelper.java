@@ -151,6 +151,20 @@ public class TaggedPDFRoleMapHelper {
 		return getStandardType(type, currentStandardTypes, isFastStop);
 	}
 
+	public Boolean isRemappedStandardType(String type) {
+		if (type == null) {
+			return false;
+		}
+		Set<String> currentStandardTypes;
+		if (flavour != null && flavour.getPart() == PDFAFlavour.Specification.ISO_19005_1) {
+			currentStandardTypes = PDF_1_4_STANDART_ROLE_TYPES;
+		} else {
+			currentStandardTypes = PDF_1_7_STANDART_ROLE_TYPES;
+		}
+		String res = roleMap.get(type);
+		return currentStandardTypes.contains(type) && res != null;
+	}
+
 	private String getStandardType(String type, Set<String> currentStandardTypes, boolean isFastStop) {
 		Set<String> visitedTypes = new HashSet<>();
 		visitedTypes.add(type);

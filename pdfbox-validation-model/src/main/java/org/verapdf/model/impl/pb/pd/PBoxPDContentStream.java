@@ -48,6 +48,8 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 
 	public static final String OPERATORS = "operators";
 
+	public static final String CONTENT = "content";
+
 	private final PDInheritableResources resources;
 	private List<Operator> operators = null;
 	private boolean containsTransparency = false;
@@ -66,10 +68,14 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 
     @Override
     public List<? extends Object> getLinkedObjects(String link) {
-        if (OPERATORS.equals(link)) {
-            return this.getOperators();
-        }
-        return super.getLinkedObjects(link);
+		switch (link) {
+			case OPERATORS:
+				return this.getOperators();
+			case CONTENT:
+				return Collections.emptyList();
+			default:
+				return super.getLinkedObjects(link);
+		}
     }
 
     private List<Operator> getOperators() {
