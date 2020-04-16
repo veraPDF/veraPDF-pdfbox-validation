@@ -56,6 +56,7 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	public static final String IC = "IC";
 	public static final String A = "A";
 	public static final String ADDITIONAL_ACTION = "AA";
+	public static final String LANG = "Lang";
 
 	public static final int MAX_COUNT_OF_ACTIONS = 10;
 	public static final int X_AXIS = 0;
@@ -253,6 +254,8 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 			return this.getC();
 		case APPEARANCE:
 			return this.getAppearance();
+		case LANG:
+			return Collections.emptyList();
 		default:
 			return super.getLinkedObjects(link);
 		}
