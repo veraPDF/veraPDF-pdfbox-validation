@@ -234,6 +234,16 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		return ((PDAnnotation) simplePDObject).getContents();
 	}
 
+    @Override
+    public String getAlt() {
+        return null;
+    }
+
+	@Override
+	public Boolean getisOutsideCropBox() {
+		return null;
+	}
+
 	@Override
 	public Boolean getcontainsA() {
 		COSBase pageObject = this.simplePDObject.getCOSObject();
