@@ -150,11 +150,6 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	}
 
 	@Override
-	public Boolean gethasCorrectNumberedHeadings() {
-		return true;
-	}
-
-	@Override
 	public Boolean getisRemappedStandardType() {
 		COSBase type = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.S);
 		if (type instanceof COSName) {
