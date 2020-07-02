@@ -74,6 +74,11 @@ public class PBoxPDAcroForm extends PBoxPDObject implements PDAcroForm {
 	}
 
 	@Override
+	public String getdynamicRender() {
+		return null;
+	}
+
+	@Override
     public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 			case FORM_FIELDS:
