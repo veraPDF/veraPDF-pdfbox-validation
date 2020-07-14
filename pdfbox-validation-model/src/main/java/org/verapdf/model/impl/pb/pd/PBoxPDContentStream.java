@@ -71,8 +71,6 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 		switch (link) {
 			case OPERATORS:
 				return this.getOperators();
-			case CONTENT:
-				return Collections.emptyList();
 			default:
 				return super.getLinkedObjects(link);
 		}
