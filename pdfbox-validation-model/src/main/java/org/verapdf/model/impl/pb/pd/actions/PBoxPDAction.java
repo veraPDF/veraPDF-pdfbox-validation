@@ -23,6 +23,7 @@ package org.verapdf.model.impl.pb.pd.actions;
 import org.apache.pdfbox.pdmodel.interactive.action.PDActionGoTo;
 import org.apache.pdfbox.pdmodel.interactive.action.PDActionNamed;
 import org.apache.pdfbox.pdmodel.interactive.action.PDActionRemoteGoTo;
+import org.apache.pdfbox.pdmodel.interactive.action.PDActionRendition;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.impl.pb.pd.PBoxPDObject;
 import org.verapdf.model.pdlayer.PDAction;
@@ -96,6 +97,8 @@ public class PBoxPDAction extends PBoxPDObject implements PDAction {
 				return new PBoxPDGoToAction((PDActionGoTo) action);
 			case "GoToR":
 				return new PBoxPDGoToRemoteAction((PDActionRemoteGoTo) action);
+			case "Rendition":
+				return new PBoxPDRenditionAction((PDActionRendition) action);
 			default:
 				return new PBoxPDAction(action);
 		}

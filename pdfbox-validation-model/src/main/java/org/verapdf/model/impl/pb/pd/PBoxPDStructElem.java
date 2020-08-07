@@ -187,6 +187,10 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 
 	@Override
 	public Boolean getcircularMappingExist() {
+		COSBase type = ((COSDictionary)this.simplePDObject).getDictionaryObject(COSName.S);
+		if (type instanceof COSName) {
+			return this.roleMapHelper.circularMappingExist(((COSName) type).getName());
+		}
 		return null;
 	}
 
