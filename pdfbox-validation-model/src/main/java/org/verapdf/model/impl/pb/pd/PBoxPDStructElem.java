@@ -73,8 +73,8 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	 * @param structElemDictionary
 	 *            dictionary of structure element
 	 */
-	public PBoxPDStructElem(COSDictionary structElemDictionary, TaggedPDFRoleMapHelper roleMapHelper) {
-		super(structElemDictionary, STRUCTURE_ELEMENT_TYPE);
+	public PBoxPDStructElem(COSDictionary structElemDictionary, TaggedPDFRoleMapHelper roleMapHelper, String type) {
+		super(structElemDictionary, type);
 		this.roleMapHelper = roleMapHelper;
 	}
 
@@ -93,9 +93,8 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 
 	@Override
 	public String getkidsStandardTypes() {
-		return this.getChildren()
+		return this.getChildrenStandardTypes()
 		           .stream()
-		           .map(PDStructElem::getstandardType)
 		           .filter(Objects::nonNull)
 		           .collect(Collectors.joining("&"));
 	}
@@ -145,6 +144,15 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 		COSBase type = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.S);
 		if (type instanceof COSName) {
 			return this.roleMapHelper.getStandardType(((COSName) type).getName());
+		}
+		return null;
+	}
+
+	public static String getStructureElementStandardType(COSDictionary pdStructElem,
+														 TaggedPDFRoleMapHelper roleMapHelper){
+		COSBase type = pdStructElem.getDictionaryObject(COSName.S);
+		if (type instanceof COSName) {
+			return roleMapHelper.getStandardType(((COSName) type).getName());
 		}
 		return null;
 	}
@@ -208,7 +216,11 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 		}
 	}
 
-	private List<PDStructElem> getChildren() {
+	private List<String> getChildrenStandardTypes() {
+		return TaggedPDFHelper.getStructElemChildrenStandardTypes((COSDictionary) this.simplePDObject, this.roleMapHelper);
+	}
+
+	public List<PDStructElem> getChildren() {
 		return TaggedPDFHelper.getStructElemChildren((COSDictionary) this.simplePDObject, this.roleMapHelper);
 	}
 
