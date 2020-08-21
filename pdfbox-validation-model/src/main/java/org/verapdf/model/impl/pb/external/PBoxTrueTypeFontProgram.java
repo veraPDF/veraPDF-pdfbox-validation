@@ -43,6 +43,8 @@ public class PBoxTrueTypeFontProgram extends PBoxFontProgram implements TrueType
 
 	private Long nrCmaps = 0L;
 	private Boolean cmap30Present = Boolean.FALSE;
+	private Boolean cmap31Present = Boolean.FALSE;
+	private Boolean cmap10Present = Boolean.FALSE;
 	private Boolean isSymbolic;
 
 	/**
@@ -60,8 +62,11 @@ public class PBoxTrueTypeFontProgram extends PBoxFontProgram implements TrueType
 				CmapSubtable[] cmaps = cmap.getCmaps();
 				this.nrCmaps = Long.valueOf(cmaps.length);
 				for (CmapSubtable cmapSubtable : cmaps) {
-					this.cmap30Present |= cmapSubtable.getPlatformId() == 3 &&
-							cmapSubtable.getPlatformEncodingId() == 0;
+					int platformId = cmapSubtable.getPlatformId();
+					int platformEncodingId = cmapSubtable.getPlatformEncodingId();
+					this.cmap31Present |= platformId == 3 && platformEncodingId == 1;
+					this.cmap10Present |= platformId == 1 && platformEncodingId == 0;
+					this.cmap30Present |= platformId == 3 && platformEncodingId == 0;
 				}
 			}
 		} catch (IOException e) {
@@ -85,6 +90,16 @@ public class PBoxTrueTypeFontProgram extends PBoxFontProgram implements TrueType
 	@Override
 	public Boolean getcmap30Present() {
 		return this.cmap30Present;
+	}
+
+	@Override
+	public Boolean getcmap31Present() {
+		return this.cmap31Present;
+	}
+
+	@Override
+	public Boolean getcmap10Present() {
+		return this.cmap10Present;
 	}
 
 }
