@@ -41,11 +41,39 @@ public class StaticContainers {
 
 	private static ThreadLocal<Set<COSObjectKey>> fileSpecificationKeys = new ThreadLocal<>();
 
+	//SENote
+	private static ThreadLocal<Set<String>> noteIDSet = new ThreadLocal<>();
+
+	//SEHn
+	private static ThreadLocal<Integer> lastHeadingNestingLevel = new ThreadLocal<>();
+
+
 	public static void clearAllContainers() {
 		getSeparations().clear();
 		getInconsistentSeparations().clear();
 		getCachedColorSpaces().clear();
 		getFileSpecificationKeys().clear();
+		noteIDSet.set(new HashSet<>());
+		lastHeadingNestingLevel.set(0);
+	}
+
+	public static Set<String> getNoteIDSet() {
+		if (noteIDSet.get() == null) {
+			noteIDSet.set(new HashSet<>());
+		}
+		return noteIDSet.get();
+	}
+
+	public static void setNoteIDSet(Set<String> noteIDSet) {
+		StaticContainers.noteIDSet.set(noteIDSet);
+	}
+
+	public static Integer getLastHeadingNestingLevel() {
+		return lastHeadingNestingLevel.get();
+	}
+
+	public static void setLastHeadingNestingLevel(Integer lastHeadingNestingLevel) {
+		StaticContainers.lastHeadingNestingLevel.set(lastHeadingNestingLevel);
 	}
 
 	public static Map<String, List<PBoxPDSeparation>> getSeparations() {
