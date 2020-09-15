@@ -148,6 +148,11 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 		return null;
 	}
 
+	@Override
+	public String getparentLang() {
+		return null;
+	}
+
 	public static String getStructureElementStandardType(COSDictionary pdStructElem,
 														 TaggedPDFRoleMapHelper roleMapHelper){
 		COSBase type = pdStructElem.getDictionaryObject(COSName.S);
