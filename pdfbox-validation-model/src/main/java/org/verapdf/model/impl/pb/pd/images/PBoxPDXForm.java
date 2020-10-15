@@ -92,6 +92,11 @@ public class PBoxPDXForm extends PBoxPDXObject implements PDXForm {
 	}
 
 	@Override
+	public Boolean getisUniqueSemanticParent() {
+		return null;
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 		case GROUP:

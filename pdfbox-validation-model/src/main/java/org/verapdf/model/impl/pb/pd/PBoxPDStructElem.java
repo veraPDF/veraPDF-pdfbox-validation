@@ -73,8 +73,8 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	 * @param structElemDictionary
 	 *            dictionary of structure element
 	 */
-	public PBoxPDStructElem(COSDictionary structElemDictionary, TaggedPDFRoleMapHelper roleMapHelper) {
-		super(structElemDictionary, STRUCTURE_ELEMENT_TYPE);
+	public PBoxPDStructElem(COSDictionary structElemDictionary, TaggedPDFRoleMapHelper roleMapHelper, String type) {
+		super(structElemDictionary, type);
 		this.roleMapHelper = roleMapHelper;
 	}
 
@@ -93,11 +93,22 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 
 	@Override
 	public String getkidsStandardTypes() {
-		return this.getChildren()
+		return this.getChildrenStandardTypes()
 		           .stream()
-		           .map(PDStructElem::getstandardType)
 		           .filter(Objects::nonNull)
 		           .collect(Collectors.joining("&"));
+	}
+
+	@Override
+	public String getparentStandardType() {
+		COSBase parent = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.P);
+		if (parent != null) {
+			COSBase type = ((COSDictionary) parent).getDictionaryObject(COSName.S);
+			if (type instanceof COSName) {
+				return this.roleMapHelper.getStandardType(((COSName) type).getName());
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -138,6 +149,65 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	}
 
 	@Override
+	public String getparentLang() {
+		return null;
+	}
+
+	public static String getStructureElementStandardType(COSDictionary pdStructElem,
+														 TaggedPDFRoleMapHelper roleMapHelper){
+		COSBase type = pdStructElem.getDictionaryObject(COSName.S);
+		if (type instanceof COSName) {
+			return roleMapHelper.getStandardType(((COSName) type).getName());
+		}
+		return null;
+	}
+
+	@Override
+	public Boolean getisRemappedStandardType() {
+		COSBase type = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.S);
+		if (type instanceof COSName) {
+			return this.roleMapHelper.isRemappedStandardType(((COSName) type).getName());
+		}
+		return null;
+	}
+
+	@Override
+	public String getAlt() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		if (pageObject != null && pageObject instanceof COSDictionary) {
+			return ((COSDictionary) pageObject).getNameAsString(COSName.ALT);
+		}
+		return null;
+	}
+
+	@Override
+	public String getActualText() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		if (pageObject != null && pageObject instanceof COSDictionary) {
+			return ((COSDictionary) pageObject).getNameAsString(COSName.ACTUAL_TEXT);
+		}
+		return null;
+	}
+
+	@Override
+	public String getE() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		if (pageObject != null && pageObject instanceof COSDictionary) {
+			return ((COSDictionary) pageObject).getNameAsString(COSName.E);
+		}
+		return null;
+	}
+
+	@Override
+	public Boolean getcircularMappingExist() {
+		COSBase type = ((COSDictionary)this.simplePDObject).getDictionaryObject(COSName.S);
+		if (type instanceof COSName) {
+			return this.roleMapHelper.circularMappingExist(((COSName) type).getName());
+		}
+		return null;
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 		case CHILDREN:
@@ -151,7 +221,11 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 		}
 	}
 
-	private List<PDStructElem> getChildren() {
+	private List<String> getChildrenStandardTypes() {
+		return TaggedPDFHelper.getStructElemChildrenStandardTypes((COSDictionary) this.simplePDObject, this.roleMapHelper);
+	}
+
+	public List<PDStructElem> getChildren() {
 		return TaggedPDFHelper.getStructElemChildren((COSDictionary) this.simplePDObject, this.roleMapHelper);
 	}
 

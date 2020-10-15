@@ -73,6 +73,10 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 	/** Link name for page presentation steps */
 	public static final String PRESENTATION_STEPS = "PresSteps";
 
+	public static final String PORTRAIT_ORIENTATION = "Portrait";
+	public static final String LANDSCAPE_ORIENTATION = "Landscape";
+	public static final String SQUARE_ORIENTATION = "Square";
+
 	/** Maximal number of actions in page dictionary */
 	public static final int MAX_NUMBER_OF_ACTIONS = 2;
 
@@ -138,6 +142,30 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 		COSBase pageObject = this.simplePDObject.getCOSObject();
 		return pageObject != null && pageObject instanceof COSDictionary &&
 				((COSDictionary) pageObject).containsKey(COSName.AA);
+	}
+
+	@Override
+	public String getTabs() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		if (pageObject != null && pageObject instanceof COSDictionary) {
+			return ((COSDictionary) pageObject).getNameAsString(COSName.getPDFName("Tabs"));
+		}
+		return null;
+	}
+
+	@Override
+	public String getorientation() {
+		CosBBox mediaBox = getMediaBox().get(0);
+		double height = mediaBox.gettop() - mediaBox.getbottom();
+		double width = mediaBox.getright() - mediaBox.getleft();
+		long rotation = ((org.apache.pdfbox.pdmodel.PDPage) simplePDObject).getRotation();
+		if ((height > width && rotation % 180 == 0) || (height < width && rotation % 180 == 90)) {
+			return PORTRAIT_ORIENTATION;
+		}
+		if ((height < width && rotation % 180 == 0) || (height > width && rotation % 180 == 90)) {
+			return LANDSCAPE_ORIENTATION;
+		}
+		return SQUARE_ORIENTATION;
 	}
 
 	@Override

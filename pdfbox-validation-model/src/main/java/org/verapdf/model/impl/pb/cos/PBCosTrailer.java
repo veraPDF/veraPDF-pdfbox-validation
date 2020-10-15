@@ -28,6 +28,8 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosIndirect;
 import org.verapdf.model.coslayer.CosTrailer;
+import org.verapdf.model.impl.pb.pd.PBoxPDEncryption;
+import org.verapdf.model.pdlayer.PDEncryption;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.util.ArrayList;
@@ -45,6 +47,7 @@ public class PBCosTrailer extends PBCosDict implements CosTrailer {
     public static final String COS_TRAILER_TYPE = "CosTrailer";
 
     public static final String CATALOG = "Catalog";
+    public static final String ENCRYPT = "Encrypt";
 
     private final boolean isEncrypted;
 
@@ -67,10 +70,14 @@ public class PBCosTrailer extends PBCosDict implements CosTrailer {
 
     @Override
     public List<? extends Object> getLinkedObjects(String link) {
-        if (CATALOG.equals(link)) {
-            return this.getCatalog();
+        switch (link) {
+            case CATALOG:
+                return this.getCatalog();
+            case ENCRYPT:
+                return this.getEncrypt();
+            default:
+                return super.getLinkedObjects(link);
         }
-        return super.getLinkedObjects(link);
     }
 
     private List<CosIndirect> getCatalog() {
@@ -80,4 +87,15 @@ public class PBCosTrailer extends PBCosDict implements CosTrailer {
         catalog.add(new PBCosIndirect((COSObject) base, this.document, this.flavour));
         return Collections.unmodifiableList(catalog);
     }
+
+    private List<PDEncryption> getEncrypt() {
+        COSBase base = ((COSDictionary)this.baseObject).getDictionaryObject(COSName.ENCRYPT);
+        if (base != null && base instanceof COSDictionary) {
+            List<PDEncryption> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+            list.add(new PBoxPDEncryption((COSDictionary)base));
+            return Collections.unmodifiableList(list);
+        }
+        return Collections.emptyList();
+    }
+
 }

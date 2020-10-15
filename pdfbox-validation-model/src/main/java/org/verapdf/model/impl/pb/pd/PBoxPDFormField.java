@@ -42,6 +42,8 @@ public class PBoxPDFormField extends PBoxPDObject implements PDFormField {
 
     public static final String ADDITIONAL_ACTION = "AA";
 
+    public static final String LANG = "Lang";
+
     public static final int MAX_NUMBER_OF_ACTIONS = 4;
 
     public PBoxPDFormField(PDField simplePDObject) {
@@ -65,11 +67,20 @@ public class PBoxPDFormField extends PBoxPDObject implements PDFormField {
     }
 
     @Override
+    public String getTU() {
+        return null;
+    }
+
+    @Override
     public List<? extends Object> getLinkedObjects(String link) {
-        if (ADDITIONAL_ACTION.equals(link)) {
-            return this.getAdditionalAction();
+        switch (link) {
+            case ADDITIONAL_ACTION:
+                return this.getAdditionalAction();
+            case LANG:
+                return Collections.emptyList();
+            default:
+                return super.getLinkedObjects(link);
         }
-        return super.getLinkedObjects(link);
     }
 
     private List<PDAction> getAdditionalAction() {
