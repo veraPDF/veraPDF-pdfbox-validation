@@ -87,4 +87,9 @@ public class PBoxPDXImageTest extends PBoxPDAbstractXObjectTest {
 		Assert.assertEquals(0, alternate.size());
 	}
 
+	@Test
+	public void testSMaskLink() {
+		List<? extends Object> sMask = actual.getLinkedObjects(PBoxPDXImage.S_MASK);
+		Assert.assertEquals(0, sMask.size());
+	}
 }

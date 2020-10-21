@@ -33,6 +33,11 @@ import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.impl.pb.cos.PBCosNumber;
 import org.verapdf.model.impl.pb.pd.actions.PBoxPDAction;
+import org.verapdf.model.impl.pb.pd.annotations.PBoxPD3DAnnot;
+import org.verapdf.model.impl.pb.pd.annotations.PBoxPDLinkAnnot;
+import org.verapdf.model.impl.pb.pd.annotations.PBoxPDPrinterMarkAnnot;
+import org.verapdf.model.impl.pb.pd.annotations.PBoxPDTrapNetAnnot;
+import org.verapdf.model.impl.pb.pd.annotations.PBoxPDWidgetAnnot;
 import org.verapdf.model.pdlayer.PDAction;
 import org.verapdf.model.pdlayer.PDAnnot;
 import org.verapdf.model.pdlayer.PDContentStream;
@@ -57,6 +62,11 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	public static final String A = "A";
 	public static final String ADDITIONAL_ACTION = "AA";
 	public static final String LANG = "Lang";
+	public static final String LINK = "Link";
+	public static final String PRINTER_MARK = "PrinterMark";
+	public static final String WIDGET = "Widget";
+	public static final String TRAP_NET = "TrapNet";
+	public static final String TYPE_3D = "3D";
 
 	public static final int MAX_COUNT_OF_ACTIONS = 10;
 	public static final int X_AXIS = 0;
@@ -81,8 +91,8 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	private List<PDContentStream> appearance = null;
 	private boolean containsTransparency = false;
 
-	public PBoxPDAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour) {
-		super(annot, ANNOTATION_TYPE);
+	public PBoxPDAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour, String type) {
+		super(annot, type);
 		this.pageResources = pageResources;
 		this.subtype = annot.getSubtype();
 		this.ap = getAP(annot);
@@ -98,6 +108,10 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		this.height = PBoxPDAnnot.getHeight(annot);
 		this.document = document;
 		this.flavour = flavour;
+	}
+
+	public PBoxPDAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour) {
+		this(annot, pageResources, document, flavour, ANNOTATION_TYPE);
 	}
 
 	private static String getAP(PDAnnotation annot) {
@@ -414,6 +428,27 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 			org.apache.pdfbox.pdmodel.graphics.form.PDGroup group = toAdd.getGroup();
 			this.containsTransparency |= group != null && COSName.TRANSPARENCY.equals(group.getSubType());
 			list.add(stream);
+		}
+	}
+
+	public static PBoxPDAnnot createAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour) {
+		String subtype = annot.getSubtype();
+		if (subtype == null) {
+			return new PBoxPDAnnot(annot, pageResources, document, flavour);
+		}
+		switch (subtype) {
+			case WIDGET:
+				return new PBoxPDWidgetAnnot(annot, pageResources, document, flavour);
+			case TYPE_3D:
+				return new PBoxPD3DAnnot(annot, pageResources, document, flavour);
+			case TRAP_NET:
+				return new PBoxPDTrapNetAnnot(annot, pageResources, document, flavour);
+			case LINK:
+				return new PBoxPDLinkAnnot(annot, pageResources, document, flavour);
+			case PRINTER_MARK:
+				return new PBoxPDPrinterMarkAnnot(annot, pageResources, document, flavour);
+			default:
+				return new PBoxPDAnnot(annot, pageResources, document, flavour);
 		}
 	}
 }

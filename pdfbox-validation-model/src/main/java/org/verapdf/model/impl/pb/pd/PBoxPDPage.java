@@ -277,7 +277,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 				this.simplePDObject).getResources();
 		for (PDAnnotation annotation : pdfboxAnnotations) {
 			if (annotation != null) {
-				PBoxPDAnnot annot = new PBoxPDAnnot(annotation, pageResources, this.document, this.flavour);
+				PBoxPDAnnot annot = PBoxPDAnnot.createAnnot(annotation, pageResources, this.document, this.flavour);
 				this.containsTransparency |= annot.isContainsTransparency();
 				annotations.add(annot);
 			}
