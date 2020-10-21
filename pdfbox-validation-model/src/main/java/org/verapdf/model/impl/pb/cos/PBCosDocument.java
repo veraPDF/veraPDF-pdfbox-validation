@@ -64,7 +64,7 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 	private PDDocument pdDocument;
 
 	private final long indirectObjectCount;
-	private final float version;
+	private final float headerVersion;
 	private final long headerOffset;
 	private final String header;
 	private final int headerCommentByte1;
@@ -107,7 +107,7 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 		this.flavour = flavour;
 
 		this.indirectObjectCount = cosDocument.getObjects().size();
-		this.version = cosDocument.getVersion();
+		this.headerVersion = cosDocument.getVersion();
 		this.headerOffset = cosDocument.getHeaderOffset();
 		this.header = cosDocument.getHeader();
 		this.headerCommentByte1 = cosDocument.getHeaderCommentByte1();
@@ -149,8 +149,8 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 	 * @return version of pdf document
 	 */
 	@Override
-	public Double getversion() {
-		return Double.valueOf(this.version);
+	public Double getheaderVersion() {
+		return Double.valueOf(this.headerVersion);
 	}
 
 	@Override
@@ -277,8 +277,7 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 				return null;
 			} else if (markInfo instanceof COSDictionary) {
 				COSName suspects = COSName.getPDFName("Suspects");
-				boolean value = ((COSDictionary) markInfo).getBoolean(suspects, false);
-				return Boolean.valueOf(value);
+				return ((COSDictionary) markInfo).getBoolean(suspects, false);
 			} else {
 				LOGGER.debug("MarkedInfo must be a 'COSDictionary' but got: " + markInfo.getClass().getSimpleName());
 				return null;
