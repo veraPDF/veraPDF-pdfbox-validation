@@ -107,7 +107,7 @@ public class PBoxPDInlineImage extends PBoxPDObject implements PDInlineImage {
 				return this.getIntent();
 			case PBoxPDXImage.IMAGE_CS:
 				return this.getImageCS();
-			case PBoxPDXObject.S_MASK:
+			case PBoxPDXImage.S_MASK:
 			case PBoxPDXObject.OPI:
 			case PBoxPDXImage.ALTERNATES:
 			case PBoxPDXImage.JPX_STREAM:

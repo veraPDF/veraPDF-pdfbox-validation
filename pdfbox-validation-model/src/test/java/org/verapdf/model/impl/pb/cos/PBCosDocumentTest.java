@@ -68,8 +68,8 @@ public class PBCosDocumentTest extends BaseTest {
     }
 
 	@Test
-	public void testVersionMethod() {
-		double actualVersion = ((CosDocument) actual).getversion().doubleValue();
+	public void testHeaderVersionMethod() {
+		double actualVersion = ((CosDocument) actual).getheaderVersion().doubleValue();
 		Assert.assertEquals(expectedDocumentVersion, actualVersion, 0.01);
 	}
 

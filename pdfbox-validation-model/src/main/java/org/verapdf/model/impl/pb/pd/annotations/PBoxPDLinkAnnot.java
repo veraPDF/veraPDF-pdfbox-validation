@@ -18,20 +18,24 @@
  * If a copy of the MPL was not distributed with this file, you can obtain one at
  * http://mozilla.org/MPL/2.0/.
  */
-package org.verapdf.model.impl.pb.pd.images;
+package org.verapdf.model.impl.pb.pd.annotations;
 
-import org.junit.Test;
-import org.verapdf.model.impl.BaseTest;
-
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
+import org.verapdf.model.impl.pb.pd.PBoxPDAnnot;
+import org.verapdf.model.pdlayer.PDLinkAnnot;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 /**
- * @author Evgeniy Muravitskiy
+ * @author Maxim Plushchov
  */
-public abstract class PBoxPDAbstractXObjectTest extends BaseTest {
+public class PBoxPDLinkAnnot extends PBoxPDAnnot implements PDLinkAnnot {
 
-	protected static final String FILE_RELATIVE_PATH = "pd/InteractiveObjects.pdf";
+	public static final String LINK_ANNOTATION_TYPE = "PDLinkAnnot";
 
-	@Test
-	public abstract void testSubtypeMethod();
+	public PBoxPDLinkAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour) {
+		super(annot, pageResources, document, flavour, LINK_ANNOTATION_TYPE);
+	}
 
 }
