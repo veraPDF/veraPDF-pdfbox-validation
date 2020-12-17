@@ -124,7 +124,11 @@ public class PBoxPDSignature extends PBoxPDObject implements PDSignature {
         }
         List<PDSigRef> list = new ArrayList<>();
         for (COSBase sigRef : reference) {
-            list.add(new PBoxPDSigRef((COSDictionary) sigRef, this.document));
+            if (sigRef instanceof COSObject)  {
+                list.add(new PBoxPDSigRef((COSDictionary) ((COSObject) sigRef).getObject(), this.document));
+            } else {
+                list.add(new PBoxPDSigRef((COSDictionary) sigRef, this.document));
+            }
         }
         return Collections.unmodifiableList(list);
     }
