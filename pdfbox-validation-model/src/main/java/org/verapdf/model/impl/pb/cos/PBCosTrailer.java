@@ -27,6 +27,7 @@ import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosIndirect;
+import org.verapdf.model.coslayer.CosInfo;
 import org.verapdf.model.coslayer.CosTrailer;
 import org.verapdf.model.impl.pb.pd.PBoxPDEncryption;
 import org.verapdf.model.pdlayer.PDEncryption;
@@ -48,6 +49,7 @@ public class PBCosTrailer extends PBCosDict implements CosTrailer {
 
     public static final String CATALOG = "Catalog";
     public static final String ENCRYPT = "Encrypt";
+    public static final String INFO = "Info";
 
     private final boolean isEncrypted;
 
@@ -75,6 +77,8 @@ public class PBCosTrailer extends PBCosDict implements CosTrailer {
                 return this.getCatalog();
             case ENCRYPT:
                 return this.getEncrypt();
+            case INFO:
+                return this.getInfo();
             default:
                 return super.getLinkedObjects(link);
         }
@@ -82,8 +86,7 @@ public class PBCosTrailer extends PBCosDict implements CosTrailer {
 
     private List<CosIndirect> getCatalog() {
         List<CosIndirect> catalog = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-        COSBase base = ((COSDictionary) this.baseObject)
-				.getItem(COSName.ROOT);
+        COSBase base = ((COSDictionary) this.baseObject).getItem(COSName.ROOT);
         catalog.add(new PBCosIndirect((COSObject) base, this.document, this.flavour));
         return Collections.unmodifiableList(catalog);
     }
@@ -93,6 +96,16 @@ public class PBCosTrailer extends PBCosDict implements CosTrailer {
         if (base != null && base instanceof COSDictionary) {
             List<PDEncryption> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
             list.add(new PBoxPDEncryption((COSDictionary)base));
+            return Collections.unmodifiableList(list);
+        }
+        return Collections.emptyList();
+    }
+
+    private List<CosInfo> getInfo() {
+        COSBase base = ((COSDictionary)this.baseObject).getDictionaryObject(COSName.INFO);
+        if (base != null && base instanceof COSDictionary) {
+            List<CosInfo> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+            list.add(new PBCosInfo((COSDictionary)base, document, flavour));
             return Collections.unmodifiableList(list);
         }
         return Collections.emptyList();

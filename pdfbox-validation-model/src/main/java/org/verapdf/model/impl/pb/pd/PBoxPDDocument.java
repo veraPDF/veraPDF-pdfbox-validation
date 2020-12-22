@@ -133,6 +133,11 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 	}
 
 	@Override
+	public String getVersion() {
+		return catalog.getVersion();
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 			case OUTLINES:

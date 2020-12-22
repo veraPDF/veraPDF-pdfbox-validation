@@ -58,6 +58,7 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 	public static final String EMBEDDED_FILES = "EmbeddedFiles";
 	public static final String ID = "ID";
 	public static final String REQUIREMENTS = "Requirements";
+	public static final String PIECE_INFO = "PieceInfo";
 
 	private final PDFAFlavour flavour;
 
@@ -302,6 +303,16 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public Boolean getcontainsInfo() {
+		return ((COSDocument)baseObject).getTrailer().getDictionaryObject(COSName.INFO) != null;
+	}
+
+	@Override
+	public Boolean getcontainsPieceInfo() {
+		return this.catalog != null && this.catalog.getDictionaryObject(COSName.getPDFName(PIECE_INFO)) != null;
 	}
 
 

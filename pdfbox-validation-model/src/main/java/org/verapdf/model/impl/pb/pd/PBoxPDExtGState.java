@@ -112,6 +112,13 @@ public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
 				((COSDictionary) pageObject).containsKey(COSName.getPDFName("HTP"));
 	}
 
+	@Override
+	public Boolean getcontainsHTO() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		return pageObject != null && pageObject instanceof COSDictionary &&
+				((COSDictionary) pageObject).containsKey(COSName.getPDFName("HTO"));
+	}
+
 	private static String getStringProperty(PDExtendedGraphicsState state, COSName key) {
 		COSBase base = state.getCOSObject().getDictionaryObject(key);
 		return base == null ? null : base instanceof COSName ?

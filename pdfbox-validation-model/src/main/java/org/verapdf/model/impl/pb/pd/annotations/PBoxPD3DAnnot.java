@@ -20,12 +20,23 @@
  */
 package org.verapdf.model.impl.pb.pd.annotations;
 
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
+import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.impl.pb.pd.PBoxPD3DStream;
 import org.verapdf.model.impl.pb.pd.PBoxPDAnnot;
 import org.verapdf.model.pdlayer.PD3DAnnot;
+import org.verapdf.model.pdlayer.PD3DStream;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Maxim Plushchov
@@ -34,8 +45,47 @@ public class PBoxPD3DAnnot extends PBoxPDAnnot implements PD3DAnnot {
 
 	public static final String ANNOTATION_3D_TYPE = "PD3DAnnot";
 
+	public static final String stream3D = "stream3D";
+
+	public static final COSName key3DRef = COSName.getPDFName("3DRef");
+	public static final COSName key3DD = COSName.getPDFName("3DD");
+	public static final COSName key3D = COSName.getPDFName("3D");
+
 	public PBoxPD3DAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour) {
 		super(annot, pageResources, document, flavour, ANNOTATION_3D_TYPE);
+	}
+
+	private List<PD3DStream> get3DStream() {
+		COSStream stream = null;
+		COSBase object = ((COSDictionary)simplePDObject.getCOSObject()).getDictionaryObject(key3DD);
+			if (object != null && object instanceof COSDictionary) {
+				COSName type = ((COSDictionary) object).getCOSName(COSName.TYPE);
+				if (key3DRef.equals(type)) {
+					object = ((COSDictionary) object).getDictionaryObject(key3DD);
+				}
+			}
+			if (object != null && object instanceof COSStream) {
+				COSName type = ((COSStream)object).getCOSName(COSName.TYPE);
+				if (key3D.equals(type)) {
+					stream = (COSStream)object;
+				}
+			}
+		if (stream != null) {
+			List<PD3DStream> streams = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+			streams.add(new PBoxPD3DStream(stream));
+			return streams;
+		}
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<? extends Object> getLinkedObjects(String link) {
+		switch (link) {
+			case stream3D:
+				return this.get3DStream();
+			default:
+				return super.getLinkedObjects(link);
+		}
 	}
 
 }
