@@ -27,6 +27,7 @@ import org.verapdf.model.coslayer.CosLang;
 import org.verapdf.model.coslayer.CosUnicodeName;
 import org.verapdf.model.impl.pb.cos.PBCosLang;
 import org.verapdf.model.impl.pb.cos.PBCosUnicodeName;
+import org.verapdf.model.impl.pb.operator.textshow.PUAHelper;
 import org.verapdf.model.pdlayer.PDStructElem;
 import org.verapdf.model.tools.TaggedPDFHelper;
 import org.verapdf.model.tools.TaggedPDFRoleMapHelper;
@@ -187,6 +188,11 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 			return ((COSDictionary) pageObject).getNameAsString(COSName.ACTUAL_TEXT);
 		}
 		return null;
+	}
+
+	@Override
+	public Boolean getactualTextContainsPUA() {
+		return PUAHelper.containPUA(getActualText());
 	}
 
 	@Override
