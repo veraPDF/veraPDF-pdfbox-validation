@@ -22,10 +22,12 @@ package org.verapdf.model.impl.pb.pd;
 
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.impl.pb.pd.actions.PBoxPDAction;
 import org.verapdf.model.pdlayer.PDAction;
 import org.verapdf.model.pdlayer.PDOutline;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -63,8 +65,12 @@ public class PBoxPDOutline extends PBoxPDObject implements PDOutline {
         List<PDAction> actions = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
         org.apache.pdfbox.pdmodel.interactive.action.PDAction action =
 				((PDOutlineItem) this.simplePDObject).getAction();
-        this.addAction(actions, action);
-        return actions;
+        PDAction pdAction = PBoxPDAction.getAction(action);
+        if (action != null) {
+            actions.add(pdAction);
+            return actions;
+        }
+        return Collections.emptyList();
     }
 
 }

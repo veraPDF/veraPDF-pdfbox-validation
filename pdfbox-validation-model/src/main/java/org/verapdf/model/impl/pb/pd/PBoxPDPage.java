@@ -26,11 +26,13 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.COSObjectable;
+import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent;
 import org.apache.pdfbox.pdmodel.interactive.action.PDPageAdditionalActions;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosBBox;
 import org.verapdf.model.impl.pb.cos.PBCosBBox;
+import org.verapdf.model.impl.pb.pd.actions.PBoxPDPageAdditionalActions;
 import org.verapdf.model.pdlayer.*;
 import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
@@ -70,6 +72,9 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 	public static final String TRIM_BOX = "TrimBox";
 	/** Link name for page art box */
 	public static final String ART_BOX = "ArtBox";
+
+	public static final String OUTPUT_INTENTS = "outputIntents";
+
 	/** Link name for page presentation steps */
 	public static final String PRESENTATION_STEPS = "PresSteps";
 
@@ -77,14 +82,12 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 	public static final String LANDSCAPE_ORIENTATION = "Landscape";
 	public static final String SQUARE_ORIENTATION = "Square";
 
-	/** Maximal number of actions in page dictionary */
-	public static final int MAX_NUMBER_OF_ACTIONS = 2;
-
 	private boolean containsTransparency = false;
 	private List<PDContentStream> contentStreams = null;
+	private OutputIntents outputIntents = null;
 	private List<PDAnnot> annotations = null;
 
-	private final org.apache.pdfbox.pdmodel.PDDocument document;
+	private final PDDocument document;
 	private final PDFAFlavour flavour;
 
 	/**
@@ -169,6 +172,46 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 	}
 
 	@Override
+	public String getoutputColorSpace() {
+		if (this.outputIntents == null) {
+			this.outputIntents = parseOutputIntents();
+		}
+		return this.outputIntents != null ? ((PBoxOutputIntents)this.outputIntents).getColorSpace() : null;
+	}
+
+	private List<OutputIntents> getOutputIntents() {
+		if (this.outputIntents == null) {
+			this.outputIntents = parseOutputIntents();
+		}
+		if (this.outputIntents != null) {
+			List<OutputIntents> array = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+			array.add(this.outputIntents);
+			return array;
+		}
+		return Collections.emptyList();
+	}
+
+	private OutputIntents parseOutputIntents() {
+		if (flavour != null && flavour.getPart() != PDFAFlavour.Specification.ISO_19005_4) {
+			return null;
+		}
+		List<PDOutputIntent> outInts = new ArrayList<>();
+		COSArray array = (COSArray) ((COSDictionary)this.simplePDObject.getCOSObject()).getDictionaryObject(COSName.OUTPUT_INTENTS);
+		if (array != null) {
+			for (COSBase cosBase : array) {
+				if (cosBase instanceof COSObject) {
+					cosBase = ((COSObject)cosBase).getObject();
+				}
+				outInts.add(new PDOutputIntent((COSDictionary) cosBase));
+			}
+		}
+		if (outInts.size() > 0) {
+			return new PBoxOutputIntents(outInts, document, flavour);
+		}
+		return null;
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 			case GROUP:
@@ -189,6 +232,8 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 				return this.getTrimBox();
 			case ART_BOX:
 				return this.getArtBox();
+			case OUTPUT_INTENTS:
+				return this.getOutputIntents();
 			default:
 				return super.getLinkedObjects(link);
 		}
@@ -221,26 +266,17 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 		org.apache.pdfbox.pdmodel.PDPage page =
 				(org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject;
 		PDInheritableResources resources = PDInheritableResources
-				.getInstance(page.getInheritedResources(), page.getPageResources());
+				.getInstance(page.getInheritedResources(), page.getPageResources());//page.getResources()
 		PBoxPDContentStream contentStream = new PBoxPDContentStream(page, resources, this.document, this.flavour);
 		contentStreams.add(contentStream);
 		this.containsTransparency = contentStream.isContainsTransparency();
 	}
 
-	private List<PDAction> getActions() {
-		PDPageAdditionalActions pbActions = ((org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject)
-				.getActions();
-		if (pbActions != null) {
-			List<PDAction> actions = new ArrayList<>(MAX_NUMBER_OF_ACTIONS);
-
-			org.apache.pdfbox.pdmodel.interactive.action.PDAction action;
-
-			action = pbActions.getC();
-			this.addAction(actions, action);
-
-			action = pbActions.getO();
-			this.addAction(actions, action);
-
+	private List<PDAdditionalActions> getActions() {
+		PDPageAdditionalActions pbActions = ((org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject).getActions();
+		if (pbActions != null && pbActions.getCOSObject().size() != 0) {
+			List<PDAdditionalActions> actions = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+			actions.add(new PBoxPDPageAdditionalActions(pbActions));
 			return Collections.unmodifiableList(actions);
 		}
 		return Collections.emptyList();
