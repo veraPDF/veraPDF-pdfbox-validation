@@ -69,7 +69,7 @@ public class PBoxPDDocumentTest extends BaseTest{
 
 	@Test
 	public void testPagesLink() {
-		List<? extends org.verapdf.model.baselayer.Object> pages = actual.getLinkedObjects(PBoxPDDocument.PAGES);
+		List<? extends Object> pages = actual.getLinkedObjects(PBoxPDDocument.PAGES);
 		Assert.assertEquals(1, pages.size());
 		for (Object object : pages) {
 			Assert.assertEquals(PBoxPDPage.PAGE_TYPE, object.getObjectType());
@@ -90,7 +90,7 @@ public class PBoxPDDocumentTest extends BaseTest{
 		List<? extends Object> outputIntents = actual.getLinkedObjects(PBoxPDDocument.OUTPUT_INTENTS);
 		Assert.assertEquals(1, outputIntents.size());
 		for (Object object : outputIntents) {
-			Assert.assertEquals(PBoxPDOutputIntent.OUTPUT_INTENT_TYPE, object.getObjectType());
+			Assert.assertEquals(PBoxOutputIntents.OUTPUT_INTENTS_TYPE, object.getObjectType());
 		}
 	}
 

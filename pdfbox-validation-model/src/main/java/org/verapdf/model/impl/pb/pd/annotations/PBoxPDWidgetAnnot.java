@@ -20,13 +20,22 @@
  */
 package org.verapdf.model.impl.pb.pd.annotations;
 
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.interactive.action.PDAnnotationAdditionalActions;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.verapdf.model.impl.pb.pd.PBoxPDAnnot;
+import org.verapdf.model.impl.pb.pd.actions.PBoxPDWidgetAdditionalActions;
+import org.verapdf.model.pdlayer.PDAdditionalActions;
 import org.verapdf.model.pdlayer.PDWidgetAnnot;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Maxim Plushchov
@@ -42,6 +51,18 @@ public class PBoxPDWidgetAnnot extends PBoxPDAnnot implements PDWidgetAnnot {
 	@Override
 	public String getTU() {
 		return null;
+	}
+
+	private List<PDAdditionalActions> getAdditionalActions() {
+		COSBase actionDictionary = ((PDAnnotation) simplePDObject).getCOSObject().getDictionaryObject(COSName.AA);
+		if (actionDictionary instanceof COSDictionary && ((COSDictionary) actionDictionary).size() != 0) {
+			List<PDAdditionalActions> actions = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+			PDAnnotationAdditionalActions additionalActions = new PDAnnotationAdditionalActions(
+					(COSDictionary) actionDictionary);
+			actions.add(new PBoxPDWidgetAdditionalActions(additionalActions));
+			return Collections.unmodifiableList(actions);
+		}
+		return Collections.emptyList();
 	}
 
 }
