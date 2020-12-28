@@ -95,6 +95,9 @@ public class PBoxOutputIntents extends GenericModelObject implements OutputInten
     }
 
     public String getColorSpace() {
+        if (pbOutInts == null) {
+            pbOutInts = parseOutputIntents();
+        }
         for (PDOutputIntent outputIntent : pbOutInts) {
             String colorSpace = ((PBoxPDOutputIntent)outputIntent).getColorSpace();
             if (colorSpace != null) {
