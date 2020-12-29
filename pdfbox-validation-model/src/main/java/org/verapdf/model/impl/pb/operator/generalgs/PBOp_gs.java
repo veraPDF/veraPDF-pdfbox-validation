@@ -70,7 +70,7 @@ public class PBOp_gs extends PBOpGeneralGS implements Op_gs {
     private List<PDExtGState> getExtGState() {
         if (this.extGState != null) {
 			List<PDExtGState> extGStates = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			extGStates.add(new PBoxPDExtGState(this.extGState, this.document, this.flavour));
+			extGStates.add(new PBoxPDExtGState(this.extGState, this.flavour));
 			return Collections.unmodifiableList(extGStates);
         }
         return Collections.emptyList();

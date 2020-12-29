@@ -30,7 +30,9 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceDictionary;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceEntry;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.coslayer.CosBM;
 import org.verapdf.model.coslayer.CosNumber;
+import org.verapdf.model.impl.pb.cos.PBCosBM;
 import org.verapdf.model.impl.pb.cos.PBCosNumber;
 import org.verapdf.model.impl.pb.pd.actions.PBoxPDAction;
 import org.verapdf.model.impl.pb.pd.actions.PBoxPDAnnotationAdditionalActions;
@@ -278,15 +280,28 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 			return this.getIC();
 		case C:
 			return this.getC();
-		case BM:
-			return Collections.emptyList();
 		case APPEARANCE:
 			return this.getAppearance();
 		case LANG:
 			return Collections.emptyList();
+		case BM:
+			return this.getBM();
 		default:
 			return super.getLinkedObjects(link);
 		}
+	}
+
+	private List<CosBM> getBM() {
+		COSBase BM = ((COSDictionary)simplePDObject.getCOSObject()).getDictionaryObject(COSName.BM);
+		if (BM == null || flavour == null || flavour.getPart() != PDFAFlavour.PDFA_4.getPart()) {
+			return Collections.emptyList();
+		}
+		if (BM instanceof COSName) {
+			List<CosBM> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+			list.add(new PBCosBM((COSName)BM));
+			return Collections.unmodifiableList(list);
+		}
+		return Collections.emptyList();
 	}
 
 	private List<PDAdditionalActions> getAdditionalActions() {

@@ -119,10 +119,6 @@ public final class ModelParser implements PDFAParser {
 			if (pdfaFlavour == PDFAFlavour.NO_FLAVOUR) {
 				return defaultFlavour;
 			}
-			// TODO: remove that logic after adding PDF/A-4 validation profile and implementing its logic
-			if (pdfaFlavour == PDFAFlavour.PDFA_4) {
-				return defaultFlavour;
-			}
 			return pdfaFlavour;
 		} catch (IOException | XMPException e) {
 			logger.error(e);
