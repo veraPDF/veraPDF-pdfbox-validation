@@ -61,6 +61,8 @@ public final class ModelParser implements PDFAParser {
 	private static final ComponentDetails details = Components.veraDetails(id, "PDFBox Parser",
 			pdfBoxReleaseDetails.getVersion(), "veraPDF PDFBox based model parser.");
 
+	private static final String PDFUA_PREFIX = "ua";
+
 	private static final Logger logger = Logger.getLogger(ModelParser.class);
 
 	private PDDocument document;
@@ -114,7 +116,17 @@ public final class ModelParser implements PDFAParser {
 			VeraPDFMeta veraPDFMeta = VeraPDFMeta.parse(is);
 			Integer identificationPart = veraPDFMeta.getIdentificationPart();
 			String identificationConformance = veraPDFMeta.getIdentificationConformance();
-			PDFAFlavour pdfaFlavour = PDFAFlavour.byFlavourId(identificationPart + identificationConformance);
+			String prefix = "";
+			if (identificationPart == null && identificationConformance == null) {
+				identificationPart = veraPDFMeta.getUAIdentificationPart();
+				if (identificationPart != null) {
+					prefix = PDFUA_PREFIX;
+				}
+			}
+			if (identificationConformance == null) {
+				identificationConformance = "";
+			}
+			PDFAFlavour pdfaFlavour = PDFAFlavour.byFlavourId(prefix + identificationPart + identificationConformance);
 			// TODO: remove that logic after updating NO_FLAVOUR into base pdf validation flavour
 			if (pdfaFlavour == PDFAFlavour.NO_FLAVOUR) {
 				return defaultFlavour;

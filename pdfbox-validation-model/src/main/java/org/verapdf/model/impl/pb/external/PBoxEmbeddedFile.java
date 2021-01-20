@@ -24,7 +24,6 @@ import java.io.InputStream;
 
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
 import org.verapdf.model.ModelParser;
