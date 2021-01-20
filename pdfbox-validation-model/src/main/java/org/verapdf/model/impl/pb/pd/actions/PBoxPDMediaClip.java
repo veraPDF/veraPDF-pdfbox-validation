@@ -60,6 +60,25 @@ public class PBoxPDMediaClip extends PBoxPDObject implements PDMediaClip {
         }
         return list.stream()
                 .filter(Objects::nonNull)
-                .collect(Collectors.joining(" "));
+                .collect(Collectors.joining(""));
+    }
+
+    @Override
+    public Boolean gethasCorrectAlt() {
+        COSBase object = ((COSDictionary)simplePDObject).getDictionaryObject(COSName.ALT);
+        if (!(object instanceof COSArray)) {
+            return false;
+        }
+        COSArray array = (COSArray)object;
+        if (array.size() % 2 != 0) {
+            return false;
+        }
+        for (int i = 0; i < array.size(); i++) {
+            COSBase elem = array.get(i);
+            if (!(elem instanceof COSString) || (i % 2 == 1 && ((COSString)elem).getString().isEmpty())) {
+                return false;
+            }
+        }
+        return true;
     }
 }

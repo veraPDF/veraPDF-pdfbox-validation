@@ -31,6 +31,7 @@ import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosIndirect;
 import org.verapdf.model.coslayer.CosTrailer;
 import org.verapdf.model.impl.BaseTest;
+import org.verapdf.model.pdlayer.PDEncryption;
 
 import java.io.IOException;
 import java.util.List;
@@ -64,6 +65,13 @@ public class PBCosTrailerTest extends BaseTest {
         List<? extends Object> catalog = actual.getLinkedObjects(PBCosTrailer.CATALOG);
         Assert.assertEquals(catalog.size(), 1);
         Assert.assertTrue(catalog.get(0) instanceof CosIndirect);
+    }
+
+    @Test
+    public void testEncryptLink() {
+        List<? extends Object> encrypt = actual.getLinkedObjects(PBCosTrailer.ENCRYPT);
+        Assert.assertEquals(encrypt.size(), 1);
+        Assert.assertTrue(encrypt.get(0) instanceof PDEncryption);
     }
 
     @Test
