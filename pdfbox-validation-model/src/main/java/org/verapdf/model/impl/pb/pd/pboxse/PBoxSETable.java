@@ -47,6 +47,7 @@ public class PBoxSETable extends PBoxSEGeneral implements SETable {
         Stack<PDStructElem> stack = new Stack<>();
         Boolean hasScope = true;
         Boolean hasID = true;
+        Boolean hasHeaders = true;
         Set<String> idSet = new HashSet<>();
         Set<String> headersSet = new HashSet<>();
         stack.push(this);
@@ -55,14 +56,12 @@ public class PBoxSETable extends PBoxSEGeneral implements SETable {
             String type = elem.getstandardType();
             if (TaggedPDFConstants.TD.equals(type)) {
                 List<String> list = ((PBoxSETD)elem).getHeaders();
-                if (list != null) {
+                if (list != null && !list.isEmpty()) {
                     headersSet.addAll(list);
+                } else {
+                    hasHeaders = false;
                 }
             } else if (TaggedPDFConstants.TH.equals(type)) {
-                List<String> list = ((PBoxSETH)elem).getHeaders();
-                if (list != null) {
-                    headersSet.addAll(list);
-                }
                 String id = ((PBoxSETH)elem).getTHID();
                 if (id == null || id.isEmpty()) {
                     hasID = false;
@@ -81,16 +80,11 @@ public class PBoxSETable extends PBoxSEGeneral implements SETable {
         if (hasScope) {
             return true;
         }
-        if (!hasID) {
+        if (!hasID || !hasHeaders) {
             return false;
         }
         for (String headers : headersSet) {
             if(!idSet.contains(headers)) {
-                return false;
-            }
-        }
-        for (String id : idSet) {
-            if(!headersSet.contains(id)) {
                 return false;
             }
         }
