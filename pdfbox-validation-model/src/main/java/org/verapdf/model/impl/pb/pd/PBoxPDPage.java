@@ -266,7 +266,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 		org.apache.pdfbox.pdmodel.PDPage page =
 				(org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject;
 		PDInheritableResources resources = PDInheritableResources
-				.getInstance(page.getInheritedResources(), page.getPageResources());//page.getResources()
+				.getInstance(page.getInheritedResources(), page.getPageResources());
 		PBoxPDContentStream contentStream = new PBoxPDContentStream(page, resources, this.document, this.flavour);
 		contentStreams.add(contentStream);
 		this.containsTransparency = contentStream.isContainsTransparency();

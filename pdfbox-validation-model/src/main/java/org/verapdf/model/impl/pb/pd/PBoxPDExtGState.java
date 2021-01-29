@@ -154,7 +154,7 @@ public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
 		if (BM == null) {
 			return Collections.emptyList();
 		}
-		if (flavour == null || flavour.getPart() != PDFAFlavour.PDFA_4.getPart()) {
+		if (flavour == null || flavour.getPart() != PDFAFlavour.Specification.ISO_19005_4) {
 			if (BM instanceof COSArray) {
 				COSArray array = (COSArray)BM;
 				for (COSBase obj : array) {

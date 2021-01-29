@@ -49,6 +49,8 @@ public class PDInheritableResources {
 	private final PDResources currentResources;
 	private final PDResources inheritedResources;
 
+	private boolean containsUndefinedResource = false;
+
 	private final HashMap<COSName, PDFont> fontCache = new HashMap<>();
 
 	protected PDInheritableResources(PDResources inheritedResources, PDResources currentResources) {
@@ -87,6 +89,9 @@ public class PDInheritableResources {
 			fontCache.put(name, font);
 			ret = font;
 		}
+		if (ret == null) {
+			containsUndefinedResource = true;
+		}
 		return ret;
 	}
 
@@ -98,7 +103,11 @@ public class PDInheritableResources {
 			 * get it from page resource dictionary
 			 */
 			if (this.isDefaultColorSpaceUsed(name)) {
-				return this.inheritedResources.getColorSpace(name);
+				PDColorSpace colorSpace = this.inheritedResources.getColorSpace(name);
+				if (colorSpace == null) {
+					containsUndefinedResource = true;
+				}
+				return colorSpace;
 			}
 			PDColorSpace colorSpace = this.currentResources.getColorSpace(name);
 			if (colorSpace != null) {
@@ -110,6 +119,9 @@ public class PDInheritableResources {
 		}
 		PDColorSpace colorSpace = this.inheritedResources.getColorSpace(name);
 		colorSpace = setInheritedColorSpace(colorSpace);
+		if (colorSpace == null) {
+			containsUndefinedResource = true;
+		}
 		return colorSpace;
 	}
 
@@ -123,7 +135,7 @@ public class PDInheritableResources {
 			state.setInherited(true);
 			return state;
 		}
-
+		containsUndefinedResource = true;
 		return null;
 	}
 
@@ -137,7 +149,7 @@ public class PDInheritableResources {
 			shading.setInherited(true);
 			return shading;
 		}
-
+		containsUndefinedResource = true;
 		return null;
 	}
 
@@ -151,7 +163,7 @@ public class PDInheritableResources {
 			pattern.setInherited(true);
 			return pattern;
 		}
-
+		containsUndefinedResource = true;
 		return null;
 	}
 
@@ -165,7 +177,7 @@ public class PDInheritableResources {
 			object.setInherited(true);
 			return object;
 		}
-
+		containsUndefinedResource = true;
 		return null;
 	}
 
@@ -208,6 +220,10 @@ public class PDInheritableResources {
 				: EMPTY_RESOURCES;
 		currentResources = currentResources != null ? currentResources : EMPTY_RESOURCES;
 		return new PDInheritableResources(inheritedResources, currentResources);
+	}
+
+	public boolean getContainsUndefinedResource() {
+		return containsUndefinedResource;
 	}
 
 }

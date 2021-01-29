@@ -27,9 +27,6 @@ import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.verapdf.model.baselayer.Object;
-import org.verapdf.model.coslayer.CosDict;
-import org.verapdf.model.coslayer.CosStream;
-import org.verapdf.model.impl.pb.cos.PBCosStream;
 import org.verapdf.model.impl.pb.pd.PBoxPDContentStream;
 import org.verapdf.model.impl.pb.pd.PBoxPDGroup;
 import org.verapdf.model.pdlayer.PDContentStream;
@@ -52,6 +49,8 @@ public class PBoxPDXForm extends PBoxPDXObject implements PDXForm {
 
 	public static final String GROUP = "Group";
 	public static final String CONTENT_STREAM = "contentStream";
+	public static final String XFORM_TRANSPARENCY_GROUP = "xFormTransparencyGroup";
+	public static final String PARENT_XFORM_TRANSPARENCY_GROUP = "parentXFormTransparencyGroup";
 
 	private List<PDContentStream> contentStreams = null;
 	private List<PDGroup> groups = null;
@@ -103,6 +102,10 @@ public class PBoxPDXForm extends PBoxPDXObject implements PDXForm {
 			return this.getGroup();
 		case CONTENT_STREAM:
 			return this.getContentStream();
+		case XFORM_TRANSPARENCY_GROUP:
+			return Collections.emptyList();
+		case PARENT_XFORM_TRANSPARENCY_GROUP:
+			return Collections.emptyList();
 		default:
 			return super.getLinkedObjects(link);
 		}

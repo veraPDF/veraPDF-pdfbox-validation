@@ -24,7 +24,6 @@ import org.apache.pdfbox.cos.COSStream;
 import org.verapdf.model.external.ICCOutputProfile;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Embedded ICC profile used as a destination profile in the output intent
