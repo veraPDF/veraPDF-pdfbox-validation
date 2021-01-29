@@ -22,7 +22,6 @@ package org.verapdf.model.impl.pb.pd.pboxse;
 
 import org.apache.pdfbox.cos.COSDictionary;
 import org.verapdf.model.impl.pb.pd.TaggedPDFConstants;
-import org.verapdf.model.selayer.SEArt;
 import org.verapdf.model.selayer.SELink;
 import org.verapdf.model.tools.TaggedPDFRoleMapHelper;
 

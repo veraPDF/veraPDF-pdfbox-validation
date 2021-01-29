@@ -93,6 +93,7 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	private final PDFAFlavour flavour;
 
 	private List<PDContentStream> appearance = null;
+	private List<CosBM> blendMode = null;
 	private boolean containsTransparency = false;
 
 	public PBoxPDAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour, String type) {
@@ -292,11 +293,19 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	}
 
 	private List<CosBM> getBM() {
+		if (this.blendMode == null) {
+			this.blendMode = parseBM();
+		}
+		return this.blendMode;
+	}
+
+	private List<CosBM> parseBM() {
 		COSBase BM = ((COSDictionary)simplePDObject.getCOSObject()).getDictionaryObject(COSName.BM);
-		if (BM == null || flavour == null || flavour.getPart() != PDFAFlavour.PDFA_4.getPart()) {
+		if (BM == null || flavour == null || flavour.getPart() != PDFAFlavour.Specification.ISO_19005_4) {
 			return Collections.emptyList();
 		}
 		if (BM instanceof COSName) {
+			this.containsTransparency = true;
 			List<CosBM> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 			list.add(new PBCosBM((COSName)BM));
 			return Collections.unmodifiableList(list);
@@ -367,6 +376,9 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	boolean isContainsTransparency() {
 		if (this.appearance == null) {
 			parseAppearance();
+		}
+		if (this.blendMode == null) {
+			this.blendMode = parseBM();
 		}
 		return this.containsTransparency;
 	}

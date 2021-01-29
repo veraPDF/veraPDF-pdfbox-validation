@@ -27,9 +27,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.verapdf.model.baselayer.Object;
-import org.verapdf.model.external.EmbeddedFile;
 import org.verapdf.model.impl.BaseTest;
-import org.verapdf.model.impl.pb.external.PBoxEmbeddedFile;
 
 import java.util.List;
 

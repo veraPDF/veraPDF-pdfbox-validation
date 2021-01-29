@@ -20,7 +20,6 @@
  */
 package org.verapdf.model.impl.pb.external;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 

@@ -22,9 +22,7 @@ package org.verapdf.model.impl.pb.external;
 
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.cos.COSStream;
-import org.verapdf.model.coslayer.CosStream;
 import org.verapdf.model.external.ICCProfile;
 
 import java.io.IOException;

@@ -48,8 +48,6 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 
 	public static final String OPERATORS = "operators";
 
-	public static final String CONTENT = "content";
-
 	private final PDInheritableResources resources;
 	private List<Operator> operators = null;
 	private boolean containsTransparency = false;
@@ -115,5 +113,10 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 					"Error while parsing content stream. " + e.getMessage(), e);
 			this.operators = Collections.emptyList();
 		}
+	}
+
+	@Override
+	public Boolean getcontainsUndefinedResource() {
+		return resources.getContainsUndefinedResource();
 	}
 }

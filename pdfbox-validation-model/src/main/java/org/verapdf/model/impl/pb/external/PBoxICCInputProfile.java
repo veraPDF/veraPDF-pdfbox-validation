@@ -24,7 +24,6 @@ import org.apache.pdfbox.cos.COSStream;
 import org.verapdf.model.external.ICCInputProfile;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Embedded ICC profile used for ICCBased color spaces

@@ -32,7 +32,6 @@ import org.verapdf.model.impl.pb.cos.PBCosDocumentTest;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 
 /**
