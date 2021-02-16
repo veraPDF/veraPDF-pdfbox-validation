@@ -80,9 +80,9 @@ public final class FontFactory {
 			case TYPE_1:
 			case MM_TYPE_1:
 				if (pdfboxFont instanceof PDType1Font) {
-					return new PBoxPDType1Font((PDType1Font) pdfboxFont, renderingMode);
+					return new PBoxPDType1Font((PDType1Font) pdfboxFont, renderingMode, flavour);
 				} else if (pdfboxFont instanceof PDType1CFont) {
-					return new PBoxPDType1Font((PDType1CFont) pdfboxFont, renderingMode);
+					return new PBoxPDType1Font((PDType1CFont) pdfboxFont, renderingMode, flavour);
 				}
 			case TYPE_3: {
 				PDResources fontResources = ((PDType3Font) pdfboxFont).getResources();
