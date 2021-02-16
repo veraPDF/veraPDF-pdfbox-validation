@@ -99,7 +99,7 @@ public class PBoxPDCIDFont extends PBoxPDFont implements PDCIDFont {
 						return Boolean.FALSE;
 					}
 				}
-				if (!flavour.equals(PDFAFlavour.PDFA_1_A) || !flavour.equals(PDFAFlavour.PDFA_1_B)) {
+				if (flavour.getPart() != PDFAFlavour.Specification.ISO_19005_1) {
 					// on this levels we need to ensure that all glyphs
 					// present
 					// in font program are described in cid set

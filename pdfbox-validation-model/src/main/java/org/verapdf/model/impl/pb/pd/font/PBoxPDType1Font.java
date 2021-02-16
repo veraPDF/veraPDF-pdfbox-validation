@@ -27,6 +27,7 @@ import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.verapdf.model.pdlayer.PDType1Font;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
 
@@ -38,14 +39,18 @@ public class PBoxPDType1Font extends PBoxPDSimpleFont implements PDType1Font {
 	private static final Logger LOGGER = Logger.getLogger(PBoxPDType1Font.class);
 
 	public static final String UNDEFINED_GLYPH = ".notdef";
+	private final PDFAFlavour flavour;
+
 	public static final String TYPE1_FONT_TYPE = "PDType1Font";
 
-	public PBoxPDType1Font(org.apache.pdfbox.pdmodel.font.PDType1Font font, RenderingMode renderingMode) {
+	public PBoxPDType1Font(org.apache.pdfbox.pdmodel.font.PDType1Font font, RenderingMode renderingMode, PDFAFlavour flavour) {
 		super(font, renderingMode, TYPE1_FONT_TYPE);
+		this.flavour = flavour;
 	}
 
-	public PBoxPDType1Font(org.apache.pdfbox.pdmodel.font.PDType1CFont font, RenderingMode renderingMode) {
+	public PBoxPDType1Font(org.apache.pdfbox.pdmodel.font.PDType1CFont font, RenderingMode renderingMode, PDFAFlavour flavour) {
 		super(font, renderingMode, TYPE1_FONT_TYPE);
+		this.flavour = flavour;
 	}
 
 	@Override
@@ -64,13 +69,15 @@ public class PBoxPDType1Font extends PBoxPDSimpleFont implements PDType1Font {
 							return Boolean.FALSE;
 						}
 					}
-					if (font instanceof Type1Font) {
-						if (((Type1Font) font).getCharStringsDict().size() != splittedCharSet.length) {
-							return Boolean.FALSE;
-						}
-					} else if (font instanceof CFFFont) {
-						if (((CFFFont) font).getNumCharStrings() != splittedCharSet.length) {
-							return Boolean.FALSE;
+					if (flavour.getPart() != PDFAFlavour.Specification.ISO_19005_1) {
+						if (font instanceof Type1Font) {
+							if (((Type1Font) font).getCharStringsDict().size() != splittedCharSet.length) {
+								return Boolean.FALSE;
+							}
+						} else if (font instanceof CFFFont) {
+							if (((CFFFont) font).getNumCharStrings() != splittedCharSet.length) {
+								return Boolean.FALSE;
+							}
 						}
 					}
 
