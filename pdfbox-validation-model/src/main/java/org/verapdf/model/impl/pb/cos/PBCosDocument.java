@@ -55,10 +55,11 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 	public static final String XREF = "xref";
 	public static final String INDIRECT_OBJECTS = "indirectObjects";
 	public static final String DOCUMENT = "document";
+	public static final String DOC = "doc";
 	public static final String EMBEDDED_FILES = "EmbeddedFiles";
 	public static final String ID = "ID";
 	public static final String REQUIREMENTS = "Requirements";
-	public static final String PIECE_INFO = "PieceInfo";
+	public static final COSName PIECE_INFO = COSName.getPDFName("PieceInfo");
 
 	private final PDFAFlavour flavour;
 
@@ -312,7 +313,7 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 
 	@Override
 	public Boolean getcontainsPieceInfo() {
-		return this.catalog != null && this.catalog.getDictionaryObject(COSName.getPDFName(PIECE_INFO)) != null;
+		return this.catalog != null && this.catalog.getDictionaryObject(PIECE_INFO) != null;
 	}
 
 
@@ -373,6 +374,8 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 			return this.getXRefs();
 		case EMBEDDED_FILES:
 			return this.getEmbeddedFiles();
+		case DOC:
+			return Collections.emptyList();
 		default:
 			return super.getLinkedObjects(link);
 		}
