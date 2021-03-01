@@ -23,11 +23,12 @@ package org.verapdf.model.impl.pb.pd;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.*;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.coslayer.CosActualText;
 import org.verapdf.model.coslayer.CosLang;
 import org.verapdf.model.coslayer.CosUnicodeName;
+import org.verapdf.model.impl.pb.cos.PBCosActualText;
 import org.verapdf.model.impl.pb.cos.PBCosLang;
 import org.verapdf.model.impl.pb.cos.PBCosUnicodeName;
-import org.verapdf.model.impl.pb.operator.textshow.PUAHelper;
 import org.verapdf.model.pdlayer.PDStructElem;
 import org.verapdf.model.tools.TaggedPDFHelper;
 import org.verapdf.model.tools.TaggedPDFRoleMapHelper;
@@ -65,6 +66,10 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	 * Link name for {@code Lang} key
 	 */
 	public static final String LANG = "Lang";
+	/**
+	 * Link name for {@code ActualText} key
+	 */
+	public static final String ACTUAL_TEXT = "actualText";
 
 	private TaggedPDFRoleMapHelper roleMapHelper;
 
@@ -191,11 +196,6 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	}
 
 	@Override
-	public Boolean getactualTextContainsPUA() {
-		return PUAHelper.containPUA(getActualText());
-	}
-
-	@Override
 	public String getE() {
 		COSBase pageObject = this.simplePDObject.getCOSObject();
 		if (pageObject != null && pageObject instanceof COSDictionary) {
@@ -222,6 +222,8 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 			return this.getStructureType();
 		case LANG:
 			return this.getLang();
+		case ACTUAL_TEXT:
+			return this.getactualText();
 		default:
 			return super.getLinkedObjects(link);
 		}
@@ -255,4 +257,18 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 
 		return Collections.emptyList();
 	}
+
+	private List<CosActualText> getactualText() {
+		COSBase object = this.simplePDObject.getCOSObject();
+		if (object != null && object instanceof COSDictionary) {
+			COSBase actualText = ((COSDictionary) object).getItem(COSName.ACTUAL_TEXT);
+			if (actualText != null && actualText instanceof COSString) {
+				List<CosActualText> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+				list.add(new PBCosActualText((COSString)actualText));
+				return list;
+			}
+		}
+		return Collections.emptyList();
+	}
+
 }
