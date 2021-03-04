@@ -22,7 +22,11 @@ package org.verapdf.model.impl.pb.pd;
 
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
+import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.pdlayer.PD3DStream;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Maxim Plushchov
@@ -31,8 +35,20 @@ public class PBoxPD3DStream extends PBoxPDObject implements PD3DStream {
 
 	public static final String STREAM_3D_TYPE = "PD3DStream";
 
+	public static final String COLOR_SPACE = "colorSpace";
+
 	public PBoxPD3DStream(COSStream stream) {
 		super(stream, STREAM_3D_TYPE);
+	}
+
+	@Override
+	public List<? extends Object> getLinkedObjects(String link) {
+		switch (link) {
+			case COLOR_SPACE:
+				return Collections.emptyList();
+			default:
+				return super.getLinkedObjects(link);
+		}
 	}
 
 	@Override
