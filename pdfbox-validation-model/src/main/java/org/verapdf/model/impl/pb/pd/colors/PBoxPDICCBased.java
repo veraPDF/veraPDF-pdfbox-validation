@@ -20,7 +20,6 @@
  */
 package org.verapdf.model.impl.pb.pd.colors;
 
-import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.external.ICCInputProfile;
@@ -37,8 +36,6 @@ import java.util.List;
  * @author Evgeniy Muravitskiy
  */
 public class PBoxPDICCBased extends PBoxPDColorSpace implements PDICCBased {
-
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDICCBased.class);
 
 	public static final String ICC_BASED_TYPE = "PDICCBased";
 
@@ -74,7 +71,17 @@ public class PBoxPDICCBased extends PBoxPDColorSpace implements PDICCBased {
 	}
 
 	@Override
+	public String getICCProfileMD5() {
+		return null;
+	}
+
+	@Override
 	public String getcurrentTransparencyProfileIndirect() {
+		return null;
+	}
+
+	@Override
+	public String getcurrentTransparencyICCProfileMD5() {
 		return null;
 	}
 

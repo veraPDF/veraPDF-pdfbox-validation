@@ -76,6 +76,11 @@ public class PBoxPDOutputIntent extends PBoxPDObject implements PDOutputIntent {
 	}
 
 	@Override
+	public String getICCProfileMD5() {
+		return null;
+	}
+
+	@Override
 	public String getOutputConditionIdentifier() {
 		org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent outInt =
 				(org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent) simplePDObject;
