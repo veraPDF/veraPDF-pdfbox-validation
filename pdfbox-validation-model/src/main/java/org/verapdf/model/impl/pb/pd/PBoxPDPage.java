@@ -82,6 +82,9 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 	public static final String LANDSCAPE_ORIENTATION = "Landscape";
 	public static final String SQUARE_ORIENTATION = "Square";
 
+	public static final String TRANSPARENCY_COLOR_SPACE = "transparencyColorSpace";
+	public static final String PARENT_TRANSPARENCY_COLOR_SPACE = "parentTransparencyColorSpace";
+
 	private boolean containsTransparency = false;
 	private List<PDContentStream> contentStreams = null;
 	private OutputIntents outputIntents = null;
@@ -234,6 +237,10 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 				return this.getArtBox();
 			case OUTPUT_INTENTS:
 				return this.getOutputIntents();
+			case TRANSPARENCY_COLOR_SPACE:
+				return Collections.emptyList();
+			case PARENT_TRANSPARENCY_COLOR_SPACE:
+				return Collections.emptyList();
 			default:
 				return super.getLinkedObjects(link);
 		}

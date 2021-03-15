@@ -49,8 +49,8 @@ public class PBoxPDXForm extends PBoxPDXObject implements PDXForm {
 
 	public static final String GROUP = "Group";
 	public static final String CONTENT_STREAM = "contentStream";
-	public static final String XFORM_TRANSPARENCY_GROUP = "xFormTransparencyGroup";
-	public static final String PARENT_XFORM_TRANSPARENCY_GROUP = "parentXFormTransparencyGroup";
+	public static final String TRANSPARENCY_COLOR_SPACE = "transparencyColorSpace";
+	public static final String PARENT_TRANSPARENCY_COLOR_SPACE = "parentTransparencyColorSpace";
 
 	private List<PDContentStream> contentStreams = null;
 	private List<PDGroup> groups = null;
@@ -102,9 +102,9 @@ public class PBoxPDXForm extends PBoxPDXObject implements PDXForm {
 			return this.getGroup();
 		case CONTENT_STREAM:
 			return this.getContentStream();
-		case XFORM_TRANSPARENCY_GROUP:
+		case TRANSPARENCY_COLOR_SPACE:
 			return Collections.emptyList();
-		case PARENT_XFORM_TRANSPARENCY_GROUP:
+		case PARENT_TRANSPARENCY_COLOR_SPACE:
 			return Collections.emptyList();
 		default:
 			return super.getLinkedObjects(link);
