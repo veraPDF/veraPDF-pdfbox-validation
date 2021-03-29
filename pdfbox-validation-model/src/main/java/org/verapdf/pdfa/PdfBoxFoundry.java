@@ -93,6 +93,12 @@ class PdfBoxFoundry extends AbstractFoundry {
 		return createParser(file, PDFAFlavour.NO_FLAVOUR);
 	}
 
+	@Override
+	public PDFAParser createParser(File file, PDFAFlavour pdfaFlavour, PDFAFlavour defaultFlavour)
+			throws ModelParsingException, EncryptedPdfException {
+		return ModelParser.createModelWithFlavour(file, pdfaFlavour, defaultFlavour);
+	}
+
 	/**
 	 * @see org.verapdf.pdfa.VeraPDFFoundry#newMetadataFixer(org.verapdf.metadata.fixer.utils.FixerConfig)
 	 */

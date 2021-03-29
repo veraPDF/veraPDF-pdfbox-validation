@@ -79,6 +79,11 @@ public final class ModelParser implements PDFAParser {
 		this.flavour = (flavour == PDFAFlavour.NO_FLAVOUR) ? obtainFlavour(this.document) : flavour;
 	}
 
+	private ModelParser(final File pdfFile, PDFAFlavour flavour, PDFAFlavour defaultFlavour) throws IOException {
+		this.document = PDDocument.load(pdfFile, false, true);
+		this.flavour = (flavour == PDFAFlavour.NO_FLAVOUR) ? ((defaultFlavour == PDFAFlavour.NO_FLAVOUR) ? obtainFlavour(this.document) : obtainFlavour(this.document, defaultFlavour)) : flavour;
+	}
+
 	public static ModelParser createModelWithFlavour(InputStream toLoad, PDFAFlavour flavour)
 			throws ModelParsingException, EncryptedPdfException {
 		try {
@@ -103,8 +108,23 @@ public final class ModelParser implements PDFAParser {
 		}
 	}
 
+	public static ModelParser createModelWithFlavour(File pdfFile, PDFAFlavour flavour, PDFAFlavour defaultFlavour)
+			throws ModelParsingException, EncryptedPdfException {
+		try {
+			cleanUp();
+			return new ModelParser(pdfFile, flavour, defaultFlavour);
+		} catch (InvalidPasswordException excep) {
+			throw new EncryptedPdfException("The PDF stream appears to be encrypted.", excep);
+		} catch (IOException excep) {
+			throw new ModelParsingException("Couldn't parse stream", excep);
+		}
+	}
+
 	private static PDFAFlavour obtainFlavour(PDDocument document) {
-		PDFAFlavour defaultFlavour = Foundries.defaultInstance().defaultFlavour();
+		return obtainFlavour(document, Foundries.defaultInstance().defaultFlavour());
+	}
+
+	private static PDFAFlavour obtainFlavour(PDDocument document, PDFAFlavour defaultFlavour) {
 		if (document == null || document.getDocumentCatalog() == null) {
 			return defaultFlavour;
 		}
