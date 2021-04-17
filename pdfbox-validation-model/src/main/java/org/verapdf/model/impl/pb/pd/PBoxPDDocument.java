@@ -288,7 +288,7 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 	}
 
 	private List<PDPerms> getPerms() {
-		if(this.catalog != null) {
+		if (this.catalog != null) {
 			COSDictionary perms = (COSDictionary)
 					this.catalog.getCOSObject().getDictionaryObject(COSName.PERMS);
 			if (perms != null) {

@@ -64,14 +64,14 @@ public class PBoxICCProfile extends PBoxExternal implements ICCProfile {
         try {
             this.profileStream = profileStream.getUnfilteredStream();
             this.dictionaryNumberOfColors = profileStream.getLong(COSName.N);
-            if(this.dictionaryNumberOfColors == -1) {
+            if (this.dictionaryNumberOfColors == -1) {
                 this.dictionaryNumberOfColors = null;
             }
 
             initializeProfileHeader();
         } catch (IOException e) {
             this.isValid = false;
-            if(this.profileHeader == null) {
+            if (this.profileHeader == null) {
                 this.profileHeader = new byte[0];
             }
         }
@@ -80,7 +80,7 @@ public class PBoxICCProfile extends PBoxExternal implements ICCProfile {
     private void initializeProfileHeader() throws IOException {
         int available = this.profileStream.available();
         int size = available > HEADER_LENGTH ? HEADER_LENGTH : available;
-        if(size != HEADER_LENGTH) {
+        if (size != HEADER_LENGTH) {
             this.isValid = false;
         }
 

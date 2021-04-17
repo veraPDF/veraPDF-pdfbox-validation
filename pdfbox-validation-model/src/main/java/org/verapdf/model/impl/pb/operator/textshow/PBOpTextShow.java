@@ -151,7 +151,7 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 					int code = font.readCode(inputStream);
 					Boolean glyphPresent = null;
 					Boolean widthsConsistent = null ;
-					if(!fontProgramIsInvalid) {
+					if (!fontProgramIsInvalid) {
 						// every font contains notdef glyph. But if we call method
 						// of font container we can't distinguish case of code 0
 						// and glyph that is not present indeed.
@@ -305,9 +305,9 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 	}
 
 	private static boolean fontProgramIsNull(org.apache.pdfbox.pdmodel.font.PDFont font) {
-		if(font instanceof PDType3Font) {
+		if (font instanceof PDType3Font) {
 			return false;
-		} else if(font instanceof PDType0Font) {
+		} else if (font instanceof PDType0Font) {
 			return descendantFontProgramIsNull((PDType0Font) font);
 		} else if (!font.getSubType().equals(FontFactory.TYPE_3) && (font.isEmbedded())) {
 			PDStream fontFile;
@@ -333,8 +333,8 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 
 	private static boolean descendantFontProgramIsNull(PDType0Font font) {
 		org.apache.pdfbox.pdmodel.font.PDCIDFont descendant = font.getDescendantFont();
-		if(descendant instanceof PDCIDFontType2) {
-			if(descendant.getFontDescriptor() != null) {
+		if (descendant instanceof PDCIDFontType2) {
+			if (descendant.getFontDescriptor() != null) {
 				return descendant.getFontDescriptor().getFontFile3() == null &&
 						descendant.getFontDescriptor().getFontFile2() == null;
 			}

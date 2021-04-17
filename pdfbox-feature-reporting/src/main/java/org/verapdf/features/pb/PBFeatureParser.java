@@ -151,7 +151,7 @@ public final class PBFeatureParser {
 		PDDocumentNameDictionary names = catalog.getNames();
 
 		if (config.isFeatureEnabled(FeatureObjectType.ACTION)) {
-			if(documentOutline != null) {
+			if (documentOutline != null) {
 				for (PDOutlineItem item : documentOutline.children()) {
 					reportOutlinesActions(item);
 				}
