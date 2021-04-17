@@ -91,7 +91,7 @@ public class PBoxPDAcroForm extends PBoxPDObject implements PDAcroForm {
 		List<PDFormField> formFields =
 				new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 		for (PDField field : fields) {
-			if(field instanceof PDSignatureField) {
+			if (field instanceof PDSignatureField) {
 				formFields.add(new PBoxPDSignatureField((PDSignatureField) field,
 						this.document));
 			} else {

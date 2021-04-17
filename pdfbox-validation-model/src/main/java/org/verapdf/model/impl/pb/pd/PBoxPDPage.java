@@ -72,9 +72,10 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 	public static final String TRIM_BOX = "TrimBox";
 	/** Link name for page art box */
 	public static final String ART_BOX = "ArtBox";
-
+	/** Link name for output intents */
 	public static final String OUTPUT_INTENTS = "outputIntents";
-
+	/** Link name for resource dictionary */
+	private static final String RESOURCES = "resources";
 	/** Link name for page presentation steps */
 	public static final String PRESENTATION_STEPS = "PresSteps";
 
@@ -227,6 +228,8 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 				return this.getContentStream();
 			case MEDIA_BOX:
 				return this.getMediaBox();
+			case RESOURCES:
+				return Collections.emptyList();
 			case CROP_BOX:
 				return this.getCropBox();
 			case BLEED_BOX:

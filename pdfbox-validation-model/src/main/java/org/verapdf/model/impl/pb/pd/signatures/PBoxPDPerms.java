@@ -51,8 +51,8 @@ public class PBoxPDPerms extends PBoxPDObject implements PDPerms{
 	@Override
 	public Boolean getcontainsOtherEntries() {
 		Set<COSName> names = ((COSDictionary) this.simplePDObject).keySet();
-		for(COSName name : names) {
-			if(name.compareTo(UC3) != 0 && name.compareTo(COSName.DOC_MDP) != 0) {
+		for (COSName name : names) {
+			if (name.compareTo(UC3) != 0 && name.compareTo(COSName.DOC_MDP) != 0) {
 				return Boolean.TRUE;
 			}
 		}

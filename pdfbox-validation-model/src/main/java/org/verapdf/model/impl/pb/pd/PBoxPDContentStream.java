@@ -47,6 +47,7 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 	public static final String CONTENT_STREAM_TYPE = "PDContentStream";
 
 	public static final String OPERATORS = "operators";
+	private static final String RESOURCES = "resources";
 
 	private final PDInheritableResources resources;
 	private List<Operator> operators = null;
@@ -69,6 +70,8 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 		switch (link) {
 			case OPERATORS:
 				return this.getOperators();
+			case RESOURCES:
+				return Collections.emptyList();
 			default:
 				return super.getLinkedObjects(link);
 		}

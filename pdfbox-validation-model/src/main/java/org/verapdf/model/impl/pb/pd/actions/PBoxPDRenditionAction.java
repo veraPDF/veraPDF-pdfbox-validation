@@ -60,7 +60,7 @@ public class PBoxPDRenditionAction extends PBoxPDAction implements PDRenditionAc
         COSBase object = ((PDAction) this.simplePDObject).getCOSObject().getDictionaryObject(COSName.R);
         if (object != null) {
             object = ((COSDictionary) object).getDictionaryObject(COSName.C);
-            if(object != null) {
+            if (object != null) {
                 List<PDMediaClip> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
                 list.add(new PBoxPDMediaClip((COSDictionary)object));
                 return Collections.unmodifiableList(list);
