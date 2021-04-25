@@ -50,7 +50,11 @@ public class PBoxPDWidgetAnnot extends PBoxPDAnnot implements PDWidgetAnnot {
 
 	@Override
 	public String getTU() {
-		return null;
+		COSBase parent = ((PDAnnotation) simplePDObject).getCOSObject().getDictionaryObject(COSName.PARENT);
+		if (parent != null) {
+				return ((COSDictionary)parent).getString(COSName.TU);
+		}
+		return ((PDAnnotation) simplePDObject).getCOSObject().getString(COSName.TU);
 	}
 
 	private List<PDAdditionalActions> getAdditionalActions() {
