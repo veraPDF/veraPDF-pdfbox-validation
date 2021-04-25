@@ -21,7 +21,15 @@
 package org.verapdf.model.impl.pb.pd;
 
 import org.apache.log4j.Logger;
-import org.apache.pdfbox.cos.*;
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSInteger;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSString;
+import org.apache.pdfbox.cos.COSObjectKey;
+import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureElement;
+import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureNode;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosActualText;
 import org.verapdf.model.coslayer.CosLang;
@@ -30,6 +38,7 @@ import org.verapdf.model.impl.pb.cos.PBCosActualText;
 import org.verapdf.model.impl.pb.cos.PBCosLang;
 import org.verapdf.model.impl.pb.cos.PBCosUnicodeName;
 import org.verapdf.model.pdlayer.PDStructElem;
+import org.verapdf.model.impl.pb.exceptions.LoopedException;
 import org.verapdf.model.tools.TaggedPDFHelper;
 import org.verapdf.model.tools.TaggedPDFRoleMapHelper;
 
@@ -37,6 +46,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 /**
@@ -156,6 +167,34 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 
 	@Override
 	public String getparentLang() {
+		COSString baseLang = null;
+		Set<COSObjectKey> keys = new HashSet<>();
+		COSObjectKey key;
+		COSDictionary parentDict = (COSDictionary)((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.P);
+		PDStructureNode structureParent = PDStructureNode.create(parentDict);
+		PDStructureElement parent = null;
+		if (structureParent instanceof PDStructureElement) {
+			parent = (PDStructureElement) structureParent;
+		}
+		while (baseLang == null && parent != null) {
+			key = parent.getCOSObject().getKey();
+			if (keys.contains(key)){
+				throw new LoopedException("Struct tree loop found");
+			}
+			if (key != null) {
+				keys.add(key);
+			}
+			baseLang = (COSString) parent.getCOSObject().getDictionaryObject(COSName.LANG);
+			structureParent = parent.getParent();
+			if (structureParent instanceof PDStructureElement) {
+				parent = (PDStructureElement) structureParent;
+			} else {
+				parent = null;
+			}
+		}
+		if (baseLang != null) {
+			return baseLang.getString();
+		}
 		return null;
 	}
 
