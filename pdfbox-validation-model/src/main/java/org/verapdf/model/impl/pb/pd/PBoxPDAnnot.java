@@ -22,7 +22,12 @@ package org.verapdf.model.impl.pb.pd;
 
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.common.PDNumberTreeNode;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDParentTreeValue;
+import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureTreeRoot;
 import org.apache.pdfbox.pdmodel.interactive.action.PDActionFactory;
 import org.apache.pdfbox.pdmodel.interactive.action.PDAnnotationAdditionalActions;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
@@ -48,6 +53,7 @@ import org.verapdf.model.pdlayer.PDContentStream;
 import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -91,12 +97,13 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 
 	private final PDDocument document;
 	private final PDFAFlavour flavour;
+	private final PDPage pdPage;
 
 	private List<PDContentStream> appearance = null;
 	private List<CosBM> blendMode = null;
 	private boolean containsTransparency = false;
 
-	public PBoxPDAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour, String type) {
+	public PBoxPDAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour, String type, PDPage pdPage) {
 		super(annot, type);
 		this.pageResources = pageResources;
 		this.subtype = annot.getSubtype();
@@ -113,10 +120,11 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		this.height = PBoxPDAnnot.getHeight(annot);
 		this.document = document;
 		this.flavour = flavour;
+		this.pdPage = pdPage;
 	}
 
-	public PBoxPDAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour) {
-		this(annot, pageResources, document, flavour, ANNOTATION_TYPE);
+	public PBoxPDAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour, PDPage pdPage) {
+		this(annot, pageResources, document, flavour, ANNOTATION_TYPE, pdPage);
 	}
 
 	private static String getAP(PDAnnotation annot) {
@@ -253,13 +261,34 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		return ((PDAnnotation) simplePDObject).getContents();
 	}
 
-    @Override
-    public String getAlt() {
-        return null;
-    }
+	@Override
+	public String getAlt() {
+		PDStructureTreeRoot structTreeRoot = this.document.getDocumentCatalog().getStructureTreeRoot();
+		int structParent = ((PDAnnotation) this.simplePDObject).getStructParent();
+		if (structTreeRoot != null && structParent != 0) {
+			PDNumberTreeNode parentTreeRoot = structTreeRoot.getParentTree();
+			COSBase structureElement;
+			try {
+				PDParentTreeValue treeValue = (PDParentTreeValue) parentTreeRoot.getValue(structParent);
+				structureElement = treeValue.getCOSObject();
+			} catch (IOException e) {
+				return null;
+			}
+			if (structureElement instanceof COSDictionary) {
+				return ((COSDictionary) structureElement).getNameAsString(COSName.ALT);
+			}
+		}
+		return null;
+	}
 
 	@Override
 	public Boolean getisOutsideCropBox() {
+		PDRectangle cropBox = pdPage.getCropBox();
+		PDRectangle rectangle = ((PDAnnotation) simplePDObject).getRectangle();
+		if (rectangle != null) {
+			return cropBox.getLowerLeftY() >= rectangle.getUpperRightY() || cropBox.getLowerLeftX() >= rectangle.getUpperRightX()
+			       || cropBox.getUpperRightY() <= rectangle.getLowerLeftY() || cropBox.getUpperRightX() <= rectangle.getLowerLeftX();
+		}
 		return null;
 	}
 
@@ -430,24 +459,24 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		}
 	}
 
-	public static PBoxPDAnnot createAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour) {
+	public static PBoxPDAnnot createAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour, PDPage pdPage) {
 		String subtype = annot.getSubtype();
 		if (subtype == null) {
-			return new PBoxPDAnnot(annot, pageResources, document, flavour);
+			return new PBoxPDAnnot(annot, pageResources, document, flavour, pdPage);
 		}
 		switch (subtype) {
 			case WIDGET:
-				return new PBoxPDWidgetAnnot(annot, pageResources, document, flavour);
+				return new PBoxPDWidgetAnnot(annot, pageResources, document, flavour, pdPage);
 			case TYPE_3D:
-				return new PBoxPD3DAnnot(annot, pageResources, document, flavour);
+				return new PBoxPD3DAnnot(annot, pageResources, document, flavour, pdPage);
 			case TRAP_NET:
-				return new PBoxPDTrapNetAnnot(annot, pageResources, document, flavour);
+				return new PBoxPDTrapNetAnnot(annot, pageResources, document, flavour, pdPage);
 			case LINK:
-				return new PBoxPDLinkAnnot(annot, pageResources, document, flavour);
+				return new PBoxPDLinkAnnot(annot, pageResources, document, flavour, pdPage);
 			case PRINTER_MARK:
-				return new PBoxPDPrinterMarkAnnot(annot, pageResources, document, flavour);
+				return new PBoxPDPrinterMarkAnnot(annot, pageResources, document, flavour, pdPage);
 			default:
-				return new PBoxPDAnnot(annot, pageResources, document, flavour);
+				return new PBoxPDAnnot(annot, pageResources, document, flavour, pdPage);
 		}
 	}
 }

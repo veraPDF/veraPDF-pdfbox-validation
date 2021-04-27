@@ -24,6 +24,7 @@ import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.interactive.action.PDAnnotationAdditionalActions;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
@@ -44,8 +45,8 @@ public class PBoxPDWidgetAnnot extends PBoxPDAnnot implements PDWidgetAnnot {
 
 	public static final String WIDGET_ANNOTATION_TYPE = "PDWidgetAnnot";
 
-	public PBoxPDWidgetAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour) {
-		super(annot, pageResources, document, flavour, WIDGET_ANNOTATION_TYPE);
+	public PBoxPDWidgetAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour, PDPage pdPage) {
+		super(annot, pageResources, document, flavour, WIDGET_ANNOTATION_TYPE, pdPage);
 	}
 
 	@Override
