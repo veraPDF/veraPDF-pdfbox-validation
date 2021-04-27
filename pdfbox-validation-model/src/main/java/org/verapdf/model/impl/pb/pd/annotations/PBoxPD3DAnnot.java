@@ -25,6 +25,7 @@ import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.verapdf.model.baselayer.Object;
@@ -51,8 +52,8 @@ public class PBoxPD3DAnnot extends PBoxPDAnnot implements PD3DAnnot {
 	public static final COSName key3DD = COSName.getPDFName("3DD");
 	public static final COSName key3D = COSName.getPDFName("3D");
 
-	public PBoxPD3DAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour) {
-		super(annot, pageResources, document, flavour, ANNOTATION_3D_TYPE);
+	public PBoxPD3DAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour, PDPage pdPage) {
+		super(annot, pageResources, document, flavour, ANNOTATION_3D_TYPE, pdPage);
 	}
 
 	private List<PD3DStream> get3DStream() {

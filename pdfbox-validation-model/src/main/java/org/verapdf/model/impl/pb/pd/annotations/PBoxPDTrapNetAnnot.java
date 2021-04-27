@@ -21,6 +21,7 @@
 package org.verapdf.model.impl.pb.pd.annotations;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.verapdf.model.impl.pb.pd.PBoxPDAnnot;
@@ -34,8 +35,8 @@ public class PBoxPDTrapNetAnnot extends PBoxPDAnnot implements PDTrapNetAnnot {
 
 	public static final String TRAP_NET_ANNOTATION_TYPE = "PDTrapNetAnnot";
 
-	public PBoxPDTrapNetAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour) {
-		super(annot, pageResources, document, flavour, TRAP_NET_ANNOTATION_TYPE);
+	public PBoxPDTrapNetAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour, PDPage pdPage) {
+		super(annot, pageResources, document, flavour, TRAP_NET_ANNOTATION_TYPE, pdPage);
 	}
 
 }

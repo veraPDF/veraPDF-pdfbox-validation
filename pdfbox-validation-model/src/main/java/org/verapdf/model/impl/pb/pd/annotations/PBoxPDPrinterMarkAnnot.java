@@ -21,6 +21,7 @@
 package org.verapdf.model.impl.pb.pd.annotations;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.verapdf.model.impl.pb.pd.PBoxPDAnnot;
@@ -34,8 +35,8 @@ public class PBoxPDPrinterMarkAnnot extends PBoxPDAnnot implements PDPrinterMark
 
 	public static final String PRINTER_MARK_ANNOTATION_TYPE = "PDPrinterMarkAnnot";
 
-	public PBoxPDPrinterMarkAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour) {
-		super(annot, pageResources, document, flavour, PRINTER_MARK_ANNOTATION_TYPE);
+	public PBoxPDPrinterMarkAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour, PDPage pdPage) {
+		super(annot, pageResources, document, flavour, PRINTER_MARK_ANNOTATION_TYPE, pdPage);
 	}
 
 }

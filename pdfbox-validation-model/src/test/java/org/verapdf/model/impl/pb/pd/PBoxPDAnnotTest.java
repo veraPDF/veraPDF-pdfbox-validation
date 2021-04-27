@@ -52,7 +52,7 @@ public class PBoxPDAnnotTest extends BaseTest {
 		setUp(FILE_RELATIVE_PATH);
 		List<PDAnnotation> annotations = document.getPage(0).getAnnotations();
 		PDAnnotation annot = annotations.get(annotations.size() - 1);
-		actual = new PBoxPDAnnot(annot, document.getPage(0).getResources(), document, null);
+		actual = new PBoxPDAnnot(annot, document.getPage(0).getResources(), document, null, document.getPage(0));
 	}
 
 	@Test
