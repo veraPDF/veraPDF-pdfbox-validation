@@ -534,6 +534,7 @@ class OperatorParser {
 			LOGGER.debug(
 					MSG_PROBLEM_OBTAINING_RESOURCE + xobject + ". "
 							+ e.getMessage(), e);
+			resources.setContainsUndefinedResource();
 			return null;
 		}
 	}
@@ -549,6 +550,7 @@ class OperatorParser {
 			LOGGER.debug(
 					MSG_PROBLEM_OBTAINING_RESOURCE + colorSpace + ". "
 							+ e.getMessage(), e);
+			resources.setContainsUndefinedResource();
 			return null;
 		}
 	}
@@ -564,6 +566,7 @@ class OperatorParser {
 			LOGGER.debug(
 					MSG_PROBLEM_OBTAINING_RESOURCE + shading + ". "
 							+ e.getMessage(), e);
+			resources.setContainsUndefinedResource();
 			return null;
 		}
 	}
@@ -598,6 +601,7 @@ class OperatorParser {
 			LOGGER.debug(
 					MSG_PROBLEM_OBTAINING_RESOURCE + pattern + ". "
 							+ e.getMessage(), e);
+			resources.setContainsUndefinedResource();
 			return null;
 		}
 	}

@@ -35,9 +35,9 @@ In order to build the parser you'll need:
  * Java 7, which can be downloaded [from Oracle](http://www.oracle.com/technetwork/java/javase/downloads/index.html), or for Linux users [OpenJDK](http://openjdk.java.net/install/index.html).
  * [Maven v3+](https://maven.apache.org/)
 
-### Building the veraPDF Parser
+### Building the veraPDF PDF Box Validation Model
 
- 1. Download the veraPDF-model repository, either: `git clone https://github.com/veraPDF/veraPDF-parser`
- or download the [latest tar archive](https://github.com/veraPDF/veraPDF-parser/archive/integration.tar.gz "veraPDF-parser latest GitHub tar archive") or [zip equivalent](https://github.com/veraPDF/veraPDF-parser/archive/integration.zip "veraPDF-parser latest GitHub zip archive") from GitHub.
+ 1. Download the veraPDF-model repository, either: `git clone https://github.com/veraPDF/veraPDF-pdfbox-validation`
+ or download the [latest tar archive](https://github.com/veraPDF/veraPDF-pdfbox-validation/archive/integration.tar.gz "veraPDF-pdfbox-validation latest GitHub tar archive") or [zip equivalent](https://github.com/veraPDF/veraPDF-pdfbox-validation/archive/integration.zip "veraPDF-pdfbox-validation latest GitHub zip archive") from GitHub.
  2. Move to the downloaded project directory, e.g. `cd veraPDF-parser`
  3. Build and install using Maven: `mvn clean install`
