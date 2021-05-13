@@ -226,4 +226,8 @@ public class PDInheritableResources {
 		return containsUndefinedResource;
 	}
 
+	public void setContainsUndefinedResource() {
+		this.containsUndefinedResource = true;
+	}
+
 }
