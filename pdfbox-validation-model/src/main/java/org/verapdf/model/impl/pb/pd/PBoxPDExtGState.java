@@ -45,7 +45,7 @@ import java.util.List;
  *
  * @author Evgeniy Muravitskiy
  */
-public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
+public class PBoxPDExtGState extends PBoxPDResource implements PDExtGState {
 
 	public static final String EXT_G_STATE_TYPE = "PDExtGState";
 

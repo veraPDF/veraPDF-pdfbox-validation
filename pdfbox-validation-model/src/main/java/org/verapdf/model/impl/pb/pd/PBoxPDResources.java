@@ -1,52 +1,79 @@
-/**
- * This file is part of veraPDF PDF Box PDF/A Validation Model Implementation, a module of the veraPDF project.
- * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
- * All rights reserved.
- *
- * veraPDF PDF Box PDF/A Validation Model Implementation is free software: you can redistribute it and/or modify
- * it under the terms of either:
- *
- * The GNU General public license GPLv3+.
- * You should have received a copy of the GNU General Public License
- * along with veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.GPL file in the root of the source
- * tree.  If not, see http://www.gnu.org/licenses/ or
- * https://www.gnu.org/licenses/gpl-3.0.en.html.
- *
- * The Mozilla Public License MPLv2+.
- * You should have received a copy of the Mozilla Public License along with
- * veraPDF PDF Box PDF/A Validation Model Implementation as the LICENSE.MPL file in the root of the source tree.
- * If a copy of the MPL was not distributed with this file, you can obtain one at
- * http://mozilla.org/MPL/2.0/.
- */
 package org.verapdf.model.impl.pb.pd;
 
-import org.apache.pdfbox.pdmodel.common.COSObjectable;
-import org.apache.pdfbox.pdmodel.font.PDFontLike;
-import org.apache.pdfbox.pdmodel.graphics.PDInheritableResource;
-import org.verapdf.model.pdlayer.PDResource;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace;
+import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceN;
+import org.apache.pdfbox.pdmodel.graphics.color.PDSeparation;
+import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.coslayer.CosUnicodeName;
+import org.verapdf.model.impl.pb.cos.PBCosUnicodeName;
 
-/**
- * @author Evgeniy Muravitskiy
- */
-public class PBoxPDResources extends PBoxPDObject implements PDResource {
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-	private boolean inherited;
+public class PBoxPDResources extends PBoxPDObject implements org.verapdf.model.pdlayer.PDResources {
 
-	protected PBoxPDResources(COSObjectable simplePDObject, final String type) {
-		super(simplePDObject, type);
-		if (simplePDObject instanceof PDInheritableResource) {
-			this.inherited = ((PDInheritableResource) simplePDObject).isInherited();
-		}
-	}
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDResources.class.getCanonicalName());
 
-	protected PBoxPDResources(PDFontLike pdFontLike, final String type) {
-		super(pdFontLike, type);
-		this.inherited = pdFontLike.isInherited();
+	public static final String RESOURCES_TYPE = "PDResources";
+
+	public static final String RESOURCES_NAMES = "resourcesNames";
+
+	public PBoxPDResources(PDResources resources){
+		super(resources, RESOURCES_TYPE);
 	}
 
 	@Override
-	public Boolean getisInherited() {
-		return Boolean.valueOf(this.inherited);
+	public List<? extends Object> getLinkedObjects(String link) {
+		switch (link) {
+			case RESOURCES_NAMES:
+				return this.getResourcesNames();
+			default:
+				return super.getLinkedObjects(link);
+		}
 	}
 
+	private List<CosUnicodeName> getResourcesNames(){
+		List<CosUnicodeName> names = new ArrayList<>();
+		PDResources resources = (PDResources) simplePDObject;
+		for (COSName fontName : resources.getFontNames()) {
+			try {
+				PDFont font = resources.getFont(fontName);
+				if (font != null) {
+					addAsCosUnicodeName(names, font.getName());
+				}
+			} catch (IOException e) {
+				LOGGER.log(Level.WARNING,"There is no font by fontName " + fontName);
+			}
+		}
+		for (COSName colorSpaceName : resources.getColorSpaceNames()) {
+			try {
+				PDColorSpace colorSpace = resources.getColorSpace(colorSpaceName);
+				if (colorSpace != null) {
+					if (colorSpace instanceof PDSeparation) {
+						addAsCosUnicodeName(names, ((PDSeparation) colorSpace).getColorantName());
+					} else if (colorSpace instanceof PDDeviceN) {
+						List<String> colorantNames = ((PDDeviceN) colorSpace).getColorantNames();
+						for (String colorant : colorantNames) {
+							addAsCosUnicodeName(names, colorant);
+						}
+					}
+				}
+			} catch (IOException e) {
+				LOGGER.log(Level.WARNING,"There is no colorSpace by colorSpaceName " + colorSpaceName);
+			}
+		}
+		return names;
+	}
+
+	public void addAsCosUnicodeName(List<CosUnicodeName> names, String name){
+		if (name != null) {
+			names.add(new PBCosUnicodeName(COSName.getPDFName(name)));
+		}
+	}
 }

@@ -30,7 +30,7 @@ import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObjectProxy;
 import org.verapdf.model.coslayer.CosDict;
 import org.verapdf.model.impl.pb.cos.PBCosDict;
-import org.verapdf.model.impl.pb.pd.PBoxPDResources;
+import org.verapdf.model.impl.pb.pd.PBoxPDResource;
 import org.verapdf.model.pdlayer.PDXObject;
 import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
@@ -42,7 +42,7 @@ import java.util.List;
 /**
  * @author Evgeniy Muravitskiy
  */
-public class PBoxPDXObject extends PBoxPDResources implements PDXObject {
+public class PBoxPDXObject extends PBoxPDResource implements PDXObject {
 
 	protected final PDDocument document;
 	protected final PDFAFlavour flavour;

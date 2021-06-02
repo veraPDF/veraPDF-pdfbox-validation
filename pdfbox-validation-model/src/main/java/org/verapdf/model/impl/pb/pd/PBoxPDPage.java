@@ -229,7 +229,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 			case MEDIA_BOX:
 				return this.getMediaBox();
 			case RESOURCES:
-				return Collections.emptyList();
+				return this.getResources();
 			case CROP_BOX:
 				return this.getCropBox();
 			case BLEED_BOX:
@@ -359,6 +359,15 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 			return Collections.unmodifiableList(list);
 		}
 		return Collections.emptyList();
+	}
+
+	private List<org.verapdf.model.pdlayer.PDResources> getResources() {
+		List<org.verapdf.model.pdlayer.PDResources> result = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+		PDResources resources = ((org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject).getResources();
+		if (resources != null) {
+			result.add(new PBoxPDResources(resources));
+		}
+		return result;
 	}
 
 }

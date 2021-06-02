@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.factory.colors.ColorSpaceFactory;
-import org.verapdf.model.impl.pb.pd.PBoxPDResources;
+import org.verapdf.model.impl.pb.pd.PBoxPDResource;
 import org.verapdf.model.pdlayer.PDColorSpace;
 import org.verapdf.model.pdlayer.PDShading;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
@@ -37,7 +37,7 @@ import java.util.List;
 /**
  * @author Evgeniy Muravitskiy
  */
-public class PBoxPDShading extends PBoxPDResources implements PDShading {
+public class PBoxPDShading extends PBoxPDResource implements PDShading {
 
     private static final Logger LOGGER = Logger.getLogger(PBoxPDShading.class);
 

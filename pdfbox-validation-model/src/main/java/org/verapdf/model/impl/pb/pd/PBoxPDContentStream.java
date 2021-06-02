@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdfparser.PDFStreamParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDResources;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.factory.operator.OperatorFactory;
 import org.verapdf.model.operator.Operator;
@@ -32,6 +33,7 @@ import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -71,7 +73,7 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 			case OPERATORS:
 				return this.getOperators();
 			case RESOURCES:
-				return Collections.emptyList();
+				return this.getResources();
 			default:
 				return super.getLinkedObjects(link);
 		}
@@ -121,5 +123,14 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 	@Override
 	public Boolean getcontainsUndefinedResource() {
 		return resources.getContainsUndefinedResource();
+	}
+
+	private List<org.verapdf.model.pdlayer.PDResources> getResources() {
+		List<org.verapdf.model.pdlayer.PDResources> result = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+		PDResources resources = this.resources.getCurrentResources();
+		if (resources != null) {
+			result.add(new PBoxPDResources(resources));
+		}
+		return result;
 	}
 }
