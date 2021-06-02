@@ -33,7 +33,7 @@ import org.verapdf.model.factory.font.FontFactory;
 import org.verapdf.model.impl.pb.cos.PBCosUnicodeName;
 import org.verapdf.model.impl.pb.external.PBoxFontProgram;
 import org.verapdf.model.impl.pb.external.PBoxTrueTypeFontProgram;
-import org.verapdf.model.impl.pb.pd.PBoxPDResources;
+import org.verapdf.model.impl.pb.pd.PBoxPDResource;
 import org.verapdf.model.pdlayer.PDFont;
 import org.verapdf.model.tools.IDGenerator;
 
@@ -44,7 +44,7 @@ import java.util.List;
 /**
  * @author Timur Kamalov
  */
-public abstract class PBoxPDFont extends PBoxPDResources implements PDFont {
+public abstract class PBoxPDFont extends PBoxPDResource implements PDFont {
 
 	public static final String FONT_FILE = "fontFile";
 	public static final String BASE_FONT = "BaseFont";

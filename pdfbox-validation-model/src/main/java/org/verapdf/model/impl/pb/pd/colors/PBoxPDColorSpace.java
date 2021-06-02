@@ -21,7 +21,7 @@
 package org.verapdf.model.impl.pb.pd.colors;
 
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDAbstractPattern;
-import org.verapdf.model.impl.pb.pd.PBoxPDResources;
+import org.verapdf.model.impl.pb.pd.PBoxPDResource;
 import org.verapdf.model.pdlayer.PDColorSpace;
 
 /**
@@ -29,7 +29,7 @@ import org.verapdf.model.pdlayer.PDColorSpace;
  *
  * @author Evgeniy Muravitskiy
  */
-public class PBoxPDColorSpace extends PBoxPDResources implements PDColorSpace {
+public class PBoxPDColorSpace extends PBoxPDResource implements PDColorSpace {
 
     protected PBoxPDColorSpace(
             org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace simplePDObject,
