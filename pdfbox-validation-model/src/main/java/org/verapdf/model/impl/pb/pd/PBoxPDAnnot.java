@@ -36,8 +36,10 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceEntry;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosBM;
+import org.verapdf.model.coslayer.CosLang;
 import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.impl.pb.cos.PBCosBM;
+import org.verapdf.model.impl.pb.cos.PBCosLang;
 import org.verapdf.model.impl.pb.cos.PBCosNumber;
 import org.verapdf.model.impl.pb.pd.actions.PBoxPDAction;
 import org.verapdf.model.impl.pb.pd.actions.PBoxPDAnnotationAdditionalActions;
@@ -256,6 +258,30 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		return null;
 	}
 
+	private List<CosLang> getLang() {
+		PDStructureTreeRoot structTreeRoot = this.document.getDocumentCatalog().getStructureTreeRoot();
+		int structParent = ((PDAnnotation) this.simplePDObject).getStructParent();
+		if (structTreeRoot != null && structParent != 0) {
+			PDNumberTreeNode parentTreeRoot = structTreeRoot.getParentTree();
+			COSBase structureElement;
+			try {
+				PDParentTreeValue treeValue = parentTreeRoot == null ? null : (PDParentTreeValue) parentTreeRoot.getValue(structParent);
+				structureElement = treeValue == null ? null : treeValue.getCOSObject();
+			} catch (IOException e) {
+				return Collections.emptyList();
+			}
+			if (structureElement instanceof COSDictionary) {
+				String lang = ((COSDictionary) structureElement).getNameAsString(COSName.LANG);
+				if (lang != null) {
+					List<CosLang> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+					list.add(new PBCosLang(new COSString(lang)));
+					return Collections.unmodifiableList(list);
+				}
+			}
+		}
+		return Collections.emptyList();
+	}
+
 	@Override
 	public String getContents() {
 		return ((PDAnnotation) simplePDObject).getContents();
@@ -269,8 +295,8 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 			PDNumberTreeNode parentTreeRoot = structTreeRoot.getParentTree();
 			COSBase structureElement;
 			try {
-				PDParentTreeValue treeValue = (PDParentTreeValue) parentTreeRoot.getValue(structParent);
-				structureElement = treeValue.getCOSObject();
+				PDParentTreeValue treeValue = parentTreeRoot == null ? null : (PDParentTreeValue) parentTreeRoot.getValue(structParent);
+				structureElement = treeValue == null ? null : treeValue.getCOSObject();
 			} catch (IOException e) {
 				return null;
 			}
@@ -313,7 +339,7 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		case APPEARANCE:
 			return this.getAppearance();
 		case LANG:
-			return Collections.emptyList();
+			return this.getLang();
 		case BM:
 			return this.getBM();
 		default:
