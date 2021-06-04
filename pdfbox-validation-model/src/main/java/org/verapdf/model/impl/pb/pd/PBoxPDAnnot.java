@@ -255,6 +255,23 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 
 	@Override
 	public String getstructParentType() {
+		PDStructureTreeRoot structTreeRoot = this.document.getDocumentCatalog().getStructureTreeRoot();
+		int structParent = ((PDAnnotation)this.simplePDObject).getStructParent();
+		if (structTreeRoot != null) {
+			PDNumberTreeNode parentTreeRoot = structTreeRoot.getParentTree();
+			COSBase structureElement = null;
+			try {
+				PDParentTreeValue treeValue = (PDParentTreeValue)parentTreeRoot.getValue(structParent);
+				if (treeValue != null) {
+					structureElement = treeValue.getCOSObject();
+				}
+			} catch (IOException var6) {
+				return null;
+			}
+			if (structureElement != null && structureElement instanceof COSDictionary) {
+				return ((COSDictionary)structureElement).getNameAsString(COSName.S);
+			}
+		}
 		return null;
 	}
 
