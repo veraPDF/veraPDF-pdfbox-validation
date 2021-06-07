@@ -58,7 +58,8 @@ public class PBoxPDWidgetAnnot extends PBoxPDAnnot implements PDWidgetAnnot {
 		return ((PDAnnotation) simplePDObject).getCOSObject().getString(COSName.TU);
 	}
 
-	private List<PDAdditionalActions> getAdditionalActions() {
+	@Override
+	protected List<PDAdditionalActions> getAdditionalActions() {
 		COSBase actionDictionary = ((PDAnnotation) simplePDObject).getCOSObject().getDictionaryObject(COSName.AA);
 		if (actionDictionary instanceof COSDictionary && ((COSDictionary) actionDictionary).size() != 0) {
 			List<PDAdditionalActions> actions = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);

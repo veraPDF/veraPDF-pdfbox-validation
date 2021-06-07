@@ -53,9 +53,4 @@ public class PBoxPDPageAdditionalActions extends PBoxPDAdditionalActions {
         return actions;
     }
 
-    @Override
-    public Boolean getcontainsOtherActions() {
-        return false;
-    }
-
 }
