@@ -368,7 +368,7 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		return Collections.emptyList();
 	}
 
-	private List<PDAdditionalActions> getAdditionalActions() {
+	protected List<PDAdditionalActions> getAdditionalActions() {
 		COSBase actionDictionary = ((PDAnnotation) simplePDObject).getCOSObject().getDictionaryObject(COSName.AA);
 		if (actionDictionary instanceof COSDictionary && ((COSDictionary) actionDictionary).size() != 0) {
 			List<PDAdditionalActions> actions = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);

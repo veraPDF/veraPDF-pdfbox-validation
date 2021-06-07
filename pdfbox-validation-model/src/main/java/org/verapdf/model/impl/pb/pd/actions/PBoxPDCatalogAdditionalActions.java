@@ -62,9 +62,4 @@ public class PBoxPDCatalogAdditionalActions extends PBoxPDAdditionalActions {
         return actions;
     }
 
-    @Override
-    public Boolean getcontainsOtherActions() {
-        return false;
-    }
-
 }
