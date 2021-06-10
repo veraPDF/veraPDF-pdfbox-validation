@@ -47,6 +47,8 @@ public class StaticContainers {
 	//SEHn
 	private static ThreadLocal<Integer> lastHeadingNestingLevel = new ThreadLocal<>();
 
+	//PDXForm
+	private static final ThreadLocal<Set<COSObjectKey>> xFormKeysSet = new ThreadLocal<>();
 
 	public static void clearAllContainers() {
 		getSeparations().clear();
@@ -54,6 +56,7 @@ public class StaticContainers {
 		getCachedColorSpaces().clear();
 		getFileSpecificationKeys().clear();
 		noteIDSet.set(new HashSet<>());
+		xFormKeysSet.set(new HashSet<>());
 		lastHeadingNestingLevel.set(0);
 	}
 
@@ -110,6 +113,15 @@ public class StaticContainers {
 
 	public static void setFileSpecificationKeys(Set<COSObjectKey> fileSpecificationKeys) {
 		StaticContainers.fileSpecificationKeys.set(fileSpecificationKeys);
+	}
+
+	public static Set<COSObjectKey> getXFormKeysSet() {
+		checkForNull(xFormKeysSet, new HashSet<COSObjectKey>());
+		return xFormKeysSet.get();
+	}
+
+	public static void setXFormKeysSet(Set<COSObjectKey> xFormKeysSet) {
+		StaticContainers.xFormKeysSet.set(xFormKeysSet);
 	}
 
 	private static void checkForNull(ThreadLocal variable, Object object) {

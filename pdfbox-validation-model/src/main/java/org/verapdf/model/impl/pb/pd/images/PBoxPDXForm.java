@@ -24,9 +24,11 @@ import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
+import org.apache.pdfbox.cos.COSObjectKey;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.impl.pb.containers.StaticContainers;
 import org.verapdf.model.impl.pb.pd.PBoxPDContentStream;
 import org.verapdf.model.impl.pb.pd.PBoxPDGroup;
 import org.verapdf.model.pdlayer.PDContentStream;
@@ -91,8 +93,26 @@ public class PBoxPDXForm extends PBoxPDXObject implements PDXForm {
 	}
 
 	@Override
-	public Boolean getisUniqueSemanticParent() {
+	public String getID() {
 		return null;
+	}
+
+	@Override
+	public Boolean getisUniqueSemanticParent() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		if (pageObject instanceof COSDictionary && !((COSDictionary) pageObject).containsKey(COSName.STRUCT_PARENTS)) {
+			return true;
+		}
+		COSObjectKey key = this.simplePDObject.getCOSObject().getKey();
+		if (key == null) {
+			return true;
+		}
+		if (StaticContainers.getXFormKeysSet().contains(key)) {
+			return false;
+		}
+		StaticContainers.getXFormKeysSet().add(key);
+		return true;
+
 	}
 
 	@Override
