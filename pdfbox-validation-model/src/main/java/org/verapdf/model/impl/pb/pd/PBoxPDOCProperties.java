@@ -88,19 +88,15 @@ public class PBoxPDOCProperties extends PBoxPDObject implements PDOCProperties {
 	}
 
 	private List<PDOCConfig> getConfigs() {
-
 		COSDictionary contentProperties = (COSDictionary) this.simplePDObject.getCOSObject();
-
 		List<String> names = getAllNames(contentProperties);
 		String[] groupNames = ((PDOptionalContentProperties) this.simplePDObject).getGroupNames();
 		List<String> groupNamesList = Arrays.asList(groupNames);
-
 		COSArray configs = (COSArray) contentProperties.getDictionaryObject(CONFIGS);
-
 		if (configs != null) {
 			List<PDOCConfig> result = new ArrayList<>();
 			for (int i = 0; i < configs.size(); i++) {
-				COSBase config = configs.get(i);
+				COSBase config = configs.getObject(i);
 				if (config instanceof COSDictionary) {
 					PDOCConfig pdConfig = new PBoxPDOCConfig(config, groupNamesList,
 							names.contains(((COSDictionary) config).getString(COSName.NAME)));
