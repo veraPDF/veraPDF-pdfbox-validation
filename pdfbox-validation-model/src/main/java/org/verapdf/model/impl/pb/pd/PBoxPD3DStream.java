@@ -53,6 +53,7 @@ public class PBoxPD3DStream extends PBoxPDObject implements PD3DStream {
 
 	@Override
 	public String getSubtype() {
-		return ((COSStream)simplePDObject).getString(COSName.SUBTYPE);
+		COSName subtype = ((COSStream)simplePDObject).getCOSName(COSName.SUBTYPE);
+		return subtype == null ? null : subtype.getName();
 	}
 }
