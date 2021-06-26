@@ -101,11 +101,11 @@ public class PBoxSETH extends PBoxSEGeneral implements SETH {
         return Collections.emptyList();
     }
 
-    public Integer getColSpan() {
+    public int getColSpan() {
         return TableHelper.getColSpan((COSDictionary) simplePDObject);
     }
 
-    public Integer getRowSpan() {
+    public int getRowSpan() {
         return TableHelper.getRowSpan((COSDictionary) simplePDObject);
     }
 

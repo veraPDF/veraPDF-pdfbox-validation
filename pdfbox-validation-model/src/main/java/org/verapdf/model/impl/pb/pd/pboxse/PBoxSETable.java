@@ -160,7 +160,7 @@ public class PBoxSETable extends PBoxSEGeneral implements SETable {
         return false;
     }
 
-    private Integer getColumnNum(PBoxPDStructElem firstTR) {
+    private int getColumnNum(PBoxPDStructElem firstTR) {
         int columnNum = 0;
         for (org.verapdf.model.pdlayer.PDStructElem elem : firstTR.getChildren()) {
             String type = elem.getstandardType();
