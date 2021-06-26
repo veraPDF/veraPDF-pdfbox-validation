@@ -20,6 +20,7 @@
  */
 package org.verapdf.model.tools;
 
+import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
@@ -28,36 +29,37 @@ import org.verapdf.model.impl.pb.pd.TaggedPDFConstants;
 
 public class TableHelper {
 
-    public static Integer getColSpan(COSDictionary simplePDObject) {
-        return TableHelper.getSpanValue(simplePDObject, COSName.getPDFName("COL_SPAN"));
+    public static int getColSpan(COSDictionary simplePDObject) {
+        return TableHelper.getSpanValue(simplePDObject, COSName.getPDFName("ColSpan"));
     }
 
-    public static Integer getRowSpan(COSDictionary simplePDObject) {
-        return TableHelper.getSpanValue(simplePDObject, COSName.getPDFName("ROW_SPAN"));
+    public static int getRowSpan(COSDictionary simplePDObject) {
+        return TableHelper.getSpanValue(simplePDObject, COSName.getPDFName("RowSpan"));
     }
 
-    private static Integer getSpanValue(COSDictionary simplePDObject, COSName spanName) {
-        Integer defaultValue = 1;
+    private static int getSpanValue(COSDictionary simplePDObject, COSName spanName) {
+        int defaultValue = 1;
         COSBase aValue = simplePDObject.getDictionaryObject(COSName.A);
         if (aValue == null) {
             return defaultValue;
         }
         if (aValue instanceof COSArray) {
             for (COSBase object : (COSArray) aValue) {
-                Integer spanValue = getSpanValue(object, spanName);
-                if (spanValue != null) {
+                int spanValue = getSpanValue(object, spanName);
+                if (spanValue != -1) {
                     return spanValue;
                 }
             }
         }
-        Integer spanValue = getSpanValue(aValue, spanName);
-        return spanValue != null ? spanValue : defaultValue;
+        int spanValue = getSpanValue(aValue, spanName);
+        return spanValue != -1 ? spanValue : defaultValue;
     }
 
-    private static Integer getSpanValue(COSBase object, COSName spanName) {
-        if (object instanceof COSDictionary && TaggedPDFConstants.TABLE.equals(((COSDictionary) object).getString(COSName.O))) {
-            return ((COSDictionary) object).getInt(spanName);
+    private static int getSpanValue(COSBase object, COSName spanName) {
+        COSBase base = object instanceof COSObject ? ((COSObject) object).getObject() : object;
+        if (base instanceof COSDictionary && TaggedPDFConstants.TABLE.equals(((COSDictionary) base).getCOSName(COSName.O).getName())) {
+            return ((COSDictionary) base).getInt(spanName);
         }
-        return null;
+        return -1;
     }
 }
