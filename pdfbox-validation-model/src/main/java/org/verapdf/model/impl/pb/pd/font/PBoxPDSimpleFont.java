@@ -64,6 +64,18 @@ public abstract class PBoxPDSimpleFont extends PBoxPDFont implements PDSimpleFon
 	}
 
 	@Override
+	public Boolean getcontainsDifferences() {
+		COSDictionary fontDict = ((org.apache.pdfbox.pdmodel.font.PDSimpleFont) this.pdFontLike).getCOSObject();
+		COSBase encodingDict = fontDict.getDictionaryObject(COSName.ENCODING);
+		if (encodingDict == null) {
+			return null;
+		} else if (encodingDict instanceof COSDictionary) {
+			return ((COSDictionary) encodingDict).getDictionaryObject(COSName.DIFFERENCES) != null;
+		}
+		return null;
+	}
+
+	@Override
     public Long getLastChar() {
         return Long
                 .valueOf(((org.apache.pdfbox.pdmodel.font.PDSimpleFont) this.pdFontLike)
