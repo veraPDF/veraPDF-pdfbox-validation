@@ -35,7 +35,7 @@ public class PBoxPDPerms extends PBoxPDObject implements PDPerms{
 	/** Type name for {@code PBoxPDPerms} */
 	public static final String PERMS_TYPE = "PDPerms";
 
-	private static COSName UC3 = COSName.getPDFName("UC3");
+	private static COSName UR3 = COSName.getPDFName("UR3");
 
 	/**
 	 * @param dictionary is permissions dictionary.
@@ -46,13 +46,13 @@ public class PBoxPDPerms extends PBoxPDObject implements PDPerms{
 
 	/**
 	 * @return true if the permissions dictionary contains entries other than
-	 * DocMDP and UC3.
+	 * DocMDP and UR3.
 	 */
 	@Override
 	public Boolean getcontainsOtherEntries() {
 		Set<COSName> names = ((COSDictionary) this.simplePDObject).keySet();
 		for (COSName name : names) {
-			if (name.compareTo(UC3) != 0 && name.compareTo(COSName.DOC_MDP) != 0) {
+			if (name.compareTo(UR3) != 0 && name.compareTo(COSName.DOC_MDP) != 0) {
 				return Boolean.TRUE;
 			}
 		}
