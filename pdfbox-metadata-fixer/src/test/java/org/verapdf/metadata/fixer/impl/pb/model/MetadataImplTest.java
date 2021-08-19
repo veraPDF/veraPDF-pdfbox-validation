@@ -52,7 +52,7 @@ public class MetadataImplTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {"/test1.pdf",  Integer.valueOf(1), "B"}, {"/test2.pdf", Integer.valueOf(1), "B"}
+                {"test1.pdf",  Integer.valueOf(1), "B"}, {"test2.pdf", Integer.valueOf(1), "B"}
         });
     }
 
@@ -66,10 +66,8 @@ public class MetadataImplTest {
     public String fileConformance;
 
     @Test
-    public void addPDFIdentificationSchemaTest() throws URISyntaxException,
-            IOException, XMPException {
-        File pdf = new File(getSystemIndependentPath(filePath));
-        try (PDDocument doc = PDDocument.load(pdf, false, true)) {
+    public void addPDFIdentificationSchemaTest() throws IOException, XMPException {
+        try (PDDocument doc = PDDocument.load(getClass().getClassLoader().getResourceAsStream(filePath), false, true)) {
             PDMetadata meta = doc.getDocumentCatalog().getMetadata();
             try (COSStream cosStream = meta.getStream()) {
                 VeraPDFMeta xmp = VeraPDFMeta.parse(cosStream
@@ -83,12 +81,4 @@ public class MetadataImplTest {
             }
         }
     }
-
-    private static String getSystemIndependentPath(String path)
-            throws URISyntaxException {
-        URL resourceUrl = ClassLoader.class.getResource(path);
-        Path resourcePath = Paths.get(resourceUrl.toURI());
-        return resourcePath.toString();
-    }
-
 }

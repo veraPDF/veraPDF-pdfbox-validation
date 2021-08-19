@@ -51,9 +51,8 @@ public class PBFeatureParserTest {
 	private static FeatureExtractionResult collection;
 
 	@BeforeClass
-	public static void before() throws URISyntaxException, IOException {
-		File pdf = new File(TestNodeGenerator.getSystemIndependentPath("/FR.pdf"));
-		try (PDDocument document = PDDocument.load(pdf, false, true)) {
+	public static void before() throws NullPointerException, IOException {
+		try (PDDocument document = PDDocument.load(PBFeatureParserTest.class.getClassLoader().getResourceAsStream("FR.pdf"), false, true)) {
 			FeatureExtractorConfig config = FeatureFactory.configFromValues(EnumSet.allOf(FeatureObjectType.class));
 			collection = PBFeatureParser.getFeaturesCollection(document, config);
 		}
@@ -134,7 +133,7 @@ public class PBFeatureParserTest {
 		assertTrue(treeNodes.contains(TestNodeGenerator.getICCProfile("iccProfileIndir19", "2.1", "ADBE", "RGB ",
 				"ADBE", "2000-08-11T19:52:24.000Z", "Perceptual", "Copyright 2000 Adobe Systems Incorporated",
 				"Apple RGB", null, null, "none",
-				TestNodeGenerator.getMetadataBytesFromFile("/iccprofile19_metadata_bytes.txt"))));
+				TestNodeGenerator.getMetadataBytesFromFile("iccprofile19_metadata_bytes.txt"))));
 		assertTrue(treeNodes.contains(TestNodeGenerator.getICCProfile("iccProfileIndir81", "2.1", "ADBE", "RGB ",
 				"ADBE", "2000-08-11T19:54:18.000Z", "Perceptual", "Copyright 2000 Adobe Systems Incorporated",
 				"PAL/SECAM", null, null, "none", null)));

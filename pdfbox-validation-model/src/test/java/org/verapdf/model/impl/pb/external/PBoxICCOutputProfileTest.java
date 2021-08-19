@@ -52,11 +52,8 @@ public class PBoxICCOutputProfileTest extends PBoxICCProfileTest {
 		setUpActualObject();
 	}
 
-	private static void setUpActualObject() throws URISyntaxException, IOException {
-		String fileAbsolutePath = getSystemIndependentPath(PBCosDocumentTest.FILE_RELATIVE_PATH);
-		File file = new File(fileAbsolutePath);
-
-		doc = PDDocument.load(file, false, true);
+	private static void setUpActualObject() throws IOException {
+		doc = PDDocument.load(PBoxICCOutputProfileTest.class.getClassLoader().getResourceAsStream(PBCosDocumentTest.FILE_RELATIVE_PATH), false, true);
 		PDOutputIntent outputIntent = doc.getDocumentCatalog().getOutputIntents().get(0);
 		actual = new PBoxICCOutputProfile(outputIntent.getDestOutputIntent(), COSName.GTS_PDFA1.getName());
 	}

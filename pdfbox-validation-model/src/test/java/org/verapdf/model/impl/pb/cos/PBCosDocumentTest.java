@@ -43,7 +43,7 @@ import static org.verapdf.model.impl.pb.cos.PBCosDocument.COS_DOCUMENT_TYPE;
  */
 public class PBCosDocumentTest extends BaseTest {
 
-    public static final String FILE_RELATIVE_PATH = "/model/impl/pb/cos/veraPDF test suite 6-1-2-t02-fail-a.pdf";
+    public static final String FILE_RELATIVE_PATH = "model/impl/pb/cos/veraPDF test suite 6-1-2-t02-fail-a.pdf";
 
     private static final Long expectedNumberOfIndirects = Long.valueOf(17);
 	private static final double expectedDocumentVersion = 1.4;
@@ -55,9 +55,7 @@ public class PBCosDocumentTest extends BaseTest {
         expectedType = TYPES.contains(COS_DOCUMENT_TYPE) ? COS_DOCUMENT_TYPE : null;
         expectedID = null;
 
-        String fileAbsolutePath = getSystemIndependentPath(FILE_RELATIVE_PATH);
-        final File file = new File(fileAbsolutePath);
-        try (PDDocument doc = PDDocument.load(file, false, true)) {
+        try (PDDocument doc = PDDocument.load(PBCosDocumentTest.class.getClassLoader().getResourceAsStream(FILE_RELATIVE_PATH), false, true)) {
             actual = new PBCosDocument(doc, PDFAFlavour.PDFA_1_B);
         }
     }

@@ -399,7 +399,7 @@ public final class TestNodeGenerator {
 		FeatureTreeNode thumb = root.addChild("thumbnail");
 		thumb.setAttribute(ID, "xobjIndir126");
 		root.addMetadataChild("metadata")
-				.setValue(DatatypeConverter.printHexBinary(getMetadataBytesFromFile("/page1_metadata_bytes.txt")));
+				.setValue(DatatypeConverter.printHexBinary(getMetadataBytesFromFile("page1_metadata_bytes.txt")));
 
 		List<String> annotations = new ArrayList<>();
 		annotations.add("annotIndir13");
@@ -686,12 +686,12 @@ public final class TestNodeGenerator {
 			throws FeatureParsingException, FileNotFoundException, URISyntaxException {
 		FeatureTreeNode rootMetadataNode = FeatureTreeNode.createRootNode(METADATA);
 		FeatureTreeNode xmpNode = rootMetadataNode.addMetadataChild("xmpPackage");
-		xmpNode.setValue(DatatypeConverter.printHexBinary(getMetadataBytesFromFile("/metadata_bytes.txt")));
+		xmpNode.setValue(DatatypeConverter.printHexBinary(getMetadataBytesFromFile("metadata_bytes.txt")));
 		return rootMetadataNode;
 	}
 
-	public static byte[] getMetadataBytesFromFile(String path) throws URISyntaxException, FileNotFoundException {
-		try (Scanner scan = new Scanner(new File(getSystemIndependentPath(path)))) {
+	public static byte[] getMetadataBytesFromFile(String path) throws NullPointerException {
+		try (Scanner scan = new Scanner(TestNodeGenerator.class.getClassLoader().getResourceAsStream(path))) {
 			int n = scan.nextInt();
 			byte[] res = new byte[n];
 			for (int i = 0; scan.hasNextInt(); ++i) {
@@ -705,12 +705,6 @@ public final class TestNodeGenerator {
 		FeatureTreeNode entry = parent.addChild(ENTRY);
 		entry.setValue(value);
 		entry.setAttribute("key", name);
-	}
-
-	public static String getSystemIndependentPath(String path) throws URISyntaxException {
-		URL resourceUrl = ClassLoader.class.getResource(path);
-		Path resourcePath = Paths.get(resourceUrl.toURI());
-		return resourcePath.toString();
 	}
 
 	public class FontDescriptorStructure {
