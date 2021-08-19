@@ -45,23 +45,15 @@ import java.nio.file.Paths;
  */
 public class FontFactoryTest {
 
-	public static final String FILE_RELATIVE_PATH = "/model/impl/pb/pd/Fonts.pdf";
+	public static final String FILE_RELATIVE_PATH = "model/impl/pb/pd/Fonts.pdf";
 
 	private static PDResources resources;
 	private static PDDocument document;
 
 	@BeforeClass
 	public static void setUp() throws URISyntaxException, IOException {
-		String fileAbsolutePath = getSystemIndependentPath(FILE_RELATIVE_PATH);
-		File file = new File(fileAbsolutePath);
-		document = PDDocument.load(file, false, true);
+		document = PDDocument.load(FontFactoryTest.class.getClassLoader().getResourceAsStream(FILE_RELATIVE_PATH), false, true);
 		resources = document.getPage(0).getResources();
-	}
-
-	protected static String getSystemIndependentPath(String path) throws URISyntaxException {
-		URL resourceUrl = ClassLoader.class.getResource(path);
-		Path resourcePath = Paths.get(resourceUrl.toURI());
-		return resourcePath.toString();
 	}
 
 	@Test

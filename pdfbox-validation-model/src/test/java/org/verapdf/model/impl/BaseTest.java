@@ -41,7 +41,7 @@ import java.util.Set;
 
 public abstract class BaseTest {
 
-	private static final String BASE_FOLDER = "/model/impl/pb/";
+	private static final String BASE_FOLDER = "model/impl/pb/";
 
     protected static org.verapdf.model.baselayer.Object actual;
 	protected static PDDocument document;
@@ -83,14 +83,6 @@ public abstract class BaseTest {
 	}
 
 	protected static void setUp(String path) throws URISyntaxException, IOException {
-		String fileAbsolutePath = getSystemIndependentPath(BASE_FOLDER + path);
-		File file = new File(fileAbsolutePath);
-		document = PDDocument.load(file, false, true);
-	}
-
-	protected static String getSystemIndependentPath(String path) throws URISyntaxException {
-		URL resourceUrl = ClassLoader.class.getResource(path);
-		Path resourcePath = Paths.get(resourceUrl.toURI());
-		return resourcePath.toString();
+		document = PDDocument.load(BaseTest.class.getClassLoader().getResourceAsStream(BASE_FOLDER + path), false, true);
 	}
 }
