@@ -75,11 +75,13 @@ public class PBoxSETD extends PBoxSEGeneral implements SETD {
         return Collections.emptyList();
     }
 
-    public Integer getColSpan() {
+    @Override
+    public Long getColSpan() {
         return TableHelper.getColSpan((COSDictionary) simplePDObject);
     }
 
-    public Integer getRowSpan() {
+    @Override
+    public Long getRowSpan() {
         return TableHelper.getRowSpan((COSDictionary) simplePDObject);
     }
 

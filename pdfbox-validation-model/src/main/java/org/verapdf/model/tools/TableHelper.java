@@ -29,11 +29,11 @@ import org.verapdf.model.impl.pb.pd.TaggedPDFConstants;
 
 public class TableHelper {
 
-    public static int getColSpan(COSDictionary simplePDObject) {
+    public static long getColSpan(COSDictionary simplePDObject) {
         return TableHelper.getSpanValue(simplePDObject, COSName.getPDFName("ColSpan"));
     }
 
-    public static int getRowSpan(COSDictionary simplePDObject) {
+    public static long getRowSpan(COSDictionary simplePDObject) {
         return TableHelper.getSpanValue(simplePDObject, COSName.getPDFName("RowSpan"));
     }
 
