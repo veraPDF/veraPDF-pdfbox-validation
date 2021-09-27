@@ -175,4 +175,13 @@ public abstract class PBoxPDFont extends PBoxPDResource implements PDFont {
 		return Collections.emptyList();
 	}
 
+	@Override
+	public Boolean getisItalic() {
+		PDFontDescriptor fontDescriptor = this.pdFontLike.getFontDescriptor();
+		if (fontDescriptor != null) {
+			return fontDescriptor.isItalic();
+		}
+		return null;
+	}
+
 }

@@ -45,9 +45,9 @@ public class PBoxSETable extends PBoxSEGeneral implements SETable {
     @Override
     public Boolean getuseHeadersAndIdOrScope() {
         Stack<PDStructElem> stack = new Stack<>();
-        Boolean hasScope = true;
-        Boolean hasID = true;
-        Boolean hasHeaders = true;
+        boolean hasScope = true;
+        boolean hasID = true;
+        boolean hasHeaders = true;
         Set<String> idSet = new HashSet<>();
         Set<String> headersSet = new HashSet<>();
         stack.push(this);
@@ -96,7 +96,7 @@ public class PBoxSETable extends PBoxSEGeneral implements SETable {
         List<org.verapdf.model.pdlayer.PDStructElem> listTR = getTR();
         int rowNum = listTR.size();
         int columnNum = getColumnNum((PBoxPDStructElem)listTR.get(0));
-        boolean cells[][] = new boolean[rowNum][columnNum];
+        boolean[][] cells = new boolean[rowNum][columnNum];
         for (int i = 0; i < rowNum; i++) {
             int j = 0;
             for (org.verapdf.model.pdlayer.PDStructElem elem : ((PBoxPDStructElem)listTR.get(i)).getChildren()) {
@@ -174,7 +174,7 @@ public class PBoxSETable extends PBoxSEGeneral implements SETable {
         return columnNum;
     }
 
-    private Boolean checkRegular(boolean cells[][], long rowSpan, long colSpan, int i, int j) {
+    private Boolean checkRegular(boolean[][] cells, long rowSpan, long colSpan, int i, int j) {
         for (int k = 0; k < rowSpan; k++) {
             for (int l = 0; l < colSpan; l++) {
                 if (cells[i + k][j + l]) {

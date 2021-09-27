@@ -25,7 +25,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.impl.BaseTest;
-import org.verapdf.model.impl.pb.pd.actions.PBoxPDAction;
+import org.verapdf.model.impl.pb.pd.actions.PBoxPDAdditionalActions;
 import org.verapdf.model.pdlayer.PDPage;
 
 import java.io.IOException;
@@ -71,7 +71,7 @@ public class PBoxPDPageTest extends BaseTest {
 		List<? extends Object> actions = ((PDPage) actual).getLinkedObjects(PBoxPDPage.ACTION);
 		Assert.assertEquals(0, actions.size());
 		for (Object object : actions) {
-			Assert.assertEquals(PBoxPDAction.ACTION_TYPE, object.getObjectType());
+			Assert.assertEquals(PBoxPDAdditionalActions.ADDITIONAL_ACTIONS_TYPE, object.getObjectType());
 		}
 	}
 
