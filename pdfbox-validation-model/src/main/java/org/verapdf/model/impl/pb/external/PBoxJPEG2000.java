@@ -506,6 +506,11 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
 		return this.bpccBoxPresent;
 	}
 
+	@Override
+	public Boolean gethasColorSpace() {
+		return false;
+	}
+
 	private static class Builder {
 		private Long nrColorChannels = DEFAULT_NR_COLOR_CHANNELS;
 		private Long nrColorSpaceSpecs = DEFAULT_NR_COLOR_SPACE_SPECS;
