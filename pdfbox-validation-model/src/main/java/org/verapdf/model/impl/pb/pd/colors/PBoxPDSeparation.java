@@ -77,6 +77,18 @@ public class PBoxPDSeparation extends PBoxPDColorSpace implements org.verapdf.mo
 	}
 
 	@Override
+	public String getname() {
+		COSArray array = (COSArray) this.simplePDObject.getCOSObject();
+		if (array.size() > COLORANT_NAME_POSITION) {
+			COSBase object = array.getObject(COLORANT_NAME_POSITION);
+			if (object instanceof COSName) {
+				return object.toString();
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public Boolean getareTintAndAlternateConsistent() {
 		String name = ((PDSeparation) simplePDObject).getColorantName();
 
