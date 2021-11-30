@@ -81,8 +81,8 @@
   <properties>
     <sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.itReportPath>
     <sonar.language>java</sonar.language>
-    <verapdf.library.version>[1.19.0,1.20.0)</verapdf.library.version>
-    <verapdf.model.version>[1.19.0,1.20.0)</verapdf.model.version>
+    <verapdf.library.version>[1.19.0,1.20.0-RC)</verapdf.library.version>
+    <verapdf.model.version>[1.19.0,1.20.0-RC)</verapdf.model.version>
     <verapdf.pdfbox.version>[2.0.0,2.1.0)</verapdf.pdfbox.version>
     <org.bouncycastle.version>1.62</org.bouncycastle.version>
   </properties>
