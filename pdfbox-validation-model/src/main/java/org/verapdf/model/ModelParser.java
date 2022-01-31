@@ -20,8 +20,8 @@
  */
 package org.verapdf.model;
 
-import com.adobe.xmp.XMPException;
-import com.adobe.xmp.impl.VeraPDFMeta;
+import org.verapdf.xmp.XMPException;
+import org.verapdf.xmp.impl.VeraPDFMeta;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;

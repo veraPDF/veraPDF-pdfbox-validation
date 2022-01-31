@@ -20,9 +20,9 @@
  */
 package org.verapdf.model.impl.pb.pd;
 
-import com.adobe.xmp.XMPException;
-import com.adobe.xmp.impl.VeraPDFMeta;
-import com.adobe.xmp.impl.VeraPDFXMPNode;
+import org.verapdf.xmp.XMPException;
+import org.verapdf.xmp.impl.VeraPDFMeta;
+import org.verapdf.xmp.impl.VeraPDFXMPNode;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
