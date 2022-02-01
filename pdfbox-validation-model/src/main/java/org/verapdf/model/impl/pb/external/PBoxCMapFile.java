@@ -20,6 +20,7 @@
  */
 package org.verapdf.model.impl.pb.external;
 
+import org.apache.fontbox.cmap.CIDRange;
 import org.apache.fontbox.cmap.CMap;
 import org.apache.fontbox.cmap.CMapParser;
 import org.apache.log4j.Logger;
@@ -28,6 +29,7 @@ import org.apache.pdfbox.cos.COSStream;
 import org.verapdf.model.external.CMapFile;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Current class is representation of CMapFile of pdf document
@@ -74,12 +76,19 @@ public class PBoxCMapFile extends PBoxExternal implements CMapFile {
      * @return value of {@code WMode} key of parent dictionary
      */
     @Override
-	public Long getdictWMode() {
+    public Long getdictWMode() {
         return Long.valueOf(this.fileStream.getInt(COSName.getPDFName("WMode"), 0));
     }
 
     @Override
     public Long getmaximalCID() {
-        return 0L;  // TODO: not implemented yet
+        try {
+            CMap map = new CMapParser().parse(fileStream.getUnfilteredStream());
+            return (long) Math.max(map.getCodeToCidRanges().stream().map(CIDRange::getMaxCid).max(Integer::compare).orElse(0),
+                    map.getCodeToCid().values().stream().max(Integer::compare).orElse(0));
+        } catch (IOException e) {
+            LOGGER.debug("Could not get CID", e);
+        }
+        return null;
     }
 }
