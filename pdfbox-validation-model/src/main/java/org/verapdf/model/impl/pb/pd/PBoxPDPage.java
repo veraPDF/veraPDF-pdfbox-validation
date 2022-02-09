@@ -183,6 +183,11 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 		return this.outputIntents != null ? ((PBoxOutputIntents)this.outputIntents).getColorSpace() : null;
 	}
 
+	@Override
+	public Long getpageNumber() {
+		return (long) this.document.getPages().indexOf((org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject);
+	}
+
 	private List<OutputIntents> getOutputIntents() {
 		if (this.outputIntents == null) {
 			this.outputIntents = parseOutputIntents();
