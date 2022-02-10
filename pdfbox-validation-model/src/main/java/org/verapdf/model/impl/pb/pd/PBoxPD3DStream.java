@@ -20,13 +20,19 @@
  */
 package org.verapdf.model.impl.pb.pd;
 
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSStream;
+import org.apache.pdfbox.cos.*;
+import org.apache.pdfbox.pdmodel.PDResources;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.factory.colors.ColorSpaceFactory;
 import org.verapdf.model.pdlayer.PD3DStream;
+import org.verapdf.model.pdlayer.PDColorSpace;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * @author Maxim Plushchov
@@ -37,15 +43,20 @@ public class PBoxPD3DStream extends PBoxPDObject implements PD3DStream {
 
 	public static final String COLOR_SPACE = "colorSpace";
 
-	public PBoxPD3DStream(COSStream stream) {
+	private static final Logger LOGGER = Logger.getLogger(PBoxPD3DStream.class.getCanonicalName());
+
+	private final PDResources resources;
+
+	public PBoxPD3DStream(COSStream stream, PDResources resources) {
 		super(stream, STREAM_3D_TYPE);
+		this.resources = resources;
 	}
 
 	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 			case COLOR_SPACE:
-				return Collections.emptyList();
+				return this.getColorSpace();
 			default:
 				return super.getLinkedObjects(link);
 		}
@@ -55,5 +66,44 @@ public class PBoxPD3DStream extends PBoxPDObject implements PD3DStream {
 	public String getSubtype() {
 		COSName subtype = ((COSStream)simplePDObject).getCOSName(COSName.SUBTYPE);
 		return subtype == null ? null : subtype.getName();
+	}
+
+	private List<PDColorSpace> getColorSpace() {
+		try {
+			COSBase rawColorSpace = ((COSStream) simplePDObject).getItem(COSName.COLORSPACE);
+			COSName colorSpaceName = null;
+			org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace colorSpace = null;
+			if (rawColorSpace != null) {
+				if (rawColorSpace instanceof COSName) {
+					colorSpaceName = (COSName) rawColorSpace;
+				} else if (rawColorSpace instanceof COSArray) {
+					COSArray array = (COSArray) rawColorSpace;
+					if (array.size() == 1 && array.get(0) instanceof COSName) {
+						colorSpaceName = (COSName) array.get(0);
+					} else {
+						try {
+							colorSpace = org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace.create(rawColorSpace);
+						} catch (IOException e) {
+							LOGGER.log(Level.WARNING,"There is no colorSpace by rawColorSpace");
+						}
+					}
+				}
+			}
+			List<PDColorSpace> colorSpaces = new ArrayList<>(PBoxPDObject.MAX_NUMBER_OF_ELEMENTS);
+			if (colorSpaceName != null) {
+				colorSpace = resources.getColorSpace(colorSpaceName);
+
+				if (colorSpace != null) {
+					colorSpaces.add(ColorSpaceFactory.getColorSpace(colorSpace, this.document, null));
+					return Collections.unmodifiableList(colorSpaces);
+				}
+			} else if (colorSpace != null) {
+				colorSpaces.add(ColorSpaceFactory.getColorSpace(colorSpace, this.document, null));
+				return Collections.unmodifiableList(colorSpaces);
+			}
+		} catch (IOException e) {
+			return Collections.emptyList();
+		}
+		return Collections.emptyList();
 	}
 }

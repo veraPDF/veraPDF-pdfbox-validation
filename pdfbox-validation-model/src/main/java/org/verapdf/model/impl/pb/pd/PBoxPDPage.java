@@ -20,17 +20,20 @@
  */
 package org.verapdf.model.impl.pb.pd;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.COSObjectable;
+import org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace;
 import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent;
 import org.apache.pdfbox.pdmodel.interactive.action.PDPageAdditionalActions;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosBBox;
+import org.verapdf.model.impl.pb.containers.StaticContainers;
 import org.verapdf.model.impl.pb.cos.PBCosBBox;
 import org.verapdf.model.impl.pb.pd.actions.PBoxPDPageAdditionalActions;
 import org.verapdf.model.pdlayer.*;
@@ -93,6 +96,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 
 	private final PDDocument document;
 	private final PDFAFlavour flavour;
+	private final PDColorSpace blendingColorSpace;
 
 	/**
 	 * Default constructor.
@@ -103,6 +107,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 		super((COSObjectable) simplePDObject, PAGE_TYPE);
 		this.document = document;
 		this.flavour = flavour;
+		this.blendingColorSpace = getBlendingColorSpace();
 	}
 
 	@Override
@@ -117,6 +122,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 
 	@Override
 	public Boolean getcontainsTransparency() {
+		StaticContainers.setCurrentTransparencyColorSpace(blendingColorSpace);
 		if (this.contentStreams == null) {
 			parseContentStream();
 		}
@@ -246,9 +252,9 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 			case OUTPUT_INTENTS:
 				return this.getOutputIntents();
 			case TRANSPARENCY_COLOR_SPACE:
-				return Collections.emptyList();
+				return this.getTransparencyColorSpace();
 			case PARENT_TRANSPARENCY_COLOR_SPACE:
-				return Collections.emptyList();
+				return this.getParentTransparencyColorSpace();
 			default:
 				return super.getLinkedObjects(link);
 		}
@@ -362,6 +368,44 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 			ArrayList<CosBBox> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 			list.add(new PBCosBBox((COSArray) array, this.document, this.flavour));
 			return Collections.unmodifiableList(list);
+		}
+		return Collections.emptyList();
+	}
+
+    public PDColorSpace getBlendingColorSpace() {
+		COSDictionary dictionary = ((org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject)
+				.getCOSObject();
+		COSBase groupDictionary = dictionary.getDictionaryObject(COSName.GROUP);
+		if (groupDictionary instanceof COSDictionary) {
+			org.apache.pdfbox.pdmodel.graphics.form.PDGroup group =
+					new org.apache.pdfbox.pdmodel.graphics.form.PDGroup(
+							(COSDictionary) groupDictionary);
+			if (COSName.TRANSPARENCY.equals(group.getSubType())) {
+				try {
+					return group.getColorSpace();
+				} catch (IOException e) {
+					LOGGER.log(Level.WARN, "Error getting color space");
+				}
+			}
+		}
+        return null;
+    }
+
+	private List<TransparencyColorSpace> getTransparencyColorSpace() {
+		if (blendingColorSpace != null) {
+			List<TransparencyColorSpace> xFormTransparencyGroup = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+			xFormTransparencyGroup.add(new PBoxTransparencyColorSpace(blendingColorSpace));
+			return Collections.unmodifiableList(xFormTransparencyGroup);
+		}
+		return Collections.emptyList();
+	}
+
+	private List<TransparencyColorSpace> getParentTransparencyColorSpace() {
+		if (blendingColorSpace != null) {
+			List<TransparencyColorSpace> parentXFormTransparencyGroup = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+			parentXFormTransparencyGroup.add(new PBoxTransparencyColorSpace(null));
+			StaticContainers.setCurrentTransparencyColorSpace(blendingColorSpace);
+			return Collections.unmodifiableList(parentXFormTransparencyGroup);
 		}
 		return Collections.emptyList();
 	}
