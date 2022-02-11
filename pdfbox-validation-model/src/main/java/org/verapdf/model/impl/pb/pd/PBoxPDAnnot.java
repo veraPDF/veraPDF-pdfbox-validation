@@ -206,6 +206,10 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		return null;
 	}
 
+	public PDResources getPageResources() {
+		return pageResources;
+	}
+
 	@Override
 	public String getSubtype() {
 		return this.subtype;

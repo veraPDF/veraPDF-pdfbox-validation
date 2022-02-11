@@ -59,13 +59,13 @@ public class PBoxPD3DAnnot extends PBoxPDAnnot implements PD3DAnnot {
 	private List<PD3DStream> get3DStream() {
 		COSStream stream = null;
 		COSBase object = ((COSDictionary)simplePDObject.getCOSObject()).getDictionaryObject(key3DD);
-			if (object != null && object instanceof COSDictionary) {
+			if (object instanceof COSDictionary) {
 				COSName type = ((COSDictionary) object).getCOSName(COSName.TYPE);
 				if (key3DRef.equals(type)) {
 					object = ((COSDictionary) object).getDictionaryObject(key3DD);
 				}
 			}
-			if (object != null && object instanceof COSStream) {
+			if (object instanceof COSStream) {
 				COSName type = ((COSStream)object).getCOSName(COSName.TYPE);
 				if (key3D.equals(type)) {
 					stream = (COSStream)object;
@@ -73,7 +73,7 @@ public class PBoxPD3DAnnot extends PBoxPDAnnot implements PD3DAnnot {
 			}
 		if (stream != null) {
 			List<PD3DStream> streams = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			streams.add(new PBoxPD3DStream(stream));
+			streams.add(new PBoxPD3DStream(stream, this.getPageResources()));
 			return streams;
 		}
 		return Collections.emptyList();

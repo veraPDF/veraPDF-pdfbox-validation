@@ -41,6 +41,8 @@ public class StaticContainers {
 
 	private static ThreadLocal<Set<COSObjectKey>> fileSpecificationKeys = new ThreadLocal<>();
 
+	private static final ThreadLocal<Stack<COSObjectKey>> transparencyVisitedContentStreams = new ThreadLocal<>();
+
 	//SENote
 	private static ThreadLocal<Set<String>> noteIDSet = new ThreadLocal<>();
 
@@ -49,6 +51,8 @@ public class StaticContainers {
 
 	//PDXForm
 	private static final ThreadLocal<Set<COSObjectKey>> xFormKeysSet = new ThreadLocal<>();
+
+	private static final ThreadLocal<org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace> currentTransparencyColorSpace = new ThreadLocal<>();
 
 	public static void clearAllContainers() {
 		getSeparations().clear();
@@ -115,6 +119,17 @@ public class StaticContainers {
 		StaticContainers.fileSpecificationKeys.set(fileSpecificationKeys);
 	}
 
+	public static Stack<COSObjectKey> getTransparencyVisitedContentStreams() {
+		if (transparencyVisitedContentStreams.get() == null) {
+			transparencyVisitedContentStreams.set(new Stack<>());
+		}
+		return transparencyVisitedContentStreams.get();
+	}
+
+	public static void setTransparencyVisitedContentStreams(Stack<COSObjectKey> transparencyVisitedContentStreams) {
+		StaticContainers.transparencyVisitedContentStreams.set(transparencyVisitedContentStreams);
+	}
+
 	public static Set<COSObjectKey> getXFormKeysSet() {
 		checkForNull(xFormKeysSet, new HashSet<COSObjectKey>());
 		return xFormKeysSet.get();
@@ -122,6 +137,14 @@ public class StaticContainers {
 
 	public static void setXFormKeysSet(Set<COSObjectKey> xFormKeysSet) {
 		StaticContainers.xFormKeysSet.set(xFormKeysSet);
+	}
+
+	public static org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace getCurrentTransparencyColorSpace() {
+		return currentTransparencyColorSpace.get();
+	}
+
+	public static void setCurrentTransparencyColorSpace(org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace currentTransparencyColorSpace) {
+		StaticContainers.currentTransparencyColorSpace.set(currentTransparencyColorSpace);
 	}
 
 	private static void checkForNull(ThreadLocal variable, Object object) {
