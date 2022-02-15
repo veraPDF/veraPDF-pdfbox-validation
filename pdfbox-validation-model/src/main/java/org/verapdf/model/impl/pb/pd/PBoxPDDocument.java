@@ -45,6 +45,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.verapdf.model.impl.pb.pd.PBoxPDPage.SQUARE_ORIENTATION;
 
 /**
  * High-level representation of pdf document.
@@ -133,6 +137,21 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 	@Override
 	public String getVersion() {
 		return catalog.getVersion();
+	}
+
+	@Override
+	public String getmostCommonOrientation() {
+		List<String> twoTheMostFrequent = getPages()
+				.stream()
+				.map(PDPage::getorientation)
+				.collect(Collectors.groupingBy(a -> a, Collectors.counting()))
+				.entrySet()
+				.stream()
+				.sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+				.limit(2)
+				.map(Map.Entry::getKey)
+				.collect(Collectors.toList());
+		return SQUARE_ORIENTATION.equals(twoTheMostFrequent.get(0)) && twoTheMostFrequent.size() == 2 ? twoTheMostFrequent.get(1) : twoTheMostFrequent.get(0);
 	}
 
 	@Override
