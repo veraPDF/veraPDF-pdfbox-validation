@@ -20,17 +20,15 @@
  */
 package org.verapdf.model.impl.pb.external;
 
-import java.security.cert.X509Certificate;
-
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSString;
 import org.verapdf.model.external.PKCSDataObject;
+import org.verapdf.pdfa.parsers.pkcs7.PKCS7;
+import org.verapdf.pdfa.parsers.pkcs7.X509CertificateImpl;
 
-import sun.security.pkcs.ContentInfo;
-import sun.security.pkcs.PKCS7;
-import sun.security.pkcs.ParsingException;
-import sun.security.pkcs.SignerInfo;
-import sun.security.x509.AlgorithmId;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Sergey Shemyakov
@@ -51,7 +49,7 @@ public class PBoxPKCSDataObject extends PBoxExternal implements PKCSDataObject {
 		super(PKCS_DATA_OBJECT_TYPE);
 		try {
 			pkcs7 = new PKCS7(pkcsData.getBytes());
-		} catch (ParsingException e) {    //TODO: what do we do if some problem happens here?
+		} catch (IOException e) {    //TODO: what do we do if some problem happens here?
 			LOGGER.debug("Passed PKCS7 object can't be read", e);
 			pkcs7 = getEmptyPKCS7();
 		}
@@ -62,7 +60,7 @@ public class PBoxPKCSDataObject extends PBoxExternal implements PKCSDataObject {
 	 */
 	@Override
 	public Long getSignerInfoCount() {
-		return new Long(pkcs7.getSignerInfos().length);
+		return (long) pkcs7.getSignerInfosLength();
 	}
 
 	/**
@@ -71,11 +69,11 @@ public class PBoxPKCSDataObject extends PBoxExternal implements PKCSDataObject {
 	 */
 	@Override
 	public Boolean getsigningCertificatePresent() {
-		X509Certificate[] certificates = pkcs7.getCertificates();
-		if (certificates.length == 0) {
+		List<X509CertificateImpl> certificates = pkcs7.getCertificates();
+		if (certificates.isEmpty()) {
 			return Boolean.FALSE;
 		}
-		for (X509Certificate cert : certificates) {
+		for (X509CertificateImpl cert : certificates) {
 			if (cert == null) {
 				return Boolean.FALSE;
 			}
@@ -84,8 +82,7 @@ public class PBoxPKCSDataObject extends PBoxExternal implements PKCSDataObject {
 	}
 
 	private static PKCS7 getEmptyPKCS7() {
-		return new PKCS7(new AlgorithmId[]{}, new ContentInfo(new byte[]{}),
-				new X509Certificate[]{}, new SignerInfo[]{});
+		return new PKCS7(new ArrayList<>());
 	}
 
 }
