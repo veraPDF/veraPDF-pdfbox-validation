@@ -29,7 +29,6 @@ import org.apache.pdfbox.cos.COSStream;
 import org.verapdf.model.external.CMapFile;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Current class is representation of CMapFile of pdf document
