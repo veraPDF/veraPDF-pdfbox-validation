@@ -115,7 +115,7 @@ public class PBoxPDType0Font extends PBoxPDFont implements PDType0Font {
 			PDCIDSystemInfo cidSystemInfo = descendantFont.getCIDSystemInfo();
 			CMap currentCMap = ((org.apache.pdfbox.pdmodel.font.PDType0Font) this.pdFontLike).getCMap();
 			if (cidSystemInfo != null && currentCMap != null) {
-				return Boolean.valueOf(cidSystemInfo.getSupplement() >= currentCMap.getSupplement());
+				return Boolean.valueOf(cidSystemInfo.getSupplement() <= currentCMap.getSupplement());
 			}
 		}
 		return Boolean.FALSE;
