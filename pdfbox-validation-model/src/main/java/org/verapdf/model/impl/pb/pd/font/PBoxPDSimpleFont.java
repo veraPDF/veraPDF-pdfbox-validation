@@ -55,10 +55,7 @@ public abstract class PBoxPDSimpleFont extends PBoxPDFont implements PDSimpleFon
         } else if (encodingDict instanceof COSName) {
             return ((COSName) encodingDict).getName();
         } else if (encodingDict instanceof COSDictionary) {
-            COSBase differencesDict = ((COSDictionary) encodingDict)
-					.getDictionaryObject(COSName.DIFFERENCES);
-			return differencesDict != null ? CUSTOM_ENCODING :
-					((COSDictionary) encodingDict).getNameAsString(COSName.BASE_ENCODING);
+			return ((COSDictionary) encodingDict).getNameAsString(COSName.BASE_ENCODING);
         }
         return null;
 	}
