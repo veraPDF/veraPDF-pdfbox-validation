@@ -32,4 +32,14 @@ public class PBoxSEForm extends PBoxSEGeneral implements SEForm {
     public PBoxSEForm(COSDictionary structElemDictionary, TaggedPDFRoleMapHelper roleMapHelper) {
         super(structElemDictionary, roleMapHelper, TaggedPDFConstants.FORM, FORM_STRUCTURE_ELEMENT_TYPE);
     }
+
+    @Override
+    public String getroleAttribute() {
+        return null;
+    }
+
+    @Override
+    public Boolean gethasOneInteractiveChild() {
+        return false;
+    }
 }
