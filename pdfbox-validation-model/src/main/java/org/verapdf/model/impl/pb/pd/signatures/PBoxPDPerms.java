@@ -26,6 +26,7 @@ import org.verapdf.model.impl.pb.pd.PBoxPDObject;
 import org.verapdf.model.pdlayer.PDPerms;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Sergey Shemyakov
@@ -57,5 +58,12 @@ public class PBoxPDPerms extends PBoxPDObject implements PDPerms{
 			}
 		}
 		return Boolean.FALSE;
+	}
+
+	@Override
+	public String getentries() {
+		return ((COSDictionary) this.simplePDObject).keySet().stream()
+				.map(COSName::getName)
+				.collect(Collectors.joining("&"));
 	}
 }

@@ -31,6 +31,7 @@ import org.verapdf.model.pdlayer.PDAdditionalActions;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Maxim Plushchov
@@ -79,5 +80,10 @@ public class PBoxPDAdditionalActions extends PBoxPDObject implements PDAdditiona
             }
         }
         return false;
+    }
+
+    @Override
+    public String getactions() {
+        return getActions().stream().map(PDAction::getS).collect(Collectors.joining("&"));
     }
 }

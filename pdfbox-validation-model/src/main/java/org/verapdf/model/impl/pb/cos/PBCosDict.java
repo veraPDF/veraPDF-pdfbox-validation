@@ -36,6 +36,7 @@ import org.verapdf.pdfa.flavours.PDFAFlavour;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Current class is representation of CosDict interface of abstract model. This
@@ -84,6 +85,13 @@ public class PBCosDict extends PBCosObject implements CosDict {
     @Override
     public Long getsize() {
         return Long.valueOf(this.size);
+    }
+
+    @Override
+    public String getkeysString() {
+        return ((COSDictionary)this.baseObject).keySet().stream()
+                .map(COSName::getName)
+                .collect(Collectors.joining("&"));
     }
 
     @Override

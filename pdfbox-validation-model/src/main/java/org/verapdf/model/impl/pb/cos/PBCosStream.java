@@ -48,12 +48,12 @@ public class PBCosStream extends PBCosDict implements CosStream {
 	public static final String F_DECODE_PARMS = "FDecodeParms";
 
 	private final Long length;
+	private final Long realLength;
 	private final String fileSpec;
 	private final String fFilter;
 	private final String fDecodeParams;
 	private final boolean streamKeywordCRLFCompliant;
 	private final boolean endstreamKeywordEOLCompliant;
-	private final boolean isLengthCorrect;
 
 	/**
 	 * Default constructor
@@ -69,7 +69,7 @@ public class PBCosStream extends PBCosDict implements CosStream {
 		this.fDecodeParams = stream.getItem(F_DECODE_PARMS) != null ? stream.getItem(F_DECODE_PARMS).toString() : null;
 		this.streamKeywordCRLFCompliant = stream.isStreamKeywordCRLFCompliant();
 		this.endstreamKeywordEOLCompliant = stream.isEndstreamKeywordEOLCompliant().booleanValue();
-		this.isLengthCorrect = this.length != null && this.length.equals(stream.getOriginLength());
+		this.realLength = stream.getOriginLength();
 	}
 
 	/**
@@ -78,6 +78,11 @@ public class PBCosStream extends PBCosDict implements CosStream {
 	@Override
 	public Long getLength() {
 		return this.length;
+	}
+
+	@Override
+	public Long getrealLength() {
+		return realLength;
 	}
 
 	/**
@@ -123,7 +128,7 @@ public class PBCosStream extends PBCosDict implements CosStream {
 	 */
 	@Override
 	public Boolean getisLengthCorrect() {
-		return Boolean.valueOf(this.isLengthCorrect);
+		return this.length != null && this.length.equals(realLength);
 	}
 
 	@Override

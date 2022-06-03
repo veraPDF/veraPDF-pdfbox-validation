@@ -108,6 +108,57 @@ public class PBoxPDType0Font extends PBoxPDFont implements PDType0Font {
 	}
 
 	@Override
+	public String getCIDFontOrdering() {
+		org.apache.pdfbox.pdmodel.font.PDCIDFont descendantFont =
+				((org.apache.pdfbox.pdmodel.font.PDType0Font) this.pdFontLike).getDescendantFont();
+		if (descendantFont != null) {
+			PDCIDSystemInfo cidSystemInfo = descendantFont.getCIDSystemInfo();
+			return cidSystemInfo != null ? cidSystemInfo.getOrdering() : null;
+		}
+		return null;
+	}
+
+	@Override
+	public String getCMapOrdering() {
+		CMap cMap = ((org.apache.pdfbox.pdmodel.font.PDType0Font) this.pdFontLike).getCMap();
+		return cMap != null ? cMap.getOrdering() : null;
+	}
+
+	@Override
+	public String getCIDFontRegistry() {
+		org.apache.pdfbox.pdmodel.font.PDCIDFont descendantFont =
+				((org.apache.pdfbox.pdmodel.font.PDType0Font) this.pdFontLike).getDescendantFont();
+		if (descendantFont != null) {
+			PDCIDSystemInfo cidSystemInfo = descendantFont.getCIDSystemInfo();
+			return cidSystemInfo != null ? cidSystemInfo.getRegistry() : null;
+		}
+		return null;
+	}
+
+	@Override
+	public String getCMapRegistry() {
+		CMap cMap = ((org.apache.pdfbox.pdmodel.font.PDType0Font) this.pdFontLike).getCMap();
+		return cMap != null ? cMap.getRegistry() : null;
+	}
+
+	@Override
+	public Long getCIDFontSupplement() {
+		org.apache.pdfbox.pdmodel.font.PDCIDFont descendantFont =
+				((org.apache.pdfbox.pdmodel.font.PDType0Font) this.pdFontLike).getDescendantFont();
+		if (descendantFont != null) {
+			PDCIDSystemInfo cidSystemInfo = descendantFont.getCIDSystemInfo();
+			return cidSystemInfo != null ? (long)cidSystemInfo.getSupplement() : null;
+		}
+		return null;
+	}
+
+	@Override
+	public Long getCMapSupplement() {
+		CMap cMap = ((org.apache.pdfbox.pdmodel.font.PDType0Font) this.pdFontLike).getCMap();
+		return cMap != null ? (long)cMap.getSupplement() : null;
+	}
+
+	@Override
 	public Boolean getisSupplementCompatible() {
 		org.apache.pdfbox.pdmodel.font.PDCIDFont descendantFont =
 				((org.apache.pdfbox.pdmodel.font.PDType0Font) this.pdFontLike).getDescendantFont();
@@ -115,7 +166,7 @@ public class PBoxPDType0Font extends PBoxPDFont implements PDType0Font {
 			PDCIDSystemInfo cidSystemInfo = descendantFont.getCIDSystemInfo();
 			CMap currentCMap = ((org.apache.pdfbox.pdmodel.font.PDType0Font) this.pdFontLike).getCMap();
 			if (cidSystemInfo != null && currentCMap != null) {
-				return Boolean.valueOf(cidSystemInfo.getSupplement() <= currentCMap.getSupplement());
+				return cidSystemInfo.getSupplement() <= currentCMap.getSupplement();
 			}
 		}
 		return Boolean.FALSE;

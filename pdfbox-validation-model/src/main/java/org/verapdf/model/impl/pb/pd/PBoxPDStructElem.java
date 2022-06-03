@@ -276,6 +276,12 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 		return TaggedPDFHelper.getStructElemChildren((COSDictionary) this.simplePDObject, this.roleMapHelper);
 	}
 
+	@Override
+	public String getvalueS() {
+		COSBase type = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.S);
+		return type instanceof COSName ? ((COSName)type).getName() : null;
+	}
+
 	private List<CosUnicodeName> getStructureType() {
 		COSBase type = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.S);
 		if (type instanceof COSName) {

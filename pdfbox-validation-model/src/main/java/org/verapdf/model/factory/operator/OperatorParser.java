@@ -441,7 +441,7 @@ class OperatorParser {
 				operators.add(op);
 				break;
 			default:
-				operators.add(new PBOp_Undefined(arguments));
+				operators.add(new PBOp_Undefined(operatorName, arguments));
 				break;
 		}
 	}
