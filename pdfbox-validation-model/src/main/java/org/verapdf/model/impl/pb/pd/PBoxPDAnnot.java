@@ -57,6 +57,7 @@ import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -337,6 +338,13 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 			       || cropBox.getUpperRightY() <= rectangle.getLowerLeftY() || cropBox.getUpperRightX() <= rectangle.getLowerLeftX();
 		}
 		return null;
+	}
+
+	@Override
+	public String getkeys() {
+		return ((COSDictionary)simplePDObject).keySet().stream()
+				.map(COSName::getName)
+				.collect(Collectors.joining("&"));
 	}
 
 	@Override

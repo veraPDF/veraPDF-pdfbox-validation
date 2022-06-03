@@ -35,6 +35,8 @@ import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -50,6 +52,7 @@ public class PDInheritableResources {
 	private final PDResources inheritedResources;
 
 	private boolean containsUndefinedResource = false;
+	private List<COSName> undefinedResourceNames = new LinkedList<>();
 
 	private final HashMap<COSName, PDFont> fontCache = new HashMap<>();
 
@@ -91,6 +94,7 @@ public class PDInheritableResources {
 		}
 		if (ret == null) {
 			containsUndefinedResource = true;
+			undefinedResourceNames.add(name);
 		}
 		return ret;
 	}
@@ -105,6 +109,7 @@ public class PDInheritableResources {
 			if (this.isDefaultColorSpaceUsed(name)) {
 				PDColorSpace colorSpace = this.inheritedResources.getColorSpace(name);
 				if (colorSpace == null) {
+					undefinedResourceNames.add(name);
 					containsUndefinedResource = true;
 				}
 				return colorSpace;
@@ -120,6 +125,7 @@ public class PDInheritableResources {
 		PDColorSpace colorSpace = this.inheritedResources.getColorSpace(name);
 		colorSpace = setInheritedColorSpace(colorSpace);
 		if (colorSpace == null) {
+			undefinedResourceNames.add(name);
 			containsUndefinedResource = true;
 		}
 		return colorSpace;
@@ -135,6 +141,7 @@ public class PDInheritableResources {
 			state.setInherited(true);
 			return state;
 		}
+		undefinedResourceNames.add(name);
 		containsUndefinedResource = true;
 		return null;
 	}
@@ -149,6 +156,7 @@ public class PDInheritableResources {
 			shading.setInherited(true);
 			return shading;
 		}
+		undefinedResourceNames.add(name);
 		containsUndefinedResource = true;
 		return null;
 	}
@@ -163,6 +171,7 @@ public class PDInheritableResources {
 			pattern.setInherited(true);
 			return pattern;
 		}
+		undefinedResourceNames.add(name);
 		containsUndefinedResource = true;
 		return null;
 	}
@@ -177,6 +186,7 @@ public class PDInheritableResources {
 			object.setInherited(true);
 			return object;
 		}
+		undefinedResourceNames.add(name);
 		containsUndefinedResource = true;
 		return null;
 	}
@@ -228,6 +238,10 @@ public class PDInheritableResources {
 
 	public void setContainsUndefinedResource() {
 		this.containsUndefinedResource = true;
+	}
+
+	public List<COSName> getUndefinedResourceNames() {
+		return undefinedResourceNames;
 	}
 
 }

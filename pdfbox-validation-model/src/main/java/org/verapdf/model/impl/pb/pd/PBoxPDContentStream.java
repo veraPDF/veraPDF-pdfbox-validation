@@ -21,6 +21,7 @@
 package org.verapdf.model.impl.pb.pd;
 
 import org.apache.log4j.Logger;
+import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdfparser.PDFStreamParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -36,6 +37,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -123,6 +125,13 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 	@Override
 	public Boolean getcontainsUndefinedResource() {
 		return resources.getContainsUndefinedResource();
+	}
+
+	@Override
+	public String getundefinedResourceNames() {
+		return resources.getUndefinedResourceNames().stream()
+				.map(COSName::getName)
+				.collect(Collectors.joining(","));
 	}
 
 	private List<org.verapdf.model.pdlayer.PDResources> getResources() {
