@@ -123,14 +123,6 @@ public class PBCosStream extends PBCosDict implements CosStream {
 		return Boolean.valueOf(this.endstreamKeywordEOLCompliant);
 	}
 
-	/**
-	 * true if the value of Length key matches the actual length of the stream
-	 */
-	@Override
-	public Boolean getisLengthCorrect() {
-		return this.length != null && this.length.equals(realLength);
-	}
-
 	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {

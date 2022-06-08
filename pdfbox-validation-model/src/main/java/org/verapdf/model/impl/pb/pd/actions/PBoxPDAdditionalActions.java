@@ -86,4 +86,9 @@ public class PBoxPDAdditionalActions extends PBoxPDObject implements PDAdditiona
     public String getactions() {
         return getActions().stream().map(PDAction::getS).collect(Collectors.joining("&"));
     }
+
+    @Override
+    public String getparentType() {
+        return null;
+    }
 }

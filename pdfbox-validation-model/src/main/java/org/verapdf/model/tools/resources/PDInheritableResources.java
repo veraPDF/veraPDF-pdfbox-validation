@@ -51,7 +51,6 @@ public class PDInheritableResources {
 	private final PDResources currentResources;
 	private final PDResources inheritedResources;
 
-	private boolean containsUndefinedResource = false;
 	private List<COSName> undefinedResourceNames = new LinkedList<>();
 
 	private final HashMap<COSName, PDFont> fontCache = new HashMap<>();
@@ -93,7 +92,6 @@ public class PDInheritableResources {
 			ret = font;
 		}
 		if (ret == null) {
-			containsUndefinedResource = true;
 			undefinedResourceNames.add(name);
 		}
 		return ret;
@@ -110,7 +108,6 @@ public class PDInheritableResources {
 				PDColorSpace colorSpace = this.inheritedResources.getColorSpace(name);
 				if (colorSpace == null) {
 					undefinedResourceNames.add(name);
-					containsUndefinedResource = true;
 				}
 				return colorSpace;
 			}
@@ -126,7 +123,6 @@ public class PDInheritableResources {
 		colorSpace = setInheritedColorSpace(colorSpace);
 		if (colorSpace == null) {
 			undefinedResourceNames.add(name);
-			containsUndefinedResource = true;
 		}
 		return colorSpace;
 	}
@@ -142,7 +138,6 @@ public class PDInheritableResources {
 			return state;
 		}
 		undefinedResourceNames.add(name);
-		containsUndefinedResource = true;
 		return null;
 	}
 
@@ -157,7 +152,6 @@ public class PDInheritableResources {
 			return shading;
 		}
 		undefinedResourceNames.add(name);
-		containsUndefinedResource = true;
 		return null;
 	}
 
@@ -172,7 +166,6 @@ public class PDInheritableResources {
 			return pattern;
 		}
 		undefinedResourceNames.add(name);
-		containsUndefinedResource = true;
 		return null;
 	}
 
@@ -187,7 +180,6 @@ public class PDInheritableResources {
 			return object;
 		}
 		undefinedResourceNames.add(name);
-		containsUndefinedResource = true;
 		return null;
 	}
 
@@ -230,14 +222,6 @@ public class PDInheritableResources {
 				: EMPTY_RESOURCES;
 		currentResources = currentResources != null ? currentResources : EMPTY_RESOURCES;
 		return new PDInheritableResources(inheritedResources, currentResources);
-	}
-
-	public boolean getContainsUndefinedResource() {
-		return containsUndefinedResource;
-	}
-
-	public void setContainsUndefinedResource() {
-		this.containsUndefinedResource = true;
 	}
 
 	public List<COSName> getUndefinedResourceNames() {

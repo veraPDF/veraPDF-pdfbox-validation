@@ -32,6 +32,8 @@ import java.util.List;
  */
 public class PBoxPDAnnotationAdditionalActions extends PBoxPDAdditionalActions {
 
+    private static final String ANNOT_PARENT_TYPE = "Annot";
+
     private static final int MAX_COUNT_OF_ACTIONS = 10;
 
     public PBoxPDAnnotationAdditionalActions(COSObjectable additionalActions) {
@@ -77,4 +79,8 @@ public class PBoxPDAnnotationAdditionalActions extends PBoxPDAdditionalActions {
         return actions;
     }
 
+    @Override
+    public String getparentType() {
+        return ANNOT_PARENT_TYPE;
+    }
 }

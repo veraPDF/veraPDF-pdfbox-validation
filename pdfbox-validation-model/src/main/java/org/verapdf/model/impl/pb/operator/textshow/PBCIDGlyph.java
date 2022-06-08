@@ -32,8 +32,8 @@ public class PBCIDGlyph extends PBGlyph implements CIDGlyph {
 
 	private int CID;
 
-	public PBCIDGlyph(Boolean glyphPresent, Boolean widthsConsistent, PDFont font, int glyphCode, int CID, int renderingMode) {
-		super(glyphPresent, widthsConsistent, font, glyphCode, CID_GLYPH_TYPE, renderingMode);
+	public PBCIDGlyph(Boolean glyphPresent, PDFont font, int glyphCode, int CID, int renderingMode) {
+		super(glyphPresent, font, glyphCode, CID_GLYPH_TYPE, renderingMode);
 		this.CID = CID;
 	}
 

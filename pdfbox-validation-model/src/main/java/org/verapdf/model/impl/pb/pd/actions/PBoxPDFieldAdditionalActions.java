@@ -32,6 +32,8 @@ import java.util.List;
  */
 public class PBoxPDFieldAdditionalActions extends PBoxPDAdditionalActions {
 
+    private static final String FORM_FIELD_PARENT_TYPE = "FormField";
+
     private static final int MAX_COUNT_OF_ACTIONS = 4;
 
     public PBoxPDFieldAdditionalActions(COSObjectable additionalActions) {
@@ -64,4 +66,8 @@ public class PBoxPDFieldAdditionalActions extends PBoxPDAdditionalActions {
         return false;
     }
 
+    @Override
+    public String getparentType() {
+        return FORM_FIELD_PARENT_TYPE;
+    }
 }

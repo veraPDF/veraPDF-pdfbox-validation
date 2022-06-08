@@ -59,55 +59,6 @@ public class PBoxPDType0Font extends PBoxPDFont implements PDType0Font {
 	}
 
 	@Override
-	public Boolean getareRegistryOrderingCompatible() {
-		String parentCIDOrdering = null;
-		String parentCIDRegistry = null;
-		COSDictionary dictionary = ((org.apache.pdfbox.pdmodel.font.PDType0Font) this.pdFontLike)
-				.getCOSObject();
-		COSBase encoding = dictionary.getDictionaryObject(COSName.ENCODING);
-		if (encoding instanceof COSName) {
-			if (encoding.equals(COSName.IDENTITY_H)) {
-				return Boolean.TRUE;
-			}
-		}
-		if (encoding instanceof COSStream) {
-			COSBase cidSystemInfo = ((COSStream) encoding)
-					.getDictionaryObject(COSName.CIDSYSTEMINFO);
-			if (cidSystemInfo instanceof COSDictionary) {
-				parentCIDOrdering = ((COSDictionary) cidSystemInfo)
-						.getString(COSName.ORDERING);
-				parentCIDRegistry = ((COSDictionary) cidSystemInfo)
-						.getString(COSName.REGISTRY);
-			}
-		}
-		CMap cMap = ((org.apache.pdfbox.pdmodel.font.PDType0Font) this.pdFontLike).getCMap();
-		String parentCMapOrdering = null;
-		String parentCMapRegistry = null;
-		if (cMap != null) {
-			parentCMapOrdering = cMap.getOrdering();
-			parentCMapRegistry = cMap.getRegistry();
-		}
-		if (encoding instanceof COSName) {
-			parentCIDOrdering = parentCMapOrdering;
-			parentCIDRegistry = parentCMapRegistry;
-		}
-		String descOrdering = null;
-		String descRegistry = null;
-		PDCIDSystemInfo info = ((org.apache.pdfbox.pdmodel.font.PDType0Font) this.pdFontLike)
-				.getDescendantFont().getCIDSystemInfo();
-		if (info != null) {
-			descOrdering = info.getOrdering();
-			descRegistry = info.getRegistry();
-		}
-		if (parentCIDOrdering != null && parentCIDRegistry != null
-				&& (parentCIDOrdering.equals(parentCMapOrdering) && parentCIDRegistry.equals(parentCMapRegistry))
-				&& (parentCIDOrdering.equals(descOrdering) && parentCIDRegistry.equals(descRegistry))) {
-			return Boolean.TRUE;
-		}
-		return Boolean.FALSE;
-	}
-
-	@Override
 	public String getCIDFontOrdering() {
 		org.apache.pdfbox.pdmodel.font.PDCIDFont descendantFont =
 				((org.apache.pdfbox.pdmodel.font.PDType0Font) this.pdFontLike).getDescendantFont();
@@ -156,20 +107,6 @@ public class PBoxPDType0Font extends PBoxPDFont implements PDType0Font {
 	public Long getCMapSupplement() {
 		CMap cMap = ((org.apache.pdfbox.pdmodel.font.PDType0Font) this.pdFontLike).getCMap();
 		return cMap != null ? (long)cMap.getSupplement() : null;
-	}
-
-	@Override
-	public Boolean getisSupplementCompatible() {
-		org.apache.pdfbox.pdmodel.font.PDCIDFont descendantFont =
-				((org.apache.pdfbox.pdmodel.font.PDType0Font) this.pdFontLike).getDescendantFont();
-		if (descendantFont != null) {
-			PDCIDSystemInfo cidSystemInfo = descendantFont.getCIDSystemInfo();
-			CMap currentCMap = ((org.apache.pdfbox.pdmodel.font.PDType0Font) this.pdFontLike).getCMap();
-			if (cidSystemInfo != null && currentCMap != null) {
-				return cidSystemInfo.getSupplement() <= currentCMap.getSupplement();
-			}
-		}
-		return Boolean.FALSE;
 	}
 
 	@Override

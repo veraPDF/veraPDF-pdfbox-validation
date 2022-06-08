@@ -80,6 +80,32 @@ public class PBoxPDOCConfig extends PBoxPDObject implements PDOCConfig {
 	}
 
 	@Override
+	public String getOCGsNotContainInOrder() {
+		Set<String> groupNamesSet = new TreeSet<>(groupNames);
+		COSBase order = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.ORDER);
+		if (order != null) {
+			if (order instanceof COSArray) {
+				for (int i = 0; i < ((COSArray) order).size(); i++) {
+					COSBase element = ((COSArray) order).getObject(i);
+					if (element instanceof COSArray) {
+						processCOSArrayInOrder((COSArray) element, groupNamesSet);
+					} else if (element instanceof COSDictionary) {
+						processCOSDictionaryInOrder((COSDictionary) element, groupNamesSet);
+					} else {
+						LOGGER.debug("Invalid object type in order array. Ignoring the object.");
+					}
+				}
+				if (!groupNamesSet.isEmpty()) {
+					return String.join(",", groupNamesSet);
+				}
+			} else {
+				LOGGER.debug("Invalid object type of Order entry. Ignoring the Order entry.");
+			}
+		}
+		return "";
+	}
+
+	@Override
 	public String getAS() {
 		COSBase asArray = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.AS);
 		if (asArray != null) {
