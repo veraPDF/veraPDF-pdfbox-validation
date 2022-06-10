@@ -45,21 +45,6 @@ public class PBoxPDPerms extends PBoxPDObject implements PDPerms{
 		super(dictionary, PERMS_TYPE);
 	}
 
-	/**
-	 * @return true if the permissions dictionary contains entries other than
-	 * DocMDP and UR3.
-	 */
-	@Override
-	public Boolean getcontainsOtherEntries() {
-		Set<COSName> names = ((COSDictionary) this.simplePDObject).keySet();
-		for (COSName name : names) {
-			if (name.compareTo(UR3) != 0 && name.compareTo(COSName.DOC_MDP) != 0) {
-				return Boolean.TRUE;
-			}
-		}
-		return Boolean.FALSE;
-	}
-
 	@Override
 	public String getentries() {
 		return ((COSDictionary) this.simplePDObject).keySet().stream()

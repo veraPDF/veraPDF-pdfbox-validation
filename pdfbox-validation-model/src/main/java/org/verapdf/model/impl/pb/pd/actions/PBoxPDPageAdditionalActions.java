@@ -32,6 +32,8 @@ import java.util.List;
  */
 public class PBoxPDPageAdditionalActions extends PBoxPDAdditionalActions {
 
+    private static final String PAGE_PARENT_TYPE = "Page";
+
     private static final int MAX_COUNT_OF_ACTIONS = 2;
 
     public PBoxPDPageAdditionalActions(COSObjectable additionalActions) {
@@ -53,4 +55,8 @@ public class PBoxPDPageAdditionalActions extends PBoxPDAdditionalActions {
         return actions;
     }
 
+    @Override
+    public String getparentType() {
+        return PAGE_PARENT_TYPE;
+    }
 }

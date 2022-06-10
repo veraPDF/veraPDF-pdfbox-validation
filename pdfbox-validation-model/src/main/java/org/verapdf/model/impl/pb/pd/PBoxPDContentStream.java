@@ -123,11 +123,6 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 	}
 
 	@Override
-	public Boolean getcontainsUndefinedResource() {
-		return resources.getContainsUndefinedResource();
-	}
-
-	@Override
 	public String getundefinedResourceNames() {
 		return resources.getUndefinedResourceNames().stream()
 				.map(COSName::getName)

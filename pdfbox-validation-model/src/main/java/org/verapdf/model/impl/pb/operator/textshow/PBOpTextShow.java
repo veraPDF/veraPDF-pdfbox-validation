@@ -150,22 +150,18 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 				while (inputStream.available() > 0) {
 					int code = font.readCode(inputStream);
 					Boolean glyphPresent = null;
-					Boolean widthsConsistent = null ;
 					if (!fontProgramIsInvalid) {
 						// every font contains notdef glyph. But if we call method
 						// of font container we can't distinguish case of code 0
 						// and glyph that is not present indeed.
 						glyphPresent = code == 0 || fontContainer.hasGlyph(code);
-						widthsConsistent = this.checkWidths(code);
 					}
 					PBGlyph glyph;
 					if (font.getSubType().equals(FontFactory.TYPE_0)) {
 						int CID = ((PDType0Font) font).codeToCID(code);
-						glyph = new PBCIDGlyph(glyphPresent, widthsConsistent, font, code, CID,
-								this.state.getRenderingMode().intValue());
+						glyph = new PBCIDGlyph(glyphPresent, font, code, CID, this.state.getRenderingMode().intValue());
 					} else {
-						glyph = new PBGlyph(glyphPresent, widthsConsistent, font, code,
-								this.state.getRenderingMode().intValue());
+						glyph = new PBGlyph(glyphPresent, font, code, this.state.getRenderingMode().intValue());
 					}
 					res.add(glyph);
 				}
@@ -256,14 +252,6 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 			return Collections.unmodifiableList(colorSpaces);
 		}
 		return Collections.emptyList();
-	}
-
-	private boolean checkWidths(int glyphCode) throws IOException {
-		org.apache.pdfbox.pdmodel.font.PDFont font = getFontFromResources();
-		float expectedWidth = font.getWidth(glyphCode);
-		float foundWidth = font.getWidthFromFont(glyphCode);
-		// consistent is defined to be a difference of no more than 1/1000 unit.
-		return Math.abs(foundWidth - expectedWidth) <= 1;
 	}
 
 	private static List<byte[]> getStrings(List<COSBase> argList) {

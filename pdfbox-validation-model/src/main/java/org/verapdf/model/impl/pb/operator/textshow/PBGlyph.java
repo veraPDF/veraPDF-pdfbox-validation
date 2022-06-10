@@ -45,21 +45,19 @@ public class PBGlyph extends GenericModelObject implements Glyph {
 	private final String id;
 
 	private Boolean glyphPresent;
-	private Boolean widthsConsistent;
 	private float widthFromDictionary;
 	private float widthFromFontProgram;
 	private String name;
 	private String toUnicode;
 	private Long renderingMode;
 
-	public PBGlyph(Boolean glyphPresent, Boolean widthsConsistent, PDFont font, int glyphCode, int renderingMode) {
-		this(glyphPresent, widthsConsistent, font, glyphCode, GLYPH_TYPE, renderingMode);
+	public PBGlyph(Boolean glyphPresent, PDFont font, int glyphCode, int renderingMode) {
+		this(glyphPresent, font, glyphCode, GLYPH_TYPE, renderingMode);
 	}
 
-	public PBGlyph(Boolean glyphPresent, Boolean widthsConsistent, PDFont font, int glyphCode, String type, int renderingMode) {
+	public PBGlyph(Boolean glyphPresent, PDFont font, int glyphCode, String type, int renderingMode) {
 		super(type);
 		this.glyphPresent = glyphPresent;
-		this.widthsConsistent = widthsConsistent;
 		this.renderingMode = (long) renderingMode;
 		try {
 			this.widthFromDictionary = font.getWidth(glyphCode);
@@ -113,11 +111,6 @@ public class PBGlyph extends GenericModelObject implements Glyph {
 	@Override
 	public Long getrenderingMode() {
 		return this.renderingMode;
-	}
-
-	@Override
-	public Boolean getisWidthConsistent() {
-		return this.widthsConsistent;
 	}
 
 	@Override

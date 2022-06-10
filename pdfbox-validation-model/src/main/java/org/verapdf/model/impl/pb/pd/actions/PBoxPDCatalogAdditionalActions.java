@@ -32,6 +32,8 @@ import java.util.List;
  */
 public class PBoxPDCatalogAdditionalActions extends PBoxPDAdditionalActions {
 
+    private static final String CATALOG_PARENT_TYPE = "Catalog";
+
     private static final int MAX_COUNT_OF_ACTIONS = 5;
 
     public PBoxPDCatalogAdditionalActions(COSObjectable additionalActions) {
@@ -62,4 +64,8 @@ public class PBoxPDCatalogAdditionalActions extends PBoxPDAdditionalActions {
         return actions;
     }
 
+    @Override
+    public String getparentType() {
+        return CATALOG_PARENT_TYPE;
+    }
 }

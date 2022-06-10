@@ -27,6 +27,8 @@ import org.apache.pdfbox.pdmodel.common.COSObjectable;
  */
 public class PBoxPDWidgetAdditionalActions extends PBoxPDAnnotationAdditionalActions {
 
+    private static final String WIDGET_ANNOT_PARENT_TYPE = "WidgetAnnot";
+
     public PBoxPDWidgetAdditionalActions(COSObjectable additionalActions) {
         super(additionalActions);
     }
@@ -36,4 +38,8 @@ public class PBoxPDWidgetAdditionalActions extends PBoxPDAnnotationAdditionalAct
         return false;
     }
 
+    @Override
+    public String getparentType() {
+        return WIDGET_ANNOT_PARENT_TYPE;
+    }
 }
