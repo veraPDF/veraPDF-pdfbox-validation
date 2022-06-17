@@ -129,6 +129,13 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 				.collect(Collectors.joining(","));
 	}
 
+	@Override
+	public String getinheritedResourceNames() {
+		return resources.getInheritedResourceNames().stream()
+				.map(COSName::getName)
+				.collect(Collectors.joining(","));
+	}
+
 	private List<org.verapdf.model.pdlayer.PDResources> getResources() {
 		List<org.verapdf.model.pdlayer.PDResources> result = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 		PDResources resources = this.resources.getCurrentResources();

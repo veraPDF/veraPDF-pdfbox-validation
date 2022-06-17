@@ -34,9 +34,7 @@ import org.apache.pdfbox.pdmodel.graphics.shading.PDShading;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -51,7 +49,8 @@ public class PDInheritableResources {
 	private final PDResources currentResources;
 	private final PDResources inheritedResources;
 
-	private List<COSName> undefinedResourceNames = new LinkedList<>();
+	private Set<COSName> undefinedResourceNames = new HashSet<>();
+	private Set<COSName> inheritedResourceNames = new HashSet<>();
 
 	private final HashMap<COSName, PDFont> fontCache = new HashMap<>();
 
@@ -86,6 +85,7 @@ public class PDInheritableResources {
 				font = this.inheritedResources.getFont(name);
 				if (font != null) {
 					font.setInherited(true);
+					inheritedResourceNames.add(name);
 				}
 			}
 			fontCache.put(name, font);
@@ -120,7 +120,7 @@ public class PDInheritableResources {
 					+ "Trying to find it in inherited dictionary", e);
 		}
 		PDColorSpace colorSpace = this.inheritedResources.getColorSpace(name);
-		colorSpace = setInheritedColorSpace(colorSpace);
+		colorSpace = setInheritedColorSpace(colorSpace, name);
 		if (colorSpace == null) {
 			undefinedResourceNames.add(name);
 		}
@@ -135,6 +135,7 @@ public class PDInheritableResources {
 		state = this.inheritedResources.getExtGState(name);
 		if (state != null) {
 			state.setInherited(true);
+			inheritedResourceNames.add(name);
 			return state;
 		}
 		undefinedResourceNames.add(name);
@@ -148,6 +149,7 @@ public class PDInheritableResources {
 		}
 		shading = this.inheritedResources.getShading(name);
 		if (shading != null) {
+			inheritedResourceNames.add(name);
 			shading.setInherited(true);
 			return shading;
 		}
@@ -162,6 +164,7 @@ public class PDInheritableResources {
 		}
 		pattern = this.inheritedResources.getPattern(name);
 		if (pattern != null) {
+			inheritedResourceNames.add(name);
 			pattern.setInherited(true);
 			return pattern;
 		}
@@ -176,6 +179,7 @@ public class PDInheritableResources {
 		}
 		object = this.inheritedResources.getXObject(name);
 		if (object != null) {
+			inheritedResourceNames.add(name);
 			object.setInherited(true);
 			return object;
 		}
@@ -201,7 +205,7 @@ public class PDInheritableResources {
 		return COSName.DEVICERGB.equals(name) || COSName.DEVICEGRAY.equals(name) || COSName.DEVICECMYK.equals(name);
 	}
 
-	private static PDColorSpace setInheritedColorSpace(PDColorSpace colorSpace) {
+	private PDColorSpace setInheritedColorSpace(PDColorSpace colorSpace, COSName name) {
 		if (colorSpace == PDDeviceCMYK.INSTANCE) {
 			return PDDeviceCMYK.INHERITED_INSTANCE;
 		} else if (colorSpace == PDDeviceRGB.INSTANCE) {
@@ -210,6 +214,7 @@ public class PDInheritableResources {
 			return PDDeviceGray.INHERITED_INSTANCE;
 		}
 		colorSpace.setInherited(true);
+		inheritedResourceNames.add(name);
 		return colorSpace;
 	}
 
@@ -224,8 +229,12 @@ public class PDInheritableResources {
 		return new PDInheritableResources(inheritedResources, currentResources);
 	}
 
-	public List<COSName> getUndefinedResourceNames() {
+	public Set<COSName> getUndefinedResourceNames() {
 		return undefinedResourceNames;
+	}
+
+	public Set<COSName> getInheritedResourceNames() {
+		return inheritedResourceNames;
 	}
 
 }

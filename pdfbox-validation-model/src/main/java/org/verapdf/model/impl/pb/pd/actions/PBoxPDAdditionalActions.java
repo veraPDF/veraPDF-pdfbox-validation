@@ -68,21 +68,6 @@ public class PBoxPDAdditionalActions extends PBoxPDObject implements PDAdditiona
     }
 
     @Override
-    public Boolean getcontainsOtherActions() {
-        COSDictionary actions = (COSDictionary)this.simplePDObject.getCOSObject();
-        if (actions.size() != 0) {
-            Set<COSName> names = actions.keySet();
-            for (COSName name : names) {
-                if (name != COSName.E && name != COSName.getPDFName("X") && name != COSName.D && name != COSName.U
-                        && name != COSName.getPDFName("Fo") && name != COSName.getPDFName("Bl")) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
     public String getactions() {
         return getActions().stream().map(PDAction::getS).collect(Collectors.joining("&"));
     }

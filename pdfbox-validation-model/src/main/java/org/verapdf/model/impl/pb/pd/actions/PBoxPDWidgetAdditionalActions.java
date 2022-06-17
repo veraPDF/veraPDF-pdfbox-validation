@@ -34,11 +34,6 @@ public class PBoxPDWidgetAdditionalActions extends PBoxPDAnnotationAdditionalAct
     }
 
     @Override
-    public Boolean getcontainsOtherActions() {
-        return false;
-    }
-
-    @Override
     public String getparentType() {
         return WIDGET_ANNOT_PARENT_TYPE;
     }
