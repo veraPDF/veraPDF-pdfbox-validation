@@ -62,11 +62,6 @@ public class PBoxPDFieldAdditionalActions extends PBoxPDAdditionalActions {
     }
 
     @Override
-    public Boolean getcontainsOtherActions() {
-        return false;
-    }
-
-    @Override
     public String getparentType() {
         return FORM_FIELD_PARENT_TYPE;
     }
