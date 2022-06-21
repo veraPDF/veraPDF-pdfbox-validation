@@ -21,12 +21,8 @@
 package org.verapdf.model.impl.pb.pd.signatures;
 
 import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSName;
 import org.verapdf.model.impl.pb.pd.PBoxPDObject;
 import org.verapdf.model.pdlayer.PDPerms;
-
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author Sergey Shemyakov
@@ -36,19 +32,10 @@ public class PBoxPDPerms extends PBoxPDObject implements PDPerms{
 	/** Type name for {@code PBoxPDPerms} */
 	public static final String PERMS_TYPE = "PDPerms";
 
-	private static COSName UR3 = COSName.getPDFName("UR3");
-
 	/**
 	 * @param dictionary is permissions dictionary.
 	 */
 	public PBoxPDPerms(COSDictionary dictionary) {
 		super(dictionary, PERMS_TYPE);
-	}
-
-	@Override
-	public String getentries() {
-		return ((COSDictionary) this.simplePDObject).keySet().stream()
-				.map(COSName::getName)
-				.collect(Collectors.joining("&"));
 	}
 }

@@ -132,21 +132,15 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 
 	private static String getAP(PDAnnotation annot) {
 		COSBase apLocal = annot.getCOSObject().getDictionaryObject(COSName.AP);
-		if (apLocal != null && apLocal instanceof COSDictionary) {
-			StringBuilder result = new StringBuilder();
-			for (COSName key : ((COSDictionary) apLocal).keySet()) {
-				result.append(key.getName());
-				result.append(' ');
-			}
-			// remove last whitespace character
-			return result.length() <= 0 ? result.toString() : result.substring(0, result.length() - 1);
+		if (apLocal instanceof COSDictionary) {
+			return ((COSDictionary) apLocal).keySet().stream().map(COSName::getName).collect(Collectors.joining("&"));
 		}
 		return null;
 	}
 
 	private static Double getCA(PDAnnotation annot) {
 		COSBase caLocal = annot.getCOSObject().getDictionaryObject(COSName.CA);
-		return !(caLocal instanceof COSNumber) ? null : Double.valueOf(((COSNumber) caLocal).doubleValue());
+		return !(caLocal instanceof COSNumber) ? null : ((COSNumber) caLocal).doubleValue();
 	}
 
 	private static String getN_type(PDAnnotation annot) {
@@ -201,7 +195,7 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 			COSBase less = ((COSArray) array).getObject(shift);
 			COSBase great = ((COSArray) array).getObject(2 + shift);
 			if (less instanceof COSNumber && great instanceof COSNumber) {
-				return Double.valueOf(((COSNumber) great).doubleValue() - ((COSNumber) less).doubleValue());
+				return ((COSNumber) great).doubleValue() - ((COSNumber) less).doubleValue();
 			}
 		}
 		return null;
@@ -254,7 +248,7 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	@Override
 	public Boolean getcontainsAA() {
 		COSBase pageObject = this.simplePDObject.getCOSObject();
-		return pageObject != null && pageObject instanceof COSDictionary &&
+		return pageObject instanceof COSDictionary &&
 				((COSDictionary) pageObject).containsKey(COSName.AA);
 	}
 
@@ -350,8 +344,7 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	@Override
 	public Boolean getcontainsA() {
 		COSBase pageObject = this.simplePDObject.getCOSObject();
-		return pageObject != null && pageObject instanceof COSDictionary &&
-				((COSDictionary) pageObject).containsKey(COSName.A);
+		return pageObject instanceof COSDictionary && ((COSDictionary) pageObject).containsKey(COSName.A);
 	}
 
 	@Override
