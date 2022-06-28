@@ -20,8 +20,6 @@
  */
 package org.verapdf.model.impl.pb.pd.actions;
 
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.common.COSObjectable;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.impl.pb.pd.PBoxPDObject;
@@ -30,8 +28,6 @@ import org.verapdf.model.pdlayer.PDAdditionalActions;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author Maxim Plushchov
@@ -65,11 +61,6 @@ public class PBoxPDAdditionalActions extends PBoxPDObject implements PDAdditiona
         if (action != null) {
             actions.add(action);
         }
-    }
-
-    @Override
-    public String getactions() {
-        return getActions().stream().map(PDAction::getS).collect(Collectors.joining("&"));
     }
 
     @Override
