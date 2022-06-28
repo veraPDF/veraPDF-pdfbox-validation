@@ -258,17 +258,17 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 		if (this.catalog != null) {
 			COSBase markInfo = this.catalog.getDictionaryObject(COSName.MARK_INFO);
 			if (markInfo == null) {
-				return Boolean.FALSE;
+				return null;
 			} else if (markInfo instanceof COSDictionary) {
 				COSName marked = COSName.getPDFName("Marked");
 				boolean value = ((COSDictionary) markInfo).getBoolean(marked, false);
 				return Boolean.valueOf(value);
 			} else {
 				LOGGER.debug("MarkedInfo must be a 'COSDictionary' but got: " + markInfo.getClass().getSimpleName());
-				return Boolean.FALSE;
+				return null;
 			}
 		}
-		return Boolean.FALSE;
+		return null;
 	}
 
 	@Override
@@ -316,6 +316,16 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 		return this.catalog != null && this.catalog.getDictionaryObject(PIECE_INFO) != null;
 	}
 
+
+	@Override
+	public String getMarkInfo() {
+		return null;
+	}
+
+	@Override
+	public String getViewerPreferences() {
+		return null;
+	}
 
 	@Override
 	public String getRequirements() {

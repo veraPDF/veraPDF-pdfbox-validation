@@ -76,7 +76,7 @@ public class PBoxPDOCConfig extends PBoxPDObject implements PDOCConfig {
 				LOGGER.debug("Invalid object type of Order entry. Ignoring the Order entry.");
 			}
 		}
-		return "";
+		return null;
 	}
 
 	@Override

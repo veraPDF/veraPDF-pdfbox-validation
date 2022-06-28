@@ -335,13 +335,6 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	}
 
 	@Override
-	public String getkeys() {
-		return ((COSDictionary)simplePDObject).keySet().stream()
-				.map(COSName::getName)
-				.collect(Collectors.joining("&"));
-	}
-
-	@Override
 	public Boolean getcontainsA() {
 		COSBase pageObject = this.simplePDObject.getCOSObject();
 		return pageObject instanceof COSDictionary && ((COSDictionary) pageObject).containsKey(COSName.A);
