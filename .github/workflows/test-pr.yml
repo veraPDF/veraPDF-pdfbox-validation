@@ -67,13 +67,13 @@ jobs:
       - name: Codecov coverage reporting
         uses: codecov/codecov-action@v2
         with:
-          files: core/target/site/jacoco/jacoco.xml
+          files: pdfbox-metadata-fixer/target/site/jacoco/jacoco.xml, pdfbox-feature-reporting/target/site/jacoco/jacoco.xml, pdfbox-validation-model/target/site/jacoco/jacoco.xml
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
       - name: Codacy coverage reporting
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: pdfbox-metadata-fixer/target/site/jacoco/, pdfbox-feature-reporting/target/site/jacoco/, pdfbox-validation-model/target/site/jacoco/
+          coverage-reports: pdfbox-metadata-fixer/target/site/jacoco/jacoco.xml, pdfbox-feature-reporting/target/site/jacoco/jacoco.xml, pdfbox-validation-model/target/site/jacoco/jacoco.xml
       - name: Codacy analysis reporting
         uses: codacy/codacy-analysis-cli-action@master
