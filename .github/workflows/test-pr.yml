@@ -1,0 +1,79 @@
+name: PR QA
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    name: Checkout and Build
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        java-version: [8, 11, 16, 17]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: JDK setup
+        uses: actions/setup-java@v2
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: 'temurin'
+          cache: maven
+      - name: Build with Maven
+        run: mvn --batch-mode --update-snapshots verify
+      - name: Upload metadata coverage report
+        if: matrix.java-version == 8
+        uses: actions/upload-artifact@master
+        with:
+          name: metadata-report
+          path: pdfbox-metadata-fixer/target/site/jacoco/
+      - name: Upload feature coverage report
+        if: matrix.java-version == 8
+        uses: actions/upload-artifact@master
+        with:
+          name: feature-report
+          path: pdfbox-feature-reporting/target/site/jacoco/
+      - name: Upload validation coverage report
+        if: matrix.java-version == 8
+        uses: actions/upload-artifact@master
+        with:
+          name: validation-report
+          path: pdfbox-validation-model/target/site/jacoco/
+
+  coverage:
+    name: Quality Assurance
+    runs-on: ubuntu-20.04
+    needs: [ build ]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download metadata coverage report
+        uses: actions/download-artifact@master
+        with:
+          name: metadata-report
+          path: pdfbox-metadata-fixer/target/site/jacoco/
+      - name: Download feature coverage report
+        uses: actions/download-artifact@master
+        with:
+          name: feature-report
+          path: pdfbox-feature-reporting/target/site/jacoco/
+      - name: Download validation coverage report
+        uses: actions/download-artifact@master
+        with:
+          name: validation-report
+          path: pdfbox-validation-model/target/site/jacoco/
+      - name: Codecov coverage reporting
+        uses: codecov/codecov-action@v2
+        with:
+          files: pdfbox-metadata-fixer/target/site/jacoco/jacoco.xml, pdfbox-feature-reporting/target/site/jacoco/jacoco.xml, pdfbox-validation-model/target/site/jacoco/jacoco.xml
+          fail_ci_if_error: true # optional (default = false)
+          verbose: true # optional (default = false)
+      - name: Codacy coverage reporting
+        uses: codacy/codacy-coverage-reporter-action@v1
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: pdfbox-metadata-fixer/target/site/jacoco/jacoco.xml, pdfbox-feature-reporting/target/site/jacoco/jacoco.xml, pdfbox-validation-model/target/site/jacoco/jacoco.xml
+      - name: Codacy analysis reporting
+        uses: codacy/codacy-analysis-cli-action@master
