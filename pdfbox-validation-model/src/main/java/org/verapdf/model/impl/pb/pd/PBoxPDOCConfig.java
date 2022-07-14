@@ -54,7 +54,7 @@ public class PBoxPDOCConfig extends PBoxPDObject implements PDOCConfig {
 	}
 
 	@Override
-	public String getOCGsNotContainInOrder() {
+	public String getOCGsNotContainedInOrder() {
 		Set<String> groupNamesSet = new TreeSet<>(groupNames);
 		COSBase order = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.ORDER);
 		if (order != null) {
