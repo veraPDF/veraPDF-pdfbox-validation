@@ -98,6 +98,18 @@ class PdfBoxFoundry extends AbstractFoundry {
 	}
 
 	@Override
+	public PDFAParser createParser(File file, PDFAFlavour pdfaFlavour, String password)
+			throws ModelParsingException, EncryptedPdfException {
+		return createParser(file, pdfaFlavour);
+	}
+
+	@Override
+	public PDFAParser createParser(File file, PDFAFlavour pdfaFlavour, PDFAFlavour defaultFlavour, String password)
+			throws ModelParsingException, EncryptedPdfException {
+		return createParser(file, pdfaFlavour, defaultFlavour);
+	}
+
+	@Override
 	public PDFAParser createParser(File file, PDFAFlavour pdfaFlavour, PDFAFlavour defaultFlavour)
 			throws ModelParsingException, EncryptedPdfException {
 		return ModelParser.createModelWithFlavour(file, pdfaFlavour, defaultFlavour);
