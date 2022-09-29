@@ -35,12 +35,17 @@ public class PBoxSEHn extends PBoxSEGeneral implements SEHn {
 
     @Override
     public Boolean gethasCorrectNestingLevel() {
-        int nestingLevel = new Integer(getstandardType().substring(1));
+        int nestingLevel = Integer.parseInt(getstandardType().substring(1));
         if (nestingLevel > StaticContainers.getLastHeadingNestingLevel() + 1) {
             StaticContainers.setLastHeadingNestingLevel(nestingLevel);
             return false;
         }
         StaticContainers.setLastHeadingNestingLevel(nestingLevel);
         return true;
+    }
+
+    @Override
+    public Long getnestingLevel() {
+        return Long.parseLong(getstandardType().substring(1));
     }
 }
