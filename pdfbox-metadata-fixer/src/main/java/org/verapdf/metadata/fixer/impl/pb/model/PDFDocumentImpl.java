@@ -20,6 +20,7 @@
  */
 package org.verapdf.metadata.fixer.impl.pb.model;
 
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.xmp.XMPException;
 import org.verapdf.xmp.impl.VeraPDFMeta;
 import org.apache.log4j.Logger;
@@ -147,14 +148,14 @@ public class PDFDocumentImpl implements PDFDocument {
 	 */
 	@Override
 	public MetadataFixerResult saveDocumentIncremental(final MetadataFixerResultImpl.RepairStatus status,
-			OutputStream output) {
+			OutputStream output, PDFAFlavour flavour) {
 		MetadataFixerResultImpl.Builder builder = new MetadataFixerResultImpl.Builder();
 		try {
 			PDMetadata meta = this.document.getDocumentCatalog().getMetadata();
 			boolean isMetaPresent = meta != null && this.isNeedToBeUpdated();
 			boolean isMetaAdd = meta == null && this.metadata != null;
 			if (isMetaPresent || isMetaAdd) {
-				this.metadata.updateMetadataStream();
+				this.metadata.updateMetadataStream(builder, flavour);
 				if (isMetaAdd) {
 					this.document.getDocumentCatalog().getCOSObject().setNeedToBeUpdated(true);
 				}
