@@ -116,7 +116,8 @@ abstract class MetadataFixerImpl implements MetadataFixer {
 
 				updateModificationDate(document, resultBuilder);
 
-				MetadataFixerResult partialResult = document.saveDocumentIncremental(resultBuilder.getStatus(), output);
+				MetadataFixerResult partialResult = document.saveDocumentIncremental(resultBuilder.getStatus(), output,
+						result.getPDFAFlavour());
 				resultBuilder.status(partialResult.getRepairStatus());
 				for (String fix : partialResult.getAppliedFixes()) {
 					resultBuilder.addFix(fix);

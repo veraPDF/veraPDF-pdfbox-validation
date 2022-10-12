@@ -230,7 +230,7 @@ public class MetadataImpl implements Metadata {
     }
 
     @Override
-    public void updateMetadataStream() throws IOException, XMPException {
+    public void updateMetadataStream(MetadataFixerResultImpl.Builder resultBuilder, PDFAFlavour flavour) throws IOException, XMPException {
         if (!this.stream.isNeedToBeUpdated()) {
             return;
         }
