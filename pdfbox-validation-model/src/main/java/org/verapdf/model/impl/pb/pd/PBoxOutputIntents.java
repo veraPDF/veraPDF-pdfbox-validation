@@ -70,6 +70,11 @@ public class PBoxOutputIntents extends GenericModelObject implements OutputInten
     }
 
     @Override
+    public String getoutputProfileIndirects() {
+        return null;
+    }
+
+    @Override
     public List<? extends Object> getLinkedObjects(String link) {
         switch (link) {
             case OUTPUT_INTENTS:

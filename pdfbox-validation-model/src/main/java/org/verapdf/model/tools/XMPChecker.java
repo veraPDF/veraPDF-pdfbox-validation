@@ -107,7 +107,7 @@ public final class XMPChecker {
 		return Boolean.FALSE;
 	}
 
-	private static COSStream getMetadataDictionary(COSDocument document) throws IOException {
+	public static COSStream getMetadataDictionary(COSDocument document) throws IOException {
 		final COSDictionary catalog = (COSDictionary) document.getCatalog().getObject();
 		final COSObject metaObj = (COSObject) catalog.getItem(COSName.METADATA);
 		if (metaObj != null && metaObj.getObject() instanceof COSStream) {
@@ -232,8 +232,15 @@ public final class XMPChecker {
 		return Boolean.FALSE;
 	}
 
-	private static Calendar getCalendar(String date) {
+	public static Calendar getCalendar(String date) {
 		Matcher matcher = Pattern.compile("((([+-](\\d\\d[']))(\\d\\d['])?)|[Z])").matcher(date);
 		return DateConverter.toCalendar(date, matcher.find());
+	}
+
+	public static String getStringWithoutTrailingZero(String string) {
+		if (string != null && string.endsWith("\0")) {
+			return string.substring(0, string.length() - 1);
+		}
+		return string;
 	}
 }
