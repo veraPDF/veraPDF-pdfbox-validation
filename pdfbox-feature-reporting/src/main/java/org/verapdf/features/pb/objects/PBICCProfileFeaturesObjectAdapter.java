@@ -20,7 +20,7 @@
  */
 package org.verapdf.features.pb.objects;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.verapdf.features.objects.ICCProfileFeaturesObjectAdapter;
@@ -39,7 +39,7 @@ import java.util.*;
 public class PBICCProfileFeaturesObjectAdapter implements ICCProfileFeaturesObjectAdapter {
 
 	private static final Logger LOGGER = Logger
-			.getLogger(PBICCProfileFeaturesObjectAdapter.class);
+			.getLogger(PBICCProfileFeaturesObjectAdapter.class.getCanonicalName());
 
 	private static final int HEADER_SIZE = 128;
 	private static final int FF_FLAG = 0xFF;
@@ -123,7 +123,7 @@ public class PBICCProfileFeaturesObjectAdapter implements ICCProfileFeaturesObje
 				}
 
 			} catch (IOException e) {
-				LOGGER.debug("Reading byte array from InputStream error", e);
+				LOGGER.log(java.util.logging.Level.INFO, "Reading byte array from InputStream error. " + e.getMessage());
 				this.errors.add(e.getMessage());
 			}
 		}
@@ -216,7 +216,7 @@ public class PBICCProfileFeaturesObjectAdapter implements ICCProfileFeaturesObje
 			try {
 				return profile.getUnfilteredStream();
 			} catch (IOException e) {
-				LOGGER.debug("Can not get iccProfile stream", e);
+				LOGGER.log(java.util.logging.Level.INFO, "Can not get iccProfile stream. " + e.getMessage());
 			}
 		}
 		return null;

@@ -23,7 +23,7 @@ package org.verapdf.metadata.fixer.impl.pb.model;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.xmp.XMPException;
 import org.verapdf.xmp.impl.VeraPDFMeta;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
@@ -48,7 +48,7 @@ import static org.verapdf.pdfa.results.MetadataFixerResult.RepairStatus.*;
  */
 public class PDFDocumentImpl implements PDFDocument {
 
-	private static final Logger LOGGER = Logger.getLogger(PDFDocumentImpl.class);
+	private static final Logger LOGGER = Logger.getLogger(PDFDocumentImpl.class.getCanonicalName());
 
 	private final PDDocument document;
 	private MetadataImpl metadata;
@@ -103,9 +103,9 @@ public class PDFDocumentImpl implements PDFDocument {
 				return new MetadataImpl(xmp, meta.getStream());
 			}
 		} catch (IOException e) {
-			LOGGER.debug("Problems with document parsing or structure. " + e.getMessage(), e);
+			LOGGER.log(java.util.logging.Level.INFO, "Problems with document parsing or structure. " + e.getMessage());
 		} catch (XMPException e) {
-			LOGGER.debug("Problems with XMP parsing. " + e.getMessage(), e);
+			LOGGER.log(java.util.logging.Level.INFO, "Problems with XMP parsing. " + e.getMessage());
 		}
 		return null;
 	}
@@ -166,7 +166,7 @@ public class PDFDocumentImpl implements PDFDocument {
 				builder.status(status);
 			}
 		} catch (Exception e) {
-			LOGGER.info(e);
+			LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 			builder.status(FIX_ERROR).addFix("Problems with document save. " + e.getMessage());
 		}
 		return builder.build();
@@ -184,7 +184,7 @@ public class PDFDocumentImpl implements PDFDocument {
 				if (base instanceof COSStream) {
 					metas.add((COSStream) base);
 				} else {
-					LOGGER.debug("Founded non-stream Metadata dictionary.");
+					LOGGER.log(java.util.logging.Level.INFO, "Founded non-stream Metadata dictionary.");
 				}
 			}
 			for (COSStream stream : metas) {
@@ -195,13 +195,13 @@ public class PDFDocumentImpl implements PDFDocument {
 						stream.setNeedToBeUpdated(true);
 						++res;
 					} catch (IOException e) {
-						LOGGER.debug("Problems with unfilter stream.", e);
+						LOGGER.log(java.util.logging.Level.INFO, "Problems with unfilter stream. " + e.getMessage());
 						return -1;
 					}
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.debug("Can not obtain Metadata objects", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Can not obtain Metadata objects. " + e.getMessage());
 			return -1;
 		}
 

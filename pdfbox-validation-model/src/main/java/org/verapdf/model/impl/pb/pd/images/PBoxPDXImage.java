@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.pd.images;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDResources;
@@ -50,7 +50,7 @@ import java.util.List;
  */
 public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDXImage.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDXImage.class.getCanonicalName());
 
 	public static final String X_IMAGE_TYPE = "PDXImage";
 
@@ -118,7 +118,7 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.debug("Problems with obtaining SMask. " + e.getMessage(), e);
+			LOGGER.log(java.util.logging.Level.INFO, "Problems with obtaining SMask. " + e.getMessage());
 		}
 		return Collections.emptyList();
 	}
@@ -135,7 +135,7 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 		if (pbObject instanceof PDImageXObjectProxy) {
 			return new PBoxPDSMaskImage((PDImageXObjectProxy) pbObject, resources, document, flavour);
 		}
-		LOGGER.debug("SMask object is not an Image XObject");
+		LOGGER.log(java.util.logging.Level.INFO, "SMask object is not an Image XObject");
 		return null;
 	}
 
@@ -168,7 +168,7 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 					return Collections.unmodifiableList(colorSpaces);
 				}
 			} catch (IOException e) {
-				LOGGER.debug("Could not obtain Image XObject color space. " + e.getMessage(), e);
+				LOGGER.log(java.util.logging.Level.INFO, "Could not obtain Image XObject color space. " + e.getMessage());
 			}
 		}
 		return Collections.emptyList();
@@ -232,7 +232,7 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.debug("Problems with stream obtain.", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Problems with stream obtain. " + e.getMessage());
 		}
 		return Collections.emptyList();
 	}

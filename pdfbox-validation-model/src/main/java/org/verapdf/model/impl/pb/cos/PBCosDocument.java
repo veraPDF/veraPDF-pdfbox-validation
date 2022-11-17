@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.cos;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDEmbeddedFilesNameTreeNode;
@@ -46,7 +46,7 @@ import java.util.*;
  */
 public class PBCosDocument extends PBCosObject implements CosDocument {
 
-	private static final Logger LOGGER = Logger.getLogger(PBCosDocument.class);
+	private static final Logger LOGGER = Logger.getLogger(PBCosDocument.class.getCanonicalName());
 
 	/** Type name for PBCosDocument */
 	public static final String COS_DOCUMENT_TYPE = "CosDocument";
@@ -264,7 +264,7 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 				boolean value = ((COSDictionary) markInfo).getBoolean(marked, false);
 				return Boolean.valueOf(value);
 			} else {
-				LOGGER.debug("MarkedInfo must be a 'COSDictionary' but got: " + markInfo.getClass().getSimpleName());
+				LOGGER.log(java.util.logging.Level.INFO, "MarkedInfo must be a 'COSDictionary' but got: " + markInfo.getClass().getSimpleName());
 				return null;
 			}
 		}
@@ -281,7 +281,7 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 				COSName suspects = COSName.getPDFName("Suspects");
 				return ((COSDictionary) markInfo).getBoolean(suspects, false);
 			} else {
-				LOGGER.debug("MarkedInfo must be a 'COSDictionary' but got: " + markInfo.getClass().getSimpleName());
+				LOGGER.log(java.util.logging.Level.INFO, "MarkedInfo must be a 'COSDictionary' but got: " + markInfo.getClass().getSimpleName());
 				return null;
 			}
 		}
@@ -299,7 +299,7 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 				boolean value = ((COSDictionary) viewerPref).getBoolean(displayDocTitle, false);
 				return Boolean.valueOf(value);
 			} else {
-				LOGGER.debug("viewerPref must be a 'COSDictionary' but got: " + viewerPref.getClass().getSimpleName());
+				LOGGER.log(java.util.logging.Level.INFO, "viewerPref must be a 'COSDictionary' but got: " + viewerPref.getClass().getSimpleName());
 				return null;
 			}
 		}
@@ -426,7 +426,7 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.debug("Something wrong with getting embedded files - return empty list. " + e.getMessage(), e);
+			LOGGER.log(java.util.logging.Level.INFO, "Something wrong with getting embedded files - return empty list. " + e.getMessage());
 		}
 	}
 

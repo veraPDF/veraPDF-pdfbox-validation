@@ -20,7 +20,7 @@
  */
 package org.verapdf.metadata.fixer;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.verapdf.component.ComponentDetails;
 import org.verapdf.component.Components;
 import org.verapdf.metadata.fixer.entity.InfoDictionary;
@@ -61,7 +61,7 @@ abstract class MetadataFixerImpl implements MetadataFixer {
 	private static final String componentName = "veraPDF PDF Box Metadata Fixer";
 	private static final ComponentDetails componentDetails = Components.libraryDetails(componentId, componentName);
 	private static final ProfileDirectory PROFILES = Profiles.getVeraProfileDirectory();
-	private static final Logger LOGGER = Logger.getLogger(MetadataFixerImpl.class);
+	private static final Logger LOGGER = Logger.getLogger(MetadataFixerImpl.class.getCanonicalName());
 
 	private static final Map<String, String> attributes = Collections.unmodifiableMap(mkAttsMap());
 
@@ -127,7 +127,7 @@ abstract class MetadataFixerImpl implements MetadataFixer {
 
 			return getErrorResult("Problems with metadata obtain. No possibility to fix metadata.");
 		} catch (Throwable e) {
-			LOGGER.debug(e);
+			LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 			return getErrorResult("Error while fixing metadata: " + e.getMessage());
 		}
 	}
@@ -144,11 +144,11 @@ abstract class MetadataFixerImpl implements MetadataFixer {
 			try {
 				return ProcessedObjectsInspector.validationStatus(result.getTestAssertions(), profile, parser);
 			} catch (IOException | URISyntaxException | ParserConfigurationException | SAXException e) {
-				LOGGER.debug("Problem with validation status obtain. Validation status set as Invalid Document.", e);
+				LOGGER.log(java.util.logging.Level.INFO, "Problem with validation status obtain. Validation status set as Invalid Document. " + e.getMessage());
 				return ValidationStatus.INVALID_DOCUMENT;
 			}
 		}
-		LOGGER.debug("Problem with validation status obtain. Validation status set as Invalid Metadata.");
+		LOGGER.log(java.util.logging.Level.INFO, "Problem with validation status obtain. Validation status set as Invalid Metadata.");
 		return ValidationStatus.INVALID_METADATA;
 	}
 

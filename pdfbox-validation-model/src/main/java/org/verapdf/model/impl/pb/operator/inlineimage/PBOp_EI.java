@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.operator.inlineimage;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
@@ -43,7 +43,7 @@ import java.util.List;
  */
 public class PBOp_EI extends PBOpInlineImage implements Op_EI {
 
-	private static final Logger LOGGER = Logger.getLogger(PBOp_EI.class);
+	private static final Logger LOGGER = Logger.getLogger(PBOp_EI.class.getCanonicalName());
 
 	public static final String OP_EI_TYPE = "Op_EI";
 
@@ -86,7 +86,7 @@ public class PBOp_EI extends PBOpInlineImage implements Op_EI {
 			inlineImages.add(new PBoxPDInlineImage(inlineImage, this.document, this.flavour));
 			return Collections.unmodifiableList(inlineImages);
 		} catch (IOException e) {
-			LOGGER.debug(e);
+			LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 		}
 		return Collections.emptyList();
 	}
@@ -100,7 +100,7 @@ public class PBOp_EI extends PBOpInlineImage implements Op_EI {
 			try {
 				pageRes.put(name, currRes.getColorSpace(name));
 			} catch (IOException e) {
-				LOGGER.debug("Problem with color space coping.", e);
+				LOGGER.log(java.util.logging.Level.INFO, "Problem with color space coping. " + e.getMessage());
 			}
 		}
 

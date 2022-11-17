@@ -29,7 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSString;
@@ -61,7 +61,7 @@ import org.verapdf.pdfa.flavours.PDFAFlavour;
  */
 public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 
-	private static final Logger LOGGER = Logger.getLogger(PBOpTextShow.class);
+	private static final Logger LOGGER = Logger.getLogger(PBOpTextShow.class.getCanonicalName());
 
 	private static final String MSG_PROBLEM_OBTAINING_RESOURCE = "Problem encountered while obtaining resources for ";
 
@@ -166,8 +166,8 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 					res.add(glyph);
 				}
 			} catch (IOException e) {
-				LOGGER.debug("Error processing text show operator's string argument : " + new String(string));
-				LOGGER.info(e);
+				LOGGER.log(java.util.logging.Level.INFO, "Error processing text show operator's string argument : " + new String(string));
+				LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 			}
 		}
 		return res;
@@ -285,7 +285,7 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 		try {
 			return resources.getFont(this.state.getFontName());
 		} catch (IOException e) {
-			LOGGER.debug(MSG_PROBLEM_OBTAINING_RESOURCE + this.state.getFontName().getName() + ". " + e.getMessage(),
+			LOGGER.log(java.util.logging.Level.INFO, MSG_PROBLEM_OBTAINING_RESOURCE + this.state.getFontName().getName() + ". " + e.getMessage(),
 					e);
 			return null;
 		}

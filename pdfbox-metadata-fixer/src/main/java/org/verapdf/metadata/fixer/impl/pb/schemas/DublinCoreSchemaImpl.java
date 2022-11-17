@@ -22,7 +22,7 @@ package org.verapdf.metadata.fixer.impl.pb.schemas;
 
 import org.verapdf.xmp.XMPException;
 import org.verapdf.xmp.impl.VeraPDFMeta;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.verapdf.metadata.fixer.entity.Metadata;
 import org.verapdf.metadata.fixer.schemas.DublinCore;
 
@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class DublinCoreSchemaImpl extends BasicSchemaImpl implements DublinCore {
 
-	private static final Logger LOGGER = Logger.getLogger(DublinCoreSchemaImpl.class);
+	private static final Logger LOGGER = Logger.getLogger(DublinCoreSchemaImpl.class.getCanonicalName());
 
 	public DublinCoreSchemaImpl(VeraPDFMeta meta, Metadata metadata) {
 		super(meta, metadata);
@@ -45,7 +45,7 @@ public class DublinCoreSchemaImpl extends BasicSchemaImpl implements DublinCore 
 		try {
 			return this.meta.getTitle();
 		} catch (XMPException e) {
-			LOGGER.debug("Can not get title.", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Can not get title. " + e.getMessage());
 			throw new IllegalStateException(e);
 		}
 	}
@@ -55,7 +55,7 @@ public class DublinCoreSchemaImpl extends BasicSchemaImpl implements DublinCore 
 		try {
 			this.meta.setTitle(title);
 		} catch (XMPException e) {
-			LOGGER.debug("Can not set title.", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Can not set title. " + e.getMessage());
 			throw new IllegalStateException(e);
 		}
 	}
@@ -65,7 +65,7 @@ public class DublinCoreSchemaImpl extends BasicSchemaImpl implements DublinCore 
 		try {
 			return this.meta.getDescription();
 		} catch (XMPException e) {
-			LOGGER.debug("Can not get subject.", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Can not get subject." + e.getMessage());
 			throw new IllegalStateException(e);
 		}
 	}
@@ -75,7 +75,7 @@ public class DublinCoreSchemaImpl extends BasicSchemaImpl implements DublinCore 
 		try {
 			this.meta.setDescription(description);
 		} catch (XMPException e) {
-			LOGGER.debug("Can not set description.", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Can not set description. " + e.getMessage());
 			throw new IllegalStateException(e);
 		}
 	}
@@ -100,7 +100,7 @@ public class DublinCoreSchemaImpl extends BasicSchemaImpl implements DublinCore 
 			}
 			return creators.size() == 0 ? null : creators.get(0);
 		} catch (XMPException e) {
-			LOGGER.debug("Can not get creator.", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Can not get creator. " + e.getMessage());
 			throw new IllegalStateException(e);
 		}
 	}
@@ -112,7 +112,7 @@ public class DublinCoreSchemaImpl extends BasicSchemaImpl implements DublinCore 
 			res.add(creator);
 			this.meta.setCreator(res);
 		} catch (XMPException e) {
-			LOGGER.debug("Can not set creator.", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Can not set creator. " + e.getMessage());
 			throw new IllegalStateException(e);
 		}
 	}

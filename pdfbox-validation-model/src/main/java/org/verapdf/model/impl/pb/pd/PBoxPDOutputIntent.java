@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.pd;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
@@ -40,7 +40,7 @@ import java.util.List;
  */
 public class PBoxPDOutputIntent extends PBoxPDObject implements PDOutputIntent {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDOutputIntent.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDOutputIntent.class.getCanonicalName());
 
 	public static final String OUTPUT_INTENT_TYPE = "PDOutputIntent";
 

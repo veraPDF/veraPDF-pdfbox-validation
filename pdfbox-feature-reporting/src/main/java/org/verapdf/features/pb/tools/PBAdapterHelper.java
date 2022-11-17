@@ -20,7 +20,7 @@
  */
 package org.verapdf.features.pb.tools;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.cos.COSStream;
@@ -38,7 +38,7 @@ import java.io.InputStream;
  */
 public final class PBAdapterHelper {
 
-	private static final Logger LOGGER = Logger.getLogger(PBAdapterHelper.class);
+	private static final Logger LOGGER = Logger.getLogger(PBAdapterHelper.class.getCanonicalName());
 
 	private PBAdapterHelper() {
 	}
@@ -95,7 +95,7 @@ public final class PBAdapterHelper {
 				try {
 					return stream.getUnfilteredStream();
 				} catch (IOException e) {
-					LOGGER.debug("Error while obtaining unfiltered metadata stream", e);
+					LOGGER.log(java.util.logging.Level.INFO, "Error while obtaining unfiltered metadata stream. " + e.getMessage());
 				}
 			}
 		}

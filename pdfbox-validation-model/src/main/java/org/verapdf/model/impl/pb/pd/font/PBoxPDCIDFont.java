@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.pd.font;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
@@ -48,7 +48,7 @@ import java.util.List;
  */
 public class PBoxPDCIDFont extends PBoxPDFont implements PDCIDFont {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDCIDFont.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDCIDFont.class.getCanonicalName());
 
 	private final PDDocument pdDocument;
 	private final PDFAFlavour flavour;
@@ -110,7 +110,7 @@ public class PBoxPDCIDFont extends PBoxPDFont implements PDCIDFont {
 					}
 				}
 		} catch (IOException e) {
-			LOGGER.debug("Error while parsing embedded font program. " + e.getMessage(), e);
+			LOGGER.log(java.util.logging.Level.INFO, "Error while parsing embedded font program. " + e.getMessage());
 			return Boolean.FALSE;
 		}
 		return Boolean.TRUE;
@@ -147,7 +147,7 @@ public class PBoxPDCIDFont extends PBoxPDFont implements PDCIDFont {
 	private static byte[] getCIDsFromCIDSet(InputStream cidSet, int length) throws IOException {
 		byte[] cidSetBytes = new byte[length];
 		if (cidSet.read(cidSetBytes) != length) {
-			LOGGER.debug("Did not read necessary number of cid set bytes");
+			LOGGER.log(java.util.logging.Level.INFO, "Did not read necessary number of cid set bytes");
 		}
 		return cidSetBytes;
 	}

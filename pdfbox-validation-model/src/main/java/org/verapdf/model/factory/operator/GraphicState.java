@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.factory.operator;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
@@ -46,7 +46,7 @@ import java.io.IOException;
  */
 public class GraphicState implements Cloneable {
 
-    private static final Logger LOGGER = Logger.getLogger(GraphicState.class);
+    private static final Logger LOGGER = Logger.getLogger(GraphicState.class.getCanonicalName());
 
     private PDColorSpace fillColorSpace = PDDeviceGray.INSTANCE;
     private PDColorSpace strokeColorSpace = PDDeviceGray.INSTANCE;
@@ -387,7 +387,7 @@ public class GraphicState implements Cloneable {
 				this.overprintingFlagStroke = extGState.getStrokingOverprintControl();
 				this.overprintingFlagNonStroke = extGState.getNonStrokingOverprintControl();
             } catch (IOException e) {
-                LOGGER.debug(e);
+                LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
             }
         }
     }

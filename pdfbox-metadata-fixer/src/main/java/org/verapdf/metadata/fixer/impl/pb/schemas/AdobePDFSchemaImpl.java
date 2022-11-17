@@ -22,7 +22,7 @@ package org.verapdf.metadata.fixer.impl.pb.schemas;
 
 import org.verapdf.xmp.XMPException;
 import org.verapdf.xmp.impl.VeraPDFMeta;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.verapdf.metadata.fixer.entity.Metadata;
 import org.verapdf.metadata.fixer.schemas.AdobePDF;
 
@@ -30,7 +30,7 @@ import org.verapdf.metadata.fixer.schemas.AdobePDF;
  * @author Evgeniy Muravitskiy
  */
 public class AdobePDFSchemaImpl extends BasicSchemaImpl implements AdobePDF {
-	private static final Logger LOGGER = Logger.getLogger(AdobePDFSchemaImpl.class);
+	private static final Logger LOGGER = Logger.getLogger(AdobePDFSchemaImpl.class.getCanonicalName());
 
 	public AdobePDFSchemaImpl(VeraPDFMeta meta, Metadata metadata) {
 		super(meta, metadata);
@@ -41,7 +41,7 @@ public class AdobePDFSchemaImpl extends BasicSchemaImpl implements AdobePDF {
 		try {
 			return this.meta.getProducer();
 		} catch (XMPException e) {
-			LOGGER.debug("Can not get producer.", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Can not get producer. " + e.getMessage());
 			throw new IllegalStateException(e);
 		}
 	}
@@ -51,7 +51,7 @@ public class AdobePDFSchemaImpl extends BasicSchemaImpl implements AdobePDF {
 		try {
 			this.meta.setProducer(producer);
 		} catch (XMPException e) {
-			LOGGER.debug("Can not set producer.", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Can not set producer. " + e.getMessage());
 			throw new IllegalStateException(e);
 		}
 	}
@@ -61,7 +61,7 @@ public class AdobePDFSchemaImpl extends BasicSchemaImpl implements AdobePDF {
 		try {
 			return this.meta.getKeywords();
 		} catch (XMPException e) {
-			LOGGER.debug("Can not get keywords.", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Can not get keywords. " + e.getMessage());
 			throw new IllegalStateException(e);
 		}
 	}
@@ -71,7 +71,7 @@ public class AdobePDFSchemaImpl extends BasicSchemaImpl implements AdobePDF {
 		try {
 			this.meta.setKeywords(keywords);
 		} catch (XMPException e) {
-			LOGGER.debug("Can not set keywords.", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Can not set keywords. " + e.getMessage());
 			throw new IllegalStateException(e);
 		}
 	}

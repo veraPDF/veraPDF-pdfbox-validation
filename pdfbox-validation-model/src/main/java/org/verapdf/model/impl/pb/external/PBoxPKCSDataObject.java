@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.external;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSString;
 import org.verapdf.model.external.PKCSDataObject;
 import org.verapdf.pdfa.parsers.pkcs7.PKCS7;
@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class PBoxPKCSDataObject extends PBoxExternal implements PKCSDataObject {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxPKCSDataObject.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxPKCSDataObject.class.getCanonicalName());
 
 	/** Type name for {@code PBoxPKCSDataObject} */
 	public static final String PKCS_DATA_OBJECT_TYPE = "PKCSDataObject";
@@ -50,7 +50,7 @@ public class PBoxPKCSDataObject extends PBoxExternal implements PKCSDataObject {
 		try {
 			pkcs7 = new PKCS7(pkcsData.getBytes());
 		} catch (IOException e) {    //TODO: what do we do if some problem happens here?
-			LOGGER.debug("Passed PKCS7 object can't be read", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Passed PKCS7 object can't be read. " + e.getMessage());
 			pkcs7 = getEmptyPKCS7();
 		}
 	}

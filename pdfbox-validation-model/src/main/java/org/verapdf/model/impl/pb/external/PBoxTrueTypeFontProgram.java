@@ -24,7 +24,7 @@ import org.apache.fontbox.FontBoxFont;
 import org.apache.fontbox.ttf.CmapSubtable;
 import org.apache.fontbox.ttf.CmapTable;
 import org.apache.fontbox.ttf.TrueTypeFont;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.verapdf.model.external.TrueTypeFontProgram;
 
 import java.io.IOException;
@@ -36,7 +36,7 @@ import java.io.IOException;
  */
 public class PBoxTrueTypeFontProgram extends PBoxFontProgram implements TrueTypeFontProgram {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxTrueTypeFontProgram.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxTrueTypeFontProgram.class.getCanonicalName());
 
 	/** Type name of {@code PBoxTrueTypeFontProgram} */
 	public static final String TRUE_TYPE_PROGRAM_TYPE = "TrueTypeFontProgram";
@@ -70,7 +70,7 @@ public class PBoxTrueTypeFontProgram extends PBoxFontProgram implements TrueType
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.debug(e);
+			LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 		}
 	}
 

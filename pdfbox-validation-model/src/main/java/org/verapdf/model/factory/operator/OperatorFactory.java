@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.factory.operator;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
@@ -41,7 +41,7 @@ import java.util.*;
 public final class OperatorFactory {
 
     private static final Logger LOGGER = Logger
-            .getLogger(OperatorFactory.class);
+            .getLogger(OperatorFactory.class.getCanonicalName());
     private static final String MSG_UNEXPECTED_OBJECT_TYPE = "Unexpected type of object in tokens: ";
     private static final String GS_CLONE_MALFUNCTION = "GraphicsState clone function threw CloneNotSupportedException.";
 
@@ -136,14 +136,14 @@ public final class OperatorFactory {
                         }
                     }
                 } catch (CloneNotSupportedException e) {
-                    LOGGER.debug("GraphicsState clone issues for pdfBoxToken:" + pdfBoxToken);
-                    LOGGER.debug(GS_CLONE_MALFUNCTION, e);
+                    LOGGER.log(java.util.logging.Level.INFO, "GraphicsState clone issues for pdfBoxToken:" + pdfBoxToken);
+                    LOGGER.log(java.util.logging.Level.INFO, GS_CLONE_MALFUNCTION + " " + e.getMessage());
                 } catch (IOException e) {
-                    LOGGER.debug(e);
+                    LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
                 }
                 arguments = new ArrayList<>();
             } else {
-                LOGGER.debug(MSG_UNEXPECTED_OBJECT_TYPE
+                LOGGER.log(java.util.logging.Level.INFO, MSG_UNEXPECTED_OBJECT_TYPE
                         + pdfBoxToken.getClass().getName());
             }
         }

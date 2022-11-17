@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.cos;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSName;
 import org.verapdf.model.coslayer.CosUnicodeName;
 
@@ -39,7 +39,7 @@ import java.nio.charset.CharsetEncoder;
  */
 public class PBCosUnicodeName extends PBCosName implements CosUnicodeName {
 
-	public static final Logger LOGGER = Logger.getLogger(PBCosUnicodeName.class);
+	public static final Logger LOGGER = Logger.getLogger(PBCosUnicodeName.class.getCanonicalName());
 
 	public static final String COS_UNICODE_NAME_TYPE = "CosUnicodeName";
 
@@ -64,7 +64,7 @@ public class PBCosUnicodeName extends PBCosName implements CosUnicodeName {
 		try {
 			tmp = encoder.encode(CharBuffer.wrap(((COSName) this.baseObject).getName()));
 		} catch (CharacterCodingException e) {
-			LOGGER.debug(e);
+			LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 			return Boolean.FALSE;
 		}
 
@@ -72,7 +72,7 @@ public class PBCosUnicodeName extends PBCosName implements CosUnicodeName {
 			decoder.decode(tmp);
 			return Boolean.TRUE;
 		} catch (CharacterCodingException e){
-			LOGGER.debug(e);
+			LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 			return Boolean.FALSE;
 		}
 	}
@@ -88,7 +88,7 @@ public class PBCosUnicodeName extends PBCosName implements CosUnicodeName {
 		try {
 			return new String(bytes, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			LOGGER.debug("Can not transform " + name + " to unicode string.", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Can not transform " + name + " to unicode string. " + e.getMessage());
 			return null;
 		}
 	}

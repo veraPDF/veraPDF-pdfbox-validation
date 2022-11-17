@@ -20,8 +20,7 @@
  */
 package org.verapdf.model.impl.pb.pd;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageTree;
@@ -52,7 +51,7 @@ import java.util.List;
  */
 public class PBoxPDPage extends PBoxPDObject implements PDPage {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDPage.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDPage.class.getCanonicalName());
 
 	/** Type name for {@code PBoxPDPage} */
 	public static final String PAGE_TYPE = "PDPage";
@@ -144,7 +143,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 			try {
 				return Boolean.valueOf(group != null && group.getColorSpace() != null);
 			} catch (IOException e) {
-				LOGGER.debug("Problem with obtaining group colorspace", e);
+				LOGGER.log(java.util.logging.Level.INFO, "Problem with obtaining group colorspace. " + e.getMessage());
 			}
 		}
 		return Boolean.FALSE;
@@ -321,9 +320,9 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 				return Collections.unmodifiableList(annotations);
 			}
 		} catch (IOException e) {
-			LOGGER.debug(
+			LOGGER.log(java.util.logging.Level.INFO,
 					"Problems in obtaining pdfbox PDAnnotations. "
-							+ e.getMessage(), e);
+							+ e.getMessage());
 		}
 		return Collections.emptyList();
 	}
@@ -384,7 +383,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 				try {
 					return group.getColorSpace();
 				} catch (IOException e) {
-					LOGGER.log(Level.WARN, "Error getting color space");
+					LOGGER.log(java.util.logging.Level.WARNING, "Error getting color space");
 				}
 			}
 		}

@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.pd;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
@@ -58,7 +58,7 @@ import static org.verapdf.model.impl.pb.pd.PBoxPDPage.SQUARE_ORIENTATION;
  */
 public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDDocument.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDDocument.class.getCanonicalName());
 
 	/**
 	 * Type name for {@code PBoxPDDocument}
@@ -232,8 +232,8 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 					}
 				}
 			} catch (IOException e) {
-				LOGGER.debug(
-						"Problems with open action obtaining. " + e.getMessage(), e);
+				LOGGER.log(java.util.logging.Level.INFO,
+						"Problems with open action obtaining. " + e.getMessage());
 			}
 		}
 		return Collections.emptyList();
