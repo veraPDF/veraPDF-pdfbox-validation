@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.pd;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdfparser.PDFStreamParser;
@@ -46,7 +46,7 @@ public class PBoxPDContentStream extends PBoxPDObject implements
         PDContentStream {
 
     private static final Logger LOGGER = Logger
-            .getLogger(PBoxPDContentStream.class);
+            .getLogger(PBoxPDContentStream.class.getCanonicalName());
 
 	public static final String CONTENT_STREAM_TYPE = "PDContentStream";
 
@@ -116,8 +116,8 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 				this.operators = Collections.emptyList();
 			}
 		} catch (IOException e) {
-			LOGGER.debug(
-					"Error while parsing content stream. " + e.getMessage(), e);
+			LOGGER.log(java.util.logging.Level.INFO,
+					"Error while parsing content stream. " + e.getMessage());
 			this.operators = Collections.emptyList();
 		}
 	}

@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.pd;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.common.COSObjectable;
 import org.verapdf.model.pdlayer.PDOCConfig;
@@ -32,7 +32,7 @@ import java.util.*;
  */
 public class PBoxPDOCConfig extends PBoxPDObject implements PDOCConfig {
 
-	public static final Logger LOGGER = Logger.getLogger(PBoxPDOCConfig.class);
+	public static final Logger LOGGER = Logger.getLogger(PBoxPDOCConfig.class.getCanonicalName());
 
 	public static final String OC_CONFIG_TYPE = "PDOCConfig";
 
@@ -66,14 +66,14 @@ public class PBoxPDOCConfig extends PBoxPDObject implements PDOCConfig {
 					} else if (element instanceof COSDictionary) {
 						processCOSDictionaryInOrder((COSDictionary) element, groupNamesSet);
 					} else {
-						LOGGER.debug("Invalid object type in order array. Ignoring the object.");
+						LOGGER.log(java.util.logging.Level.INFO, "Invalid object type in order array. Ignoring the object.");
 					}
 				}
 				if (!groupNamesSet.isEmpty()) {
 					return String.join(",", groupNamesSet);
 				}
 			} else {
-				LOGGER.debug("Invalid object type of Order entry. Ignoring the Order entry.");
+				LOGGER.log(java.util.logging.Level.INFO, "Invalid object type of Order entry. Ignoring the Order entry.");
 			}
 		}
 		return null;
@@ -93,12 +93,12 @@ public class PBoxPDOCConfig extends PBoxPDObject implements PDOCConfig {
 							result = result.concat(event);
 						}
 					} else {
-						LOGGER.debug("Invalid object type in the AS array. Ignoring the object.");
+						LOGGER.log(java.util.logging.Level.INFO, "Invalid object type in the AS array. Ignoring the object.");
 					}
 				}
 				return result;
 			}
-			LOGGER.debug("Invalid object type of AS entry. Ignoring the entry.");
+			LOGGER.log(java.util.logging.Level.INFO, "Invalid object type of AS entry. Ignoring the entry.");
 			return result;
 		}
 		return null;

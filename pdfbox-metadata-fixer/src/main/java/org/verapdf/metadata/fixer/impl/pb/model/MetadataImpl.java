@@ -23,7 +23,7 @@ package org.verapdf.metadata.fixer.impl.pb.model;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
@@ -48,7 +48,7 @@ import org.verapdf.xmp.impl.VeraPDFMeta;
  */
 public class MetadataImpl implements Metadata {
 
-    private static final Logger LOGGER = Logger.getLogger(MetadataImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(MetadataImpl.class.getCanonicalName());
 
     private final VeraPDFMeta metadata;
     private final COSStream stream;
@@ -87,8 +87,8 @@ public class MetadataImpl implements Metadata {
                 this.stream.setNeedToBeUpdated(true);
                 resultBuilder.addFix("Metadata stream filtered with FlateDecode");
             } catch (IOException e) {
-                LOGGER.debug("Problems with setting filter for stream.");
-                LOGGER.debug(e);
+                LOGGER.log(java.util.logging.Level.INFO, "Problems with setting filter for stream.");
+                LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
             }
         }
         this.setRequiredDictionaryValue(COSName.METADATA, COSName.TYPE,
@@ -129,7 +129,7 @@ public class MetadataImpl implements Metadata {
             }
 
         } catch (XMPException e) {
-            LOGGER.debug("Can not obtain identification part.", e);
+            LOGGER.log(java.util.logging.Level.INFO, "Can not obtain identification part. " + e.getMessage());
         }
     }
 
@@ -158,7 +158,7 @@ public class MetadataImpl implements Metadata {
             resultBuilder.addFix("Identification schema added");
 
         } catch (XMPException e) {
-            LOGGER.debug("Can not obtain identification fields.", e);
+            LOGGER.log(java.util.logging.Level.INFO, "Can not obtain identification fields. " + e.getMessage());
         }
     }
 
@@ -199,7 +199,7 @@ public class MetadataImpl implements Metadata {
                     return false;
                 }
         } catch (XMPException e) {
-            LOGGER.debug("Can not obtain identification fields.", e);
+            LOGGER.log(java.util.logging.Level.INFO, "Can not obtain identification fields. " + e.getMessage());
             throw new IllegalStateException(e);
         }
     }

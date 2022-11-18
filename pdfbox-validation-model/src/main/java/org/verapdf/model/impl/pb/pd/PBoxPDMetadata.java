@@ -23,7 +23,7 @@ package org.verapdf.model.impl.pb.pd;
 import org.verapdf.xmp.XMPException;
 import org.verapdf.xmp.impl.VeraPDFMeta;
 import org.verapdf.xmp.impl.VeraPDFXMPNode;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
@@ -47,7 +47,7 @@ import java.util.List;
  */
 public class PBoxPDMetadata extends PBoxPDObject implements PDMetadata {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDMetadata.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDMetadata.class.getCanonicalName());
 
 	public static final String METADATA_TYPE = "PDMetadata";
 
@@ -116,7 +116,7 @@ public class PBoxPDMetadata extends PBoxPDObject implements PDMetadata {
 				}
 			}
 		} catch (XMPException | IOException e) {
-			LOGGER.debug("Problems with parsing metadata. " + e.getMessage(), e);
+			LOGGER.log(java.util.logging.Level.INFO, "Problems with parsing metadata. " + e.getMessage());
 			if (isMainMetadata) {
 				xmp.add(new AXLMainXMPPackage(null, false, this.flavour));
 			} else if (this.flavour == null || this.flavour.getPart() == null

@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.tools;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.*;
 import org.apache.pdfbox.pdmodel.common.PDStream;
@@ -54,7 +54,7 @@ import java.util.Set;
 public class FileSpecificationKeysHelper {
 
     private static final Logger LOGGER = Logger
-            .getLogger(FileSpecificationKeysHelper.class);
+            .getLogger(FileSpecificationKeysHelper.class.getCanonicalName());
 
     private static Set<COSObjectKey> visitedKeys = new HashSet<>();
 
@@ -99,7 +99,7 @@ public class FileSpecificationKeysHelper {
                     }
                 }
             } catch (IOException e) {
-                LOGGER.error("Can not get page annotations", e);
+                LOGGER.log(java.util.logging.Level.SEVERE, "Can not get page annotations. " + e.getMessage());
             }
             parseResources(page.getResources());
         }
@@ -116,12 +116,12 @@ public class FileSpecificationKeysHelper {
             try {
                 processXObject(((PDImageXObjectProxy) xObject).getMask());
             } catch (IOException e) {
-                LOGGER.error("Can not obtain Image xobject Mask", e);
+                LOGGER.log(java.util.logging.Level.SEVERE, "Can not obtain Image xobject Mask. " + e.getMessage());
             }
             try {
                 processXObject(((PDImageXObjectProxy) xObject).getMask());
             } catch (IOException e) {
-                LOGGER.error("Can not obtain Image xobject SMask", e);
+                LOGGER.log(java.util.logging.Level.SEVERE, "Can not obtain Image xobject SMask. " + e.getMessage());
             }
             processImageAlternates((PDImageXObjectProxy) xObject);
         }
@@ -194,7 +194,7 @@ public class FileSpecificationKeysHelper {
             try {
                 processFont(fontSetting.getFont());
             } catch (IOException e) {
-                LOGGER.error("Can not obtain font from extGState's font settings", e);
+                LOGGER.log(java.util.logging.Level.SEVERE, "Can not obtain font from extGState's font settings. " + e.getMessage());
             }
         }
     }
@@ -231,7 +231,7 @@ public class FileSpecificationKeysHelper {
                 PDAbstractPattern pattern = resources.getPattern(name);
                 processPattern(pattern);
             } catch (IOException e) {
-                LOGGER.error("Can not obtain pattern from resources", e);
+                LOGGER.log(java.util.logging.Level.SEVERE, "Can not obtain pattern from resources. " + e.getMessage());
             }
         }
     }
@@ -249,7 +249,7 @@ public class FileSpecificationKeysHelper {
                 PDXObject xObject = resources.getXObject(name);
                 processXObject(xObject);
             } catch (IOException e) {
-                LOGGER.error("Can not obtain xobject from resources", e);
+                LOGGER.log(java.util.logging.Level.SEVERE, "Can not obtain xobject from resources. " + e.getMessage());
             }
         }
     }
@@ -260,7 +260,7 @@ public class FileSpecificationKeysHelper {
                 PDFont font = resources.getFont(name);
                 processFont(font);
             } catch (IOException e) {
-                LOGGER.error("Can not obtain font from resources", e);
+                LOGGER.log(java.util.logging.Level.SEVERE, "Can not obtain font from resources. " + e.getMessage());
             }
         }
     }

@@ -22,7 +22,7 @@ package org.verapdf.model.impl.pb.pd.font;
 
 import org.apache.fontbox.cmap.CMap;
 import org.apache.fontbox.cmap.CMapParser;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
@@ -43,7 +43,7 @@ import java.util.List;
  */
 public class PBoxPDCMap extends PBoxPDObject implements PDCMap {
 
-    private static final Logger LOGGER = Logger.getLogger(PBoxPDCMap.class);
+    private static final Logger LOGGER = Logger.getLogger(PBoxPDCMap.class.getCanonicalName());
 
     public static final String CMAP_TYPE = "PDCMap";
 
@@ -106,7 +106,7 @@ public class PBoxPDCMap extends PBoxPDObject implements PDCMap {
                     return Collections.unmodifiableList(result);
                 }
             } catch (IOException e) {
-                LOGGER.debug("Error while processing cmap", e);
+                LOGGER.log(java.util.logging.Level.INFO, "Error while processing cmap. " + e.getMessage());
             }
         }
         return Collections.emptyList();

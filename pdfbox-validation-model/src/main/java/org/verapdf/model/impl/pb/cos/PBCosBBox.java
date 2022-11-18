@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.cos;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSNumber;
@@ -35,7 +35,7 @@ import org.verapdf.pdfa.flavours.PDFAFlavour;
  */
 public class PBCosBBox extends PBCosArray implements CosBBox {
 
-	private static final Logger LOGGER = Logger.getLogger(PBCosBBox.class);
+	private static final Logger LOGGER = Logger.getLogger(PBCosBBox.class.getCanonicalName());
 
 	public static final String COS_BBOX_TYPE = "CosBBox";
 	private static final int LEFT_CORNER_POSITION = 0;
@@ -91,10 +91,10 @@ public class PBCosBBox extends PBCosArray implements CosBBox {
 			if (base instanceof COSNumber) {
 				return Double.valueOf(((COSNumber) base).doubleValue());
 			}
-				LOGGER.debug("In bbox expected number but got "
+				LOGGER.log(java.util.logging.Level.INFO, "In bbox expected number but got "
 						+ base.getClass().getSimpleName());
 		} else {
-			LOGGER.debug("Expected size of bbox array greater than"
+			LOGGER.log(java.util.logging.Level.INFO, "Expected size of bbox array greater than"
 					+ position + "but got " + array.size());
 		}
 		return null;

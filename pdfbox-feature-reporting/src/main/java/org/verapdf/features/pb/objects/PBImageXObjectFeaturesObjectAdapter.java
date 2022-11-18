@@ -20,6 +20,7 @@
  */
 package org.verapdf.features.pb.objects;
 
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObjectProxy;
 import org.verapdf.features.objects.ImageXObjectFeaturesObjectAdapter;
@@ -39,8 +40,7 @@ import java.util.Set;
  */
 public class PBImageXObjectFeaturesObjectAdapter implements ImageXObjectFeaturesObjectAdapter {
 
-    private static final org.apache.log4j.Logger LOGGER = org.apache.log4j.Logger
-            .getLogger(PBImageXObjectFeaturesObjectAdapter.class);
+    private static final Logger LOGGER = Logger.getLogger(PBImageXObjectFeaturesObjectAdapter.class.getCanonicalName());
 
     private PDImageXObjectProxy imageXObject;
     private String id;
@@ -88,7 +88,7 @@ public class PBImageXObjectFeaturesObjectAdapter implements ImageXObjectFeatures
             }
         } catch (IOException e) {
             this.errors.add("Can't get image stream filters");
-            LOGGER.info(e);
+            LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
         }
     }
 
@@ -168,7 +168,7 @@ public class PBImageXObjectFeaturesObjectAdapter implements ImageXObjectFeatures
                     return imageXObject.getStream().getStream().getFilteredStream();
                 }
             } catch (IOException e) {
-                LOGGER.info(e);
+                LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
             }
         }
         return null;
@@ -308,7 +308,7 @@ public class PBImageXObjectFeaturesObjectAdapter implements ImageXObjectFeatures
                     return ((COSStream) base.getDictionaryObject(COSName.JBIG2_GLOBALS)).getUnfilteredStream();
                 }
             } catch (IOException e) {
-                LOGGER.info(e);
+                LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
             }
             return null;
         }

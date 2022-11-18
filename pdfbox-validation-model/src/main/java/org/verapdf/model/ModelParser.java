@@ -22,7 +22,7 @@ package org.verapdf.model;
 
 import org.verapdf.xmp.XMPException;
 import org.verapdf.xmp.impl.VeraPDFMeta;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
@@ -63,7 +63,7 @@ public final class ModelParser implements PDFAParser {
 
 	private static final String PDFUA_PREFIX = "ua";
 
-	private static final Logger logger = Logger.getLogger(ModelParser.class);
+	private static final Logger LOGGER = Logger.getLogger(ModelParser.class.getCanonicalName());
 
 	private PDDocument document;
 
@@ -153,7 +153,7 @@ public final class ModelParser implements PDFAParser {
 			}
 			return pdfaFlavour;
 		} catch (IOException | XMPException e) {
-			logger.error(e);
+			LOGGER.log(java.util.logging.Level.SEVERE, e.getMessage());
 			return defaultFlavour;
 		}
 	}
@@ -210,7 +210,7 @@ public final class ModelParser implements PDFAParser {
 				this.document.close();
 			}
 		} catch (IOException e) {
-			logger.error("Problems with document close.", e);
+			LOGGER.log(java.util.logging.Level.SEVERE, "Problems with document close. " + e.getMessage());
 		}
 	}
 }

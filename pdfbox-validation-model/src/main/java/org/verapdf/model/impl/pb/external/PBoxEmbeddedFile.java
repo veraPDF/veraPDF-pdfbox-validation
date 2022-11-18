@@ -22,7 +22,7 @@ package org.verapdf.model.impl.pb.external;
 
 import java.io.InputStream;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
@@ -41,7 +41,7 @@ import org.verapdf.pdfa.validation.validators.ValidatorFactory;
  */
 public class PBoxEmbeddedFile extends PBoxExternal implements EmbeddedFile {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxEmbeddedFile.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxEmbeddedFile.class.getCanonicalName());
 
 	/** Type name for {@code PBoxEmbeddedFile} */
 	public static final String EMBEDDED_FILE_TYPE = "EmbeddedFile";
@@ -87,7 +87,7 @@ public class PBoxEmbeddedFile extends PBoxExternal implements EmbeddedFile {
 					return result2b.isCompliant();
 				}
 			} catch (Throwable e) {
-				LOGGER.debug("Exception during validation of embedded file", e);
+				LOGGER.log(java.util.logging.Level.INFO, "Exception during validation of embedded file. " + e.getMessage());
 				return Boolean.FALSE;
 			}
 		}
@@ -125,7 +125,7 @@ public class PBoxEmbeddedFile extends PBoxExternal implements EmbeddedFile {
 					return result4.isCompliant();
 				}
 			} catch (Throwable e) {
-				LOGGER.debug("Exception during validation of embedded file", e);
+				LOGGER.log(java.util.logging.Level.INFO, "Exception during validation of embedded file. " + e.getMessage());
 				return Boolean.FALSE;
 			}
 		}

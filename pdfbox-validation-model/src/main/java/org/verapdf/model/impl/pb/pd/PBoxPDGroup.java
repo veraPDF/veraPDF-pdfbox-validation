@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.pd;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.factory.colors.ColorSpaceFactory;
@@ -38,7 +38,7 @@ import java.util.List;
  */
 public class PBoxPDGroup extends PBoxPDObject implements PDGroup {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDGroup.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDGroup.class.getCanonicalName());
 
 	public static final String GROUP_TYPE = "PDGroup";
 
@@ -80,9 +80,9 @@ public class PBoxPDGroup extends PBoxPDObject implements PDGroup {
 				return Collections.unmodifiableList(colorSpaces);
 			}
 		} catch (IOException e) {
-			LOGGER.debug(
+			LOGGER.log(java.util.logging.Level.INFO,
 					"Problems with color space obtaining on group. "
-							+ e.getMessage(), e);
+							+ e.getMessage());
 		}
 		return Collections.emptyList();
 	}

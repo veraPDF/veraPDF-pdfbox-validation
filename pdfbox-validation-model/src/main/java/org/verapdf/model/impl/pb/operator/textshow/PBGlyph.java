@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.operator.textshow;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDSimpleFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
@@ -36,7 +36,7 @@ import java.io.IOException;
  */
 public class PBGlyph extends GenericModelObject implements Glyph {
 
-	private static final Logger LOGGER = Logger.getLogger(PBGlyph.class);
+	private static final Logger LOGGER = Logger.getLogger(PBGlyph.class.getCanonicalName());
 
 	public final static String GLYPH_TYPE = "Glyph";
 
@@ -63,8 +63,8 @@ public class PBGlyph extends GenericModelObject implements Glyph {
 			this.widthFromDictionary = font.getWidth(glyphCode);
 			this.widthFromFontProgram = font.getWidthFromFont(glyphCode);
 		} catch (IOException e) {
-			LOGGER.debug("Error processing text show operator");
-			LOGGER.info(e);
+			LOGGER.log(java.util.logging.Level.INFO, "Error processing text show operator");
+			LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 		}
 
 
@@ -79,7 +79,7 @@ public class PBGlyph extends GenericModelObject implements Glyph {
 					this.name = null;
 				}
 			} catch (IOException e) {
-				LOGGER.debug("Can't convert code to glyph",e);
+				LOGGER.log(java.util.logging.Level.INFO, "Can't convert code to glyph",e);
 				this.name = null;
 			}
 		}
@@ -87,7 +87,7 @@ public class PBGlyph extends GenericModelObject implements Glyph {
 		try {
 			this.toUnicode = font.toUnicode(glyphCode);
 		} catch (IOException e) {
-			LOGGER.debug(e);
+			LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 			this.toUnicode = null;
 		}
 		this.id = IDGenerator.generateID(font.getCOSObject().hashCode(), font.getName(), glyphCode, renderingMode);

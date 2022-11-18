@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.cos;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -40,7 +40,7 @@ import java.io.IOException;
 public class PBCosObject extends GenericModelObject implements CosObject {
 
     /** Type name for PBCosObject */
-    private static final Logger LOGGER = Logger.getLogger(PBCosObject.class);
+    private static final Logger LOGGER = Logger.getLogger(PBCosObject.class.getCanonicalName());
 
 	public static final int MAX_NUMBER_OF_ELEMENTS = 1;
 
@@ -72,9 +72,9 @@ public class PBCosObject extends GenericModelObject implements CosObject {
                 return (CosObject) base.accept(visitor);
             }
         } catch (IOException e) {
-            LOGGER.debug(
+            LOGGER.log(java.util.logging.Level.INFO,
                     "Problems with wrapping pdfbox object \"" + base.toString()
-                            + "\". " + e.getMessage(), e);
+                            + "\". " + e.getMessage());
         }
         return null;
     }

@@ -22,7 +22,7 @@ package org.verapdf.model.tools;
 
 import org.verapdf.xmp.XMPException;
 import org.verapdf.xmp.impl.VeraPDFMeta;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.util.DateConverter;
 
@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
  */
 public final class XMPChecker {
 
-	private static final Logger LOGGER = Logger.getLogger(XMPChecker.class);
+	private static final Logger LOGGER = Logger.getLogger(XMPChecker.class.getCanonicalName());
 
 	private static final String TITLE = "Title";
 	private static final String SUBJECT = "Subject";
@@ -99,9 +99,9 @@ public final class XMPChecker {
 				return checkMatch(info, properties);
 			}
 		} catch (IOException e) {
-			LOGGER.debug("Problems with document parsing or structure. " + e.getMessage(), e);
+			LOGGER.log(java.util.logging.Level.INFO, "Problems with document parsing or structure. " + e.getMessage());
 		} catch (XMPException e) {
-			LOGGER.debug("Problems with XMP parsing. " + e.getMessage(), e);
+			LOGGER.log(java.util.logging.Level.INFO, "Problems with XMP parsing. " + e.getMessage());
 		}
 
 		return Boolean.FALSE;
@@ -226,7 +226,7 @@ public final class XMPChecker {
 					final Calendar valueDate = getCalendar(ascii);
 					return Boolean.valueOf(valueDate != null && valueDate.compareTo((Calendar) value) == 0);
 				}
-				LOGGER.debug("Date format in info dictionary is not complies pdf date format");
+				LOGGER.log(java.util.logging.Level.INFO, "Date format in info dictionary is not complies pdf date format");
 			}
 		}
 		return Boolean.FALSE;

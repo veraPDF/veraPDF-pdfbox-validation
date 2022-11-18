@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.cos;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
@@ -39,7 +39,7 @@ import java.util.List;
  */
 public class PBCosStream extends PBCosDict implements CosStream {
 
-	private static final Logger logger = Logger.getLogger(PBCosStream.class);
+	private static final Logger LOGGER = Logger.getLogger(PBCosStream.class.getCanonicalName());
 
 	public static final String FILTERS = "filters";
 
@@ -156,10 +156,10 @@ public class PBCosStream extends PBCosDict implements CosStream {
 						decodeParms = ((COSArray) decodeParms).get(i);
 						result.add(createFilter((COSName) filter, decodeParms));
 					} else {
-						logger.debug("Invalid decodeParms type. Ignoring decodeParms.");
+						LOGGER.log(java.util.logging.Level.INFO, "Invalid decodeParms type. Ignoring decodeParms.");
 					}
 				} else {
-					logger.debug("Invalid value type in filters array. Skipping the filter");
+					LOGGER.log(java.util.logging.Level.INFO, "Invalid value type in filters array. Skipping the filter");
 				}
 			}
 		}
@@ -172,7 +172,7 @@ public class PBCosStream extends PBCosDict implements CosStream {
 		} else if (decodeParms instanceof COSDictionary) {
 			return new PBCosFilter(filter, (COSDictionary) decodeParms);
 		} else {
-			logger.debug("Invalid decodeParms type. Ignoring decodeParms.");
+			LOGGER.log(java.util.logging.Level.INFO, "Invalid decodeParms type. Ignoring decodeParms.");
 			return new PBCosFilter(filter, null);
 		}
 	}
@@ -194,11 +194,11 @@ public class PBCosStream extends PBCosDict implements CosStream {
 				if (filter instanceof COSName) {
 					filters.append(((COSName) filter).getName()).append(" ");
 				} else {
-					logger.debug("Incorrect type for stream filter " + filter.getClass().getName());
+					LOGGER.log(java.util.logging.Level.INFO, "Incorrect type for stream filter " + filter.getClass().getName());
 				}
 			}
 		} else {
-			logger.debug("Incorrect type for stream filter " + base.getClass().getName());
+			LOGGER.log(java.util.logging.Level.INFO, "Incorrect type for stream filter " + base.getClass().getName());
 			return null;
 		}
 		// need to discard last white space

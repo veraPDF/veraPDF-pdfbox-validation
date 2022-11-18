@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.pd.signatures;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdfparser.SignatureParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -41,7 +41,7 @@ import java.util.List;
  */
 public class PBoxPDSignature extends PBoxPDObject implements PDSignature {
 
-    private static final Logger LOGGER = Logger.getLogger(PBoxPDSignature.class);
+    private static final Logger LOGGER = Logger.getLogger(PBoxPDSignature.class.getCanonicalName());
 
     /**
      * Type name for {@code PBoxPDSignature}
@@ -101,7 +101,7 @@ public class PBoxPDSignature extends PBoxPDObject implements PDSignature {
             }
             return Boolean.TRUE;
         } catch (IOException ex) {
-            LOGGER.debug("Can't create parser to process digital signature", ex);
+            LOGGER.log(java.util.logging.Level.INFO, "Can't create parser to process digital signature", ex);
             return Boolean.FALSE;
         }
     }

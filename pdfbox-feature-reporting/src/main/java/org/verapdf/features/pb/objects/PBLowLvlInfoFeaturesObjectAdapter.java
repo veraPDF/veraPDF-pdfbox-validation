@@ -20,7 +20,7 @@
  */
 package org.verapdf.features.pb.objects;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.*;
 import org.verapdf.features.objects.LowLvlInfoFeaturesObjectAdapter;
 import org.verapdf.features.pb.tools.PBAdapterHelper;
@@ -36,7 +36,7 @@ import java.util.*;
 public class PBLowLvlInfoFeaturesObjectAdapter implements LowLvlInfoFeaturesObjectAdapter {
 
 	private static final Logger LOGGER = Logger
-			.getLogger(PBLowLvlInfoFeaturesObjectAdapter.class);
+			.getLogger(PBLowLvlInfoFeaturesObjectAdapter.class.getCanonicalName());
 
 	private boolean isPresent;
 	private double headerVersion;
@@ -86,7 +86,7 @@ public class PBLowLvlInfoFeaturesObjectAdapter implements LowLvlInfoFeaturesObje
 					this.isTagged = dict instanceof COSDictionary;
 				}
 			} catch (IOException e) {
-				LOGGER.debug("Can not obtain document catalog", e);
+				LOGGER.log(java.util.logging.Level.INFO, "Can not obtain document catalog. " + e.getMessage());
 				this.errors.add("Can not obtain document catalog");
 			}
 			this.filters = getAllFilters(document);
@@ -106,7 +106,7 @@ public class PBLowLvlInfoFeaturesObjectAdapter implements LowLvlInfoFeaturesObje
 						addFiltersFromBase(res, baseFilter);
 					}
 				} catch (IOException excep) {
-					LOGGER.debug(excep);
+					LOGGER.log(java.util.logging.Level.INFO, excep.getMessage());
 					this.errors.add(excep.getMessage());
 				}
 			}

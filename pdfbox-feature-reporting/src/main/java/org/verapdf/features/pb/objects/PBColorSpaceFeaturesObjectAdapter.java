@@ -20,7 +20,7 @@
  */
 package org.verapdf.features.pb.objects;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.graphics.color.*;
@@ -40,8 +40,7 @@ import java.util.List;
  */
 public class PBColorSpaceFeaturesObjectAdapter implements ColorSpaceFeaturesObjectAdapter {
 
-	private static final Logger LOGGER = Logger
-			.getLogger(PBColorSpaceFeaturesObjectAdapter.class);
+	private static final Logger LOGGER = Logger.getLogger(PBColorSpaceFeaturesObjectAdapter.class.getCanonicalName());
 
 	private PDColorSpace colorSpace;
 	private String id;
@@ -92,7 +91,7 @@ public class PBColorSpaceFeaturesObjectAdapter implements ColorSpaceFeaturesObje
 					try {
 						lookupData = (new PDStream((COSStream) lookupTable)).getByteArray();
 					} catch (IOException e) {
-						LOGGER.info(e);
+						LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 						this.errors.add(e.getMessage());
 					}
 				} else {

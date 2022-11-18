@@ -23,7 +23,7 @@ package org.verapdf.model.impl.pb.pd.font;
 import org.apache.fontbox.FontBoxFont;
 import org.apache.fontbox.cff.CFFFont;
 import org.apache.fontbox.type1.Type1Font;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.verapdf.model.pdlayer.PDType1Font;
@@ -36,7 +36,7 @@ import java.io.IOException;
  */
 public class PBoxPDType1Font extends PBoxPDSimpleFont implements PDType1Font {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDType1Font.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDType1Font.class.getCanonicalName());
 
 	public static final String UNDEFINED_GLYPH = ".notdef";
 	private final PDFAFlavour flavour;
@@ -89,7 +89,7 @@ public class PBoxPDType1Font extends PBoxPDSimpleFont implements PDType1Font {
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.debug("Error while parsing embedded font program. " + e.getMessage(), e);
+			LOGGER.log(java.util.logging.Level.INFO, "Error while parsing embedded font program. " + e.getMessage());
 		}
 		return Boolean.FALSE;
 	}

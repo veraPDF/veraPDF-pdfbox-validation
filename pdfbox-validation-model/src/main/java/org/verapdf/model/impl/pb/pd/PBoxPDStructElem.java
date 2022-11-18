@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.pd;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSInteger;
@@ -58,7 +58,7 @@ import java.util.stream.Collectors;
  */
 public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDStructElem.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDStructElem.class.getCanonicalName());
 
 	/**
 	 * Type name for {@code PBoxPDStructElem}
@@ -104,7 +104,7 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 		if (value instanceof COSName) {
 			return ((COSName) value).getName();
 		}
-		LOGGER.debug("In struct element type expected 'COSName' but got: " + value.getClass().getSimpleName());
+		LOGGER.log(java.util.logging.Level.INFO, "In struct element type expected 'COSName' but got: " + value.getClass().getSimpleName());
 		return null;
 	}
 

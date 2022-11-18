@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.tools.resources;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.font.PDFont;
@@ -41,7 +41,7 @@ import java.util.*;
  */
 public class PDInheritableResources {
 
-	private static final Logger LOGGER = Logger.getLogger(PDInheritableResources.class);
+	private static final Logger LOGGER = Logger.getLogger(PDInheritableResources.class.getCanonicalName());
 
 	public static final PDResources EMPTY_RESOURCES = new PDResources();
 	public static final PDInheritableResources EMPTY_EXTENDED_RESOURCES = new PDEmptyInheritableResources();
@@ -116,8 +116,8 @@ public class PDInheritableResources {
 				return colorSpace;
 			}
 		} catch (IOException e) {
-			LOGGER.debug("Problems during color space obtain from current resource dictionary. "
-					+ "Trying to find it in inherited dictionary", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Problems during color space obtain from current resource dictionary. "
+					+ "Trying to find it in inherited dictionary " + e.getMessage());
 		}
 		PDColorSpace colorSpace = this.inheritedResources.getColorSpace(name);
 		colorSpace = setInheritedColorSpace(colorSpace, name);

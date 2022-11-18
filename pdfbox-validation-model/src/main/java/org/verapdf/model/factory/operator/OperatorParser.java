@@ -23,7 +23,7 @@
  */
 package org.verapdf.model.factory.operator;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSInteger;
 import org.apache.pdfbox.cos.COSName;
@@ -89,7 +89,7 @@ import java.util.List;
  */
 class OperatorParser {
 
-	private static final Logger LOGGER = Logger.getLogger(OperatorParser.class);
+	private static final Logger LOGGER = Logger.getLogger(OperatorParser.class.getCanonicalName());
 	private static final String MSG_PROBLEM_OBTAINING_RESOURCE = "Problem encountered while obtaining resources for ";
 
 	private final Deque<GraphicState> graphicStateStack = new ArrayDeque<>();
@@ -531,9 +531,9 @@ class OperatorParser {
 		try {
 			return resources.getXObject(xobject);
 		} catch (IOException e) {
-			LOGGER.debug(
+			LOGGER.log(java.util.logging.Level.INFO,
 					MSG_PROBLEM_OBTAINING_RESOURCE + xobject + ". "
-							+ e.getMessage(), e);
+							+ e.getMessage());
 			return null;
 		}
 	}
@@ -546,9 +546,9 @@ class OperatorParser {
 		try {
 			return resources.getColorSpace(colorSpace);
 		} catch (IOException e) {
-			LOGGER.debug(
+			LOGGER.log(java.util.logging.Level.INFO,
 					MSG_PROBLEM_OBTAINING_RESOURCE + colorSpace + ". "
-							+ e.getMessage(), e);
+							+ e.getMessage());
 			return null;
 		}
 	}
@@ -561,9 +561,9 @@ class OperatorParser {
 		try {
 			return resources.getShading(shading);
 		} catch (IOException e) {
-			LOGGER.debug(
+			LOGGER.log(java.util.logging.Level.INFO,
 					MSG_PROBLEM_OBTAINING_RESOURCE + shading + ". "
-							+ e.getMessage(), e);
+							+ e.getMessage());
 			return null;
 		}
 	}
@@ -580,7 +580,7 @@ class OperatorParser {
 				try {
 					return RenderingMode.fromInt(((COSInteger) renderingMode).intValue());
 				} catch (ArrayIndexOutOfBoundsException e) {
-					LOGGER.debug("Rendering mode value is incorrect : " + renderingMode, e);
+					LOGGER.log(java.util.logging.Level.INFO, "Rendering mode value is incorrect : " + renderingMode + e.getMessage());
 				}
 			}
 		}
@@ -595,9 +595,9 @@ class OperatorParser {
 		try {
 			return resources.getPattern(pattern);
 		} catch (IOException e) {
-			LOGGER.debug(
+			LOGGER.log(java.util.logging.Level.INFO,
 					MSG_PROBLEM_OBTAINING_RESOURCE + pattern + ". "
-							+ e.getMessage(), e);
+							+ e.getMessage());
 			return null;
 		}
 	}

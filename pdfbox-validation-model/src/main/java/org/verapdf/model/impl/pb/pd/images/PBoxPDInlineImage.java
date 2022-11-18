@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.pd.images;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
@@ -47,7 +47,7 @@ import java.util.List;
  */
 public class PBoxPDInlineImage extends PBoxPDObject implements PDInlineImage {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDInlineImage.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDInlineImage.class.getCanonicalName());
 
 	public static final String F = "F";
 
@@ -142,9 +142,9 @@ public class PBoxPDInlineImage extends PBoxPDObject implements PDInlineImage {
 				return Collections.unmodifiableList(colorSpaces);
 			}
 		} catch (IOException e) {
-			LOGGER.debug(
+			LOGGER.log(java.util.logging.Level.INFO,
 					"Problems with color space obtaining from InlineImage XObject. "
-							+ e.getMessage(), e);
+							+ e.getMessage());
 		}
 		return Collections.emptyList();
 	}

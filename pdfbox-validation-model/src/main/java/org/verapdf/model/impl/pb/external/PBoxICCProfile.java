@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.external;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
 import org.verapdf.model.external.ICCProfile;
@@ -35,7 +35,7 @@ import java.io.InputStream;
  */
 public class PBoxICCProfile extends PBoxExternal implements ICCProfile {
 
-    private static final Logger LOGGER = Logger.getLogger(PBoxICCProfile.class);
+    private static final Logger LOGGER = Logger.getLogger(PBoxICCProfile.class.getCanonicalName());
 
 	/** Length of icc output profile header */
     public static final int HEADER_LENGTH = 128;
@@ -125,7 +125,7 @@ public class PBoxICCProfile extends PBoxExternal implements ICCProfile {
             System.arraycopy(this.profileHeader, start, buffer, 0, length);
             return new String(buffer);
         }
-        LOGGER.debug("Length of icc profile less than " + (start + length));
+        LOGGER.log(java.util.logging.Level.INFO, "Length of icc profile less than " + (start + length));
         return null;
     }
 
@@ -141,7 +141,7 @@ public class PBoxICCProfile extends PBoxExternal implements ICCProfile {
 
             return Double.valueOf(version.toString());
         }
-        LOGGER.debug("ICC profile contain less than 10 bytes of data.");
+        LOGGER.log(java.util.logging.Level.INFO, "ICC profile contain less than 10 bytes of data.");
         return null;
     }
 
