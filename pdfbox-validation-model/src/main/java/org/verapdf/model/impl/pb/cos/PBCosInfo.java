@@ -222,9 +222,12 @@ public class PBCosInfo extends PBCosDict implements CosInfo {
     }
 
     private String getStringProperty(COSName name) {
-        String value = ((COSDictionary)this.baseObject).getString(name);
-        if (value != null) {
-            return XMPChecker.getStringWithoutTrailingZero(value);
+        COSBase value = ((COSDictionary)this.baseObject).getItem(name);
+        if (value != null && !(value instanceof COSNull)) {
+            if (value instanceof COSString) {
+                return XMPChecker.getStringWithoutTrailingZero(((COSString) value).getString());
+            }
+            return value.toString();
         }
         return null;
     }
