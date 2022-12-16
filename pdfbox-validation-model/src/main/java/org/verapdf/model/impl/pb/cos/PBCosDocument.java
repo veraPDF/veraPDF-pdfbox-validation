@@ -223,6 +223,16 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 		}
 	}
 
+	@Override
+	public String getfirstPageIDValue() {
+		return null;
+	}
+
+	@Override
+	public String getlastIDValue() {
+		return null;
+	}
+
 	private static String getTrailerID(COSArray ids) {
 		if (ids != null) {
 			StringBuilder builder = new StringBuilder();
