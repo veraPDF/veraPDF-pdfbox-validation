@@ -85,4 +85,18 @@ public class PBoxSETD extends PBoxSEGeneral implements SETD {
         return TableHelper.getRowSpan((COSDictionary) simplePDObject);
     }
 
+    @Override
+    public Boolean gethasIntersection() {
+        return null;
+    }
+
+    @Override
+    public Boolean gethasConnectedHeader() {
+        return null;
+    }
+
+    @Override
+    public String getunknownHeaders() {
+        return null;
+    }
 }

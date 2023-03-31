@@ -91,7 +91,6 @@ public class PBoxSETable extends PBoxSEGeneral implements SETable {
         return true;
     }
 
-    @Override
     public Boolean getisRegular() {
         List<org.verapdf.model.pdlayer.PDStructElem> listTR = getTR();
         int rowNum = listTR.size();
@@ -136,6 +135,31 @@ public class PBoxSETable extends PBoxSEGeneral implements SETable {
             }
         }
         return true;
+    }
+
+    @Override
+    public Long getcolumnSpan() {
+        return null;
+    }
+
+    @Override
+    public Long getrowSpan() {
+        return null;
+    }
+
+    @Override
+    public Long getnumberOfRowWithWrongColumnSpan() {
+        return null;
+    }
+
+    @Override
+    public Long getnumberOfColumnWithWrongRowSpan() {
+        return null;
+    }
+
+    @Override
+    public Long getwrongColumnSpan() {
+        return null;
     }
 
     private List<org.verapdf.model.pdlayer.PDStructElem> getTR() {
