@@ -111,4 +111,9 @@ public class PBoxSETH extends PBoxSEGeneral implements SETH {
         return TableHelper.getRowSpan((COSDictionary) simplePDObject);
     }
 
+    @Override
+    public Boolean gethasIntersection() {
+        return null;
+    }
+
 }
