@@ -27,7 +27,7 @@ import org.apache.pdfbox.pdmodel.graphics.color.*;
 import org.verapdf.features.objects.ColorSpaceFeaturesObjectAdapter;
 import org.verapdf.features.pb.tools.PBAdapterHelper;
 
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;

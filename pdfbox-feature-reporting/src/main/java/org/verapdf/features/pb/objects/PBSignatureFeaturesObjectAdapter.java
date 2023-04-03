@@ -23,7 +23,7 @@ package org.verapdf.features.pb.objects;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.verapdf.features.objects.SignatureFeaturesObjectAdapter;
 
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Calendar;
