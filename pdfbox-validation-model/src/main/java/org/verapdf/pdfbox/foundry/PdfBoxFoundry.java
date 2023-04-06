@@ -79,13 +79,13 @@ class PdfBoxFoundry extends AbstractFoundry {
 	@Override
 	public PDFAParser createParser(InputStream pdfStream, PDFAFlavour flavour)
 			throws ModelParsingException, EncryptedPdfException {
-		return createParser(pdfStream, flavour);
+		return ModelParser.createModelWithFlavour(pdfStream, flavour);
 	}
 
 	@Override
 	public PDFAParser createParser(InputStream pdfStream, PDFAFlavour flavour, PDFAFlavour defaultFlavour)
 			throws ModelParsingException, EncryptedPdfException {
-		return createParser(pdfStream, flavour, defaultFlavour);
+		return ModelParser.createModelWithFlavour(pdfStream, flavour, defaultFlavour);
 	}
 
 	@Override
