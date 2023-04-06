@@ -69,26 +69,26 @@ public final class ModelParser implements PDFAParser {
 
 	private final PDFAFlavour flavour;
 
-	private ModelParser(final InputStream docStream, PDFAFlavour flavour) throws IOException {
+	private ModelParser(final InputStream docStream, PDFAFlavour flavour, PDFAFlavour defaultFlavour) throws IOException {
 		this.document = PDDocument.load(docStream, false, true);
-		this.flavour = (flavour == PDFAFlavour.NO_FLAVOUR) ? obtainFlavour(this.document) : flavour;
-	}
-
-	private ModelParser(final File pdfFile, PDFAFlavour flavour) throws IOException {
-		this.document = PDDocument.load(pdfFile, false, true);
-		this.flavour = (flavour == PDFAFlavour.NO_FLAVOUR) ? obtainFlavour(this.document) : flavour;
+		this.flavour = detectFlavour(this.document, flavour, defaultFlavour);
 	}
 
 	private ModelParser(final File pdfFile, PDFAFlavour flavour, PDFAFlavour defaultFlavour) throws IOException {
 		this.document = PDDocument.load(pdfFile, false, true);
-		this.flavour = (flavour == PDFAFlavour.NO_FLAVOUR) ? ((defaultFlavour == PDFAFlavour.NO_FLAVOUR) ? obtainFlavour(this.document) : obtainFlavour(this.document, defaultFlavour)) : flavour;
+		this.flavour = detectFlavour(this.document, flavour, defaultFlavour);
 	}
 
 	public static ModelParser createModelWithFlavour(InputStream toLoad, PDFAFlavour flavour)
 			throws ModelParsingException, EncryptedPdfException {
+		return createModelWithFlavour(toLoad, flavour, PDFAFlavour.NO_FLAVOUR);
+	}
+
+	public static ModelParser createModelWithFlavour(InputStream toLoad, PDFAFlavour flavour, PDFAFlavour defaultFlavour)
+			throws ModelParsingException, EncryptedPdfException {
 		try {
 			cleanUp();
-			return new ModelParser(toLoad, flavour);
+			return new ModelParser(toLoad, flavour, defaultFlavour);
 		} catch (InvalidPasswordException excep) {
 			throw new EncryptedPdfException("The PDF stream appears to be encrypted.", excep);
 		} catch (IOException excep) {
@@ -98,14 +98,7 @@ public final class ModelParser implements PDFAParser {
 
 	public static ModelParser createModelWithFlavour(File pdfFile, PDFAFlavour flavour)
 			throws ModelParsingException, EncryptedPdfException {
-		try {
-			cleanUp();
-			return new ModelParser(pdfFile, flavour);
-		} catch (InvalidPasswordException excep) {
-			throw new EncryptedPdfException("The PDF stream appears to be encrypted.", excep);
-		} catch (IOException excep) {
-			throw new ModelParsingException("Couldn't parse stream", excep);
-		}
+		return createModelWithFlavour(pdfFile, flavour, PDFAFlavour.NO_FLAVOUR);
 	}
 
 	public static ModelParser createModelWithFlavour(File pdfFile, PDFAFlavour flavour, PDFAFlavour defaultFlavour)
@@ -120,8 +113,12 @@ public final class ModelParser implements PDFAParser {
 		}
 	}
 
-	private static PDFAFlavour obtainFlavour(PDDocument document) {
-		return obtainFlavour(document, Foundries.defaultInstance().defaultFlavour());
+	private static PDFAFlavour detectFlavour(PDDocument document, PDFAFlavour flavour, PDFAFlavour defaultFlavour) {
+		if (flavour == PDFAFlavour.NO_FLAVOUR) {
+			return obtainFlavour(document, defaultFlavour == PDFAFlavour.NO_FLAVOUR ?
+					Foundries.defaultInstance().defaultFlavour() : defaultFlavour);
+		}
+		return flavour;
 	}
 
 	private static PDFAFlavour obtainFlavour(PDDocument document, PDFAFlavour defaultFlavour) {
