@@ -23,7 +23,7 @@ package org.verapdf.features.test;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.tools.FeatureTreeNode;
 
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;

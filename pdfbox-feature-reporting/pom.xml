@@ -24,13 +24,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>verapdf-pdfbox-validation</artifactId>
+    <artifactId>verapdf-pdfbox-validation-jakarta</artifactId>
     <groupId>org.verapdf</groupId>
     <version>1.23.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>pdfbox-feature-reporting</artifactId>
+  <artifactId>pdfbox-feature-reporting-jakarta</artifactId>
   <name>veraPDF PDF Box Features Reporting</name>
   <description>Reports features extracted from a PDF document.</description>
 
@@ -49,21 +49,21 @@
 
     <dependency>
       <groupId>org.verapdf</groupId>
-      <artifactId>core</artifactId>
+      <artifactId>core-jakarta</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
+      <groupId>org.glassfish.jaxb</groupId>
       <artifactId>jaxb-core</artifactId>
     </dependency>
 
