@@ -20,11 +20,12 @@
  */
 package org.verapdf.model.impl.pb.pd.images;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDStream;
+import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObjectProxy;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosRenderingIntent;
@@ -33,6 +34,7 @@ import org.verapdf.model.factory.colors.ColorSpaceFactory;
 import org.verapdf.model.impl.pb.cos.PBCosRenderingIntent;
 import org.verapdf.model.impl.pb.external.PBoxJPEG2000;
 import org.verapdf.model.pdlayer.PDColorSpace;
+import org.verapdf.model.pdlayer.PDSMaskImage;
 import org.verapdf.model.pdlayer.PDXImage;
 import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
@@ -48,7 +50,7 @@ import java.util.List;
  */
 public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDXImage.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDXImage.class.getCanonicalName());
 
 	public static final String X_IMAGE_TYPE = "PDXImage";
 
@@ -56,6 +58,7 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 	public static final String ALTERNATES = "Alternates";
 	public static final String INTENT = "Intent";
 	public static final String JPX_STREAM = "jpxStream";
+	public static final String S_MASK = "SMask";
 
 	private final boolean interpolate;
 	private List<JPEG2000> jpeg2000List = null;
@@ -95,9 +98,45 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 			return this.getAlternates();
 		case JPX_STREAM:
 			return this.getJPXStream();
+		case S_MASK:
+			return this.getSMask();
 		default:
 			return super.getLinkedObjects(link);
 		}
+	}
+
+	protected List<PDSMaskImage> getSMask() {
+		try {
+			COSStream cosStream = ((org.apache.pdfbox.pdmodel.graphics.PDXObject) this.simplePDObject).getCOSStream();
+			COSBase smaskDictionary = cosStream.getDictionaryObject(COSName.SMASK);
+			if (smaskDictionary instanceof COSDictionary) {
+				PDSMaskImage xObject = this.getXObject(smaskDictionary);
+				if (xObject != null) {
+					List<PDSMaskImage> mask = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+					mask.add(xObject);
+					return Collections.unmodifiableList(mask);
+				}
+			}
+		} catch (IOException e) {
+			LOGGER.log(java.util.logging.Level.INFO, "Problems with obtaining SMask. " + e.getMessage());
+		}
+		return Collections.emptyList();
+	}
+
+	private PDSMaskImage getXObject(COSBase smaskDictionary) throws IOException {
+		COSName name = ((COSDictionary) smaskDictionary).getCOSName(COSName.NAME);
+		String nameAsString = name != null ? name.getName() : null;
+		PDResources resourcesLocal = null;
+		if (this.simplePDObject instanceof PDFormXObject) {
+			resourcesLocal = ((PDFormXObject) this.simplePDObject).getResources();
+		}
+		org.apache.pdfbox.pdmodel.graphics.PDXObject pbObject = org.apache.pdfbox.pdmodel.graphics.PDXObject
+				.createXObject(smaskDictionary, nameAsString, resourcesLocal);
+		if (pbObject instanceof PDImageXObjectProxy) {
+			return new PBoxPDSMaskImage((PDImageXObjectProxy) pbObject, resources, document, flavour);
+		}
+		LOGGER.log(java.util.logging.Level.INFO, "SMask object is not an Image XObject");
+		return null;
 	}
 
 	private List<CosRenderingIntent> getIntent() {
@@ -129,7 +168,7 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 					return Collections.unmodifiableList(colorSpaces);
 				}
 			} catch (IOException e) {
-				LOGGER.debug("Could not obtain Image XObject color space. " + e.getMessage(), e);
+				LOGGER.log(java.util.logging.Level.INFO, "Could not obtain Image XObject color space. " + e.getMessage());
 			}
 		}
 		return Collections.emptyList();
@@ -193,7 +232,7 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.debug("Problems with stream obtain.", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Problems with stream obtain. " + e.getMessage());
 		}
 		return Collections.emptyList();
 	}

@@ -20,8 +20,6 @@
  */
 package org.verapdf.metadata.fixer;
 
-import org.verapdf.metadata.fixer.MetadataFixerImpl;
-
 /**
  * @author Evgeniy Muravitskiy
  */

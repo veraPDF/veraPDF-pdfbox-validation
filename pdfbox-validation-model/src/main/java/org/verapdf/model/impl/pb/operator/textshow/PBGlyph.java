@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.operator.textshow;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDSimpleFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
@@ -36,7 +36,7 @@ import java.io.IOException;
  */
 public class PBGlyph extends GenericModelObject implements Glyph {
 
-	private static final Logger LOGGER = Logger.getLogger(PBGlyph.class);
+	private static final Logger LOGGER = Logger.getLogger(PBGlyph.class.getCanonicalName());
 
 	public final static String GLYPH_TYPE = "Glyph";
 
@@ -45,20 +45,28 @@ public class PBGlyph extends GenericModelObject implements Glyph {
 	private final String id;
 
 	private Boolean glyphPresent;
-	private Boolean widthsConsistent;
+	private float widthFromDictionary;
+	private float widthFromFontProgram;
 	private String name;
 	private String toUnicode;
 	private Long renderingMode;
 
-	public PBGlyph(Boolean glyphPresent, Boolean widthsConsistent, PDFont font, int glyphCode, int renderingMode) {
-		this(glyphPresent, widthsConsistent, font, glyphCode, GLYPH_TYPE, renderingMode);
+	public PBGlyph(Boolean glyphPresent, PDFont font, int glyphCode, int renderingMode) {
+		this(glyphPresent, font, glyphCode, GLYPH_TYPE, renderingMode);
 	}
 
-	public PBGlyph(Boolean glyphPresent, Boolean widthsConsistent, PDFont font, int glyphCode, String type, int renderingMode) {
+	public PBGlyph(Boolean glyphPresent, PDFont font, int glyphCode, String type, int renderingMode) {
 		super(type);
 		this.glyphPresent = glyphPresent;
-		this.widthsConsistent = widthsConsistent;
-		this.renderingMode = Long.valueOf(renderingMode);
+		this.renderingMode = (long) renderingMode;
+		try {
+			this.widthFromDictionary = font.getWidth(glyphCode);
+			this.widthFromFontProgram = font.getWidthFromFont(glyphCode);
+		} catch (IOException e) {
+			LOGGER.log(java.util.logging.Level.INFO, "Error processing text show operator");
+			LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
+		}
+
 
 		if (font instanceof PDSimpleFont) {
 			Encoding encoding = ((PDSimpleFont) font).getEncoding();
@@ -71,7 +79,7 @@ public class PBGlyph extends GenericModelObject implements Glyph {
 					this.name = null;
 				}
 			} catch (IOException e) {
-				LOGGER.debug("Can't convert code to glyph",e);
+				LOGGER.log(java.util.logging.Level.INFO, "Can't convert code to glyph",e);
 				this.name = null;
 			}
 		}
@@ -79,7 +87,7 @@ public class PBGlyph extends GenericModelObject implements Glyph {
 		try {
 			this.toUnicode = font.toUnicode(glyphCode);
 		} catch (IOException e) {
-			LOGGER.debug(e);
+			LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 			this.toUnicode = null;
 		}
 		this.id = IDGenerator.generateID(font.getCOSObject().hashCode(), font.getName(), glyphCode, renderingMode);
@@ -106,8 +114,13 @@ public class PBGlyph extends GenericModelObject implements Glyph {
 	}
 
 	@Override
-	public Boolean getisWidthConsistent() {
-		return this.widthsConsistent;
+	public Double getwidthFromDictionary() {
+		return (double)widthFromDictionary;
+	}
+
+	@Override
+	public Double getwidthFromFontProgram() {
+		return (double)widthFromFontProgram;
 	}
 
 	@Override

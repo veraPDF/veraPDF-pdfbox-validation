@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.cos;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
@@ -39,7 +39,7 @@ import java.util.List;
  */
 public class PBCosStream extends PBCosDict implements CosStream {
 
-	private static final Logger logger = Logger.getLogger(PBCosStream.class);
+	private static final Logger LOGGER = Logger.getLogger(PBCosStream.class.getCanonicalName());
 
 	public static final String FILTERS = "filters";
 
@@ -48,12 +48,12 @@ public class PBCosStream extends PBCosDict implements CosStream {
 	public static final String F_DECODE_PARMS = "FDecodeParms";
 
 	private final Long length;
+	private final Long realLength;
 	private final String fileSpec;
 	private final String fFilter;
 	private final String fDecodeParams;
 	private final boolean streamKeywordCRLFCompliant;
 	private final boolean endstreamKeywordEOLCompliant;
-	private final boolean isLengthCorrect;
 
 	/**
 	 * Default constructor
@@ -69,7 +69,7 @@ public class PBCosStream extends PBCosDict implements CosStream {
 		this.fDecodeParams = stream.getItem(F_DECODE_PARMS) != null ? stream.getItem(F_DECODE_PARMS).toString() : null;
 		this.streamKeywordCRLFCompliant = stream.isStreamKeywordCRLFCompliant();
 		this.endstreamKeywordEOLCompliant = stream.isEndstreamKeywordEOLCompliant().booleanValue();
-		this.isLengthCorrect = this.length != null && this.length.equals(stream.getOriginLength());
+		this.realLength = stream.getOriginLength();
 	}
 
 	/**
@@ -78,6 +78,11 @@ public class PBCosStream extends PBCosDict implements CosStream {
 	@Override
 	public Long getLength() {
 		return this.length;
+	}
+
+	@Override
+	public Long getrealLength() {
+		return realLength;
 	}
 
 	/**
@@ -118,14 +123,6 @@ public class PBCosStream extends PBCosDict implements CosStream {
 		return Boolean.valueOf(this.endstreamKeywordEOLCompliant);
 	}
 
-	/**
-	 * true if the value of Length key matches the actual length of the stream
-	 */
-	@Override
-	public Boolean getisLengthCorrect() {
-		return Boolean.valueOf(this.isLengthCorrect);
-	}
-
 	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
@@ -159,10 +156,10 @@ public class PBCosStream extends PBCosDict implements CosStream {
 						decodeParms = ((COSArray) decodeParms).get(i);
 						result.add(createFilter((COSName) filter, decodeParms));
 					} else {
-						logger.debug("Invalid decodeParms type. Ignoring decodeParms.");
+						LOGGER.log(java.util.logging.Level.INFO, "Invalid decodeParms type. Ignoring decodeParms.");
 					}
 				} else {
-					logger.debug("Invalid value type in filters array. Skipping the filter");
+					LOGGER.log(java.util.logging.Level.INFO, "Invalid value type in filters array. Skipping the filter");
 				}
 			}
 		}
@@ -175,7 +172,7 @@ public class PBCosStream extends PBCosDict implements CosStream {
 		} else if (decodeParms instanceof COSDictionary) {
 			return new PBCosFilter(filter, (COSDictionary) decodeParms);
 		} else {
-			logger.debug("Invalid decodeParms type. Ignoring decodeParms.");
+			LOGGER.log(java.util.logging.Level.INFO, "Invalid decodeParms type. Ignoring decodeParms.");
 			return new PBCosFilter(filter, null);
 		}
 	}
@@ -197,11 +194,11 @@ public class PBCosStream extends PBCosDict implements CosStream {
 				if (filter instanceof COSName) {
 					filters.append(((COSName) filter).getName()).append(" ");
 				} else {
-					logger.debug("Incorrect type for stream filter " + filter.getClass().getName());
+					LOGGER.log(java.util.logging.Level.INFO, "Incorrect type for stream filter " + filter.getClass().getName());
 				}
 			}
 		} else {
-			logger.debug("Incorrect type for stream filter " + base.getClass().getName());
+			LOGGER.log(java.util.logging.Level.INFO, "Incorrect type for stream filter " + base.getClass().getName());
 			return null;
 		}
 		// need to discard last white space

@@ -25,7 +25,6 @@ import org.apache.pdfbox.cos.COSName;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosName;
 import org.verapdf.model.impl.pb.cos.PBCosName;
-import org.verapdf.model.impl.pb.operator.base.PBOperator;
 import org.verapdf.model.operator.OpColor;
 import org.verapdf.model.pdlayer.PDColorSpace;
 

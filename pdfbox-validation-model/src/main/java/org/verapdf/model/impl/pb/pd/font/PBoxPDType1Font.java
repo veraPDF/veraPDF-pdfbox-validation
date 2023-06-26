@@ -23,10 +23,11 @@ package org.verapdf.model.impl.pb.pd.font;
 import org.apache.fontbox.FontBoxFont;
 import org.apache.fontbox.cff.CFFFont;
 import org.apache.fontbox.type1.Type1Font;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.verapdf.model.pdlayer.PDType1Font;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
 
@@ -35,17 +36,21 @@ import java.io.IOException;
  */
 public class PBoxPDType1Font extends PBoxPDSimpleFont implements PDType1Font {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDType1Font.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDType1Font.class.getCanonicalName());
 
 	public static final String UNDEFINED_GLYPH = ".notdef";
+	private final PDFAFlavour flavour;
+
 	public static final String TYPE1_FONT_TYPE = "PDType1Font";
 
-	public PBoxPDType1Font(org.apache.pdfbox.pdmodel.font.PDType1Font font, RenderingMode renderingMode) {
+	public PBoxPDType1Font(org.apache.pdfbox.pdmodel.font.PDType1Font font, RenderingMode renderingMode, PDFAFlavour flavour) {
 		super(font, renderingMode, TYPE1_FONT_TYPE);
+		this.flavour = flavour;
 	}
 
-	public PBoxPDType1Font(org.apache.pdfbox.pdmodel.font.PDType1CFont font, RenderingMode renderingMode) {
+	public PBoxPDType1Font(org.apache.pdfbox.pdmodel.font.PDType1CFont font, RenderingMode renderingMode, PDFAFlavour flavour) {
 		super(font, renderingMode, TYPE1_FONT_TYPE);
+		this.flavour = flavour;
 	}
 
 	@Override
@@ -64,13 +69,15 @@ public class PBoxPDType1Font extends PBoxPDSimpleFont implements PDType1Font {
 							return Boolean.FALSE;
 						}
 					}
-					if (font instanceof Type1Font) {
-						if (((Type1Font) font).getCharStringsDict().size() != splittedCharSet.length) {
-							return Boolean.FALSE;
-						}
-					} else if (font instanceof CFFFont) {
-						if (((CFFFont) font).getNumCharStrings() != splittedCharSet.length) {
-							return Boolean.FALSE;
+					if (flavour.getPart() != PDFAFlavour.Specification.ISO_19005_1) {
+						if (font instanceof Type1Font) {
+							if (((Type1Font) font).getCharStringsDict().size() != splittedCharSet.length) {
+								return Boolean.FALSE;
+							}
+						} else if (font instanceof CFFFont) {
+							if (((CFFFont) font).getNumCharStrings() != splittedCharSet.length) {
+								return Boolean.FALSE;
+							}
 						}
 					}
 
@@ -82,7 +89,7 @@ public class PBoxPDType1Font extends PBoxPDSimpleFont implements PDType1Font {
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.debug("Error while parsing embedded font program. " + e.getMessage(), e);
+			LOGGER.log(java.util.logging.Level.INFO, "Error while parsing embedded font program. " + e.getMessage());
 		}
 		return Boolean.FALSE;
 	}

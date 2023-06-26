@@ -20,7 +20,7 @@
  */
 package org.verapdf.features.pb.objects;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.apache.pdfbox.pdmodel.encryption.PDEncryption;
@@ -40,7 +40,7 @@ import java.util.List;
 public class PBDocSecurityFeaturesObjectAdapter implements DocSecurityFeaturesObjectAdapter {
 
 	private static final Logger LOGGER = Logger
-			.getLogger(PBDocSecurityFeaturesObjectAdapter.class);
+			.getLogger(PBDocSecurityFeaturesObjectAdapter.class.getCanonicalName());
 
 	private PDEncryption encryption;
 	private String ownerKey;
@@ -72,14 +72,14 @@ public class PBDocSecurityFeaturesObjectAdapter implements DocSecurityFeaturesOb
 			try {
 				this.ownerKey = new COSString(encryption.getOwnerKey()).toHexString();
 			} catch (IOException e) {
-				LOGGER.debug("PDFBox error getting owner key data", e);
+				LOGGER.log(java.util.logging.Level.INFO, "PDFBox error getting owner key data. " + e.getMessage());
 				this.errors.add(e.getMessage());
 			}
 
 			try {
 				this.userKey = new COSString(encryption.getUserKey()).toHexString();
 			} catch (IOException e) {
-				LOGGER.debug("PDFBox error getting user key data", e);
+				LOGGER.log(java.util.logging.Level.INFO, "PDFBox error getting user key data. " + e.getMessage());
 				this.errors.add(e.getMessage());
 			}
 
@@ -98,7 +98,7 @@ public class PBDocSecurityFeaturesObjectAdapter implements DocSecurityFeaturesOb
 					this.isExtractAccessibilityAllowed = accessPermissions.canExtractForAccessibility();
 				}
 			} catch (IOException e) {
-				LOGGER.debug("PDFBox reports no matching security handle.", e);
+				LOGGER.log(java.util.logging.Level.INFO, "PDFBox reports no matching security handle. " + e.getMessage());
 				this.errors.add("PDFBox reports no matching security handle.");
 			}
 		}

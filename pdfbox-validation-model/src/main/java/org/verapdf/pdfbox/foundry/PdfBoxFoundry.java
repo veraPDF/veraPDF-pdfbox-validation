@@ -21,7 +21,7 @@
 /**
  * 
  */
-package org.verapdf.pdfa;
+package org.verapdf.pdfbox.foundry;
 
 import org.verapdf.ReleaseDetails;
 import org.verapdf.component.ComponentDetails;
@@ -30,6 +30,10 @@ import org.verapdf.core.EncryptedPdfException;
 import org.verapdf.core.ModelParsingException;
 import org.verapdf.metadata.fixer.PBoxMetadataFixerImpl;
 import org.verapdf.model.ModelParser;
+import org.verapdf.pdfa.AbstractFoundry;
+import org.verapdf.pdfa.VeraPDFFoundry;
+import org.verapdf.pdfa.PDFAParser;
+import org.verapdf.pdfa.MetadataFixer;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.File;
@@ -78,6 +82,24 @@ class PdfBoxFoundry extends AbstractFoundry {
 		return ModelParser.createModelWithFlavour(pdfStream, flavour);
 	}
 
+	@Override
+	public PDFAParser createParser(InputStream pdfStream, PDFAFlavour flavour, PDFAFlavour defaultFlavour)
+			throws ModelParsingException, EncryptedPdfException {
+		return ModelParser.createModelWithFlavour(pdfStream, flavour, defaultFlavour);
+	}
+
+	@Override
+	public PDFAParser createParser(InputStream pdfStream, PDFAFlavour flavour, String password)
+			throws ModelParsingException, EncryptedPdfException {
+		return createParser(pdfStream, flavour);
+	}
+
+	@Override
+	public PDFAParser createParser(InputStream pdfStream, PDFAFlavour flavour, PDFAFlavour defaultFlavour, String password)
+			throws ModelParsingException, EncryptedPdfException {
+		return createParser(pdfStream, flavour, defaultFlavour);
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -91,6 +113,24 @@ class PdfBoxFoundry extends AbstractFoundry {
 	public PDFAParser createParser(File file)
 			throws ModelParsingException, EncryptedPdfException {
 		return createParser(file, PDFAFlavour.NO_FLAVOUR);
+	}
+
+	@Override
+	public PDFAParser createParser(File file, PDFAFlavour pdfaFlavour, String password)
+			throws ModelParsingException, EncryptedPdfException {
+		return createParser(file, pdfaFlavour);
+	}
+
+	@Override
+	public PDFAParser createParser(File file, PDFAFlavour pdfaFlavour, PDFAFlavour defaultFlavour, String password)
+			throws ModelParsingException, EncryptedPdfException {
+		return createParser(file, pdfaFlavour, defaultFlavour);
+	}
+
+	@Override
+	public PDFAParser createParser(File file, PDFAFlavour pdfaFlavour, PDFAFlavour defaultFlavour)
+			throws ModelParsingException, EncryptedPdfException {
+		return ModelParser.createModelWithFlavour(file, pdfaFlavour, defaultFlavour);
 	}
 
 	/**

@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.cos;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDEmbeddedFilesNameTreeNode;
@@ -46,7 +46,7 @@ import java.util.*;
  */
 public class PBCosDocument extends PBCosObject implements CosDocument {
 
-	private static final Logger LOGGER = Logger.getLogger(PBCosDocument.class);
+	private static final Logger LOGGER = Logger.getLogger(PBCosDocument.class.getCanonicalName());
 
 	/** Type name for PBCosDocument */
 	public static final String COS_DOCUMENT_TYPE = "CosDocument";
@@ -55,16 +55,18 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 	public static final String XREF = "xref";
 	public static final String INDIRECT_OBJECTS = "indirectObjects";
 	public static final String DOCUMENT = "document";
+	public static final String DOC = "doc";
 	public static final String EMBEDDED_FILES = "EmbeddedFiles";
 	public static final String ID = "ID";
 	public static final String REQUIREMENTS = "Requirements";
+	public static final COSName PIECE_INFO = COSName.getPDFName("PieceInfo");
 
 	private final PDFAFlavour flavour;
 
 	private PDDocument pdDocument;
 
 	private final long indirectObjectCount;
-	private final float version;
+	private final float headerVersion;
 	private final long headerOffset;
 	private final String header;
 	private final int headerCommentByte1;
@@ -107,7 +109,7 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 		this.flavour = flavour;
 
 		this.indirectObjectCount = cosDocument.getObjects().size();
-		this.version = cosDocument.getVersion();
+		this.headerVersion = cosDocument.getVersion();
 		this.headerOffset = cosDocument.getHeaderOffset();
 		this.header = cosDocument.getHeader();
 		this.headerCommentByte1 = cosDocument.getHeaderCommentByte1();
@@ -149,8 +151,8 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 	 * @return version of pdf document
 	 */
 	@Override
-	public Double getversion() {
-		return Double.valueOf(this.version);
+	public Double getheaderVersion() {
+		return Double.valueOf(this.headerVersion);
 	}
 
 	@Override
@@ -221,6 +223,16 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 		}
 	}
 
+	@Override
+	public String getfirstPageIDValue() {
+		return null;
+	}
+
+	@Override
+	public String getlastIDValue() {
+		return null;
+	}
+
 	private static String getTrailerID(COSArray ids) {
 		if (ids != null) {
 			StringBuilder builder = new StringBuilder();
@@ -256,17 +268,73 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 		if (this.catalog != null) {
 			COSBase markInfo = this.catalog.getDictionaryObject(COSName.MARK_INFO);
 			if (markInfo == null) {
-				return Boolean.FALSE;
+				return null;
 			} else if (markInfo instanceof COSDictionary) {
 				COSName marked = COSName.getPDFName("Marked");
 				boolean value = ((COSDictionary) markInfo).getBoolean(marked, false);
 				return Boolean.valueOf(value);
 			} else {
-				LOGGER.debug("MarkedInfo must be a 'COSDictionary' but got: " + markInfo.getClass().getSimpleName());
-				return Boolean.FALSE;
+				LOGGER.log(java.util.logging.Level.INFO, "MarkedInfo must be a 'COSDictionary' but got: " + markInfo.getClass().getSimpleName());
+				return null;
 			}
 		}
-		return Boolean.FALSE;
+		return null;
+	}
+
+	@Override
+	public Boolean getSuspects() {
+		if (this.catalog != null) {
+			COSBase markInfo = this.catalog.getDictionaryObject(COSName.MARK_INFO);
+			if (markInfo == null) {
+				return null;
+			} else if (markInfo instanceof COSDictionary) {
+				COSName suspects = COSName.getPDFName("Suspects");
+				return ((COSDictionary) markInfo).getBoolean(suspects, false);
+			} else {
+				LOGGER.log(java.util.logging.Level.INFO, "MarkedInfo must be a 'COSDictionary' but got: " + markInfo.getClass().getSimpleName());
+				return null;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public Boolean getDisplayDocTitle() {
+		if (this.catalog != null) {
+			COSBase viewerPref = this.catalog.getDictionaryObject(COSName.VIEWER_PREFERENCES);
+			if (viewerPref == null) {
+				return null;
+			} else if (viewerPref instanceof COSDictionary) {
+				COSName displayDocTitle = COSName.getPDFName("DisplayDocTitle");
+				boolean value = ((COSDictionary) viewerPref).getBoolean(displayDocTitle, false);
+				return Boolean.valueOf(value);
+			} else {
+				LOGGER.log(java.util.logging.Level.INFO, "viewerPref must be a 'COSDictionary' but got: " + viewerPref.getClass().getSimpleName());
+				return null;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public Boolean getcontainsInfo() {
+		return ((COSDocument)baseObject).getTrailer().getDictionaryObject(COSName.INFO) != null;
+	}
+
+	@Override
+	public Boolean getcontainsPieceInfo() {
+		return this.catalog != null && this.catalog.getDictionaryObject(PIECE_INFO) != null;
+	}
+
+
+	@Override
+	public String getMarkInfo() {
+		return null;
+	}
+
+	@Override
+	public String getViewerPreferences() {
+		return null;
 	}
 
 	@Override
@@ -326,6 +394,8 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 			return this.getXRefs();
 		case EMBEDDED_FILES:
 			return this.getEmbeddedFiles();
+		case DOC:
+			return Collections.emptyList();
 		default:
 			return super.getLinkedObjects(link);
 		}
@@ -366,7 +436,7 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.debug("Something wrong with getting embedded files - return empty list. " + e.getMessage(), e);
+			LOGGER.log(java.util.logging.Level.INFO, "Something wrong with getting embedded files - return empty list. " + e.getMessage());
 		}
 	}
 

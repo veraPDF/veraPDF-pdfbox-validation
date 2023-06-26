@@ -20,10 +20,12 @@
  */
 package org.verapdf.model.impl.pb.pd;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
+import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdfparser.PDFStreamParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDResources;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.factory.operator.OperatorFactory;
 import org.verapdf.model.operator.Operator;
@@ -32,8 +34,10 @@ import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -42,11 +46,12 @@ public class PBoxPDContentStream extends PBoxPDObject implements
         PDContentStream {
 
     private static final Logger LOGGER = Logger
-            .getLogger(PBoxPDContentStream.class);
+            .getLogger(PBoxPDContentStream.class.getCanonicalName());
 
 	public static final String CONTENT_STREAM_TYPE = "PDContentStream";
 
 	public static final String OPERATORS = "operators";
+	private static final String RESOURCES = "resources";
 
 	private final PDInheritableResources resources;
 	private List<Operator> operators = null;
@@ -66,10 +71,14 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 
     @Override
     public List<? extends Object> getLinkedObjects(String link) {
-        if (OPERATORS.equals(link)) {
-            return this.getOperators();
-        }
-        return super.getLinkedObjects(link);
+		switch (link) {
+			case OPERATORS:
+				return this.getOperators();
+			case RESOURCES:
+				return this.getResources();
+			default:
+				return super.getLinkedObjects(link);
+		}
     }
 
     private List<Operator> getOperators() {
@@ -107,9 +116,32 @@ public class PBoxPDContentStream extends PBoxPDObject implements
 				this.operators = Collections.emptyList();
 			}
 		} catch (IOException e) {
-			LOGGER.debug(
-					"Error while parsing content stream. " + e.getMessage(), e);
+			LOGGER.log(java.util.logging.Level.INFO,
+					"Error while parsing content stream. " + e.getMessage());
 			this.operators = Collections.emptyList();
 		}
+	}
+
+	@Override
+	public String getundefinedResourceNames() {
+		return resources.getUndefinedResourceNames().stream()
+				.map(COSName::getName)
+				.collect(Collectors.joining(","));
+	}
+
+	@Override
+	public String getinheritedResourceNames() {
+		return resources.getInheritedResourceNames().stream()
+				.map(COSName::getName)
+				.collect(Collectors.joining(","));
+	}
+
+	private List<org.verapdf.model.pdlayer.PDResources> getResources() {
+		List<org.verapdf.model.pdlayer.PDResources> result = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+		PDResources resources = this.resources.getCurrentResources();
+		if (resources != null) {
+			result.add(new PBoxPDResources(resources));
+		}
+		return result;
 	}
 }

@@ -22,7 +22,12 @@ package org.verapdf.model.impl.pb.pd;
 
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.common.PDNumberTreeNode;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDParentTreeValue;
+import org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDStructureTreeRoot;
 import org.apache.pdfbox.pdmodel.interactive.action.PDActionFactory;
 import org.apache.pdfbox.pdmodel.interactive.action.PDAnnotationAdditionalActions;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
@@ -30,16 +35,29 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceDictionary;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceEntry;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.coslayer.CosBM;
+import org.verapdf.model.coslayer.CosLang;
 import org.verapdf.model.coslayer.CosNumber;
+import org.verapdf.model.impl.pb.cos.PBCosBM;
+import org.verapdf.model.impl.pb.cos.PBCosLang;
 import org.verapdf.model.impl.pb.cos.PBCosNumber;
 import org.verapdf.model.impl.pb.pd.actions.PBoxPDAction;
+import org.verapdf.model.impl.pb.pd.actions.PBoxPDAnnotationAdditionalActions;
+import org.verapdf.model.impl.pb.pd.annotations.PBoxPD3DAnnot;
+import org.verapdf.model.impl.pb.pd.annotations.PBoxPDLinkAnnot;
+import org.verapdf.model.impl.pb.pd.annotations.PBoxPDPrinterMarkAnnot;
+import org.verapdf.model.impl.pb.pd.annotations.PBoxPDTrapNetAnnot;
+import org.verapdf.model.impl.pb.pd.annotations.PBoxPDWidgetAnnot;
 import org.verapdf.model.pdlayer.PDAction;
+import org.verapdf.model.pdlayer.PDAdditionalActions;
 import org.verapdf.model.pdlayer.PDAnnot;
 import org.verapdf.model.pdlayer.PDContentStream;
 import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -56,8 +74,14 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	public static final String IC = "IC";
 	public static final String A = "A";
 	public static final String ADDITIONAL_ACTION = "AA";
+	public static final String LANG = "Lang";
+	public static final String LINK = "Link";
+	public static final String PRINTER_MARK = "PrinterMark";
+	public static final String WIDGET = "Widget";
+	public static final String TRAP_NET = "TrapNet";
+	public static final String TYPE_3D = "3D";
+	public static final String BM = "BM";
 
-	public static final int MAX_COUNT_OF_ACTIONS = 10;
 	public static final int X_AXIS = 0;
 	public static final int Y_AXIS = 1;
 
@@ -76,12 +100,14 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 
 	private final PDDocument document;
 	private final PDFAFlavour flavour;
+	private final PDPage pdPage;
 
 	private List<PDContentStream> appearance = null;
+	private List<CosBM> blendMode = null;
 	private boolean containsTransparency = false;
 
-	public PBoxPDAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour) {
-		super(annot, ANNOTATION_TYPE);
+	public PBoxPDAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour, String type, PDPage pdPage) {
+		super(annot, type);
 		this.pageResources = pageResources;
 		this.subtype = annot.getSubtype();
 		this.ap = getAP(annot);
@@ -97,25 +123,24 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		this.height = PBoxPDAnnot.getHeight(annot);
 		this.document = document;
 		this.flavour = flavour;
+		this.pdPage = pdPage;
+	}
+
+	public PBoxPDAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour, PDPage pdPage) {
+		this(annot, pageResources, document, flavour, ANNOTATION_TYPE, pdPage);
 	}
 
 	private static String getAP(PDAnnotation annot) {
 		COSBase apLocal = annot.getCOSObject().getDictionaryObject(COSName.AP);
-		if (apLocal != null && apLocal instanceof COSDictionary) {
-			StringBuilder result = new StringBuilder();
-			for (COSName key : ((COSDictionary) apLocal).keySet()) {
-				result.append(key.getName());
-				result.append(' ');
-			}
-			// remove last whitespace character
-			return result.length() <= 0 ? result.toString() : result.substring(0, result.length() - 1);
+		if (apLocal instanceof COSDictionary) {
+			return ((COSDictionary) apLocal).keySet().stream().map(COSName::getName).collect(Collectors.joining("&"));
 		}
 		return null;
 	}
 
 	private static Double getCA(PDAnnotation annot) {
 		COSBase caLocal = annot.getCOSObject().getDictionaryObject(COSName.CA);
-		return !(caLocal instanceof COSNumber) ? null : Double.valueOf(((COSNumber) caLocal).doubleValue());
+		return !(caLocal instanceof COSNumber) ? null : ((COSNumber) caLocal).doubleValue();
 	}
 
 	private static String getN_type(PDAnnotation annot) {
@@ -170,10 +195,14 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 			COSBase less = ((COSArray) array).getObject(shift);
 			COSBase great = ((COSArray) array).getObject(2 + shift);
 			if (less instanceof COSNumber && great instanceof COSNumber) {
-				return Double.valueOf(((COSNumber) great).doubleValue() - ((COSNumber) less).doubleValue());
+				return ((COSNumber) great).doubleValue() - ((COSNumber) less).doubleValue();
 			}
 		}
 		return null;
+	}
+
+	public PDResources getPageResources() {
+		return pageResources;
 	}
 
 	@Override
@@ -219,15 +248,96 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	@Override
 	public Boolean getcontainsAA() {
 		COSBase pageObject = this.simplePDObject.getCOSObject();
-		return pageObject != null && pageObject instanceof COSDictionary &&
+		return pageObject instanceof COSDictionary &&
 				((COSDictionary) pageObject).containsKey(COSName.AA);
+	}
+
+	@Override
+	public String getstructParentType() {
+		PDStructureTreeRoot structTreeRoot = this.document.getDocumentCatalog().getStructureTreeRoot();
+		int structParent = ((PDAnnotation)this.simplePDObject).getStructParent();
+		if (structTreeRoot != null) {
+			PDNumberTreeNode parentTreeRoot = structTreeRoot.getParentTree();
+			COSBase structureElement = null;
+			try {
+				PDParentTreeValue treeValue = (PDParentTreeValue)parentTreeRoot.getValue(structParent);
+				if (treeValue != null) {
+					structureElement = treeValue.getCOSObject();
+				}
+			} catch (IOException var6) {
+				return null;
+			}
+			if (structureElement != null && structureElement instanceof COSDictionary) {
+				return ((COSDictionary)structureElement).getNameAsString(COSName.S);
+			}
+		}
+		return null;
+	}
+
+	private List<CosLang> getLang() {
+		PDStructureTreeRoot structTreeRoot = this.document.getDocumentCatalog().getStructureTreeRoot();
+		int structParent = ((PDAnnotation) this.simplePDObject).getStructParent();
+		if (structTreeRoot != null && structParent != 0) {
+			PDNumberTreeNode parentTreeRoot = structTreeRoot.getParentTree();
+			COSBase structureElement;
+			try {
+				PDParentTreeValue treeValue = parentTreeRoot == null ? null : (PDParentTreeValue) parentTreeRoot.getValue(structParent);
+				structureElement = treeValue == null ? null : treeValue.getCOSObject();
+			} catch (IOException e) {
+				return Collections.emptyList();
+			}
+			if (structureElement instanceof COSDictionary) {
+				String lang = ((COSDictionary) structureElement).getNameAsString(COSName.LANG);
+				if (lang != null) {
+					List<CosLang> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+					list.add(new PBCosLang(new COSString(lang)));
+					return Collections.unmodifiableList(list);
+				}
+			}
+		}
+		return Collections.emptyList();
+	}
+
+	@Override
+	public String getContents() {
+		return ((PDAnnotation) simplePDObject).getContents();
+	}
+
+	@Override
+	public String getAlt() {
+		PDStructureTreeRoot structTreeRoot = this.document.getDocumentCatalog().getStructureTreeRoot();
+		int structParent = ((PDAnnotation) this.simplePDObject).getStructParent();
+		if (structTreeRoot != null && structParent != 0) {
+			PDNumberTreeNode parentTreeRoot = structTreeRoot.getParentTree();
+			COSBase structureElement;
+			try {
+				PDParentTreeValue treeValue = parentTreeRoot == null ? null : (PDParentTreeValue) parentTreeRoot.getValue(structParent);
+				structureElement = treeValue == null ? null : treeValue.getCOSObject();
+			} catch (IOException e) {
+				return null;
+			}
+			if (structureElement instanceof COSDictionary) {
+				return ((COSDictionary) structureElement).getNameAsString(COSName.ALT);
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public Boolean getisOutsideCropBox() {
+		PDRectangle cropBox = pdPage.getCropBox();
+		PDRectangle rectangle = ((PDAnnotation) simplePDObject).getRectangle();
+		if (rectangle != null) {
+			return cropBox.getLowerLeftY() >= rectangle.getUpperRightY() || cropBox.getLowerLeftX() >= rectangle.getUpperRightX()
+			       || cropBox.getUpperRightY() <= rectangle.getLowerLeftY() || cropBox.getUpperRightX() <= rectangle.getLowerLeftX();
+		}
+		return null;
 	}
 
 	@Override
 	public Boolean getcontainsA() {
 		COSBase pageObject = this.simplePDObject.getCOSObject();
-		return pageObject != null && pageObject instanceof COSDictionary &&
-				((COSDictionary) pageObject).containsKey(COSName.A);
+		return pageObject instanceof COSDictionary && ((COSDictionary) pageObject).containsKey(COSName.A);
 	}
 
 	@Override
@@ -243,50 +353,43 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 			return this.getC();
 		case APPEARANCE:
 			return this.getAppearance();
+		case LANG:
+			return this.getLang();
+		case BM:
+			return this.getBM();
 		default:
 			return super.getLinkedObjects(link);
 		}
 	}
 
-	private List<PDAction> getAdditionalActions() {
-		COSBase actionDictionary = ((PDAnnotation) simplePDObject).getCOSObject().getDictionaryObject(COSName.AA);
-		if (actionDictionary instanceof COSDictionary) {
-			List<PDAction> actions = new ArrayList<>(MAX_COUNT_OF_ACTIONS);
+	private List<CosBM> getBM() {
+		if (this.blendMode == null) {
+			this.blendMode = parseBM();
+		}
+		return this.blendMode;
+	}
 
+	private List<CosBM> parseBM() {
+		COSBase BM = ((COSDictionary)simplePDObject.getCOSObject()).getDictionaryObject(COSName.BM);
+		if (BM == null || flavour == null || flavour.getPart() != PDFAFlavour.Specification.ISO_19005_4) {
+			return Collections.emptyList();
+		}
+		if (BM instanceof COSName) {
+			this.containsTransparency = true;
+			List<CosBM> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+			list.add(new PBCosBM((COSName)BM));
+			return Collections.unmodifiableList(list);
+		}
+		return Collections.emptyList();
+	}
+
+	protected List<PDAdditionalActions> getAdditionalActions() {
+		COSBase actionDictionary = ((PDAnnotation) simplePDObject).getCOSObject().getDictionaryObject(COSName.AA);
+		if (actionDictionary instanceof COSDictionary && ((COSDictionary) actionDictionary).size() != 0) {
+			List<PDAdditionalActions> actions = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
 			PDAnnotationAdditionalActions additionalActions = new PDAnnotationAdditionalActions(
 					(COSDictionary) actionDictionary);
-			org.apache.pdfbox.pdmodel.interactive.action.PDAction buffer;
-
-			buffer = additionalActions.getBl();
-			this.addAction(actions, buffer);
-
-			buffer = additionalActions.getD();
-			this.addAction(actions, buffer);
-
-			buffer = additionalActions.getE();
-			this.addAction(actions, buffer);
-
-			buffer = additionalActions.getFo();
-			this.addAction(actions, buffer);
-
-			buffer = additionalActions.getPC();
-			this.addAction(actions, buffer);
-
-			buffer = additionalActions.getPI();
-			this.addAction(actions, buffer);
-
-			buffer = additionalActions.getPO();
-			this.addAction(actions, buffer);
-
-			buffer = additionalActions.getPV();
-			this.addAction(actions, buffer);
-
-			buffer = additionalActions.getU();
-			this.addAction(actions, buffer);
-
-			buffer = additionalActions.getX();
-			this.addAction(actions, buffer);
-
+			actions.add(new PBoxPDAnnotationAdditionalActions(additionalActions));
 			return Collections.unmodifiableList(actions);
 		}
 		return Collections.emptyList();
@@ -344,6 +447,9 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		if (this.appearance == null) {
 			parseAppearance();
 		}
+		if (this.blendMode == null) {
+			this.blendMode = parseBM();
+		}
 		return this.containsTransparency;
 	}
 
@@ -391,6 +497,27 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 			org.apache.pdfbox.pdmodel.graphics.form.PDGroup group = toAdd.getGroup();
 			this.containsTransparency |= group != null && COSName.TRANSPARENCY.equals(group.getSubType());
 			list.add(stream);
+		}
+	}
+
+	public static PBoxPDAnnot createAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour, PDPage pdPage) {
+		String subtype = annot.getSubtype();
+		if (subtype == null) {
+			return new PBoxPDAnnot(annot, pageResources, document, flavour, pdPage);
+		}
+		switch (subtype) {
+			case WIDGET:
+				return new PBoxPDWidgetAnnot(annot, pageResources, document, flavour, pdPage);
+			case TYPE_3D:
+				return new PBoxPD3DAnnot(annot, pageResources, document, flavour, pdPage);
+			case TRAP_NET:
+				return new PBoxPDTrapNetAnnot(annot, pageResources, document, flavour, pdPage);
+			case LINK:
+				return new PBoxPDLinkAnnot(annot, pageResources, document, flavour, pdPage);
+			case PRINTER_MARK:
+				return new PBoxPDPrinterMarkAnnot(annot, pageResources, document, flavour, pdPage);
+			default:
+				return new PBoxPDAnnot(annot, pageResources, document, flavour, pdPage);
 		}
 	}
 }

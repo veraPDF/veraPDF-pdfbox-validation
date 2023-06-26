@@ -20,7 +20,7 @@
  */
 package org.verapdf.features.pb;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.*;
 import org.apache.pdfbox.pdmodel.common.PDDestinationOrAction;
@@ -72,7 +72,7 @@ import java.util.*;
 public final class PBFeatureParser {
 	private static final EnumSet<FeatureObjectType> XOBJECTS = EnumSet.of(FeatureObjectType.FORM_XOBJECT,
 			FeatureObjectType.IMAGE_XOBJECT, FeatureObjectType.POSTSCRIPT_XOBJECT);
-	private static final Logger LOGGER = Logger.getLogger(PBFeatureParser.class);
+	private static final Logger LOGGER = Logger.getLogger(PBFeatureParser.class.getCanonicalName());
 	private static final String ID = "id";
 	private static final String DEVICEGRAY_ID = "devgray";
 	private static final String DEVICERGB_ID = "devrgb";
@@ -151,7 +151,7 @@ public final class PBFeatureParser {
 		PDDocumentNameDictionary names = catalog.getNames();
 
 		if (config.isFeatureEnabled(FeatureObjectType.ACTION)) {
-			if(documentOutline != null) {
+			if (documentOutline != null) {
 				for (PDOutlineItem item : documentOutline.children()) {
 					reportOutlinesActions(item);
 				}
@@ -162,7 +162,7 @@ public final class PBFeatureParser {
 					reportAction((PDAction) openAction, ActionFeaturesObjectAdapter.Location.DOCUMENT);
 				}
 			} catch (IOException e) {
-				LOGGER.debug("Can't get open action", e);
+				LOGGER.log(java.util.logging.Level.INFO, "Can't get open action. " + e.getMessage());
 			}
 			PDDocumentCatalogAdditionalActions additionalActions = catalog.getActions();
 			if (additionalActions != null) {
@@ -206,7 +206,7 @@ public final class PBFeatureParser {
 		try {
 			labels = catalog.getPageLabels();
 		} catch (IOException e) {
-			LOGGER.debug("Can't get page labels", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Can't get page labels. " + e.getMessage());
 			reporter.getCollection().addNewError(FeatureObjectType.PAGE, "Can't get page labels");
 		}
 
@@ -393,7 +393,7 @@ public final class PBFeatureParser {
 						reporter.report(
 								PBFeaturesObjectCreator.createAnnotFeaturesObject(annotation, id, popupID, formsIDs));
 					} catch (IOException e) {
-						LOGGER.debug("Unknown annotation type detected.", e);
+						LOGGER.log(java.util.logging.Level.INFO, "Unknown annotation type detected. " + e.getMessage());
 						generateUnknownAnnotation(id);
 					}
 				}
@@ -432,7 +432,7 @@ public final class PBFeatureParser {
 				reportAnnotationActions(annotation);
 				reporter.report(PBFeaturesObjectCreator.createAnnotFeaturesObject(annotation, id, null, null));
 			} catch (IOException e) {
-				LOGGER.debug("Unknown annotation type detected.", e);
+				LOGGER.log(java.util.logging.Level.INFO, "Unknown annotation type detected. " + e.getMessage());
 				generateUnknownAnnotation(id);
 			}
 		}
@@ -501,7 +501,7 @@ public final class PBFeatureParser {
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.debug("Error creating PDFBox SubType.", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Error creating PDFBox SubType. " + e.getMessage());
 			handleSubtypeCreationProblem(e.getMessage());
 		}
 
@@ -525,7 +525,7 @@ public final class PBFeatureParser {
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.debug("Can't get values", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Can't get values. " + e.getMessage());
 		}
 		List<PDNameTreeNode<PDActionJavaScript>> kids = node.getKids();
 		if (kids != null) {
@@ -547,7 +547,7 @@ public final class PBFeatureParser {
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.debug("Subtype creation exception caught", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Subtype creation exception caught. " + e.getMessage());
 			handleSubtypeCreationProblem(e.getMessage());
 		}
 
@@ -645,7 +645,7 @@ public final class PBFeatureParser {
 					parseColorSpace(colorSpace, id);
 				}
 			} catch (IOException e) {
-				LOGGER.info(e);
+				LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 				colorSpaceCreationProblem(id, e.getMessage());
 			}
 		}
@@ -676,7 +676,7 @@ public final class PBFeatureParser {
 						reporter.report(PBFeaturesObjectCreator.createPostScriptXObjectFeaturesObject(id));
 					}
 				} catch (IOException e) {
-					LOGGER.info(e);
+					LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 					xobjectCreationProblem(id, e.getMessage());
 				}
 			}
@@ -722,7 +722,7 @@ public final class PBFeatureParser {
 					PDFont font = resources.getFont(name);
 					parseFont(font, id);
 				} catch (IOException e) {
-					LOGGER.info(e);
+					LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 					fontCreationProblem(id, e.getMessage());
 				}
 
@@ -769,7 +769,7 @@ public final class PBFeatureParser {
 					PDAbstractPattern pattern = resources.getPattern(name);
 					parsePattern(pattern, id);
 				} catch (IOException e) {
-					LOGGER.info(e);
+					LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 					patternCreationProblem(id, e.getMessage());
 				}
 			}
@@ -794,7 +794,7 @@ public final class PBFeatureParser {
 					PDShading shading = resources.getShading(name);
 					parseShading(shading, id);
 				} catch (IOException e) {
-					LOGGER.info(e);
+					LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 					shadingCreationProblem(id, e.getMessage());
 				}
 			}
@@ -815,7 +815,7 @@ public final class PBFeatureParser {
 				parseColorSpace(colorSpace, idColorSpace);
 			}
 		} catch (IOException e) {
-			LOGGER.info(e);
+			LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 			colorSpaceCreationProblem(idColorSpace, e.getMessage());
 		}
 
@@ -829,7 +829,7 @@ public final class PBFeatureParser {
 					PDImageXObjectProxy imxobj = xobj.getMask();
 					parseImageXObject(imxobj, idMask);
 				} catch (IOException e) {
-					LOGGER.info(e);
+					LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 					xobjectCreationProblem(idMask, e.getMessage());
 				}
 			}
@@ -845,7 +845,7 @@ public final class PBFeatureParser {
 					PDImageXObjectProxy imxobj = xobj.getSoftMask();
 					parseImageXObject(imxobj, idSMask);
 				} catch (IOException e) {
-					LOGGER.info(e);
+					LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 					xobjectCreationProblem(idSMask, e.getMessage());
 				}
 			}
@@ -899,7 +899,7 @@ public final class PBFeatureParser {
 					parseColorSpace(colorSpace, idColorSpace);
 				}
 			} catch (IOException e) {
-				LOGGER.info(e);
+				LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 				colorSpaceCreationProblem(idColorSpace, e.getMessage());
 			}
 		}
@@ -936,7 +936,7 @@ public final class PBFeatureParser {
 					PDFont font = exGState.getFontSetting().getFont();
 					parseFont(font, childFontID);
 				} catch (IOException e) {
-					LOGGER.info(e);
+					LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 					fontCreationProblem(childFontID, e.getMessage());
 				}
 			}
@@ -1004,7 +1004,7 @@ public final class PBFeatureParser {
 				parseColorSpace(colorSpace, colorspaceID);
 			}
 		} catch (IOException e) {
-			LOGGER.info(e);
+			LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 			colorSpaceCreationProblem(colorspaceID, e.getMessage());
 		}
 		colorspaceID = config.isFeatureEnabled(FeatureObjectType.COLORSPACE) ? colorspaceID : null;
@@ -1080,7 +1080,7 @@ public final class PBFeatureParser {
 
 				}
 			} catch (IOException e) {
-				LOGGER.info(e);
+				LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 				colorSpaceCreationProblem(idAlt, e.getMessage());
 			}
 		} else if (colorSpace instanceof PDIndexed || colorSpace instanceof PDSeparation
@@ -1108,7 +1108,7 @@ public final class PBFeatureParser {
 					parseColorSpace(alt, idAlt);
 				}
 			} catch (IOException e) {
-				LOGGER.info(e);
+				LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 				colorSpaceCreationProblem(idAlt, e.getMessage());
 			}
 		}

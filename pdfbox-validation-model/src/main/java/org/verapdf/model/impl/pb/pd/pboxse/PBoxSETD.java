@@ -1,0 +1,102 @@
+/**
+ * This file is part of veraPDF Validation, a module of the veraPDF project.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+ * All rights reserved.
+ *
+ * veraPDF Validation is free software: you can redistribute it and/or modify
+ * it under the terms of either:
+ *
+ * The GNU General public license GPLv3+.
+ * You should have received a copy of the GNU General Public License
+ * along with veraPDF Validation as the LICENSE.GPL file in the root of the source
+ * tree.  If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ *
+ * The Mozilla Public License MPLv2+.
+ * You should have received a copy of the Mozilla Public License along with
+ * veraPDF Validation as the LICENSE.MPL file in the root of the source tree.
+ * If a copy of the MPL was not distributed with this file, you can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
+package org.verapdf.model.impl.pb.pd.pboxse;
+
+import org.apache.pdfbox.cos.*;
+import org.verapdf.model.impl.pb.pd.TaggedPDFConstants;
+import org.verapdf.model.selayer.SETD;
+import org.verapdf.model.tools.TableHelper;
+import org.verapdf.model.tools.TaggedPDFRoleMapHelper;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+public class PBoxSETD extends PBoxSEGeneral implements SETD {
+
+    public static final String TD_STRUCTURE_ELEMENT_TYPE = "SETD";
+
+    public PBoxSETD(COSDictionary structElemDictionary, TaggedPDFRoleMapHelper roleMapHelper) {
+        super(structElemDictionary, roleMapHelper, TaggedPDFConstants.TD, TD_STRUCTURE_ELEMENT_TYPE);
+    }
+
+    protected List<String> getHeaders() {
+        COSBase A = ((COSDictionary)simplePDObject).getDictionaryObject(COSName.A);
+        if (A != null) {
+            if (A instanceof COSArray) {
+                for (COSBase object : (COSArray)A) {
+                    COSBase baseObject = object instanceof COSObject ? ((COSObject)object).getObject() : object;
+                    if (baseObject instanceof COSDictionary &&
+                            TaggedPDFConstants.TABLE.equals(((COSDictionary)baseObject).getNameAsString(COSName.O))) {
+                        COSBase Headers = ((COSDictionary) baseObject).getDictionaryObject("Headers");
+                        if (Headers != null && Headers instanceof COSArray) {
+                            List<String> list = new LinkedList<>();
+                            for (COSBase elem : (COSArray)Headers) {
+                                if (elem instanceof COSString) {
+                                    list.add(((COSString)elem).getString());
+                                }
+                            }
+                            return list;
+                        }
+                    }
+                }
+            } else if (A instanceof COSDictionary &&
+                    TaggedPDFConstants.TABLE.equals(((COSDictionary)A).getNameAsString(COSName.O))) {
+                COSBase Headers = ((COSDictionary) A).getDictionaryObject("Headers");
+                if (Headers != null && Headers instanceof COSArray) {
+                    List<String> list = new LinkedList<>();
+                    for (COSBase elem : (COSArray)Headers) {
+                        if (elem instanceof COSString) {
+                            list.add(((COSString)elem).getString());
+                        }
+                    }
+                    return list;
+                }
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Long getColSpan() {
+        return TableHelper.getColSpan((COSDictionary) simplePDObject);
+    }
+
+    @Override
+    public Long getRowSpan() {
+        return TableHelper.getRowSpan((COSDictionary) simplePDObject);
+    }
+
+    @Override
+    public Boolean gethasIntersection() {
+        return null;
+    }
+
+    @Override
+    public Boolean gethasConnectedHeader() {
+        return null;
+    }
+
+    @Override
+    public String getunknownHeaders() {
+        return null;
+    }
+}

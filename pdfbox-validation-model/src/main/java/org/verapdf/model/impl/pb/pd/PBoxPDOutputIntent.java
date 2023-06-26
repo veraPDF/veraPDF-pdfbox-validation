@@ -20,23 +20,17 @@
  */
 package org.verapdf.model.impl.pb.pd;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
-import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
-import org.verapdf.model.coslayer.CosObject;
 import org.verapdf.model.external.ICCOutputProfile;
-import org.verapdf.model.impl.pb.cos.PBCosObject;
 import org.verapdf.model.impl.pb.external.PBoxICCOutputProfile;
 import org.verapdf.model.pdlayer.PDOutputIntent;
 import org.verapdf.model.tools.IDGenerator;
-import org.verapdf.pdfa.flavours.PDFAFlavour;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,23 +40,19 @@ import java.util.List;
  */
 public class PBoxPDOutputIntent extends PBoxPDObject implements PDOutputIntent {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDOutputIntent.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDOutputIntent.class.getCanonicalName());
 
 	public static final String OUTPUT_INTENT_TYPE = "PDOutputIntent";
 
 	public static final String DEST_PROFILE = "destProfile";
 
 	private final String destOutputProfileIndirect;
+	private ICCOutputProfile iccOutputProfile;
 
-	private final PDDocument document;
-	private final PDFAFlavour flavour;
 
-	public PBoxPDOutputIntent(org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent simplePDObject,
-			PDDocument document, PDFAFlavour flavour) {
+	public PBoxPDOutputIntent(org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent simplePDObject) {
 		super(simplePDObject, OUTPUT_INTENT_TYPE);
 		this.destOutputProfileIndirect = PBoxPDOutputIntent.getDestOutputProfileIndirect(simplePDObject);
-		this.document = document;
-		this.flavour = flavour;
 	}
 
 	private static String getDestOutputProfileIndirect(org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent intent) {
@@ -82,6 +72,11 @@ public class PBoxPDOutputIntent extends PBoxPDObject implements PDOutputIntent {
 		if (dict instanceof COSDictionary) {
 			return ((COSDictionary) dict).getNameAsString(COSName.S);
 		}
+		return null;
+	}
+
+	@Override
+	public String getICCProfileMD5() {
 		return null;
 	}
 
@@ -109,23 +104,31 @@ public class PBoxPDOutputIntent extends PBoxPDObject implements PDOutputIntent {
 		}
 	}
 
-	private List<ICCOutputProfile> getDestProfile() {
-		try {
-			COSStream dest = ((org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent) this.simplePDObject)
-					.getDestOutputIntent();
-			if (dest != null) {
-				return getDestProfilesFromStream(dest, getS());
-			}
-		} catch (IOException e) {
-			LOGGER.debug("Can not read dest output profile. " + e.getMessage(),
-					e);
+	private ICCOutputProfile parseDestProfile() {
+		COSStream dest = ((org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent) this.simplePDObject)
+				.getDestOutputIntent();
+		if (dest != null) {
+			return new PBoxICCOutputProfile(dest, getS());
 		}
-		return Collections.emptyList();
+		return null;
 	}
 
-	private static List<ICCOutputProfile> getDestProfilesFromStream(COSStream destStream, final String subType) throws IOException {
+	public String getColorSpace() {
+		if (iccOutputProfile == null) {
+			iccOutputProfile = parseDestProfile();
+		}
+		return iccOutputProfile != null && "GTS_PDFA1".equals(getS())? iccOutputProfile.getcolorSpace() : null;
+	}
+
+	private List<ICCOutputProfile> getDestProfile() {
+		if (iccOutputProfile == null) {
+			iccOutputProfile = parseDestProfile();
+		}
+		if (iccOutputProfile == null) {
+			return Collections.emptyList();
+		}
 		List<ICCOutputProfile> profile = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-        profile.add(new PBoxICCOutputProfile(destStream, subType));
+		profile.add(iccOutputProfile);
 		return Collections.unmodifiableList(profile);
 	}
 }

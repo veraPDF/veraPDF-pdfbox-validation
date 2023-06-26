@@ -24,12 +24,11 @@ import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
+import org.apache.pdfbox.cos.COSObjectKey;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.verapdf.model.baselayer.Object;
-import org.verapdf.model.coslayer.CosDict;
-import org.verapdf.model.coslayer.CosStream;
-import org.verapdf.model.impl.pb.cos.PBCosStream;
+import org.verapdf.model.impl.pb.containers.StaticContainers;
 import org.verapdf.model.impl.pb.pd.PBoxPDContentStream;
 import org.verapdf.model.impl.pb.pd.PBoxPDGroup;
 import org.verapdf.model.pdlayer.PDContentStream;
@@ -52,6 +51,8 @@ public class PBoxPDXForm extends PBoxPDXObject implements PDXForm {
 
 	public static final String GROUP = "Group";
 	public static final String CONTENT_STREAM = "contentStream";
+	public static final String TRANSPARENCY_COLOR_SPACE = "transparencyColorSpace";
+	public static final String PARENT_TRANSPARENCY_COLOR_SPACE = "parentTransparencyColorSpace";
 
 	private List<PDContentStream> contentStreams = null;
 	private List<PDGroup> groups = null;
@@ -92,12 +93,39 @@ public class PBoxPDXForm extends PBoxPDXObject implements PDXForm {
 	}
 
 	@Override
+	public String getID() {
+		return null;
+	}
+
+	@Override
+	public Boolean getisUniqueSemanticParent() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		if (pageObject instanceof COSDictionary && !((COSDictionary) pageObject).containsKey(COSName.STRUCT_PARENTS)) {
+			return true;
+		}
+		COSObjectKey key = this.simplePDObject.getCOSObject().getKey();
+		if (key == null) {
+			return true;
+		}
+		if (StaticContainers.getXFormKeysSet().contains(key)) {
+			return false;
+		}
+		StaticContainers.getXFormKeysSet().add(key);
+		return true;
+
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 		case GROUP:
 			return this.getGroup();
 		case CONTENT_STREAM:
 			return this.getContentStream();
+		case TRANSPARENCY_COLOR_SPACE:
+			return Collections.emptyList();
+		case PARENT_TRANSPARENCY_COLOR_SPACE:
+			return Collections.emptyList();
 		default:
 			return super.getLinkedObjects(link);
 		}

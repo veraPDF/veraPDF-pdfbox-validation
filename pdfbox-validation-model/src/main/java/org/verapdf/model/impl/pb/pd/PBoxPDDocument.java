@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.pd;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
@@ -34,6 +34,8 @@ import org.apache.pdfbox.pdmodel.interactive.action.PDDocumentCatalogAdditionalA
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosLang;
 import org.verapdf.model.impl.pb.cos.PBCosLang;
+import org.verapdf.model.impl.pb.pd.actions.PBoxPDAction;
+import org.verapdf.model.impl.pb.pd.actions.PBoxPDCatalogAdditionalActions;
 import org.verapdf.model.impl.pb.pd.signatures.PBoxPDPerms;
 import org.verapdf.model.pdlayer.*;
 import org.verapdf.model.tools.OutlinesHelper;
@@ -43,6 +45,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.verapdf.model.impl.pb.pd.PBoxPDPage.SQUARE_ORIENTATION;
 
 /**
  * High-level representation of pdf document.
@@ -52,7 +58,7 @@ import java.util.List;
  */
 public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDDocument.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDDocument.class.getCanonicalName());
 
 	/**
 	 * Type name for {@code PBoxPDDocument}
@@ -108,13 +114,9 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 	 */
 	public static final String PERMS = "Perms";
 
-	/**
-	 * Maximal number of additional actions for AA key
-	 */
-	public static final int MAX_NUMBER_OF_ACTIONS = 5;
-
 	private final PDDocumentCatalog catalog;
 	private final PDFAFlavour flavour;
+	private OutputIntents outputIntents = null;
 
 	/**
 	 * Default constructor
@@ -130,6 +132,26 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 	@Override
 	public Boolean getcontainsAA() {
 		return this.catalog != null && this.catalog.getCOSObject().containsKey(COSName.AA);
+	}
+
+	@Override
+	public String getVersion() {
+		return catalog.getVersion();
+	}
+
+	@Override
+	public String getmostCommonOrientation() {
+		List<String> twoTheMostFrequent = getPages()
+				.stream()
+				.map(PDPage::getorientation)
+				.collect(Collectors.groupingBy(a -> a, Collectors.counting()))
+				.entrySet()
+				.stream()
+				.sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+				.limit(2)
+				.map(Map.Entry::getKey)
+				.collect(Collectors.toList());
+		return SQUARE_ORIENTATION.equals(twoTheMostFrequent.get(0)) && twoTheMostFrequent.size() == 2 ? twoTheMostFrequent.get(1) : twoTheMostFrequent.get(0);
 	}
 
 	@Override
@@ -162,6 +184,37 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 		}
 	}
 
+	private List<OutputIntents> getOutputIntents() {
+		if (this.outputIntents == null) {
+			this.outputIntents = parseOutputIntents();
+		}
+		if (this.outputIntents != null) {
+			List<OutputIntents> array = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+			array.add(this.outputIntents);
+			return array;
+		}
+		return Collections.emptyList();
+	}
+
+	@Override
+	public String getoutputColorSpace() {
+		if (this.outputIntents == null) {
+			this.outputIntents = parseOutputIntents();
+		}
+		return this.outputIntents != null ? ((PBoxOutputIntents)this.outputIntents).getColorSpace() : null;
+	}
+
+	private OutputIntents parseOutputIntents() {
+		if (this.catalog != null) {
+			List<org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent> outInts =
+					this.catalog.getOutputIntents();
+			if (outInts.size() > 0) {
+				return new PBoxOutputIntents(outInts, document, flavour);
+			}
+		}
+		return null;
+	}
+
 	private List<PDOutline> getOutlines() {
 		return OutlinesHelper.getOutlines(this.catalog);
 	}
@@ -172,40 +225,25 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 				PDDestinationOrAction openAction = this.catalog.getOpenAction();
 				if (openAction instanceof org.apache.pdfbox.pdmodel.interactive.action.PDAction) {
 					List<PDAction> actions = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-					this.addAction(actions,
-							(org.apache.pdfbox.pdmodel.interactive.action.PDAction) openAction);
-					return Collections.unmodifiableList(actions);
+					PDAction action = PBoxPDAction.getAction((org.apache.pdfbox.pdmodel.interactive.action.PDAction)openAction);
+					if (action != null) {
+						actions.add(action);
+						return Collections.unmodifiableList(actions);
+					}
 				}
 			} catch (IOException e) {
-				LOGGER.debug(
-						"Problems with open action obtaining. " + e.getMessage(), e);
+				LOGGER.log(java.util.logging.Level.INFO,
+						"Problems with open action obtaining. " + e.getMessage());
 			}
 		}
 		return Collections.emptyList();
 	}
 
-	private List<PDAction> getActions() {
+	private List<PDAdditionalActions> getActions() {
 		PDDocumentCatalogAdditionalActions pbActions = this.getAdditionalAction();
-		if (pbActions != null) {
-			List<PDAction> actions = new ArrayList<>(MAX_NUMBER_OF_ACTIONS);
-
-			org.apache.pdfbox.pdmodel.interactive.action.PDAction buffer;
-
-			buffer = pbActions.getDP();
-			this.addAction(actions, buffer);
-
-			buffer = pbActions.getDS();
-			this.addAction(actions, buffer);
-
-			buffer = pbActions.getWP();
-			this.addAction(actions, buffer);
-
-			buffer = pbActions.getWS();
-			this.addAction(actions, buffer);
-
-			buffer = pbActions.getWC();
-			this.addAction(actions, buffer);
-
+		if (pbActions != null && pbActions.getCOSObject().size() != 0) {
+			List<PDAdditionalActions> actions = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+			actions.add(new PBoxPDCatalogAdditionalActions(pbActions));
 			return Collections.unmodifiableList(actions);
 		}
 		return Collections.emptyList();
@@ -243,19 +281,6 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 		return Collections.emptyList();
 	}
 
-	private List<PDOutputIntent> getOutputIntents() {
-		if (this.catalog != null) {
-			List<org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent> pdfboxOutputIntents =
-					this.catalog.getOutputIntents();
-			List<PDOutputIntent> outputIntents = new ArrayList<>(pdfboxOutputIntents.size());
-			for (org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent intent : pdfboxOutputIntents) {
-				outputIntents.add(new PBoxPDOutputIntent(intent, this.document, this.flavour));
-			}
-			return Collections.unmodifiableList(outputIntents);
-		}
-		return Collections.emptyList();
-	}
-
 	private List<PDAcroForm> getAcroForms() {
 		if (this.catalog != null) {
 			org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm form =
@@ -282,7 +307,7 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 	}
 
 	private List<PDPerms> getPerms() {
-		if(this.catalog != null) {
+		if (this.catalog != null) {
 			COSDictionary perms = (COSDictionary)
 					this.catalog.getCOSObject().getDictionaryObject(COSName.PERMS);
 			if (perms != null) {

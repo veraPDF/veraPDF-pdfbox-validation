@@ -20,15 +20,12 @@
  */
 package org.verapdf.model.impl.pb.pd.font;
 
-import org.apache.fontbox.cff.CFFFont;
-import org.apache.fontbox.ttf.TrueTypeFont;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.common.PDStream;
-import org.apache.pdfbox.pdmodel.font.PDCIDFontType0;
 import org.apache.pdfbox.pdmodel.font.PDCIDFontType2;
 import org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
 import org.apache.pdfbox.pdmodel.font.PDFontLike;
@@ -51,7 +48,7 @@ import java.util.List;
  */
 public class PBoxPDCIDFont extends PBoxPDFont implements PDCIDFont {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDCIDFont.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDCIDFont.class.getCanonicalName());
 
 	private final PDDocument pdDocument;
 	private final PDFAFlavour flavour;
@@ -102,7 +99,7 @@ public class PBoxPDCIDFont extends PBoxPDFont implements PDCIDFont {
 						return Boolean.FALSE;
 					}
 				}
-				if (!flavour.equals(PDFAFlavour.PDFA_1_A) || !flavour.equals(PDFAFlavour.PDFA_1_B)) {
+				if (flavour.getPart() != PDFAFlavour.Specification.ISO_19005_1) {
 					// on this levels we need to ensure that all glyphs
 					// present
 					// in font program are described in cid set
@@ -113,7 +110,7 @@ public class PBoxPDCIDFont extends PBoxPDFont implements PDCIDFont {
 					}
 				}
 		} catch (IOException e) {
-			LOGGER.debug("Error while parsing embedded font program. " + e.getMessage(), e);
+			LOGGER.log(java.util.logging.Level.INFO, "Error while parsing embedded font program. " + e.getMessage());
 			return Boolean.FALSE;
 		}
 		return Boolean.TRUE;
@@ -150,7 +147,7 @@ public class PBoxPDCIDFont extends PBoxPDFont implements PDCIDFont {
 	private static byte[] getCIDsFromCIDSet(InputStream cidSet, int length) throws IOException {
 		byte[] cidSetBytes = new byte[length];
 		if (cidSet.read(cidSetBytes) != length) {
-			LOGGER.debug("Did not read necessary number of cid set bytes");
+			LOGGER.log(java.util.logging.Level.INFO, "Did not read necessary number of cid set bytes");
 		}
 		return cidSetBytes;
 	}

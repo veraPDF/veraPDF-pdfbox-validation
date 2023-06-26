@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.pd;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
@@ -41,7 +41,7 @@ import java.util.List;
  */
 public class PBoxPDOCProperties extends PBoxPDObject implements PDOCProperties {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDOCProperties.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDOCProperties.class.getCanonicalName());
 
 	public static final String OC_PROPERTIES_TYPE = "PDOCProperties";
 
@@ -80,7 +80,7 @@ public class PBoxPDOCProperties extends PBoxPDObject implements PDOCProperties {
 			result.add(pdConfig);
 			return result;
 		}
-		LOGGER.debug("Invalid object type of the default optional configuration dictionary. Returning empty config.");
+		LOGGER.log(java.util.logging.Level.INFO, "Invalid object type of the default optional configuration dictionary. Returning empty config.");
 		PDOCConfig config = new PBoxPDOCConfig(new COSDictionary());
 
 		result.add(config);
@@ -88,25 +88,21 @@ public class PBoxPDOCProperties extends PBoxPDObject implements PDOCProperties {
 	}
 
 	private List<PDOCConfig> getConfigs() {
-
 		COSDictionary contentProperties = (COSDictionary) this.simplePDObject.getCOSObject();
-
 		List<String> names = getAllNames(contentProperties);
 		String[] groupNames = ((PDOptionalContentProperties) this.simplePDObject).getGroupNames();
 		List<String> groupNamesList = Arrays.asList(groupNames);
-
 		COSArray configs = (COSArray) contentProperties.getDictionaryObject(CONFIGS);
-
 		if (configs != null) {
 			List<PDOCConfig> result = new ArrayList<>();
 			for (int i = 0; i < configs.size(); i++) {
-				COSBase config = configs.get(i);
+				COSBase config = configs.getObject(i);
 				if (config instanceof COSDictionary) {
 					PDOCConfig pdConfig = new PBoxPDOCConfig(config, groupNamesList,
 							names.contains(((COSDictionary) config).getString(COSName.NAME)));
 					result.add(pdConfig);
 				} else {
-					LOGGER.debug("Invalid object type of the configuration dictionary. Ignoring config.");
+					LOGGER.log(java.util.logging.Level.INFO, "Invalid object type of the configuration dictionary. Ignoring config.");
 				}
 			}
 			return result;

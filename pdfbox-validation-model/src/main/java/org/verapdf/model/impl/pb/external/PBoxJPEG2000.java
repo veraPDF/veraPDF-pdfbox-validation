@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.external;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -42,7 +42,7 @@ import java.io.InputStream;
  */
 public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxJPEG2000.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxJPEG2000.class.getCanonicalName());
 
 	public static final String JPEG_2000_TYPE = "JPEG2000";
 
@@ -98,7 +98,7 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
 		try {
 			// Check if the stream starts with valid jp2 signature
 			if (stream.read(signArray) != 12 || !isValidSignature(signArray)) {
-				LOGGER.debug("File contains wrong signature");
+				LOGGER.log(java.util.logging.Level.INFO, "File contains wrong signature");
 				return builder.build();
 			}
 			// Finding the beginning of the header box content
@@ -109,7 +109,7 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
 			}
 
 		} catch (IOException e) {
-			LOGGER.debug(e);
+			LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 		}
 		return builder.build();
 	}
@@ -151,20 +151,20 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
 
 			if (matches(tbox, ihdr)) {
 				if (leftInBox != 14 && length != 0) {
-					LOGGER.debug("Image header content does not contain 14 bytes");
+					LOGGER.log(java.util.logging.Level.INFO, "Image header content does not contain 14 bytes");
 					break;
 				}
 				skipBytes(stream, 8);
 				byte[] nc = new byte[2];
 				if (stream.read(nc) != 2) {
-					LOGGER.debug("Can not read number of components");
+					LOGGER.log(java.util.logging.Level.INFO, "Can not read number of components");
 					break;
 				}
 				long ncColorChannels = convertArrayToLong(nc);
 				builder.setNrColorChannels(Long.valueOf(ncColorChannels));
 				byte[] bpc = new byte[1];
 				if (stream.read(bpc) != 1) {
-					LOGGER.debug("Can not read bitDepth");
+					LOGGER.log(java.util.logging.Level.INFO, "Can not read bitDepth");
 					break;
 				}
 				long bitDepth = bpc[0] + 1;
@@ -175,7 +175,7 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
 				skipBytes(stream, leftInBox);
 			} else if (matches(tbox, colr)) {
 				if (leftInBox < 3) {
-					LOGGER.debug("Founded 'colr' box with length less than 3");
+					LOGGER.log(java.util.logging.Level.INFO, "Founded 'colr' box with length less than 3");
 					break;
 				}
 				if (nrColorSpaceSpecs == null) {
@@ -185,7 +185,7 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
 				}
 				byte[] meth = new byte[1];
 				if (stream.read(meth) != 1) {
-					LOGGER.debug("Can not read METH");
+					LOGGER.log(java.util.logging.Level.INFO, "Can not read METH");
 					break;
 				}
 				long methValue = convertArrayToLong(meth);
@@ -195,7 +195,7 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
 				skipBytes(stream, 1);
 				byte[] approx = new byte[1];
 				if (stream.read(approx) != 1) {
-					LOGGER.debug("Can not read APPROX");
+					LOGGER.log(java.util.logging.Level.INFO, "Can not read APPROX");
 					break;
 				}
 				long approxValue = convertArrayToLong(approx);
@@ -212,12 +212,12 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
 				long read = 3;
 				if (methValue == 1) {
 					if (leftInBox < 7) {
-						LOGGER.debug("Founded 'colr' box with meth value 1 and length less than 7");
+						LOGGER.log(java.util.logging.Level.INFO, "Founded 'colr' box with meth value 1 and length less than 7");
 						break;
 					}
 					byte[] enumCS = new byte[4];
 					if (stream.read(enumCS) != 4) {
-						LOGGER.debug("Can not read EnumCS");
+						LOGGER.log(java.util.logging.Level.INFO, "Can not read EnumCS");
 						break;
 					}
 					read += 4;
@@ -235,7 +235,7 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
 					int profileLength = (int) (leftInBox - read);
 					byte[] profile = new byte[profileLength];
 					if (stream.read(profile) != profileLength) {
-						LOGGER.debug("Can not read Profile");
+						LOGGER.log(java.util.logging.Level.INFO, "Can not read Profile");
 						break;
 					}
 					read += profileLength;
@@ -383,7 +383,7 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
 			nrOfComp = 15;
 			break;
 		default:
-			LOGGER.debug("Unknown color space signature in ICC Profile of image. Current signature: " + type);
+			LOGGER.log(java.util.logging.Level.INFO, "Unknown color space signature in ICC Profile of image. Current signature: " + type);
 			return null;
 		}
 		stream.getStream().setInt(COSName.N, nrOfComp);
@@ -504,6 +504,11 @@ public class PBoxJPEG2000 extends PBoxExternal implements JPEG2000 {
 	@Override
 	public Boolean getbpccBoxPresent() {
 		return this.bpccBoxPresent;
+	}
+
+	@Override
+	public Boolean gethasColorSpace() {
+		return false;
 	}
 
 	private static class Builder {

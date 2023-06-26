@@ -20,9 +20,9 @@
  */
 package org.verapdf.metadata.fixer.impl.pb.schemas;
 
-import com.adobe.xmp.XMPException;
-import com.adobe.xmp.impl.VeraPDFMeta;
-import org.apache.log4j.Logger;
+import org.verapdf.xmp.XMPException;
+import org.verapdf.xmp.impl.VeraPDFMeta;
+import java.util.logging.Logger;
 import org.verapdf.metadata.fixer.entity.Metadata;
 import org.verapdf.metadata.fixer.schemas.XMPBasic;
 import org.verapdf.metadata.fixer.utils.DateConverter;
@@ -32,7 +32,7 @@ import org.verapdf.metadata.fixer.utils.DateConverter;
  */
 public class XMPBasicSchemaImpl extends BasicSchemaImpl implements XMPBasic {
 
-	private static final Logger LOGGER = Logger.getLogger(XMPBasicSchemaImpl.class);
+	private static final Logger LOGGER = Logger.getLogger(XMPBasicSchemaImpl.class.getCanonicalName());
 
 	public XMPBasicSchemaImpl(VeraPDFMeta meta, Metadata metadata) {
 		super(meta, metadata);
@@ -43,7 +43,7 @@ public class XMPBasicSchemaImpl extends BasicSchemaImpl implements XMPBasic {
 		try {
 			return this.meta.getCreatorTool();
 		} catch (XMPException e) {
-			LOGGER.debug("Can not get creator tool.", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Can not get creator tool. " + e.getMessage());
 			throw new IllegalStateException(e);
 		}
 	}
@@ -53,7 +53,7 @@ public class XMPBasicSchemaImpl extends BasicSchemaImpl implements XMPBasic {
 		try {
 			this.meta.setCreatorTool(creatorTool);
 		} catch (XMPException e) {
-			LOGGER.debug("Can not set creator tool.", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Can not set creator tool. " + e.getMessage());
 			throw new IllegalStateException(e);
 		}
 	}
@@ -63,7 +63,7 @@ public class XMPBasicSchemaImpl extends BasicSchemaImpl implements XMPBasic {
 		try {
 			return DateConverter.toUTCString(this.meta.getCreateDate());
 		} catch (XMPException e) {
-			LOGGER.debug("Can not get creation date.", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Can not get creation date. " + e.getMessage());
 			throw new IllegalStateException(e);
 		}
 	}
@@ -73,7 +73,7 @@ public class XMPBasicSchemaImpl extends BasicSchemaImpl implements XMPBasic {
 		try {
 			this.meta.setCreateDate(DateConverter.toCalendar(creationDate));
 		} catch (XMPException e) {
-			LOGGER.debug("Can not set creation date.", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Can not set creation date. " + e.getMessage());
 			throw new IllegalStateException(e);
 		}
 	}
@@ -83,7 +83,7 @@ public class XMPBasicSchemaImpl extends BasicSchemaImpl implements XMPBasic {
 		try {
 			return DateConverter.toUTCString(this.meta.getModifyDate());
 		} catch (XMPException e) {
-			LOGGER.debug("Can not get modification date.", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Can not get modification date. " + e.getMessage());
 			throw new IllegalStateException(e);
 		}
 	}
@@ -93,7 +93,7 @@ public class XMPBasicSchemaImpl extends BasicSchemaImpl implements XMPBasic {
 		try {
 			this.meta.setModifyDate(DateConverter.toCalendar(modificationDate));
 		} catch (XMPException e) {
-			LOGGER.debug("Can not set modification date.", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Can not set modification date. " + e.getMessage());
 			throw new IllegalStateException(e);
 		}
 	}

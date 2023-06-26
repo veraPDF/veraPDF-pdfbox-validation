@@ -20,9 +20,9 @@
  */
 package org.verapdf.model.tools;
 
-import com.adobe.xmp.XMPException;
-import com.adobe.xmp.impl.VeraPDFMeta;
-import org.apache.log4j.Logger;
+import org.verapdf.xmp.XMPException;
+import org.verapdf.xmp.impl.VeraPDFMeta;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.util.DateConverter;
 
@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
  */
 public final class XMPChecker {
 
-	private static final Logger LOGGER = Logger.getLogger(XMPChecker.class);
+	private static final Logger LOGGER = Logger.getLogger(XMPChecker.class.getCanonicalName());
 
 	private static final String TITLE = "Title";
 	private static final String SUBJECT = "Subject";
@@ -99,15 +99,15 @@ public final class XMPChecker {
 				return checkMatch(info, properties);
 			}
 		} catch (IOException e) {
-			LOGGER.debug("Problems with document parsing or structure. " + e.getMessage(), e);
+			LOGGER.log(java.util.logging.Level.INFO, "Problems with document parsing or structure. " + e.getMessage());
 		} catch (XMPException e) {
-			LOGGER.debug("Problems with XMP parsing. " + e.getMessage(), e);
+			LOGGER.log(java.util.logging.Level.INFO, "Problems with XMP parsing. " + e.getMessage());
 		}
 
 		return Boolean.FALSE;
 	}
 
-	private static COSStream getMetadataDictionary(COSDocument document) throws IOException {
+	public static COSStream getMetadataDictionary(COSDocument document) throws IOException {
 		final COSDictionary catalog = (COSDictionary) document.getCatalog().getObject();
 		final COSObject metaObj = (COSObject) catalog.getItem(COSName.METADATA);
 		if (metaObj != null && metaObj.getObject() instanceof COSStream) {
@@ -226,14 +226,21 @@ public final class XMPChecker {
 					final Calendar valueDate = getCalendar(ascii);
 					return Boolean.valueOf(valueDate != null && valueDate.compareTo((Calendar) value) == 0);
 				}
-				LOGGER.debug("Date format in info dictionary is not complies pdf date format");
+				LOGGER.log(java.util.logging.Level.INFO, "Date format in info dictionary is not complies pdf date format");
 			}
 		}
 		return Boolean.FALSE;
 	}
 
-	private static Calendar getCalendar(String date) {
+	public static Calendar getCalendar(String date) {
 		Matcher matcher = Pattern.compile("((([+-](\\d\\d[']))(\\d\\d['])?)|[Z])").matcher(date);
 		return DateConverter.toCalendar(date, matcher.find());
+	}
+
+	public static String getStringWithoutTrailingZero(String string) {
+		if (string != null && string.endsWith("\0")) {
+			return string.substring(0, string.length() - 1);
+		}
+		return string;
 	}
 }

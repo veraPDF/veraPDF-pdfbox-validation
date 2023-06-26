@@ -20,9 +20,10 @@
  */
 package org.verapdf.model.impl.pb.external;
 
+import org.apache.fontbox.cmap.CIDRange;
 import org.apache.fontbox.cmap.CMap;
 import org.apache.fontbox.cmap.CMapParser;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
 import org.verapdf.model.external.CMapFile;
@@ -37,7 +38,7 @@ import java.io.IOException;
  */
 public class PBoxCMapFile extends PBoxExternal implements CMapFile {
 
-    private static final Logger LOGGER = Logger.getLogger(PBoxCMapFile.class);
+    private static final Logger LOGGER = Logger.getLogger(PBoxCMapFile.class.getCanonicalName());
 
     /**
      * Type name for {@code PBoxCMapFile}
@@ -65,7 +66,7 @@ public class PBoxCMapFile extends PBoxExternal implements CMapFile {
             CMap map = new CMapParser().parse(fileStream.getUnfilteredStream());
             return Long.valueOf(map.getWMode());
         } catch (IOException e) {
-            LOGGER.debug("Could not parse CMap", e);
+            LOGGER.log(java.util.logging.Level.INFO, "Could not parse CMap. " + e.getMessage());
         }
         return null;
     }
@@ -74,12 +75,19 @@ public class PBoxCMapFile extends PBoxExternal implements CMapFile {
      * @return value of {@code WMode} key of parent dictionary
      */
     @Override
-	public Long getdictWMode() {
+    public Long getdictWMode() {
         return Long.valueOf(this.fileStream.getInt(COSName.getPDFName("WMode"), 0));
     }
 
     @Override
     public Long getmaximalCID() {
-        return 0L;  // TODO: not implemented yet
+        try {
+            CMap map = new CMapParser().parse(fileStream.getUnfilteredStream());
+            return (long) Math.max(map.getCodeToCidRanges().stream().map(CIDRange::getMaxCid).max(Integer::compare).orElse(0),
+                    map.getCodeToCid().values().stream().max(Integer::compare).orElse(0));
+        } catch (IOException e) {
+            LOGGER.log(java.util.logging.Level.INFO, "Could not get CID. " + e.getMessage());
+        }
+        return null;
     }
 }

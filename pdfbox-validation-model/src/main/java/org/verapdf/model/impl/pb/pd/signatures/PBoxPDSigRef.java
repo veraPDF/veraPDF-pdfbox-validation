@@ -43,18 +43,6 @@ public class PBoxPDSigRef extends PBoxPDObject implements PDSigRef{
 	}
 
 	/**
-	 * @return true if any of the entries /DigestLocation, /DigestMethod, or
-	 * /DigestValue is present.
-	 */
-	@Override
-	public Boolean getcontainsDigestEntries() {
-		COSDictionary dictionary = ((COSDictionary)this.simplePDObject);
-		return Boolean.valueOf(dictionary.containsKey(COSName.DIGEST_LOCATION) ||
-				dictionary.containsKey(COSName.DIGEST_VALUE) ||
-				dictionary.containsKey(COSName.DIGEST_METHOD));
-	}
-
-	/**
 	 * @return true if the document permissions dictionary contains DocMDP entry.
 	 */
 	@Override

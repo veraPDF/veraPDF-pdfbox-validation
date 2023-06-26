@@ -18,34 +18,25 @@
  * If a copy of the MPL was not distributed with this file, you can obtain one at
  * http://mozilla.org/MPL/2.0/.
  */
-/**
- * 
- */
-package org.verapdf.pdfa;
+package org.verapdf.model.impl.pb.pd.annotations;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
+import org.verapdf.model.impl.pb.pd.PBoxPDAnnot;
+import org.verapdf.model.pdlayer.PDLinkAnnot;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 /**
- * @author  <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
- *          <a href="https://github.com/carlwilson">carlwilson AT github</a>
- *
- * @version 0.1
- * 
- * Created 26 Oct 2016:22:24:12
+ * @author Maxim Plushchov
  */
+public class PBoxPDLinkAnnot extends PBoxPDAnnot implements PDLinkAnnot {
 
-public class PdfBoxFoundryProvider implements VeraFoundryProvider {
-	private static final VeraFoundryProvider instance = new PdfBoxFoundryProvider(); 
-	private PdfBoxFoundryProvider() {
-	}
-	
-	public static void initialise() {
-		Foundries.registerDefaultProvider(instance);
-	}
-	/**
-	 * @see org.verapdf.pdfa.VeraFoundryProvider#getInstance()
-	 */
-	@Override
-	public VeraPDFFoundry getInstance() {
-		return PdfBoxFoundry.getInstance();
+	public static final String LINK_ANNOTATION_TYPE = "PDLinkAnnot";
+
+	public PBoxPDLinkAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour, PDPage pdPage) {
+		super(annot, pageResources, document, flavour, LINK_ANNOTATION_TYPE, pdPage);
 	}
 
 }

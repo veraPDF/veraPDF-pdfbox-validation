@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.pd.pattern;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.pdlayer.PDShading;
@@ -39,7 +39,7 @@ public class PBoxPDShadingPattern extends PBoxPDPattern implements
         PDShadingPattern {
 
     private static final Logger LOGGER = Logger
-            .getLogger(PBoxPDShadingPattern.class);
+            .getLogger(PBoxPDShadingPattern.class.getCanonicalName());
 
 	public static final String SHADING_PATTERN_TYPE = "PDShadingPattern";
 
@@ -75,7 +75,7 @@ public class PBoxPDShadingPattern extends PBoxPDPattern implements
 				return Collections.unmodifiableList(shadings);
             }
         } catch (IOException e) {
-            LOGGER.debug("Can`t get shading pattern. " + e.getMessage(), e);
+            LOGGER.log(java.util.logging.Level.INFO, "Can`t get shading pattern. " + e.getMessage());
         }
         return Collections.emptyList();
     }

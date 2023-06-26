@@ -81,7 +81,8 @@ public class PBoxPDType0CIDType2Test extends PBoxPDType0FontTest {
 
 	@Override
 	public void testAreRegistryOrderingCompatible() {
-		Assert.assertTrue(((PDType0Font) actual).getareRegistryOrderingCompatible().booleanValue());
+		Assert.assertEquals(((PDType0Font) actual).getCMapOrdering(), ((PDType0Font) actual).getCIDFontOrdering());
+		Assert.assertEquals(((PDType0Font) actual).getCMapRegistry(), ((PDType0Font) actual).getCIDFontRegistry());
 	}
 
 }

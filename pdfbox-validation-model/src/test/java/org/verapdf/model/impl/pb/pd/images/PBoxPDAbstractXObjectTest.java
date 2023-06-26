@@ -20,12 +20,9 @@
  */
 package org.verapdf.model.impl.pb.pd.images;
 
-import org.junit.Assert;
 import org.junit.Test;
-import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.impl.BaseTest;
 
-import java.util.List;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -37,9 +34,4 @@ public abstract class PBoxPDAbstractXObjectTest extends BaseTest {
 	@Test
 	public abstract void testSubtypeMethod();
 
-	@Test
-	public void testSMaskLink() {
-		List<? extends Object> sMask = actual.getLinkedObjects(PBoxPDXObject.S_MASK);
-		Assert.assertEquals(0, sMask.size());
-	}
 }

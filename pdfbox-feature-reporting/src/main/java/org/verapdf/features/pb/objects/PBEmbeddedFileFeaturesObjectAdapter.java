@@ -20,7 +20,7 @@
  */
 package org.verapdf.features.pb.objects;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.common.filespecification.PDComplexFileSpecification;
 import org.apache.pdfbox.pdmodel.common.filespecification.PDEmbeddedFile;
@@ -41,7 +41,7 @@ import java.util.List;
 public class PBEmbeddedFileFeaturesObjectAdapter implements EmbeddedFileFeaturesObjectAdapter {
 
     private static final Logger LOGGER = Logger
-            .getLogger(PBEmbeddedFileFeaturesObjectAdapter.class);
+            .getLogger(PBEmbeddedFileFeaturesObjectAdapter.class.getCanonicalName());
 
     private PDComplexFileSpecification embFile;
     private PDEmbeddedFile ef;
@@ -154,14 +154,14 @@ public class PBEmbeddedFileFeaturesObjectAdapter implements EmbeddedFileFeatures
             try {
                 this.creationDate = ef.getCreationDate();
             } catch (IOException e) {
-                LOGGER.debug("PDFBox error obtaining creation date", e);
+                LOGGER.log(java.util.logging.Level.INFO, "PDFBox error obtaining creation date. " + e.getMessage());
                 this.errors.add(e.getMessage());
             }
 
             try {
                 this.modDate = ef.getModDate();
             } catch (IOException e) {
-                LOGGER.debug("PDFBox error obtaining modification date", e);
+                LOGGER.log(java.util.logging.Level.INFO, "PDFBox error obtaining modification date. " + e.getMessage());
                 this.errors.add(e.getMessage());
             }
 
@@ -184,7 +184,7 @@ public class PBEmbeddedFileFeaturesObjectAdapter implements EmbeddedFileFeatures
     public InputStream getData() {
         try {
             if (this.ef == null) {
-                LOGGER.debug("Missed embedded file in PDComplexFileSpecification");
+                LOGGER.log(java.util.logging.Level.INFO, "Missed embedded file in PDComplexFileSpecification");
                 return null;
             }
             COSStream stream = this.ef.getStream();
@@ -192,7 +192,7 @@ public class PBEmbeddedFileFeaturesObjectAdapter implements EmbeddedFileFeatures
                 return stream.getUnfilteredStream();
             }
         } catch (IOException e) {
-            LOGGER.debug("Can not get embedded file stream", e);
+            LOGGER.log(java.util.logging.Level.INFO, "Can not get embedded file stream. " + e.getMessage());
         }
         return null;
     }

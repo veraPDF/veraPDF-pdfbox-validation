@@ -48,7 +48,7 @@ public class PBOp_re extends PBOpPathConstruction implements Op_re {
 
     @Override
     public List<? extends Object> getLinkedObjects(String link) {
-       if(RECT_BOX.equals(link)) {
+       if (RECT_BOX.equals(link)) {
            return this.getRectBox();
        }
        return super.getLinkedObjects(link);

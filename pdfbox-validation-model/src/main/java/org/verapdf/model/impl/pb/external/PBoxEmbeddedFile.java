@@ -22,9 +22,8 @@ package org.verapdf.model.impl.pb.external;
 
 import java.io.InputStream;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
 import org.verapdf.model.ModelParser;
@@ -42,7 +41,7 @@ import org.verapdf.pdfa.validation.validators.ValidatorFactory;
  */
 public class PBoxEmbeddedFile extends PBoxExternal implements EmbeddedFile {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxEmbeddedFile.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxEmbeddedFile.class.getCanonicalName());
 
 	/** Type name for {@code PBoxEmbeddedFile} */
 	public static final String EMBEDDED_FILE_TYPE = "EmbeddedFile";
@@ -85,10 +84,48 @@ public class PBoxEmbeddedFile extends PBoxExternal implements EmbeddedFile {
 						PDFAFlavour.PDFA_2_B)) {
 					PDFAValidator validator2b = ValidatorFactory.createValidator(PDFAFlavour.PDFA_2_B, false, 1);
 					ValidationResult result2b = validator2b.validate(parser2b);
-					return Boolean.valueOf(result2b.isCompliant());
+					return result2b.isCompliant();
 				}
 			} catch (Throwable e) {
-				LOGGER.debug("Exception during validation of embedded file", e);
+				LOGGER.log(java.util.logging.Level.INFO, "Exception during validation of embedded file. " + e.getMessage());
+				return Boolean.FALSE;
+			}
+		}
+		return Boolean.TRUE;
+	}
+
+	@Override
+	public Boolean getisValidPDFA124() {
+		if (this.stream != null) {
+			try {
+				InputStream unfilteredStream = stream.getUnfilteredStream();
+				unfilteredStream.mark(Integer.MAX_VALUE);
+				try (PDFAParser parser1b = ModelParser.createModelWithFlavour(unfilteredStream,
+						PDFAFlavour.PDFA_1_B)) {
+					PDFAValidator validator1b = ValidatorFactory.createValidator(PDFAFlavour.PDFA_1_B, false, 1);
+					ValidationResult result1b = validator1b.validate(parser1b);
+					if (result1b.isCompliant()) {
+						return Boolean.TRUE;
+					}
+				}
+				unfilteredStream.reset();
+				try (PDFAParser parser2b = ModelParser.createModelWithFlavour(unfilteredStream,
+						PDFAFlavour.PDFA_2_B)) {
+					PDFAValidator validator2b = ValidatorFactory.createValidator(PDFAFlavour.PDFA_2_B, false, 1);
+					ValidationResult result2b = validator2b.validate(parser2b);
+					if (result2b.isCompliant()) {
+						return Boolean.TRUE;
+					}
+				}
+				unfilteredStream.reset();
+				try (PDFAParser parser4 = ModelParser.createModelWithFlavour(unfilteredStream,
+						PDFAFlavour.PDFA_4)) {
+					PDFAValidator validator4 = ValidatorFactory.createValidator(PDFAFlavour.PDFA_4, false, 1);
+					ValidationResult result4 = validator4.validate(parser4);
+					return result4.isCompliant();
+				}
+			} catch (Throwable e) {
+				LOGGER.log(java.util.logging.Level.INFO, "Exception during validation of embedded file. " + e.getMessage());
 				return Boolean.FALSE;
 			}
 		}

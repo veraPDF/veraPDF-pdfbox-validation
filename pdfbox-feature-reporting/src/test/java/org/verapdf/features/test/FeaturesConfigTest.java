@@ -47,9 +47,8 @@ public class FeaturesConfigTest {
 	private static PDDocument document;
 
 	@BeforeClass
-	public static void before() throws URISyntaxException, IOException {
-		File pdf = new File(TestNodeGenerator.getSystemIndependentPath("/FR - DS.pdf"));
-		document = PDDocument.load(pdf, false, true);
+	public static void before() throws NullPointerException, IOException {
+		document = PDDocument.load(FeaturesConfigTest.class.getClassLoader().getResourceAsStream("FR - DS.pdf"), false, true);
 	}
 
 	@Test

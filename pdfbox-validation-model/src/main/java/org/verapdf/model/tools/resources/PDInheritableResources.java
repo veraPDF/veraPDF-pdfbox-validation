@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.tools.resources;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.font.PDFont;
@@ -34,20 +34,23 @@ import org.apache.pdfbox.pdmodel.graphics.shading.PDShading;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * @author Evgeniy Muravitskiy
  */
 public class PDInheritableResources {
 
-	private static final Logger LOGGER = Logger.getLogger(PDInheritableResources.class);
+	private static final Logger LOGGER = Logger.getLogger(PDInheritableResources.class.getCanonicalName());
 
 	public static final PDResources EMPTY_RESOURCES = new PDResources();
 	public static final PDInheritableResources EMPTY_EXTENDED_RESOURCES = new PDEmptyInheritableResources();
 
 	private final PDResources currentResources;
 	private final PDResources inheritedResources;
+
+	private Set<COSName> undefinedResourceNames = new HashSet<>();
+	private Set<COSName> inheritedResourceNames = new HashSet<>();
 
 	private final HashMap<COSName, PDFont> fontCache = new HashMap<>();
 
@@ -82,10 +85,14 @@ public class PDInheritableResources {
 				font = this.inheritedResources.getFont(name);
 				if (font != null) {
 					font.setInherited(true);
+					inheritedResourceNames.add(name);
 				}
 			}
 			fontCache.put(name, font);
 			ret = font;
+		}
+		if (ret == null) {
+			undefinedResourceNames.add(name);
 		}
 		return ret;
 	}
@@ -98,18 +105,25 @@ public class PDInheritableResources {
 			 * get it from page resource dictionary
 			 */
 			if (this.isDefaultColorSpaceUsed(name)) {
-				return this.inheritedResources.getColorSpace(name);
+				PDColorSpace colorSpace = this.inheritedResources.getColorSpace(name);
+				if (colorSpace == null) {
+					undefinedResourceNames.add(name);
+				}
+				return colorSpace;
 			}
 			PDColorSpace colorSpace = this.currentResources.getColorSpace(name);
 			if (colorSpace != null) {
 				return colorSpace;
 			}
 		} catch (IOException e) {
-			LOGGER.debug("Problems during color space obtain from current resource dictionary. "
-					+ "Trying to find it in inherited dictionary", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Problems during color space obtain from current resource dictionary. "
+					+ "Trying to find it in inherited dictionary " + e.getMessage());
 		}
 		PDColorSpace colorSpace = this.inheritedResources.getColorSpace(name);
-		colorSpace = setInheritedColorSpace(colorSpace);
+		colorSpace = setInheritedColorSpace(colorSpace, name);
+		if (colorSpace == null) {
+			undefinedResourceNames.add(name);
+		}
 		return colorSpace;
 	}
 
@@ -121,9 +135,10 @@ public class PDInheritableResources {
 		state = this.inheritedResources.getExtGState(name);
 		if (state != null) {
 			state.setInherited(true);
+			inheritedResourceNames.add(name);
 			return state;
 		}
-
+		undefinedResourceNames.add(name);
 		return null;
 	}
 
@@ -134,10 +149,11 @@ public class PDInheritableResources {
 		}
 		shading = this.inheritedResources.getShading(name);
 		if (shading != null) {
+			inheritedResourceNames.add(name);
 			shading.setInherited(true);
 			return shading;
 		}
-
+		undefinedResourceNames.add(name);
 		return null;
 	}
 
@@ -148,10 +164,11 @@ public class PDInheritableResources {
 		}
 		pattern = this.inheritedResources.getPattern(name);
 		if (pattern != null) {
+			inheritedResourceNames.add(name);
 			pattern.setInherited(true);
 			return pattern;
 		}
-
+		undefinedResourceNames.add(name);
 		return null;
 	}
 
@@ -162,10 +179,11 @@ public class PDInheritableResources {
 		}
 		object = this.inheritedResources.getXObject(name);
 		if (object != null) {
+			inheritedResourceNames.add(name);
 			object.setInherited(true);
 			return object;
 		}
-
+		undefinedResourceNames.add(name);
 		return null;
 	}
 
@@ -187,7 +205,7 @@ public class PDInheritableResources {
 		return COSName.DEVICERGB.equals(name) || COSName.DEVICEGRAY.equals(name) || COSName.DEVICECMYK.equals(name);
 	}
 
-	private static PDColorSpace setInheritedColorSpace(PDColorSpace colorSpace) {
+	private PDColorSpace setInheritedColorSpace(PDColorSpace colorSpace, COSName name) {
 		if (colorSpace == PDDeviceCMYK.INSTANCE) {
 			return PDDeviceCMYK.INHERITED_INSTANCE;
 		} else if (colorSpace == PDDeviceRGB.INSTANCE) {
@@ -196,6 +214,7 @@ public class PDInheritableResources {
 			return PDDeviceGray.INHERITED_INSTANCE;
 		}
 		colorSpace.setInherited(true);
+		inheritedResourceNames.add(name);
 		return colorSpace;
 	}
 
@@ -208,6 +227,14 @@ public class PDInheritableResources {
 				: EMPTY_RESOURCES;
 		currentResources = currentResources != null ? currentResources : EMPTY_RESOURCES;
 		return new PDInheritableResources(inheritedResources, currentResources);
+	}
+
+	public Set<COSName> getUndefinedResourceNames() {
+		return undefinedResourceNames;
+	}
+
+	public Set<COSName> getInheritedResourceNames() {
+		return inheritedResourceNames;
 	}
 
 }

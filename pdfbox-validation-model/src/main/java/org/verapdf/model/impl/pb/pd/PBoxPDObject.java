@@ -20,21 +20,16 @@
  */
 package org.verapdf.model.impl.pb.pd;
 
-import java.util.List;
-
 import org.apache.fontbox.cmap.CMap;
 import org.apache.pdfbox.contentstream.PDContentStream;
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSDocument;
-import org.apache.pdfbox.cos.COSObjectKey;
-import org.apache.pdfbox.cos.COSStream;
+import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.common.COSObjectable;
 import org.apache.pdfbox.pdmodel.font.PDFontLike;
 import org.verapdf.model.GenericModelObject;
-import org.verapdf.model.impl.pb.pd.actions.PBoxPDAction;
-import org.verapdf.model.pdlayer.PDAction;
 import org.verapdf.model.pdlayer.PDObject;
+
+import java.util.stream.Collectors;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -121,15 +116,18 @@ public class PBoxPDObject extends GenericModelObject implements PDObject {
 		}
 	}
 
-	protected void addAction(List<PDAction> actions, org.apache.pdfbox.pdmodel.interactive.action.PDAction buffer) {
-		PDAction action = PBoxPDAction.getAction(buffer);
-		if (action != null) {
-			actions.add(action);
-		}
-	}
-
 	@Override
 	public String getID() {
 		return this.id;
+	}
+
+	@Override
+	public String getentries() {
+		if (this.simplePDObject instanceof COSDictionary) {
+			return ((COSDictionary) this.simplePDObject).keySet().stream()
+					.map(COSName::getName)
+					.collect(Collectors.joining("&"));
+		}
+		return "";
 	}
 }

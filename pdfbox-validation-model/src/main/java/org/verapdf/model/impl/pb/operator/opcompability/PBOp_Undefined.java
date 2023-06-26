@@ -34,9 +34,16 @@ public class PBOp_Undefined extends PBOpCompatibility implements Op_Undefined {
 
 	/** Type name for {@code PBOp_Undefined} */
     public static final String OP_UNDEFINED_TYPE = "Op_Undefined";
+    private final String name;
 
-    public PBOp_Undefined(List<COSBase> arguments) {
+    public PBOp_Undefined(String operatorName, List<COSBase> arguments) {
         super(arguments, OP_UNDEFINED_TYPE);
+        this.name = operatorName;
     }
+
+    @Override
+	public String getname() {
+    	return name;
+	}
 
 }

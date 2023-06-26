@@ -20,9 +20,9 @@
  */
 package org.verapdf.model;
 
-import com.adobe.xmp.XMPException;
-import com.adobe.xmp.impl.VeraPDFMeta;
-import org.apache.log4j.Logger;
+import org.verapdf.xmp.XMPException;
+import org.verapdf.xmp.impl.VeraPDFMeta;
+import java.util.logging.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
@@ -61,27 +61,34 @@ public final class ModelParser implements PDFAParser {
 	private static final ComponentDetails details = Components.veraDetails(id, "PDFBox Parser",
 			pdfBoxReleaseDetails.getVersion(), "veraPDF PDFBox based model parser.");
 
-	private static final Logger logger = Logger.getLogger(ModelParser.class);
+	private static final String PDFUA_PREFIX = "ua";
+
+	private static final Logger LOGGER = Logger.getLogger(ModelParser.class.getCanonicalName());
 
 	private PDDocument document;
 
 	private final PDFAFlavour flavour;
 
-	private ModelParser(final InputStream docStream, PDFAFlavour flavour) throws IOException {
+	private ModelParser(final InputStream docStream, PDFAFlavour flavour, PDFAFlavour defaultFlavour) throws IOException {
 		this.document = PDDocument.load(docStream, false, true);
-		this.flavour = (flavour == PDFAFlavour.NO_FLAVOUR) ? obtainFlavour(this.document) : flavour;
+		this.flavour = detectFlavour(this.document, flavour, defaultFlavour);
 	}
 
-	private ModelParser(final File pdfFile, PDFAFlavour flavour) throws IOException {
+	private ModelParser(final File pdfFile, PDFAFlavour flavour, PDFAFlavour defaultFlavour) throws IOException {
 		this.document = PDDocument.load(pdfFile, false, true);
-		this.flavour = (flavour == PDFAFlavour.NO_FLAVOUR) ? obtainFlavour(this.document) : flavour;
+		this.flavour = detectFlavour(this.document, flavour, defaultFlavour);
 	}
 
 	public static ModelParser createModelWithFlavour(InputStream toLoad, PDFAFlavour flavour)
 			throws ModelParsingException, EncryptedPdfException {
+		return createModelWithFlavour(toLoad, flavour, PDFAFlavour.NO_FLAVOUR);
+	}
+
+	public static ModelParser createModelWithFlavour(InputStream toLoad, PDFAFlavour flavour, PDFAFlavour defaultFlavour)
+			throws ModelParsingException, EncryptedPdfException {
 		try {
 			cleanUp();
-			return new ModelParser(toLoad, flavour);
+			return new ModelParser(toLoad, flavour, defaultFlavour);
 		} catch (InvalidPasswordException excep) {
 			throw new EncryptedPdfException("The PDF stream appears to be encrypted.", excep);
 		} catch (IOException excep) {
@@ -91,9 +98,14 @@ public final class ModelParser implements PDFAParser {
 
 	public static ModelParser createModelWithFlavour(File pdfFile, PDFAFlavour flavour)
 			throws ModelParsingException, EncryptedPdfException {
+		return createModelWithFlavour(pdfFile, flavour, PDFAFlavour.NO_FLAVOUR);
+	}
+
+	public static ModelParser createModelWithFlavour(File pdfFile, PDFAFlavour flavour, PDFAFlavour defaultFlavour)
+			throws ModelParsingException, EncryptedPdfException {
 		try {
 			cleanUp();
-			return new ModelParser(pdfFile, flavour);
+			return new ModelParser(pdfFile, flavour, defaultFlavour);
 		} catch (InvalidPasswordException excep) {
 			throw new EncryptedPdfException("The PDF stream appears to be encrypted.", excep);
 		} catch (IOException excep) {
@@ -101,8 +113,15 @@ public final class ModelParser implements PDFAParser {
 		}
 	}
 
-	private static PDFAFlavour obtainFlavour(PDDocument document) {
-		PDFAFlavour defaultFlavour = Foundries.defaultInstance().defaultFlavour();
+	private static PDFAFlavour detectFlavour(PDDocument document, PDFAFlavour flavour, PDFAFlavour defaultFlavour) {
+		if (flavour == PDFAFlavour.NO_FLAVOUR) {
+			return obtainFlavour(document, defaultFlavour == PDFAFlavour.NO_FLAVOUR ?
+					Foundries.defaultInstance().defaultFlavour() : defaultFlavour);
+		}
+		return flavour;
+	}
+
+	private static PDFAFlavour obtainFlavour(PDDocument document, PDFAFlavour defaultFlavour) {
 		if (document == null || document.getDocumentCatalog() == null) {
 			return defaultFlavour;
 		}
@@ -114,18 +133,24 @@ public final class ModelParser implements PDFAParser {
 			VeraPDFMeta veraPDFMeta = VeraPDFMeta.parse(is);
 			Integer identificationPart = veraPDFMeta.getIdentificationPart();
 			String identificationConformance = veraPDFMeta.getIdentificationConformance();
-			PDFAFlavour pdfaFlavour = PDFAFlavour.byFlavourId(identificationPart + identificationConformance);
+			String prefix = "";
+			if (identificationPart == null && identificationConformance == null) {
+				identificationPart = veraPDFMeta.getUAIdentificationPart();
+				if (identificationPart != null) {
+					prefix = PDFUA_PREFIX;
+				}
+			}
+			if (identificationConformance == null) {
+				identificationConformance = "";
+			}
+			PDFAFlavour pdfaFlavour = PDFAFlavour.byFlavourId(prefix + identificationPart + identificationConformance);
 			// TODO: remove that logic after updating NO_FLAVOUR into base pdf validation flavour
 			if (pdfaFlavour == PDFAFlavour.NO_FLAVOUR) {
 				return defaultFlavour;
 			}
-			// TODO: remove that logic after adding PDF/A-4 validation profile and implementing its logic
-			if (pdfaFlavour == PDFAFlavour.PDFA_4) {
-				return defaultFlavour;
-			}
 			return pdfaFlavour;
 		} catch (IOException | XMPException e) {
-			logger.error(e);
+			LOGGER.log(java.util.logging.Level.SEVERE, e.getMessage());
 			return defaultFlavour;
 		}
 	}
@@ -182,7 +207,7 @@ public final class ModelParser implements PDFAParser {
 				this.document.close();
 			}
 		} catch (IOException e) {
-			logger.error("Problems with document close.", e);
+			LOGGER.log(java.util.logging.Level.SEVERE, "Problems with document close. " + e.getMessage());
 		}
 	}
 }

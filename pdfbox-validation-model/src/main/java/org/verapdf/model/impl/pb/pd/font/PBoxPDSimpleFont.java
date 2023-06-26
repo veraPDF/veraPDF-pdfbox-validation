@@ -32,8 +32,6 @@ import org.verapdf.model.pdlayer.PDSimpleFont;
  */
 public abstract class PBoxPDSimpleFont extends PBoxPDFont implements PDSimpleFont {
 
-    public static final String CUSTOM_ENCODING = "Custom";
-
 	public PBoxPDSimpleFont(PDFontLike font, RenderingMode renderingMode, final String type) {
 		super(font, renderingMode, type);
 	}
@@ -55,12 +53,16 @@ public abstract class PBoxPDSimpleFont extends PBoxPDFont implements PDSimpleFon
         } else if (encodingDict instanceof COSName) {
             return ((COSName) encodingDict).getName();
         } else if (encodingDict instanceof COSDictionary) {
-            COSBase differencesDict = ((COSDictionary) encodingDict)
-					.getDictionaryObject(COSName.DIFFERENCES);
-			return differencesDict != null ? CUSTOM_ENCODING :
-					((COSDictionary) encodingDict).getNameAsString(COSName.BASE_ENCODING);
+			return ((COSDictionary) encodingDict).getNameAsString(COSName.BASE_ENCODING);
         }
         return null;
+	}
+
+	@Override
+	public Boolean getcontainsDifferences() {
+		COSDictionary fontDict = ((org.apache.pdfbox.pdmodel.font.PDSimpleFont) this.pdFontLike).getCOSObject();
+		COSBase encodingDict = fontDict.getDictionaryObject(COSName.ENCODING);
+		return (encodingDict instanceof COSDictionary) && ((COSDictionary) encodingDict).getDictionaryObject(COSName.DIFFERENCES) != null;
 	}
 
 	@Override

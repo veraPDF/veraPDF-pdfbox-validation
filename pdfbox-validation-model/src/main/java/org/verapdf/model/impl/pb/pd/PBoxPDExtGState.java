@@ -21,17 +21,17 @@
 package org.verapdf.model.impl.pb.pd;
 
 import org.apache.pdfbox.cos.*;
-import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.graphics.PDFontSetting;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingIntent;
 import org.verapdf.model.baselayer.Object;
+import org.verapdf.model.coslayer.CosBM;
 import org.verapdf.model.coslayer.CosNumber;
-import org.verapdf.model.coslayer.CosObject;
 import org.verapdf.model.coslayer.CosRenderingIntent;
+import org.verapdf.model.impl.pb.cos.PBCosBM;
 import org.verapdf.model.impl.pb.cos.PBCosNumber;
-import org.verapdf.model.impl.pb.cos.PBCosObject;
 import org.verapdf.model.impl.pb.cos.PBCosRenderingIntent;
+import org.verapdf.model.impl.pb.pd.functions.PBoxPDFunction;
 import org.verapdf.model.pdlayer.PDExtGState;
 import org.verapdf.model.pdlayer.PDHalftone;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
@@ -45,13 +45,15 @@ import java.util.List;
  *
  * @author Evgeniy Muravitskiy
  */
-public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
+public class PBoxPDExtGState extends PBoxPDResource implements PDExtGState {
 
 	public static final String EXT_G_STATE_TYPE = "PDExtGState";
 
+	public static final String CUSTOM_FUNCTIONS = "customFunctions";
     public static final String RI = "RI";
     public static final String FONT_SIZE = "fontSize";
 	public static final String HALFTONE = "HT";
+	public static final String LINK_BM = "bm";
 
 	private final String tr;
 	private final String tr2;
@@ -59,11 +61,10 @@ public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
 	private final String BM;
 	private final Double ca;
 	private final Double CA;
-
-	private final PDDocument document;
+	
 	private final PDFAFlavour flavour;
 
-    public PBoxPDExtGState(PDExtendedGraphicsState state, PDDocument document, PDFAFlavour flavour) {
+    public PBoxPDExtGState(PDExtendedGraphicsState state, PDFAFlavour flavour) {
         super(state, EXT_G_STATE_TYPE);
 		this.tr = PBoxPDExtGState.getStringProperty(state, COSName.TR);
 		this.tr2 = PBoxPDExtGState.getStringProperty(state, COSName.getPDFName("TR2"));
@@ -71,7 +72,6 @@ public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
 		this.BM = PBoxPDExtGState.getStringProperty(state, COSName.BM);
 		this.ca = PBoxPDExtGState.getDoubleProperty(state, COSName.CA_NS);
 		this.CA = PBoxPDExtGState.getDoubleProperty(state, COSName.CA);
-		this.document = document;
 		this.flavour = flavour;
     }
 
@@ -112,6 +112,13 @@ public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
 				((COSDictionary) pageObject).containsKey(COSName.getPDFName("HTP"));
 	}
 
+	@Override
+	public Boolean getcontainsHTO() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		return pageObject != null && pageObject instanceof COSDictionary &&
+				((COSDictionary) pageObject).containsKey(COSName.getPDFName("HTO"));
+	}
+
 	private static String getStringProperty(PDExtendedGraphicsState state, COSName key) {
 		COSBase base = state.getCOSObject().getDictionaryObject(key);
 		return base == null ? null : base instanceof COSName ?
@@ -133,9 +140,37 @@ public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
 				return this.getFontSize();
 			case HALFTONE:
 				return this.getHalftone();
+			case CUSTOM_FUNCTIONS:
+				return this.getCustomFunctions();
+			case LINK_BM:
+				return this.getLinkBM();
 			default:
 				return super.getLinkedObjects(link);
 		}
+	}
+
+	private List<CosBM> getLinkBM() {
+		COSBase BM = ((COSDictionary)simplePDObject.getCOSObject()).getDictionaryObject(COSName.BM);
+		if (BM == null) {
+			return Collections.emptyList();
+		}
+		if (flavour == null || flavour.getPart() != PDFAFlavour.Specification.ISO_19005_4) {
+			if (BM instanceof COSArray) {
+				COSArray array = (COSArray)BM;
+				for (COSBase obj : array) {
+					if (obj instanceof COSName) {
+						BM = obj;
+						break;
+					}
+				}
+			}
+		}
+		if (BM instanceof COSName) {
+			List<CosBM> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+			list.add(new PBCosBM((COSName)BM));
+			return Collections.unmodifiableList(list);
+		}
+		return Collections.emptyList();
 	}
 
 	private List<CosRenderingIntent> getRI() {
@@ -176,6 +211,10 @@ public class PBoxPDExtGState extends PBoxPDResources implements PDExtGState {
 			}
 			return Collections.unmodifiableList(list);
 		}
+		return Collections.emptyList();
+	}
+	//Stub
+	private List<PBoxPDFunction> getCustomFunctions() {
 		return Collections.emptyList();
 	}
 

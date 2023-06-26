@@ -27,6 +27,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.impl.BaseTest;
+import org.verapdf.model.impl.pb.cos.PBCosBM;
 import org.verapdf.model.impl.pb.cos.PBCosRenderingIntent;
 
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class PBoxPDExtGStateTest extends BaseTest {
 		setUp(FILE_RELATIVE_PATH);
 		PDResources resources = document.getPage(0).getResources();
 		COSName next = resources.getExtGStateNames().iterator().next();
-		actual = new PBoxPDExtGState(resources.getExtGState(next), document, null);
+		actual = new PBoxPDExtGState(resources.getExtGState(next), null);
 	}
 
 	@Test
@@ -69,6 +70,15 @@ public class PBoxPDExtGStateTest extends BaseTest {
 	@Test
 	public void testBMMethod() {
 		Assert.assertEquals("Screen", ((PBoxPDExtGState) actual).getBM());
+	}
+
+	@Test
+	public void testBMLink() {
+		List<? extends Object> bm = actual.getLinkedObjects(PBoxPDExtGState.LINK_BM);
+		Assert.assertEquals(1, bm.size());
+		for (Object object : bm) {
+			Assert.assertEquals(PBCosBM.COS_BM_TYPE, object.getObjectType());
+		}
 	}
 
 	@Test

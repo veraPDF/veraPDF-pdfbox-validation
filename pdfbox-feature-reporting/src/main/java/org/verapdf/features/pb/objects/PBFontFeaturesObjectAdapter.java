@@ -20,7 +20,7 @@
  */
 package org.verapdf.features.pb.objects;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.font.*;
@@ -41,7 +41,7 @@ import java.util.Set;
 public class PBFontFeaturesObjectAdapter implements FontFeaturesObjectAdapter {
 
 	private static final Logger LOGGER = Logger
-			.getLogger(PBFontFeaturesObjectAdapter.class);
+			.getLogger(PBFontFeaturesObjectAdapter.class.getCanonicalName());
 
 	private PDFontLike fontLike;
 	private String id;
@@ -463,7 +463,7 @@ public class PBFontFeaturesObjectAdapter implements FontFeaturesObjectAdapter {
 					try {
 						return stream.getUnfilteredStream();
 					} catch (IOException e) {
-						LOGGER.debug("Error while obtaining unfiltered font stream", e);
+						LOGGER.log(java.util.logging.Level.INFO, "Error while obtaining unfiltered font stream. " + e.getMessage());
 					}
 				}
 			}

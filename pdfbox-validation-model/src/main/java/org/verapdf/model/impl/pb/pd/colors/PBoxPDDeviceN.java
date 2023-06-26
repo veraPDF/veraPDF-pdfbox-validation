@@ -20,7 +20,7 @@
  */
 package org.verapdf.model.impl.pb.pd.colors;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
@@ -32,6 +32,7 @@ import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosUnicodeName;
 import org.verapdf.model.factory.colors.ColorSpaceFactory;
 import org.verapdf.model.impl.pb.cos.PBCosUnicodeName;
+import org.verapdf.model.impl.pb.pd.functions.PBoxPDFunction;
 import org.verapdf.model.pdlayer.PDColorSpace;
 import org.verapdf.model.pdlayer.PDDeviceN;
 import org.verapdf.model.pdlayer.PDSeparation;
@@ -47,10 +48,11 @@ import java.util.*;
  */
 public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDDeviceN.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDDeviceN.class.getCanonicalName());
 
 	public static final String DEVICE_N_TYPE = "PDDeviceN";
 
+	public static final String TINT_TRANSFORM = "tintTransform";
 	public static final String ALTERNATE = "alternate";
 	public static final String COLORANT_NAMES = "colorantNames";
 	public static final String COLORANTS = "Colorants";
@@ -131,6 +133,8 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 				return this.getColorants();
 			case PROCESS_COLOR:
 				return this.getProcessColor();
+			case TINT_TRANSFORM:
+				return this.getTintTransform();
 			default:
 				return super.getLinkedObjects(link);
 		}
@@ -151,7 +155,7 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 						ColorSpaceFactory.getColorSpace(colorSpace, this.document, this.flavour));
 			}
 		} catch (IOException e) {
-			LOGGER.debug("Problems with process color space obtain in PDDeviceN.", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Problems with process color space obtain in PDDeviceN. " + e.getMessage());
 		}
 		return Collections.emptyList();
 	}
@@ -169,7 +173,7 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 				return Collections.unmodifiableList(colorSpace);
 			}
 		} catch (IOException e) {
-			LOGGER.debug("Can not get alternate color space from DeviceN. ", e);
+			LOGGER.log(java.util.logging.Level.INFO, "Can not get alternate color space from DeviceN. " + e.getMessage());
 		}
 		return Collections.emptyList();
 	}
@@ -212,9 +216,13 @@ public class PBoxPDDeviceN extends PBoxPDColorSpace implements PDDeviceN {
 					list.add((PBoxPDSeparation) ColorSpaceFactory.getColorSpace(colorSpace, this.document, this.flavour));
 				}
 			} catch (IOException e) {
-				LOGGER.debug("Problems with color space obtain.", e);
+				LOGGER.log(java.util.logging.Level.INFO, "Problems with color space obtain. " + e.getMessage());
 			}
 		}
 		return Collections.unmodifiableList(list);
+	}
+	//Stub
+	private List<PBoxPDFunction> getTintTransform() {
+		return Collections.emptyList();
 	}
 }

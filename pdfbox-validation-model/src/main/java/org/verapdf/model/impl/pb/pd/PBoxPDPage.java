@@ -20,17 +20,21 @@
  */
 package org.verapdf.model.impl.pb.pd;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.COSObjectable;
+import org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace;
+import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent;
 import org.apache.pdfbox.pdmodel.interactive.action.PDPageAdditionalActions;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosBBox;
+import org.verapdf.model.impl.pb.containers.StaticContainers;
 import org.verapdf.model.impl.pb.cos.PBCosBBox;
+import org.verapdf.model.impl.pb.pd.actions.PBoxPDPageAdditionalActions;
 import org.verapdf.model.pdlayer.*;
 import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
@@ -47,7 +51,7 @@ import java.util.List;
  */
 public class PBoxPDPage extends PBoxPDObject implements PDPage {
 
-	private static final Logger LOGGER = Logger.getLogger(PBoxPDPage.class);
+	private static final Logger LOGGER = Logger.getLogger(PBoxPDPage.class.getCanonicalName());
 
 	/** Type name for {@code PBoxPDPage} */
 	public static final String PAGE_TYPE = "PDPage";
@@ -70,18 +74,28 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 	public static final String TRIM_BOX = "TrimBox";
 	/** Link name for page art box */
 	public static final String ART_BOX = "ArtBox";
+	/** Link name for output intents */
+	public static final String OUTPUT_INTENTS = "outputIntents";
+	/** Link name for resource dictionary */
+	private static final String RESOURCES = "resources";
 	/** Link name for page presentation steps */
 	public static final String PRESENTATION_STEPS = "PresSteps";
 
-	/** Maximal number of actions in page dictionary */
-	public static final int MAX_NUMBER_OF_ACTIONS = 2;
+	public static final String PORTRAIT_ORIENTATION = "Portrait";
+	public static final String LANDSCAPE_ORIENTATION = "Landscape";
+	public static final String SQUARE_ORIENTATION = "Square";
+
+	public static final String TRANSPARENCY_COLOR_SPACE = "transparencyColorSpace";
+	public static final String PARENT_TRANSPARENCY_COLOR_SPACE = "parentTransparencyColorSpace";
 
 	private boolean containsTransparency = false;
 	private List<PDContentStream> contentStreams = null;
+	private OutputIntents outputIntents = null;
 	private List<PDAnnot> annotations = null;
 
-	private final org.apache.pdfbox.pdmodel.PDDocument document;
+	private final PDDocument document;
 	private final PDFAFlavour flavour;
+	private final PDColorSpace blendingColorSpace;
 
 	/**
 	 * Default constructor.
@@ -92,6 +106,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 		super((COSObjectable) simplePDObject, PAGE_TYPE);
 		this.document = document;
 		this.flavour = flavour;
+		this.blendingColorSpace = getBlendingColorSpace();
 	}
 
 	@Override
@@ -106,6 +121,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 
 	@Override
 	public Boolean getcontainsTransparency() {
+		StaticContainers.setCurrentTransparencyColorSpace(blendingColorSpace);
 		if (this.contentStreams == null) {
 			parseContentStream();
 		}
@@ -127,7 +143,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 			try {
 				return Boolean.valueOf(group != null && group.getColorSpace() != null);
 			} catch (IOException e) {
-				LOGGER.debug("Problem with obtaining group colorspace", e);
+				LOGGER.log(java.util.logging.Level.INFO, "Problem with obtaining group colorspace. " + e.getMessage());
 			}
 		}
 		return Boolean.FALSE;
@@ -138,6 +154,75 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 		COSBase pageObject = this.simplePDObject.getCOSObject();
 		return pageObject != null && pageObject instanceof COSDictionary &&
 				((COSDictionary) pageObject).containsKey(COSName.AA);
+	}
+
+	@Override
+	public String getTabs() {
+		COSBase pageObject = this.simplePDObject.getCOSObject();
+		if (pageObject != null && pageObject instanceof COSDictionary) {
+			return ((COSDictionary) pageObject).getNameAsString(COSName.getPDFName("Tabs"));
+		}
+		return null;
+	}
+
+	@Override
+	public String getorientation() {
+		CosBBox mediaBox = getMediaBox().get(0);
+		double height = mediaBox.gettop() - mediaBox.getbottom();
+		double width = mediaBox.getright() - mediaBox.getleft();
+		long rotation = ((org.apache.pdfbox.pdmodel.PDPage) simplePDObject).getRotation();
+		if ((height > width && rotation % 180 == 0) || (height < width && rotation % 180 == 90)) {
+			return PORTRAIT_ORIENTATION;
+		}
+		if ((height < width && rotation % 180 == 0) || (height > width && rotation % 180 == 90)) {
+			return LANDSCAPE_ORIENTATION;
+		}
+		return SQUARE_ORIENTATION;
+	}
+
+	@Override
+	public String getoutputColorSpace() {
+		if (this.outputIntents == null) {
+			this.outputIntents = parseOutputIntents();
+		}
+		return this.outputIntents != null ? ((PBoxOutputIntents)this.outputIntents).getColorSpace() : null;
+	}
+
+	@Override
+	public Long getpageNumber() {
+		return (long) this.document.getPages().indexOf((org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject);
+	}
+
+	private List<OutputIntents> getOutputIntents() {
+		if (this.outputIntents == null) {
+			this.outputIntents = parseOutputIntents();
+		}
+		if (this.outputIntents != null) {
+			List<OutputIntents> array = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+			array.add(this.outputIntents);
+			return array;
+		}
+		return Collections.emptyList();
+	}
+
+	private OutputIntents parseOutputIntents() {
+		if (flavour != null && flavour.getPart() != PDFAFlavour.Specification.ISO_19005_4) {
+			return null;
+		}
+		List<PDOutputIntent> outInts = new ArrayList<>();
+		COSArray array = (COSArray) ((COSDictionary)this.simplePDObject.getCOSObject()).getDictionaryObject(COSName.OUTPUT_INTENTS);
+		if (array != null) {
+			for (COSBase cosBase : array) {
+				if (cosBase instanceof COSObject) {
+					cosBase = ((COSObject)cosBase).getObject();
+				}
+				outInts.add(new PDOutputIntent((COSDictionary) cosBase));
+			}
+		}
+		if (outInts.size() > 0) {
+			return new PBoxOutputIntents(outInts, document, flavour);
+		}
+		return null;
 	}
 
 	@Override
@@ -153,6 +238,8 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 				return this.getContentStream();
 			case MEDIA_BOX:
 				return this.getMediaBox();
+			case RESOURCES:
+				return this.getResources();
 			case CROP_BOX:
 				return this.getCropBox();
 			case BLEED_BOX:
@@ -161,6 +248,12 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 				return this.getTrimBox();
 			case ART_BOX:
 				return this.getArtBox();
+			case OUTPUT_INTENTS:
+				return this.getOutputIntents();
+			case TRANSPARENCY_COLOR_SPACE:
+				return this.getTransparencyColorSpace();
+			case PARENT_TRANSPARENCY_COLOR_SPACE:
+				return this.getParentTransparencyColorSpace();
 			default:
 				return super.getLinkedObjects(link);
 		}
@@ -199,20 +292,11 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 		this.containsTransparency = contentStream.isContainsTransparency();
 	}
 
-	private List<PDAction> getActions() {
-		PDPageAdditionalActions pbActions = ((org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject)
-				.getActions();
-		if (pbActions != null) {
-			List<PDAction> actions = new ArrayList<>(MAX_NUMBER_OF_ACTIONS);
-
-			org.apache.pdfbox.pdmodel.interactive.action.PDAction action;
-
-			action = pbActions.getC();
-			this.addAction(actions, action);
-
-			action = pbActions.getO();
-			this.addAction(actions, action);
-
+	private List<PDAdditionalActions> getActions() {
+		PDPageAdditionalActions pbActions = ((org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject).getActions();
+		if (pbActions != null && pbActions.getCOSObject().size() != 0) {
+			List<PDAdditionalActions> actions = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+			actions.add(new PBoxPDPageAdditionalActions(pbActions));
 			return Collections.unmodifiableList(actions);
 		}
 		return Collections.emptyList();
@@ -236,9 +320,9 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 				return Collections.unmodifiableList(annotations);
 			}
 		} catch (IOException e) {
-			LOGGER.debug(
+			LOGGER.log(java.util.logging.Level.INFO,
 					"Problems in obtaining pdfbox PDAnnotations. "
-							+ e.getMessage(), e);
+							+ e.getMessage());
 		}
 		return Collections.emptyList();
 	}
@@ -249,7 +333,8 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 				this.simplePDObject).getResources();
 		for (PDAnnotation annotation : pdfboxAnnotations) {
 			if (annotation != null) {
-				PBoxPDAnnot annot = new PBoxPDAnnot(annotation, pageResources, this.document, this.flavour);
+				PBoxPDAnnot annot = PBoxPDAnnot.createAnnot(annotation, pageResources, this.document, this.flavour,
+				                                            (org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject);
 				this.containsTransparency |= annot.isContainsTransparency();
 				annotations.add(annot);
 			}
@@ -284,6 +369,53 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 			return Collections.unmodifiableList(list);
 		}
 		return Collections.emptyList();
+	}
+
+    public PDColorSpace getBlendingColorSpace() {
+		COSDictionary dictionary = ((org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject)
+				.getCOSObject();
+		COSBase groupDictionary = dictionary.getDictionaryObject(COSName.GROUP);
+		if (groupDictionary instanceof COSDictionary) {
+			org.apache.pdfbox.pdmodel.graphics.form.PDGroup group =
+					new org.apache.pdfbox.pdmodel.graphics.form.PDGroup(
+							(COSDictionary) groupDictionary);
+			if (COSName.TRANSPARENCY.equals(group.getSubType())) {
+				try {
+					return group.getColorSpace();
+				} catch (IOException e) {
+					LOGGER.log(java.util.logging.Level.WARNING, "Error getting color space");
+				}
+			}
+		}
+        return null;
+    }
+
+	private List<TransparencyColorSpace> getTransparencyColorSpace() {
+		if (blendingColorSpace != null) {
+			List<TransparencyColorSpace> xFormTransparencyGroup = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+			xFormTransparencyGroup.add(new PBoxTransparencyColorSpace(blendingColorSpace));
+			return Collections.unmodifiableList(xFormTransparencyGroup);
+		}
+		return Collections.emptyList();
+	}
+
+	private List<TransparencyColorSpace> getParentTransparencyColorSpace() {
+		if (blendingColorSpace != null) {
+			List<TransparencyColorSpace> parentXFormTransparencyGroup = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+			parentXFormTransparencyGroup.add(new PBoxTransparencyColorSpace(null));
+			StaticContainers.setCurrentTransparencyColorSpace(blendingColorSpace);
+			return Collections.unmodifiableList(parentXFormTransparencyGroup);
+		}
+		return Collections.emptyList();
+	}
+
+	private List<org.verapdf.model.pdlayer.PDResources> getResources() {
+		List<org.verapdf.model.pdlayer.PDResources> result = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+		PDResources resources = ((org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject).getResources();
+		if (resources != null) {
+			result.add(new PBoxPDResources(resources));
+		}
+		return result;
 	}
 
 }

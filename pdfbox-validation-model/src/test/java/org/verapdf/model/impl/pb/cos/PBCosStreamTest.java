@@ -118,7 +118,7 @@ public class PBCosStreamTest extends BaseTest {
 
     @Test
     public void testGetIsLengthCorrect() {
-        Assert.assertFalse(((CosStream) actual).getisLengthCorrect().booleanValue());
+        Assert.assertNotEquals(((CosStream) actual).getrealLength(), ((CosStream) actual).getLength());
     }
 
     @Test

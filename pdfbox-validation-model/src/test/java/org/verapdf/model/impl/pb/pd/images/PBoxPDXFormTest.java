@@ -46,7 +46,7 @@ public class PBoxPDXFormTest extends PBoxPDAbstractXObjectTest {
 	@BeforeClass
 	public static void setUp() throws IOException, URISyntaxException {
 		expectedType = TYPES.contains(PBoxPDXForm.X_FORM_TYPE) ? PBoxPDXForm.X_FORM_TYPE : null;
-		expectedID = "39 0 obj PDXForm";
+		expectedID = null;
 
 		setUp(FILE_RELATIVE_PATH);
 		PDResources pageResources = document.getPage(0).getResources();

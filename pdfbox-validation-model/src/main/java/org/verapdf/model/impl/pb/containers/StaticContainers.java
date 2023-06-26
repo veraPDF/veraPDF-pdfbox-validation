@@ -41,11 +41,46 @@ public class StaticContainers {
 
 	private static ThreadLocal<Set<COSObjectKey>> fileSpecificationKeys = new ThreadLocal<>();
 
+	private static final ThreadLocal<Stack<COSObjectKey>> transparencyVisitedContentStreams = new ThreadLocal<>();
+
+	//SENote
+	private static ThreadLocal<Set<String>> noteIDSet = new ThreadLocal<>();
+
+	//SEHn
+	private static ThreadLocal<Integer> lastHeadingNestingLevel = new ThreadLocal<>();
+
+	//PDXForm
+	private static final ThreadLocal<Set<COSObjectKey>> xFormKeysSet = new ThreadLocal<>();
+
+	private static final ThreadLocal<org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace> currentTransparencyColorSpace = new ThreadLocal<>();
+
 	public static void clearAllContainers() {
 		getSeparations().clear();
 		getInconsistentSeparations().clear();
 		getCachedColorSpaces().clear();
 		getFileSpecificationKeys().clear();
+		noteIDSet.set(new HashSet<>());
+		xFormKeysSet.set(new HashSet<>());
+		lastHeadingNestingLevel.set(0);
+	}
+
+	public static Set<String> getNoteIDSet() {
+		if (noteIDSet.get() == null) {
+			noteIDSet.set(new HashSet<>());
+		}
+		return noteIDSet.get();
+	}
+
+	public static void setNoteIDSet(Set<String> noteIDSet) {
+		StaticContainers.noteIDSet.set(noteIDSet);
+	}
+
+	public static Integer getLastHeadingNestingLevel() {
+		return lastHeadingNestingLevel.get();
+	}
+
+	public static void setLastHeadingNestingLevel(Integer lastHeadingNestingLevel) {
+		StaticContainers.lastHeadingNestingLevel.set(lastHeadingNestingLevel);
 	}
 
 	public static Map<String, List<PBoxPDSeparation>> getSeparations() {
@@ -82,6 +117,34 @@ public class StaticContainers {
 
 	public static void setFileSpecificationKeys(Set<COSObjectKey> fileSpecificationKeys) {
 		StaticContainers.fileSpecificationKeys.set(fileSpecificationKeys);
+	}
+
+	public static Stack<COSObjectKey> getTransparencyVisitedContentStreams() {
+		if (transparencyVisitedContentStreams.get() == null) {
+			transparencyVisitedContentStreams.set(new Stack<>());
+		}
+		return transparencyVisitedContentStreams.get();
+	}
+
+	public static void setTransparencyVisitedContentStreams(Stack<COSObjectKey> transparencyVisitedContentStreams) {
+		StaticContainers.transparencyVisitedContentStreams.set(transparencyVisitedContentStreams);
+	}
+
+	public static Set<COSObjectKey> getXFormKeysSet() {
+		checkForNull(xFormKeysSet, new HashSet<COSObjectKey>());
+		return xFormKeysSet.get();
+	}
+
+	public static void setXFormKeysSet(Set<COSObjectKey> xFormKeysSet) {
+		StaticContainers.xFormKeysSet.set(xFormKeysSet);
+	}
+
+	public static org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace getCurrentTransparencyColorSpace() {
+		return currentTransparencyColorSpace.get();
+	}
+
+	public static void setCurrentTransparencyColorSpace(org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace currentTransparencyColorSpace) {
+		StaticContainers.currentTransparencyColorSpace.set(currentTransparencyColorSpace);
 	}
 
 	private static void checkForNull(ThreadLocal variable, Object object) {

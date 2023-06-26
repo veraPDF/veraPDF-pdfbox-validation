@@ -29,7 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSString;
@@ -61,7 +61,7 @@ import org.verapdf.pdfa.flavours.PDFAFlavour;
  */
 public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 
-	private static final Logger LOGGER = Logger.getLogger(PBOpTextShow.class);
+	private static final Logger LOGGER = Logger.getLogger(PBOpTextShow.class.getCanonicalName());
 
 	private static final String MSG_PROBLEM_OBTAINING_RESOURCE = "Problem encountered while obtaining resources for ";
 
@@ -150,29 +150,24 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 				while (inputStream.available() > 0) {
 					int code = font.readCode(inputStream);
 					Boolean glyphPresent = null;
-					Boolean widthsConsistent = null ;
-					if(!fontProgramIsInvalid) {
+					if (!fontProgramIsInvalid) {
 						// every font contains notdef glyph. But if we call method
 						// of font container we can't distinguish case of code 0
 						// and glyph that is not present indeed.
-						glyphPresent = code == 0 ? true :
-								Boolean.valueOf(fontContainer.hasGlyph(code));
-						widthsConsistent = Boolean.valueOf(this.checkWidths(code));
+						glyphPresent = code == 0 || fontContainer.hasGlyph(code);
 					}
 					PBGlyph glyph;
 					if (font.getSubType().equals(FontFactory.TYPE_0)) {
 						int CID = ((PDType0Font) font).codeToCID(code);
-						glyph = new PBCIDGlyph(glyphPresent, widthsConsistent, font, code, CID,
-								this.state.getRenderingMode().intValue());
+						glyph = new PBCIDGlyph(glyphPresent, font, code, CID, this.state.getRenderingMode().intValue());
 					} else {
-						glyph = new PBGlyph(glyphPresent, widthsConsistent, font, code,
-								this.state.getRenderingMode().intValue());
+						glyph = new PBGlyph(glyphPresent, font, code, this.state.getRenderingMode().intValue());
 					}
 					res.add(glyph);
 				}
 			} catch (IOException e) {
-				LOGGER.debug("Error processing text show operator's string argument : " + new String(string));
-				LOGGER.info(e);
+				LOGGER.log(java.util.logging.Level.INFO, "Error processing text show operator's string argument : " + new String(string));
+				LOGGER.log(java.util.logging.Level.INFO, e.getMessage());
 			}
 		}
 		return res;
@@ -259,14 +254,6 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 		return Collections.emptyList();
 	}
 
-	private boolean checkWidths(int glyphCode) throws IOException {
-		org.apache.pdfbox.pdmodel.font.PDFont font = getFontFromResources();
-		float expectedWidth = font.getWidth(glyphCode);
-		float foundWidth = font.getWidthFromFont(glyphCode);
-		// consistent is defined to be a difference of no more than 1/1000 unit.
-		return Math.abs(foundWidth - expectedWidth) <= 1;
-	}
-
 	private static List<byte[]> getStrings(List<COSBase> argList) {
 		if (!argList.isEmpty()) {
 			List<byte[]> res = new ArrayList<>();
@@ -298,16 +285,16 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 		try {
 			return resources.getFont(this.state.getFontName());
 		} catch (IOException e) {
-			LOGGER.debug(MSG_PROBLEM_OBTAINING_RESOURCE + this.state.getFontName().getName() + ". " + e.getMessage(),
+			LOGGER.log(java.util.logging.Level.INFO, MSG_PROBLEM_OBTAINING_RESOURCE + this.state.getFontName().getName() + ". " + e.getMessage(),
 					e);
 			return null;
 		}
 	}
 
 	private static boolean fontProgramIsNull(org.apache.pdfbox.pdmodel.font.PDFont font) {
-		if(font instanceof PDType3Font) {
+		if (font instanceof PDType3Font) {
 			return false;
-		} else if(font instanceof PDType0Font) {
+		} else if (font instanceof PDType0Font) {
 			return descendantFontProgramIsNull((PDType0Font) font);
 		} else if (!font.getSubType().equals(FontFactory.TYPE_3) && (font.isEmbedded())) {
 			PDStream fontFile;
@@ -333,8 +320,8 @@ public abstract class PBOpTextShow extends PBOperator implements OpTextShow {
 
 	private static boolean descendantFontProgramIsNull(PDType0Font font) {
 		org.apache.pdfbox.pdmodel.font.PDCIDFont descendant = font.getDescendantFont();
-		if(descendant instanceof PDCIDFontType2) {
-			if(descendant.getFontDescriptor() != null) {
+		if (descendant instanceof PDCIDFontType2) {
+			if (descendant.getFontDescriptor() != null) {
 				return descendant.getFontDescriptor().getFontFile3() == null &&
 						descendant.getFontDescriptor().getFontFile2() == null;
 			}

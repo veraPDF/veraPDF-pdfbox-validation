@@ -22,6 +22,7 @@ package org.verapdf.model.tools;
 
 import org.apache.pdfbox.cos.*;
 import org.verapdf.model.impl.pb.pd.PBoxPDStructElem;
+import org.verapdf.model.impl.pb.pd.pboxse.PBoxSEGeneral;
 import org.verapdf.model.pdlayer.PDStructElem;
 
 import java.util.ArrayList;
@@ -51,6 +52,11 @@ public class TaggedPDFHelper {
 		return getChildren(parent, roleMapHelper, true);
 	}
 
+	public static List<String> getStructElemChildrenStandardTypes(COSDictionary parent,
+														   TaggedPDFRoleMapHelper roleMapHelper) {
+		return getChildrenStandardTypes(parent, roleMapHelper, true);
+	}
+
 	/**
 	 * Get all structure elements for current dictionary
 	 *
@@ -62,7 +68,7 @@ public class TaggedPDFHelper {
 		if (children != null) {
 			if (children instanceof COSDictionary && isStructElem((COSDictionary) children, checkType)) {
 				List<PDStructElem> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-				list.add(new PBoxPDStructElem((COSDictionary) children, roleMapHelper));
+				list.add(PBoxSEGeneral.createTypedStructElem((COSDictionary) children, roleMapHelper));
 				return Collections.unmodifiableList(list);
 			} else if (children instanceof COSArray) {
 				return getChildrenFromArray((COSArray) children, roleMapHelper, checkType);
@@ -71,6 +77,19 @@ public class TaggedPDFHelper {
 		return Collections.emptyList();
 	}
 
+	private static List<String> getChildrenStandardTypes(COSDictionary parent, TaggedPDFRoleMapHelper roleMapHelper, boolean checkType) {
+		COSBase children = parent.getDictionaryObject(COSName.K);
+		if (children != null) {
+			if (children instanceof COSDictionary && isStructElem((COSDictionary) children, checkType)) {
+				List<String> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+				list.add(PBoxPDStructElem.getStructureElementStandardType((COSDictionary) children, roleMapHelper));
+				return Collections.unmodifiableList(list);
+			} else if (children instanceof COSArray) {
+				return getChildrenStandardTypesFromArray((COSArray) children, roleMapHelper, checkType);
+			}
+		}
+		return Collections.emptyList();
+	}
 	/**
 	 * Transform array of dictionaries to list of structure elements
 	 *
@@ -86,7 +105,24 @@ public class TaggedPDFHelper {
 					directElem = ((COSObject) directElem).getObject();
 				}
 				if (directElem instanceof COSDictionary && isStructElem((COSDictionary) directElem, checkType)) {
-					list.add(new PBoxPDStructElem((COSDictionary) directElem, roleMapHelper));
+					list.add(PBoxSEGeneral.createTypedStructElem((COSDictionary) directElem, roleMapHelper));
+				}
+			}
+			return Collections.unmodifiableList(list);
+		}
+		return Collections.emptyList();
+	}
+
+	private static List<String> getChildrenStandardTypesFromArray(COSArray children, TaggedPDFRoleMapHelper roleMapHelper, boolean checkType) {
+		if (children.size() > 0) {
+			List<String> list = new ArrayList<>();
+			for (COSBase element : children) {
+				COSBase directElem = element;
+				if (directElem instanceof COSObject) {
+					directElem = ((COSObject) directElem).getObject();
+				}
+				if (directElem instanceof COSDictionary && isStructElem((COSDictionary) directElem, checkType)) {
+					list.add(PBoxPDStructElem.getStructureElementStandardType((COSDictionary) directElem, roleMapHelper));
 				}
 			}
 			return Collections.unmodifiableList(list);

@@ -46,7 +46,7 @@ public class PBoxPDOutputIntentTest extends BaseTest {
 		expectedID = "3 0 obj PDOutputIntent";
 
 		setUp(FILE_RELATIVE_PATH);
-		actual = new PBoxPDOutputIntent(document.getDocumentCatalog().getOutputIntents().get(0), document, null);
+		actual = new PBoxPDOutputIntent(document.getDocumentCatalog().getOutputIntents().get(0));
 	}
 
 	@Test
