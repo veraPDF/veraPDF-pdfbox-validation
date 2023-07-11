@@ -81,6 +81,11 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 	}
 
 	@Override
+	public Long getBitsPerComponent() {
+		return (long)((PDImageXObjectProxy)simplePDObject).getBitsPerComponent();
+	}
+
+	@Override
 	public Boolean getcontainsAlternates() {
 		COSBase pageObject = this.simplePDObject.getCOSObject();
 		return pageObject != null && pageObject instanceof COSDictionary &&
