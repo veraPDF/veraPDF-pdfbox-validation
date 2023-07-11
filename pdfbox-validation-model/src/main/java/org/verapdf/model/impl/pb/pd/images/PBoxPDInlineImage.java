@@ -69,6 +69,11 @@ public class PBoxPDInlineImage extends PBoxPDObject implements PDInlineImage {
 	}
 
 	@Override
+	public Long getBitsPerComponent() {
+		return (long)((PDImage)simplePDObject).getBitsPerComponent();
+	}
+
+	@Override
 	public String getSubtype() {
 		return null;
 	}
