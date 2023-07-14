@@ -56,7 +56,7 @@ import java.util.List;
  */
 public final class ModelParser implements PDFAParser {
 	private static final ReleaseDetails pdfBoxReleaseDetails = ReleaseDetails.addDetailsFromResource(
-			ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "pdfbox-parser." + ReleaseDetails.PROPERTIES_EXT);
+			ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "pdfbox-validation." + ReleaseDetails.PROPERTIES_EXT);
 	private static final URI id = URI.create("http://pdfa.verapdf.org/parser#pdfbox");
 	private static final ComponentDetails details = Components.veraDetails(id, "PDFBox Parser",
 			pdfBoxReleaseDetails.getVersion(), "veraPDF PDFBox based model parser.");
