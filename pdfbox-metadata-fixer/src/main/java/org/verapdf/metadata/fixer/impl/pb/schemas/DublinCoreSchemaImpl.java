@@ -106,6 +106,18 @@ public class DublinCoreSchemaImpl extends BasicSchemaImpl implements DublinCore 
 	}
 
 	@Override
+	public int getAuthorSize() {
+		try {
+			List<String> creators = this.meta.getCreator();
+			if (creators != null) {
+				return creators.size();
+			}
+		} catch (XMPException ignored) {
+		}
+		return 0;
+	}
+
+	@Override
 	public void setAuthor(String creator) {
 		try {
 			List<String> res = new ArrayList<>(1);
