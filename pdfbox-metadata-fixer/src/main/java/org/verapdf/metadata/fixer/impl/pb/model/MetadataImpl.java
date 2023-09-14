@@ -113,7 +113,7 @@ public class MetadataImpl implements Metadata {
         try {
             if (isValidIdentification()) {
                 int part = flavour.getPart().getPartNumber();
-                Integer schemaPart = this.metadata.getIdentificationPart();
+                Integer schemaPart = this.metadata.getPDFAIdentificationPart();
 
                 if (schemaPart != null &&
                         schemaPart.intValue() != part) {
@@ -121,7 +121,7 @@ public class MetadataImpl implements Metadata {
                 }
             }
 
-            boolean isDeleted = this.metadata.deleteIdentificationSchema();
+            boolean isDeleted = this.metadata.deletePDFAIdentificationSchema();
             if (isDeleted) {
                 this.setNeedToBeUpdated(true);
                 resultBuilder.addFix("Identification schema removed");
@@ -141,8 +141,8 @@ public class MetadataImpl implements Metadata {
 
         try {
             if (isValidIdentification()) {
-                Integer schemaPart = this.metadata.getIdentificationPart();
-                String schemaConformance = this.metadata.getIdentificationConformance();
+                Integer schemaPart = this.metadata.getPDFAIdentificationPart();
+                String schemaConformance = this.metadata.getPDFAIdentificationConformance();
 
                 if (schemaPart != null &&
                         schemaConformance != null &&
@@ -152,8 +152,8 @@ public class MetadataImpl implements Metadata {
                 }
             }
 
-            this.metadata.setIdentificationPart(Integer.valueOf(part));
-            this.metadata.setIdentificationConformance(conformance);
+            this.metadata.setPDFAIdentificationPart(Integer.valueOf(part));
+            this.metadata.setPDFAIdentificationConformance(conformance);
             this.setNeedToBeUpdated(true);
             resultBuilder.addFix("Identification schema added");
 
@@ -184,16 +184,15 @@ public class MetadataImpl implements Metadata {
 
     private boolean isValidIdentification() {
         try {
-            Integer identificationPart = this.metadata.getIdentificationPart();
+            Integer identificationPart = this.metadata.getPDFAIdentificationPart();
             if (identificationPart == null) {
                 return false;
 			}
-                String identificationConformance = this.metadata.getIdentificationConformance();
+                String identificationConformance = this.metadata.getPDFAIdentificationConformance();
                 if (identificationPart.intValue() == 1) {
                     return "A".equals(identificationConformance) || "B".equals(identificationConformance);
                 } else if (identificationPart.intValue() == 2 || identificationPart.intValue() == 3) {
-                    return "A".equals(this.metadata.getIdentificationConformance()) ||
-                            "U".equals(identificationConformance) ||
+                    return "A".equals(identificationConformance) || "U".equals(identificationConformance) ||
                             "B".equals(identificationConformance);
                 } else {
                     return false;
