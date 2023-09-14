@@ -76,8 +76,8 @@ public class MetadataImplTest {
                 MetadataFixerResultImpl.Builder builder = new MetadataFixerResultImpl.Builder();
                 impl.addPDFIdentificationSchema(builder, PDFAFlavour.PDFA_1_B);
 
-                assertEquals(filePart, xmp.getIdentificationPart());
-                assertEquals(fileConformance, xmp.getIdentificationConformance());
+                assertEquals(filePart, xmp.getPDFAIdentificationPart());
+                assertEquals(fileConformance, xmp.getPDFAIdentificationConformance());
             }
         }
     }
