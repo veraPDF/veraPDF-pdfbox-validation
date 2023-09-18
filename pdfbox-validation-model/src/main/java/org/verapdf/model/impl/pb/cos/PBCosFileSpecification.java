@@ -93,6 +93,11 @@ public class PBCosFileSpecification extends PBCosDict implements CosFileSpecific
 	}
 
 	@Override
+	public Boolean getcontainsDesc() {
+		return null;
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		if (EF.equals(link)) {
 			return this.getEFFile();
