@@ -71,6 +71,11 @@ public class PBoxPDFormField extends PBoxPDObject implements PDFormField {
     }
 
     @Override
+    public Long getFf() {
+        return null;
+    }
+
+    @Override
     public List<? extends Object> getLinkedObjects(String link) {
         switch (link) {
             case ADDITIONAL_ACTION:
