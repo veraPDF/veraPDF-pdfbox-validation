@@ -32,4 +32,9 @@ public class PBoxSEFENote extends PBoxSEGeneral implements SEFENote {
     public PBoxSEFENote(COSDictionary structElemDictionary, TaggedPDFRoleMapHelper roleMapHelper) {
         super(structElemDictionary, roleMapHelper, TaggedPDFConstants.FENOTE, FENOTE_STRUCTURE_ELEMENT_TYPE);
     }
+
+    @Override
+    public String getNoteType() {
+        return null;
+    }
 }
