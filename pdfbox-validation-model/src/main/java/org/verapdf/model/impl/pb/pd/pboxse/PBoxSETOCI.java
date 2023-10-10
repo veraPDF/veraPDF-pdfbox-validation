@@ -32,4 +32,9 @@ public class PBoxSETOCI extends PBoxSEGeneral implements SETOCI {
     public PBoxSETOCI(COSDictionary structElemDictionary, TaggedPDFRoleMapHelper roleMapHelper) {
         super(structElemDictionary, roleMapHelper, TaggedPDFConstants.TOCI, TOCI_STRUCTURE_ELEMENT_TYPE);
     }
+
+    @Override
+    public Boolean getcontainsRef() {
+        return null;
+    }
 }
