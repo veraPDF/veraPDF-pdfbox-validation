@@ -48,10 +48,8 @@ import org.verapdf.model.impl.pb.pd.annotations.PBoxPDLinkAnnot;
 import org.verapdf.model.impl.pb.pd.annotations.PBoxPDPrinterMarkAnnot;
 import org.verapdf.model.impl.pb.pd.annotations.PBoxPDTrapNetAnnot;
 import org.verapdf.model.impl.pb.pd.annotations.PBoxPDWidgetAnnot;
-import org.verapdf.model.pdlayer.PDAction;
-import org.verapdf.model.pdlayer.PDAdditionalActions;
-import org.verapdf.model.pdlayer.PDAnnot;
-import org.verapdf.model.pdlayer.PDContentStream;
+import org.verapdf.model.impl.pb.pd.images.PBoxPDXForm;
+import org.verapdf.model.pdlayer.*;
 import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
@@ -102,7 +100,7 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	private final PDFAFlavour flavour;
 	private final PDPage pdPage;
 
-	private List<PDContentStream> appearance = null;
+	private List<PDXForm> appearance = null;
 	private List<CosBM> blendMode = null;
 	private boolean containsTransparency = false;
 
@@ -441,7 +439,7 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	 * @return normal appearance stream (N key in the appearance dictionary) of
 	 *         the annotation
 	 */
-	private List<PDContentStream> getAppearance() {
+	private List<PDXForm> getAppearance() {
 		if (this.appearance == null) {
 			parseAppearance();
 		}
@@ -466,7 +464,7 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 			COSBase downAppearanceBase = dictionary.getDictionaryObject(COSName.D);
 			COSBase rolloverAppearanceBase = dictionary.getDictionaryObject(COSName.R);
 			if (normalAppearanceBase != null || downAppearanceBase != null || rolloverAppearanceBase != null) {
-				List<PDContentStream> appearances = new ArrayList<>();
+				List<PDXForm> appearances = new ArrayList<>();
 				addContentStreamsFromAppearanceEntry(normalAppearanceBase, appearances);
 				addContentStreamsFromAppearanceEntry(downAppearanceBase, appearances);
 				addContentStreamsFromAppearanceEntry(rolloverAppearanceBase, appearances);
@@ -479,7 +477,7 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		}
 	}
 
-	private void addContentStreamsFromAppearanceEntry(COSBase appearanceEntry, List<PDContentStream> appearances) {
+	private void addContentStreamsFromAppearanceEntry(COSBase appearanceEntry, List<PDXForm> appearances) {
 		if (appearanceEntry != null) {
 			PDAppearanceEntry newAppearance = new PDAppearanceEntry(appearanceEntry);
 			if (newAppearance.isStream()) {
@@ -493,15 +491,13 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		}
 	}
 
-	private void addAppearance(List<PDContentStream> list, PDAppearanceStream toAdd) {
+	private void addAppearance(List<PDXForm> list, PDAppearanceStream toAdd) {
 		if (toAdd != null) {
 			PDInheritableResources resources = PDInheritableResources.getInstance(this.pageResources,
 					toAdd.getResources());
-			PBoxPDContentStream stream = new PBoxPDContentStream(toAdd, resources, this.document, this.flavour);
-			this.containsTransparency |= stream.isContainsTransparency();
-			org.apache.pdfbox.pdmodel.graphics.form.PDGroup group = toAdd.getGroup();
-			this.containsTransparency |= group != null && COSName.TRANSPARENCY.equals(group.getSubType());
-			list.add(stream);
+			PBoxPDXForm xForm = new PBoxPDXForm(toAdd, resources, this.document, this.flavour);
+			this.containsTransparency |= xForm.containsTransparency();
+			list.add(xForm);
 		}
 	}
 
