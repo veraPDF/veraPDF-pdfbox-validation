@@ -20,17 +20,8 @@
  */
 package org.verapdf.model.impl.pb.pd.actions;
 
-import org.apache.pdfbox.cos.*;
-import org.apache.pdfbox.pdmodel.interactive.action.PDAction;
 import org.apache.pdfbox.pdmodel.interactive.action.PDActionGoTo;
-import org.verapdf.model.baselayer.Object;
-import org.verapdf.model.coslayer.CosNumber;
-import org.verapdf.model.impl.pb.cos.PBCosNumber;
 import org.verapdf.model.pdlayer.PDGoToAction;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author Timur Kamalov
@@ -45,33 +36,8 @@ public class PBoxPDGoToAction extends PBoxPDAction implements PDGoToAction {
 		super(simplePDObject, GOTO_ACTION_TYPE);
 	}
 
-	public PBoxPDGoToAction(PDAction simplePDObject, String type) {
-		super(simplePDObject, type);
-	}
-
 	@Override
-	public List<? extends Object> getLinkedObjects(String link) {
-		if (D.equals(link)) {
-			return this.getD();
-		}
-		return super.getLinkedObjects(link);
+	public Boolean getcontainsStructDestination() {
+		return null;
 	}
-
-	public List<CosNumber> getD() {
-		COSDictionary cosDictionary = ((PDAction) simplePDObject).getCOSObject();
-		if (cosDictionary != null) {
-			COSBase dEntry = cosDictionary.getDictionaryObject(COSName.D);
-			if (dEntry instanceof COSArray) {
-				List<CosNumber> result = new ArrayList<>();
-				for (COSBase cosBase : (COSArray) dEntry) {
-					if (cosBase instanceof COSNumber) {
-						result.add(PBCosNumber.fromPDFBoxNumber(cosBase));
-					}
-				}
-				return Collections.unmodifiableList(result);
-			}
-		}
-		return Collections.emptyList();
-	}
-
 }

@@ -40,6 +40,8 @@ public class PBoxPDOutline extends PBoxPDObject implements PDOutline {
 	public static final String OUTLINE_TYPE = "PDOutline";
 
     public static final String ACTION = "A";
+    public static final String DEST = "Dest";
+    public static final String TITLE = "Title";
 
     private final String id;
 
@@ -55,10 +57,16 @@ public class PBoxPDOutline extends PBoxPDObject implements PDOutline {
 
     @Override
     public List<? extends Object> getLinkedObjects(String link) {
-        if (ACTION.equals(link)) {
-            return this.getAction();
+        switch (link) {
+            case ACTION:
+                return this.getAction();
+            case DEST:
+                return Collections.emptyList();
+            case TITLE:
+                return Collections.emptyList();
+            default:
+                return super.getLinkedObjects(link);
         }
-        return super.getLinkedObjects(link);
     }
 
     private List<PDAction> getAction() {
