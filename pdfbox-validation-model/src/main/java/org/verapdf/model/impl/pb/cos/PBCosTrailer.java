@@ -23,10 +23,8 @@ package org.verapdf.model.impl.pb.cos;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.verapdf.model.baselayer.Object;
-import org.verapdf.model.coslayer.CosIndirect;
 import org.verapdf.model.coslayer.CosInfo;
 import org.verapdf.model.coslayer.CosTrailer;
 import org.verapdf.model.impl.pb.pd.PBoxPDEncryption;
@@ -73,8 +71,6 @@ public class PBCosTrailer extends PBCosDict implements CosTrailer {
     @Override
     public List<? extends Object> getLinkedObjects(String link) {
         switch (link) {
-            case CATALOG:
-                return this.getCatalog();
             case ENCRYPT:
                 return this.getEncrypt();
             case INFO:
@@ -82,13 +78,6 @@ public class PBCosTrailer extends PBCosDict implements CosTrailer {
             default:
                 return super.getLinkedObjects(link);
         }
-    }
-
-    private List<CosIndirect> getCatalog() {
-        List<CosIndirect> catalog = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-        COSBase base = ((COSDictionary) this.baseObject).getItem(COSName.ROOT);
-        catalog.add(new PBCosIndirect((COSObject) base, this.document, this.flavour));
-        return Collections.unmodifiableList(catalog);
     }
 
     private List<PDEncryption> getEncrypt() {

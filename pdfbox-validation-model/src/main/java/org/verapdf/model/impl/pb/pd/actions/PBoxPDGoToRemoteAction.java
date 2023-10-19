@@ -26,7 +26,7 @@ import org.verapdf.model.pdlayer.PDGoToRemoteAction;
 /**
  * @author Timur Kamalov
  */
-public class PBoxPDGoToRemoteAction extends PBoxPDGoToAction implements PDGoToRemoteAction {
+public class PBoxPDGoToRemoteAction extends PBoxPDAction implements PDGoToRemoteAction {
 
 	public static final String GOTO_REMOTE_ACTION_TYPE = "PDGoToRemoteAction";
 

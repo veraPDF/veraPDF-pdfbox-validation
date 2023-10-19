@@ -231,6 +231,18 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	}
 
 	@Override
+	public Boolean getcontainsC() {
+		COSBase colorArray = ((PDAnnotation) this.simplePDObject).getCOSObject().getDictionaryObject(COSName.C);
+		return colorArray instanceof COSArray;
+	}
+
+	@Override
+	public Boolean getcontainsIC() {
+		COSBase colorArray = ((PDAnnotation) this.simplePDObject).getCOSObject().getDictionaryObject(COSName.IC);
+		return colorArray instanceof COSArray;
+	}
+
+	@Override
 	public String getFT() {
 		return this.ft;
 	}

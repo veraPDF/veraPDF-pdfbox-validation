@@ -80,6 +80,11 @@ public class PBoxPDCIDFont extends PBoxPDFont implements PDCIDFont {
 	}
 
 	@Override
+	public Boolean getcontainsCIDSet() {
+		return getCIDSetStream() != null;
+	}
+
+	@Override
 	public Boolean getcidSetListsAllGlyphs() {
 			PDStream cidSet = getCIDSetStream();
 			if (cidSet == null) {

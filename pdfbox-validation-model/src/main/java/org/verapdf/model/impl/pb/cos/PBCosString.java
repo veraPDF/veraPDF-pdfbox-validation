@@ -22,6 +22,7 @@ package org.verapdf.model.impl.pb.cos;
 
 import org.apache.pdfbox.cos.COSString;
 import org.verapdf.model.coslayer.CosString;
+import org.verapdf.model.impl.pb.operator.textshow.PUAHelper;
 
 /**
  * Current class is representation of CosString interface of abstract model.
@@ -84,5 +85,10 @@ public class PBCosString extends PBCosObject implements CosString {
     @Override
     public Long gethexCount() {
         return this.hexCount;
+    }
+
+    @Override
+    public Boolean getcontainsPUA() {
+        return PUAHelper.containPUA(((COSString)baseObject).getString());
     }
 }

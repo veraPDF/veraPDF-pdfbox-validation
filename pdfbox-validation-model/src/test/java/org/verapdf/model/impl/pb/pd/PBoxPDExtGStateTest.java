@@ -99,11 +99,4 @@ public class PBoxPDExtGStateTest extends BaseTest {
 			Assert.assertEquals(PBCosRenderingIntent.COS_RENDERING_INTENT_TYPE, object.getObjectType());
 		}
 	}
-
-	@Test
-	public void testFontSize() {
-		List<? extends Object> fontSize = actual.getLinkedObjects(PBoxPDExtGState.FONT_SIZE);
-		Assert.assertEquals(0, fontSize.size());
-	}
-
 }
