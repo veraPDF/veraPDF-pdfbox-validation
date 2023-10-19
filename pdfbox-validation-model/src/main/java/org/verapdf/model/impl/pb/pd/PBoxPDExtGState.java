@@ -21,15 +21,12 @@
 package org.verapdf.model.impl.pb.pd;
 
 import org.apache.pdfbox.cos.*;
-import org.apache.pdfbox.pdmodel.graphics.PDFontSetting;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingIntent;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosBM;
-import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.coslayer.CosRenderingIntent;
 import org.verapdf.model.impl.pb.cos.PBCosBM;
-import org.verapdf.model.impl.pb.cos.PBCosNumber;
 import org.verapdf.model.impl.pb.cos.PBCosRenderingIntent;
 import org.verapdf.model.impl.pb.pd.functions.PBoxPDFunction;
 import org.verapdf.model.pdlayer.PDExtGState;
@@ -136,8 +133,6 @@ public class PBoxPDExtGState extends PBoxPDResource implements PDExtGState {
 		switch (link) {
 			case RI:
 				return this.getRI();
-			case FONT_SIZE:
-				return this.getFontSize();
 			case HALFTONE:
 				return this.getHalftone();
 			case CUSTOM_FUNCTIONS:
@@ -182,19 +177,6 @@ public class PBoxPDExtGState extends PBoxPDResource implements PDExtGState {
             renderingIntents.add(new PBCosRenderingIntent(pdfName));
 			return Collections.unmodifiableList(renderingIntents);
         }
-        return Collections.emptyList();
-    }
-
-    private List<CosNumber> getFontSize() {
-        PDFontSetting fontSetting = ((PDExtendedGraphicsState) this.simplePDObject)
-                .getFontSetting();
-        if (fontSetting != null) {
-			List<CosNumber> result = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			COSNumber size = (COSNumber) ((COSArray) fontSetting.getCOSObject()).get(1);
-			result.add(PBCosNumber.fromPDFBoxNumber(size));
-			return Collections.unmodifiableList(result);
-        }
-
         return Collections.emptyList();
     }
 

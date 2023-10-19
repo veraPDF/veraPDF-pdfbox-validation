@@ -20,7 +20,6 @@
  */
 package org.verapdf.model.impl.pb.cos;
 
-import org.verapdf.model.impl.pb.operator.textshow.PUAHelper;
 import org.verapdf.model.coslayer.CosActualText;
 import org.apache.pdfbox.cos.COSString;
 
@@ -33,10 +32,5 @@ public class PBCosActualText extends PBCosString implements CosActualText {
 
     public PBCosActualText(COSString cosString) {
         super(cosString, COS_ACTUAL_TEXT_TYPE);
-    }
-
-    @Override
-    public Boolean getcontainsPUA() {
-        return PUAHelper.containPUA(((COSString)baseObject).getString());
     }
 }

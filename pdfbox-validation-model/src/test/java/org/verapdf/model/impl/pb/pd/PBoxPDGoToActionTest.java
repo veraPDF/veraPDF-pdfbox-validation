@@ -58,11 +58,4 @@ public class PBoxPDGoToActionTest extends PBoxPDActionTest {
 		Assert.assertEquals(1, nextAction.size());
 		Assert.assertEquals(PBoxPDNamedAction.NAMED_ACTION_TYPE, nextAction.get(0).getObjectType());
 	}
-
-	@Test
-	public void testDLink() {
-		List<? extends Object> link = actual.getLinkedObjects(PBoxPDGoToAction.D);
-		Assert.assertEquals(0, link.size());
-	}
-
 }
