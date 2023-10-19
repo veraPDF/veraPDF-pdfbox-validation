@@ -137,4 +137,8 @@ public class PBoxPDOCProperties extends PBoxPDObject implements PDOCProperties {
 		return result;
 	}
 
+	@Override
+	public Boolean getcontainsConfigs() {
+		return null;
+	}
 }
