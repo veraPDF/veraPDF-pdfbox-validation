@@ -108,24 +108,6 @@ public class PBoxPDAnnotTest extends BaseTest {
 	}
 
 	@Test
-	public void testICLink() {
-		List<? extends Object> action = actual.getLinkedObjects(PBoxPDAnnot.IC);
-		Assert.assertEquals(0, action.size());
-		for (Object object : action) {
-			Assert.assertEquals(PBCosReal.COS_REAL_TYPE, object.getObjectType());
-		}
-	}
-
-	@Test
-	public void testCLink() {
-		List<? extends Object> action = actual.getLinkedObjects(PBoxPDAnnot.C);
-		Assert.assertEquals(0, action.size());
-		for (Object object : action) {
-			Assert.assertEquals(PBCosReal.COS_REAL_TYPE, object.getObjectType());
-		}
-	}
-
-	@Test
 	public void testAppearanceLink() {
 		List<? extends Object> action = actual.getLinkedObjects(PBoxPDAnnot.APPEARANCE);
 		Assert.assertEquals(1, action.size());

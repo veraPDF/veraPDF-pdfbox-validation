@@ -154,4 +154,9 @@ public class PBoxPDStructTreeRoot extends PBoxPDObject implements PDStructTreeRo
 		}
 		return null;
 	}
+
+	@Override
+	public String getfirstChildStandardTypeNamespaceURL() {
+		return null;
+	}
 }

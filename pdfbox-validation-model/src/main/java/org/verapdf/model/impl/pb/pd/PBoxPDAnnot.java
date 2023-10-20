@@ -37,10 +37,8 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosBM;
 import org.verapdf.model.coslayer.CosLang;
-import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.impl.pb.cos.PBCosBM;
 import org.verapdf.model.impl.pb.cos.PBCosLang;
-import org.verapdf.model.impl.pb.cos.PBCosNumber;
 import org.verapdf.model.impl.pb.pd.actions.PBoxPDAction;
 import org.verapdf.model.impl.pb.pd.actions.PBoxPDAnnotationAdditionalActions;
 import org.verapdf.model.impl.pb.pd.annotations.PBoxPD3DAnnot;
@@ -364,10 +362,6 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 			return this.getAdditionalActions();
 		case A:
 			return this.getA();
-		case IC:
-			return this.getIC();
-		case C:
-			return this.getC();
 		case APPEARANCE:
 			return this.getAppearance();
 		case LANG:
@@ -423,28 +417,6 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 				actions.add(result);
 				return Collections.unmodifiableList(actions);
 			}
-		}
-		return Collections.emptyList();
-	}
-
-	private List<CosNumber> getIC() {
-		return this.getNumbersFromArray(COSName.IC);
-	}
-
-	private List<CosNumber> getC() {
-		return this.getNumbersFromArray(COSName.C);
-	}
-
-	private List<CosNumber> getNumbersFromArray(COSName arrayName) {
-		COSBase colorArray = ((PDAnnotation) this.simplePDObject).getCOSObject().getDictionaryObject(arrayName);
-		if (colorArray instanceof COSArray) {
-			List<CosNumber> color = new ArrayList<>(((COSArray) colorArray).size());
-			for (COSBase colorValue : (COSArray) colorArray) {
-				if (colorValue instanceof COSNumber) {
-					color.add(PBCosNumber.fromPDFBoxNumber(colorValue));
-				}
-			}
-			return Collections.unmodifiableList(color);
 		}
 		return Collections.emptyList();
 	}
