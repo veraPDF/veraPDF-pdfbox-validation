@@ -55,8 +55,6 @@ public class PBoxPDCIDFont extends PBoxPDFont implements PDCIDFont {
 
 	public static final String CID_FONT_TYPE = "PDCIDFont";
 
-	public static final String CID_SET = "CIDSet";
-
 	public static final String IDENTITY = "Identity";
 	public static final String CUSTOM = "Custom";
 
@@ -119,24 +117,6 @@ public class PBoxPDCIDFont extends PBoxPDFont implements PDCIDFont {
 			return Boolean.FALSE;
 		}
 		return Boolean.TRUE;
-	}
-
-	@Override
-	public List<? extends Object> getLinkedObjects(String link) {
-		if (CID_SET.equals(link)) {
-			return this.getCIDSet();
-		}
-		return super.getLinkedObjects(link);
-	}
-
-	private List<CosStream> getCIDSet() {
-		PDStream cidSet = getCIDSetStream();
-		if (cidSet != null) {
-			List<CosStream> res = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-			res.add(new PBCosStream(cidSet.getStream(), this.pdDocument, this.flavour));
-			return Collections.unmodifiableList(res);
-		}
-		return Collections.emptyList();
 	}
 
 	private PDStream getCIDSetStream() {

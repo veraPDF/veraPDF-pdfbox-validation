@@ -37,4 +37,9 @@ public class PBoxSEFENote extends PBoxSEGeneral implements SEFENote {
     public String getNoteType() {
         return null;
     }
+
+    @Override
+    public String getorphanRefs() {
+        return null;
+    }
 }
