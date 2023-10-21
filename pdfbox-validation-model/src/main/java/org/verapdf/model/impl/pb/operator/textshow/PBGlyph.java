@@ -152,4 +152,9 @@ public class PBGlyph extends GenericModelObject implements Glyph {
 		// actual text obtaining should be implemented
 		return Boolean.FALSE;
 	}
+
+	@Override
+	public Boolean getaltPresent() {
+		return null;
+	}
 }
