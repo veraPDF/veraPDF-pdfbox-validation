@@ -81,6 +81,7 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	 * Link name for {@code ActualText} key
 	 */
 	public static final String ACTUAL_TEXT = "actualText";
+	public static final String ALT = "alt";
 
 	private TaggedPDFRoleMapHelper roleMapHelper;
 
@@ -267,7 +268,9 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 		case LANG:
 			return this.getLang();
 		case ACTUAL_TEXT:
-			return this.getactualText();
+			return this.getactualText(); 
+		case ALT:
+			return Collections.emptyList();			
 		default:
 			return super.getLinkedObjects(link);
 		}
