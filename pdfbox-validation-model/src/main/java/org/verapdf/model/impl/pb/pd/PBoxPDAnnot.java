@@ -359,6 +359,11 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	}
 
 	@Override
+	public Boolean getisArtifact() {
+		return null;
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 		case ADDITIONAL_ACTION:
