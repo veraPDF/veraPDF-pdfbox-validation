@@ -54,4 +54,14 @@ public class PBoxPDLinkAnnot extends PBoxPDAnnot implements PDLinkAnnot {
 				return super.getLinkedObjects(link);
 		}
 	}
+
+	@Override
+	public String getdifferentTargetAnnotObjectKey() {
+		return null;
+	}
+
+	@Override
+	public String getsameTargetAnnotObjectKey() {
+		return null;
+	}
 }
