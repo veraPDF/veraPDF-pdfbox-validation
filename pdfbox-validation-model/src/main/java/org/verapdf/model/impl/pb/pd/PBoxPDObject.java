@@ -130,4 +130,9 @@ public class PBoxPDObject extends GenericModelObject implements PDObject {
 		}
 		return "";
 	}
+
+	@Override
+	public String getobjectKey() {
+		return null;
+	}
 }
