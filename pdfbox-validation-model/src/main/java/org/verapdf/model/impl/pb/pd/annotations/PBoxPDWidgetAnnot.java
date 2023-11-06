@@ -59,6 +59,11 @@ public class PBoxPDWidgetAnnot extends PBoxPDAnnot implements PDWidgetAnnot {
 	}
 
 	@Override
+	public Boolean getcontainsLbl() {
+		return null;
+	}
+
+	@Override
 	protected List<PDAdditionalActions> getAdditionalActions() {
 		COSBase actionDictionary = ((PDAnnotation) simplePDObject).getCOSObject().getDictionaryObject(COSName.AA);
 		if (actionDictionary instanceof COSDictionary && ((COSDictionary) actionDictionary).size() != 0) {
