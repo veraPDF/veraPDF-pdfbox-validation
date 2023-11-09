@@ -168,15 +168,18 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 
 	@Override
 	public String getparentLang() {
-		COSString baseLang = null;
-		Set<COSObjectKey> keys = new HashSet<>();
-		COSObjectKey key;
 		COSDictionary parentDict = (COSDictionary)((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.P);
+		if (parentDict == null) {
+			return null;
+		}
 		PDStructureNode structureParent = PDStructureNode.create(parentDict);
 		PDStructureElement parent = null;
 		if (structureParent instanceof PDStructureElement) {
 			parent = (PDStructureElement) structureParent;
 		}
+		COSString baseLang = null;
+		Set<COSObjectKey> keys = new HashSet<>();
+		COSObjectKey key;
 		while (baseLang == null && parent != null) {
 			key = parent.getCOSObject().getKey();
 			if (keys.contains(key)){
