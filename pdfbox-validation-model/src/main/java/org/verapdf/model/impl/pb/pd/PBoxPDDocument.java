@@ -156,7 +156,7 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 
 	@Override
 	public Boolean getcontainsXRefStream() {
-		return null;
+		return false;
 	}
 
 	@Override
