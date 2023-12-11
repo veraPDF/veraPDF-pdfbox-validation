@@ -21,6 +21,7 @@
 package org.verapdf.model;
 
 import org.verapdf.xmp.XMPException;
+import org.verapdf.xmp.containers.StaticXmpCoreContainers;
 import org.verapdf.xmp.impl.VeraPDFMeta;
 import java.util.logging.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -157,6 +158,7 @@ public final class ModelParser implements PDFAParser {
 
 	private static void cleanUp() {
 		StaticContainers.clearAllContainers();
+		StaticXmpCoreContainers.clearAllContainers();
 	}
 
 	@Override
