@@ -130,6 +130,11 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	}
 
 	@Override
+	public Boolean getcontainsParent() {
+		return ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.P) != null;
+	}
+
+	@Override
 	public Boolean gethasContentItems() {
 		COSBase children = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.K);
 		if (children != null) {
