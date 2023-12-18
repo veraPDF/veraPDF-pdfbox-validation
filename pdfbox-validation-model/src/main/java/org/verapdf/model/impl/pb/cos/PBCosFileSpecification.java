@@ -87,6 +87,11 @@ public class PBCosFileSpecification extends PBCosDict implements CosFileSpecific
 	}
 
 	@Override
+	public Boolean getpresentInEmbeddedFiles() {
+		return null;
+	}
+
+	@Override
 	public Boolean getcontainsEF() {
 		return this.baseObject != null && this.baseObject instanceof COSDictionary &&
 				((COSDictionary) this.baseObject).containsKey(COSName.EF);
