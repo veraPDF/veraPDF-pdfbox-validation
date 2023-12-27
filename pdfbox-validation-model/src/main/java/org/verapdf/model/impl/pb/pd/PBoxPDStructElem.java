@@ -217,10 +217,13 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	}
 
 	@Override
-	public Boolean getisRemappedStandardType() {
+	public String getremappedStandardType() {
 		COSBase type = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.S);
 		if (type instanceof COSName) {
-			return this.roleMapHelper.isRemappedStandardType(((COSName) type).getName());
+			String value = ((COSName) type).getName();
+			if (this.roleMapHelper.isRemappedStandardType(value)) {
+				return value;
+			}
 		}
 		return null;
 	}
