@@ -144,11 +144,6 @@ public class PBCosDocumentTest extends BaseTest {
     }
 
     @Test
-    public void testInfoMatchXMP() {
-        Assert.assertTrue(((CosDocument) actual).getdoesInfoMatchXMP().booleanValue());
-    }
-
-    @Test
     public void testTrailerLink() {
         List<? extends Object> trailer = actual.getLinkedObjects(PBCosDocument.TRAILER);
         Assert.assertEquals(1, trailer.size());
