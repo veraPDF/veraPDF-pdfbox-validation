@@ -96,19 +96,6 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 		this.roleMapHelper = roleMapHelper;
 	}
 
-	/**
-	 * @return Type entry of current structure element
-	 */
-	@Override
-	public String getType() {
-		COSBase value = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.TYPE);
-		if (value instanceof COSName) {
-			return ((COSName) value).getName();
-		}
-		LOGGER.log(java.util.logging.Level.INFO, "In struct element type expected 'COSName' but got: " + value.getClass().getSimpleName());
-		return null;
-	}
-
 	@Override
 	public String getkidsStandardTypes() {
 		return this.getChildrenStandardTypes()

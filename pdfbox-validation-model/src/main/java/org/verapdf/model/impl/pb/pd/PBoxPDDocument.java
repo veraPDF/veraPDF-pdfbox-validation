@@ -342,12 +342,6 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 		return Boolean.FALSE;
 	}
 
-	@Override
-	public Boolean getvalidPDF() {
-		// TODO: implement me
-		return Boolean.TRUE;
-	}
-
 	private List<PDOCProperties> getOCProperties() {
 		if (this.catalog != null) {
 			PDOptionalContentProperties pBoxOCProperties = this.catalog.getOCProperties();
