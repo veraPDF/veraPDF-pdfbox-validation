@@ -76,7 +76,6 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 	private final boolean isOptionalContentPresent;
 	private final boolean isLinearised;
 	private final int postEOFDataSize;
-	private final Boolean doesInfoMatchXMP;
 	private final String firstPageID;
 	private final String lastID;
 	private final boolean needsRendering;
@@ -131,7 +130,6 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 			this.firstPageID = null;
 		}
 		this.isLinearised = cosDocument.getTrailer() != cosDocument.getLastTrailer() && cosDocument.isLinearized();
-		this.doesInfoMatchXMP = XMPChecker.doesInfoMatchXMP(cosDocument);
 		this.needsRendering = this.getNeedsRenderingValue();
 	}
 
@@ -253,14 +251,6 @@ public class PBCosDocument extends PBCosObject implements CosDocument {
 	@Override
 	public Boolean getisLinearized() {
 		return Boolean.valueOf(this.isLinearised);
-	}
-
-	/**
-	 * @return true if XMP content matches Info dictionary content
-	 */
-	@Override
-	public Boolean getdoesInfoMatchXMP() {
-		return this.doesInfoMatchXMP;
 	}
 
 	@Override

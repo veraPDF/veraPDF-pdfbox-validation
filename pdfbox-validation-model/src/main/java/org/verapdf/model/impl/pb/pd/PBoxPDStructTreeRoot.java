@@ -144,18 +144,6 @@ public class PBoxPDStructTreeRoot extends PBoxPDObject implements PDStructTreeRo
 	}
 
 	@Override
-	public String gettopLevelFirstElementStandardType() {
-		if (this.children == null) {
-			this.children = parseChildren();
-		}
-
-		if (!this.children.isEmpty()) {
-			return this.children.get(0).getstandardType();
-		}
-		return null;
-	}
-
-	@Override
 	public String getfirstChildStandardTypeNamespaceURL() {
 		return null;
 	}
