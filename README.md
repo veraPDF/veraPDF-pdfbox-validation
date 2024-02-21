@@ -29,7 +29,7 @@ Quick Start
 
 In order to build the parser you'll need:
 
- * Java 9 - 17, which can be downloaded [from Oracle](https://www.oracle.com/technetwork/java/javase/downloads/index.html), or for Linux users [OpenJDK](https://openjdk.java.net/install/index.html).
+ * Java 9 - 21, which can be downloaded [from Oracle](https://www.oracle.com/technetwork/java/javase/downloads/index.html), or for Linux users [OpenJDK](https://openjdk.java.net/install/index.html).
  * [Maven v3+](https://maven.apache.org/)
 
 ### Building the veraPDF PDF Box Validation Model
