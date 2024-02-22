@@ -42,4 +42,9 @@ public class PBoxSEFENote extends PBoxSEGeneral implements SEFENote {
     public String getorphanRefs() {
         return null;
     }
+
+    @Override
+    public String getghostRefs() {
+        return null;
+    }
 }
