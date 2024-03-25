@@ -157,4 +157,9 @@ public class PBGlyph extends GenericModelObject implements Glyph {
 	public Boolean getaltPresent() {
 		return null;
 	}
+
+	@Override
+	public Boolean getisRealContent() {
+		return null;
+	}
 }
