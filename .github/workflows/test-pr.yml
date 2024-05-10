@@ -11,17 +11,16 @@ jobs:
     name: Checkout and Build
     runs-on: ubuntu-latest
 
-    continue-on-error: true
-
     strategy:
       fail-fast: false
       matrix:
-        java-version: [11, 16, 17, 21]
+        java-version: [11, 17, 21]
 
     steps:
       - uses: actions/checkout@v4
       - name: JDK setup
         uses: actions/setup-java@v4
+        continue-on-error: true
         with:
           java-version: ${{ matrix.java-version }}
           distribution: 'temurin'
@@ -75,6 +74,7 @@ jobs:
           files: pdfbox-metadata-fixer/target/site/jacoco/jacoco.xml, pdfbox-feature-reporting/target/site/jacoco/jacoco.xml, pdfbox-validation-model/target/site/jacoco/jacoco.xml
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
+          token: ${{ secrets.CODECOV_TOKEN }}
       - name: Codacy coverage reporting
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
