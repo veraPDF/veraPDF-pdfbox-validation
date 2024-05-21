@@ -45,6 +45,8 @@ public class PBoxPDFormField extends PBoxPDObject implements PDFormField {
 
     public static final String LANG = "Lang";
 
+    public static final String KIDS = "Kids";
+
     public PBoxPDFormField(PDField simplePDObject) {
         super(simplePDObject, FORM_FIELD_TYPE);
     }
@@ -71,11 +73,18 @@ public class PBoxPDFormField extends PBoxPDObject implements PDFormField {
     }
 
     @Override
+    public Long getFf() {
+        return null;
+    }
+
+    @Override
     public List<? extends Object> getLinkedObjects(String link) {
         switch (link) {
             case ADDITIONAL_ACTION:
                 return this.getAdditionalAction();
             case LANG:
+                return Collections.emptyList();
+            case KIDS:
                 return Collections.emptyList();
             default:
                 return super.getLinkedObjects(link);

@@ -42,4 +42,9 @@ public class PBoxSEForm extends PBoxSEGeneral implements SEForm {
     public Boolean gethasOneInteractiveChild() {
         return false;
     }
+
+    @Override
+    public Long getwidgetAnnotsCount() {
+        return null;
+    }
 }

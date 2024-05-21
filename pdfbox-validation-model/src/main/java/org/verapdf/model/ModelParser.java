@@ -21,6 +21,7 @@
 package org.verapdf.model;
 
 import org.verapdf.xmp.XMPException;
+import org.verapdf.xmp.containers.StaticXmpCoreContainers;
 import org.verapdf.xmp.impl.VeraPDFMeta;
 import java.util.logging.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -56,7 +57,7 @@ import java.util.List;
  */
 public final class ModelParser implements PDFAParser {
 	private static final ReleaseDetails pdfBoxReleaseDetails = ReleaseDetails.addDetailsFromResource(
-			ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "pdfbox-parser." + ReleaseDetails.PROPERTIES_EXT);
+			ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "pdfbox-validation." + ReleaseDetails.PROPERTIES_EXT);
 	private static final URI id = URI.create("http://pdfa.verapdf.org/parser#pdfbox");
 	private static final ComponentDetails details = Components.veraDetails(id, "PDFBox Parser",
 			pdfBoxReleaseDetails.getVersion(), "veraPDF PDFBox based model parser.");
@@ -131,11 +132,11 @@ public final class ModelParser implements PDFAParser {
 		}
 		try (InputStream is = metadata.exportXMPMetadata()) {
 			VeraPDFMeta veraPDFMeta = VeraPDFMeta.parse(is);
-			Integer identificationPart = veraPDFMeta.getIdentificationPart();
-			String identificationConformance = veraPDFMeta.getIdentificationConformance();
+			Integer identificationPart = veraPDFMeta.getPDFAIdentificationPart();
+			String identificationConformance = veraPDFMeta.getPDFAIdentificationConformance();
 			String prefix = "";
 			if (identificationPart == null && identificationConformance == null) {
-				identificationPart = veraPDFMeta.getUAIdentificationPart();
+				identificationPart = veraPDFMeta.getPDFUAIdentificationPart();
 				if (identificationPart != null) {
 					prefix = PDFUA_PREFIX;
 				}
@@ -157,6 +158,7 @@ public final class ModelParser implements PDFAParser {
 
 	private static void cleanUp() {
 		StaticContainers.clearAllContainers();
+		StaticXmpCoreContainers.clearAllContainers();
 	}
 
 	@Override

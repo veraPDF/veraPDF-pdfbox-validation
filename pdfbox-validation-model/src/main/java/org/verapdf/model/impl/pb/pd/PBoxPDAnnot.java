@@ -37,10 +37,8 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
 import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.coslayer.CosBM;
 import org.verapdf.model.coslayer.CosLang;
-import org.verapdf.model.coslayer.CosNumber;
 import org.verapdf.model.impl.pb.cos.PBCosBM;
 import org.verapdf.model.impl.pb.cos.PBCosLang;
-import org.verapdf.model.impl.pb.cos.PBCosNumber;
 import org.verapdf.model.impl.pb.pd.actions.PBoxPDAction;
 import org.verapdf.model.impl.pb.pd.actions.PBoxPDAnnotationAdditionalActions;
 import org.verapdf.model.impl.pb.pd.annotations.PBoxPD3DAnnot;
@@ -48,10 +46,8 @@ import org.verapdf.model.impl.pb.pd.annotations.PBoxPDLinkAnnot;
 import org.verapdf.model.impl.pb.pd.annotations.PBoxPDPrinterMarkAnnot;
 import org.verapdf.model.impl.pb.pd.annotations.PBoxPDTrapNetAnnot;
 import org.verapdf.model.impl.pb.pd.annotations.PBoxPDWidgetAnnot;
-import org.verapdf.model.pdlayer.PDAction;
-import org.verapdf.model.pdlayer.PDAdditionalActions;
-import org.verapdf.model.pdlayer.PDAnnot;
-import org.verapdf.model.pdlayer.PDContentStream;
+import org.verapdf.model.impl.pb.pd.images.PBoxPDXForm;
+import org.verapdf.model.pdlayer.*;
 import org.verapdf.model.tools.resources.PDInheritableResources;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
@@ -102,7 +98,7 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	private final PDFAFlavour flavour;
 	private final PDPage pdPage;
 
-	private List<PDContentStream> appearance = null;
+	private List<PDXForm> appearance = null;
 	private List<CosBM> blendMode = null;
 	private boolean containsTransparency = false;
 
@@ -231,6 +227,18 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	}
 
 	@Override
+	public Boolean getcontainsC() {
+		COSBase colorArray = ((PDAnnotation) this.simplePDObject).getCOSObject().getDictionaryObject(COSName.C);
+		return colorArray instanceof COSArray;
+	}
+
+	@Override
+	public Boolean getcontainsIC() {
+		COSBase colorArray = ((PDAnnotation) this.simplePDObject).getCOSObject().getDictionaryObject(COSName.IC);
+		return colorArray instanceof COSArray;
+	}
+
+	@Override
 	public String getFT() {
 		return this.ft;
 	}
@@ -260,7 +268,7 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 			PDNumberTreeNode parentTreeRoot = structTreeRoot.getParentTree();
 			COSBase structureElement = null;
 			try {
-				PDParentTreeValue treeValue = (PDParentTreeValue)parentTreeRoot.getValue(structParent);
+				PDParentTreeValue treeValue = parentTreeRoot != null ? (PDParentTreeValue)parentTreeRoot.getValue(structParent) : null;
 				if (treeValue != null) {
 					structureElement = treeValue.getCOSObject();
 				}
@@ -271,6 +279,16 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 				return ((COSDictionary)structureElement).getNameAsString(COSName.S);
 			}
 		}
+		return null;
+	}
+
+	@Override
+	public String getstructParentStandardType() {
+		return null;
+	}
+
+	@Override
+	public String getstructParentObjectKey() {
 		return null;
 	}
 
@@ -341,16 +359,17 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	}
 
 	@Override
+	public Boolean getisArtifact() {
+		return null;
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 		case ADDITIONAL_ACTION:
 			return this.getAdditionalActions();
 		case A:
 			return this.getA();
-		case IC:
-			return this.getIC();
-		case C:
-			return this.getC();
 		case APPEARANCE:
 			return this.getAppearance();
 		case LANG:
@@ -410,33 +429,11 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		return Collections.emptyList();
 	}
 
-	private List<CosNumber> getIC() {
-		return this.getNumbersFromArray(COSName.IC);
-	}
-
-	private List<CosNumber> getC() {
-		return this.getNumbersFromArray(COSName.C);
-	}
-
-	private List<CosNumber> getNumbersFromArray(COSName arrayName) {
-		COSBase colorArray = ((PDAnnotation) this.simplePDObject).getCOSObject().getDictionaryObject(arrayName);
-		if (colorArray instanceof COSArray) {
-			List<CosNumber> color = new ArrayList<>(((COSArray) colorArray).size());
-			for (COSBase colorValue : (COSArray) colorArray) {
-				if (colorValue instanceof COSNumber) {
-					color.add(PBCosNumber.fromPDFBoxNumber(colorValue));
-				}
-			}
-			return Collections.unmodifiableList(color);
-		}
-		return Collections.emptyList();
-	}
-
 	/**
 	 * @return normal appearance stream (N key in the appearance dictionary) of
 	 *         the annotation
 	 */
-	private List<PDContentStream> getAppearance() {
+	private List<PDXForm> getAppearance() {
 		if (this.appearance == null) {
 			parseAppearance();
 		}
@@ -461,7 +458,7 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 			COSBase downAppearanceBase = dictionary.getDictionaryObject(COSName.D);
 			COSBase rolloverAppearanceBase = dictionary.getDictionaryObject(COSName.R);
 			if (normalAppearanceBase != null || downAppearanceBase != null || rolloverAppearanceBase != null) {
-				List<PDContentStream> appearances = new ArrayList<>();
+				List<PDXForm> appearances = new ArrayList<>();
 				addContentStreamsFromAppearanceEntry(normalAppearanceBase, appearances);
 				addContentStreamsFromAppearanceEntry(downAppearanceBase, appearances);
 				addContentStreamsFromAppearanceEntry(rolloverAppearanceBase, appearances);
@@ -474,7 +471,7 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		}
 	}
 
-	private void addContentStreamsFromAppearanceEntry(COSBase appearanceEntry, List<PDContentStream> appearances) {
+	private void addContentStreamsFromAppearanceEntry(COSBase appearanceEntry, List<PDXForm> appearances) {
 		if (appearanceEntry != null) {
 			PDAppearanceEntry newAppearance = new PDAppearanceEntry(appearanceEntry);
 			if (newAppearance.isStream()) {
@@ -488,15 +485,13 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		}
 	}
 
-	private void addAppearance(List<PDContentStream> list, PDAppearanceStream toAdd) {
+	private void addAppearance(List<PDXForm> list, PDAppearanceStream toAdd) {
 		if (toAdd != null) {
 			PDInheritableResources resources = PDInheritableResources.getInstance(this.pageResources,
 					toAdd.getResources());
-			PBoxPDContentStream stream = new PBoxPDContentStream(toAdd, resources, this.document, this.flavour);
-			this.containsTransparency |= stream.isContainsTransparency();
-			org.apache.pdfbox.pdmodel.graphics.form.PDGroup group = toAdd.getGroup();
-			this.containsTransparency |= group != null && COSName.TRANSPARENCY.equals(group.getSubType());
-			list.add(stream);
+			PBoxPDXForm xForm = new PBoxPDXForm(toAdd, resources, this.document, this.flavour);
+			this.containsTransparency |= xForm.containsTransparency();
+			list.add(xForm);
 		}
 	}
 

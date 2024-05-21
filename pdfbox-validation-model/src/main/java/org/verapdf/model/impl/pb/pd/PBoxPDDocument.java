@@ -89,6 +89,7 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 	 * Link name for open action of document
 	 */
 	public static final String OPEN_ACTION = "OpenAction";
+	public static final String OPEN_ACTION_DESTINATION = "OpenActionDestination";
 	/**
 	 * Link name for all outlines of document
 	 */
@@ -155,12 +156,19 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 	}
 
 	@Override
+	public Boolean getcontainsXRefStream() {
+		return false;
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 			case OUTLINES:
 				return this.getOutlines();
 			case OPEN_ACTION:
 				return this.getOpenAction();
+			case OPEN_ACTION_DESTINATION:
+				return Collections.emptyList();				
 			case ACTIONS:
 				return this.getActions();
 			case PAGES:
@@ -335,12 +343,6 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 			}
 		}
 		return Boolean.FALSE;
-	}
-
-	@Override
-	public Boolean getvalidPDF() {
-		// TODO: implement me
-		return Boolean.TRUE;
 	}
 
 	private List<PDOCProperties> getOCProperties() {

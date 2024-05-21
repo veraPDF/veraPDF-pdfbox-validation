@@ -31,4 +31,9 @@ public class PBoxSENonStandard extends PBoxSEGeneral implements SENonStandard {
     public PBoxSENonStandard(COSDictionary structElemDictionary, TaggedPDFRoleMapHelper roleMapHelper, String standardType) {
         super(structElemDictionary, roleMapHelper, standardType, NON_STANDARD_STRUCTURE_ELEMENT_TYPE);
     }
+
+    @Override
+    public Boolean getisNotMappedToStandardType() {
+        return null;
+    }
 }

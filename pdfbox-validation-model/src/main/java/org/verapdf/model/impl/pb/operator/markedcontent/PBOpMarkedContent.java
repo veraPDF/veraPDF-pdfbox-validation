@@ -61,6 +61,7 @@ public abstract class PBOpMarkedContent extends PBOperator implements
 	public static final String LANG = "Lang";
 	/** Name of link to ActualText value from the properties dictionary */
 	public static final String ACTUAL_TEXT = "actualText";
+	public static final String ALT = "alt";
 
 	public PBOpMarkedContent(List<COSBase> arguments, final String opType, PDDocument document, PDFAFlavour flavour) {
         super(arguments, opType);
@@ -88,6 +89,8 @@ public abstract class PBOpMarkedContent extends PBOperator implements
 		switch (link) {
 			case ACTUAL_TEXT:
 				return this.getactualText();
+			case ALT:
+				return Collections.emptyList();				
 			default:
 				return super.getLinkedObjects(link);
 		}

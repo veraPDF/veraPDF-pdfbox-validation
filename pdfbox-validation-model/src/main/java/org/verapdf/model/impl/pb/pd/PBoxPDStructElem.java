@@ -81,6 +81,7 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	 * Link name for {@code ActualText} key
 	 */
 	public static final String ACTUAL_TEXT = "actualText";
+	public static final String ALT = "alt";
 
 	private TaggedPDFRoleMapHelper roleMapHelper;
 
@@ -93,19 +94,6 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	public PBoxPDStructElem(COSDictionary structElemDictionary, TaggedPDFRoleMapHelper roleMapHelper, String type) {
 		super(structElemDictionary, type);
 		this.roleMapHelper = roleMapHelper;
-	}
-
-	/**
-	 * @return Type entry of current structure element
-	 */
-	@Override
-	public String getType() {
-		COSBase value = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.TYPE);
-		if (value instanceof COSName) {
-			return ((COSName) value).getName();
-		}
-		LOGGER.log(java.util.logging.Level.INFO, "In struct element type expected 'COSName' but got: " + value.getClass().getSimpleName());
-		return null;
 	}
 
 	@Override
@@ -126,6 +114,11 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public Boolean getcontainsParent() {
+		return ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.P) != null;
 	}
 
 	@Override
@@ -167,15 +160,18 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 
 	@Override
 	public String getparentLang() {
-		COSString baseLang = null;
-		Set<COSObjectKey> keys = new HashSet<>();
-		COSObjectKey key;
 		COSDictionary parentDict = (COSDictionary)((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.P);
+		if (parentDict == null) {
+			return null;
+		}
 		PDStructureNode structureParent = PDStructureNode.create(parentDict);
 		PDStructureElement parent = null;
 		if (structureParent instanceof PDStructureElement) {
 			parent = (PDStructureElement) structureParent;
 		}
+		COSString baseLang = null;
+		Set<COSObjectKey> keys = new HashSet<>();
+		COSObjectKey key;
 		while (baseLang == null && parent != null) {
 			key = parent.getCOSObject().getKey();
 			if (keys.contains(key)){
@@ -208,10 +204,13 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	}
 
 	@Override
-	public Boolean getisRemappedStandardType() {
+	public String getremappedStandardType() {
 		COSBase type = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.S);
 		if (type instanceof COSName) {
-			return this.roleMapHelper.isRemappedStandardType(((COSName) type).getName());
+			String value = ((COSName) type).getName();
+			if (this.roleMapHelper.isRemappedStandardType(value)) {
+				return value;
+			}
 		}
 		return null;
 	}
@@ -253,6 +252,11 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	}
 
 	@Override
+	public String getroleMapToSameNamespaceTag() {
+		return null;
+	}
+
+	@Override
 	public List<? extends Object> getLinkedObjects(String link) {
 		switch (link) {
 		case CHILDREN:
@@ -262,7 +266,9 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 		case LANG:
 			return this.getLang();
 		case ACTUAL_TEXT:
-			return this.getactualText();
+			return this.getactualText(); 
+		case ALT:
+			return Collections.emptyList();			
 		default:
 			return super.getLinkedObjects(link);
 		}

@@ -32,4 +32,9 @@ public class PBoxSEFormula extends PBoxSEGeneral implements SEFormula {
     public PBoxSEFormula(COSDictionary structElemDictionary, TaggedPDFRoleMapHelper roleMapHelper) {
         super(structElemDictionary, roleMapHelper, TaggedPDFConstants.FORMULA, FORMULA_STRUCTURE_ELEMENT_TYPE);
     }
+
+    @Override
+    public Boolean getisMathFormula() {
+        return null;
+    }
 }

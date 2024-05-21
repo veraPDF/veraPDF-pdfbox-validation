@@ -24,9 +24,13 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
+import org.verapdf.model.baselayer.Object;
 import org.verapdf.model.impl.pb.pd.PBoxPDAnnot;
 import org.verapdf.model.pdlayer.PDLinkAnnot;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Maxim Plushchov
@@ -35,8 +39,29 @@ public class PBoxPDLinkAnnot extends PBoxPDAnnot implements PDLinkAnnot {
 
 	public static final String LINK_ANNOTATION_TYPE = "PDLinkAnnot";
 
+	public static final String DEST = "Dest";
+
 	public PBoxPDLinkAnnot(PDAnnotation annot, PDResources pageResources, PDDocument document, PDFAFlavour flavour, PDPage pdPage) {
 		super(annot, pageResources, document, flavour, LINK_ANNOTATION_TYPE, pdPage);
 	}
 
+	@Override
+	public List<? extends Object> getLinkedObjects(String link) {
+		switch (link) {
+			case DEST:
+				return Collections.emptyList();
+			default:
+				return super.getLinkedObjects(link);
+		}
+	}
+
+	@Override
+	public String getdifferentTargetAnnotObjectKey() {
+		return null;
+	}
+
+	@Override
+	public String getsameTargetAnnotObjectKey() {
+		return null;
+	}
 }

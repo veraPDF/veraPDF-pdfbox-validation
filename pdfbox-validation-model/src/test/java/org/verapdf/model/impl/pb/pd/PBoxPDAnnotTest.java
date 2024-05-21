@@ -31,6 +31,7 @@ import org.verapdf.model.impl.pb.pd.actions.PBoxPDAction;
 import org.verapdf.model.impl.pb.pd.actions.PBoxPDGoToAction;
 import org.verapdf.model.impl.pb.pd.actions.PBoxPDGoToRemoteAction;
 import org.verapdf.model.impl.pb.pd.actions.PBoxPDNamedAction;
+import org.verapdf.model.impl.pb.pd.images.PBoxPDXForm;
 import org.verapdf.model.pdlayer.PDAnnot;
 
 import java.io.IOException;
@@ -108,29 +109,11 @@ public class PBoxPDAnnotTest extends BaseTest {
 	}
 
 	@Test
-	public void testICLink() {
-		List<? extends Object> action = actual.getLinkedObjects(PBoxPDAnnot.IC);
-		Assert.assertEquals(0, action.size());
-		for (Object object : action) {
-			Assert.assertEquals(PBCosReal.COS_REAL_TYPE, object.getObjectType());
-		}
-	}
-
-	@Test
-	public void testCLink() {
-		List<? extends Object> action = actual.getLinkedObjects(PBoxPDAnnot.C);
-		Assert.assertEquals(0, action.size());
-		for (Object object : action) {
-			Assert.assertEquals(PBCosReal.COS_REAL_TYPE, object.getObjectType());
-		}
-	}
-
-	@Test
 	public void testAppearanceLink() {
 		List<? extends Object> action = actual.getLinkedObjects(PBoxPDAnnot.APPEARANCE);
 		Assert.assertEquals(1, action.size());
 		for (Object object : action) {
-			Assert.assertEquals(PBoxPDContentStream.CONTENT_STREAM_TYPE, object.getObjectType());
+			Assert.assertEquals(PBoxPDXForm.X_FORM_TYPE, object.getObjectType());
 		}
 	}
 

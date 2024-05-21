@@ -32,4 +32,14 @@ public class PBoxSEL extends PBoxSEGeneral implements SEL {
     public PBoxSEL(COSDictionary structElemDictionary, TaggedPDFRoleMapHelper roleMapHelper) {
         super(structElemDictionary, roleMapHelper, TaggedPDFConstants.L, L_STRUCTURE_ELEMENT_TYPE);
     }
+
+    @Override
+    public String getListNumbering() {
+        return null;
+    }
+
+    @Override
+    public Boolean getcontainsLabels() {
+        return null;
+    }
 }
