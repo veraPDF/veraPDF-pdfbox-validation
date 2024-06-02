@@ -21,6 +21,7 @@
 package org.verapdf.model;
 
 import org.verapdf.xmp.XMPException;
+import org.verapdf.containers.StaticCoreContainers;
 import org.verapdf.xmp.containers.StaticXmpCoreContainers;
 import org.verapdf.xmp.impl.VeraPDFMeta;
 import java.util.logging.Logger;
@@ -73,11 +74,13 @@ public final class ModelParser implements PDFAParser {
 	private ModelParser(final InputStream docStream, PDFAFlavour flavour, PDFAFlavour defaultFlavour) throws IOException {
 		this.document = PDDocument.load(docStream, false, true);
 		this.flavour = detectFlavour(this.document, flavour, defaultFlavour);
+		StaticCoreContainers.setFlavour(this.flavour);
 	}
 
 	private ModelParser(final File pdfFile, PDFAFlavour flavour, PDFAFlavour defaultFlavour) throws IOException {
 		this.document = PDDocument.load(pdfFile, false, true);
 		this.flavour = detectFlavour(this.document, flavour, defaultFlavour);
+		StaticCoreContainers.setFlavour(this.flavour);
 	}
 
 	public static ModelParser createModelWithFlavour(InputStream toLoad, PDFAFlavour flavour)
@@ -158,6 +161,7 @@ public final class ModelParser implements PDFAParser {
 
 	private static void cleanUp() {
 		StaticContainers.clearAllContainers();
+		StaticCoreContainers.clearAllContainers();
 		StaticXmpCoreContainers.clearAllContainers();
 	}
 
