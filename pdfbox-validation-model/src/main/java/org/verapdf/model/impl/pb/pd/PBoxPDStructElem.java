@@ -117,6 +117,11 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	}
 
 	@Override
+	public String getnamespaceAndTag() {
+		return null;
+	}
+
+	@Override
 	public Boolean getcontainsParent() {
 		return ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.P) != null;
 	}
