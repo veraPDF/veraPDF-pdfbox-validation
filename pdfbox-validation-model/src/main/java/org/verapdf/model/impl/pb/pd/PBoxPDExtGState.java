@@ -110,6 +110,11 @@ public class PBoxPDExtGState extends PBoxPDResource implements PDExtGState {
 	}
 
 	@Override
+	public Boolean getcontainsBM() {
+		return ((COSDictionary)simplePDObject.getCOSObject()).containsKey(COSName.BM);
+	}
+
+	@Override
 	public String getBMNameValue() {
 		return getNameKeyStringValue((COSDictionary)simplePDObject.getCOSObject(), COSName.BM);
 	}
