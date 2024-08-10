@@ -142,4 +142,9 @@ public class PBoxPDMetadata extends PBoxPDObject implements PDMetadata {
 				&& ((COSStream) obj).getCOSName(COSName.TYPE) == COSName.METADATA
 				&& ((COSStream) obj).getCOSName(COSName.SUBTYPE) == COSName.getPDFName("XML");
 	}
+
+	@Override
+	public Boolean getisCatalogMetadata() {
+		return isMainMetadata;
+	}
 }
