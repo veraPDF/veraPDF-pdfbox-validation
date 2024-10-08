@@ -68,6 +68,11 @@ public class PBoxPDFormField extends PBoxPDObject implements PDFormField {
     }
 
     @Override
+    public Boolean getcontainsLang() {
+        return false;
+    }
+
+    @Override
     public String getTU() {
         return null;
     }

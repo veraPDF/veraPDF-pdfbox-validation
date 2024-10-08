@@ -164,6 +164,12 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	}
 
 	@Override
+	public Boolean getcontainsLang() {
+		COSBase baseLang = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.LANG);
+		return baseLang instanceof COSString;
+	}
+
+	@Override
 	public String getparentLang() {
 		COSDictionary parentDict = (COSDictionary)((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.P);
 		if (parentDict == null) {
