@@ -126,7 +126,7 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 			parseContentStream();
 		}
 		if (this.annotations == null) {
-			this.annotations = parseAnnotataions();
+			this.annotations = parseAnnotations();
 		}
 		return Boolean.valueOf(this.containsTransparency);
 	}
@@ -304,13 +304,22 @@ public class PBoxPDPage extends PBoxPDObject implements PDPage {
 
 	private List<PDAnnot> getAnnotations() {
 		if (this.annotations == null) {
-			this.annotations = parseAnnotataions();
+			this.annotations = parseAnnotations();
 		}
 
 		return this.annotations;
 	}
 
-	private List<PDAnnot> parseAnnotataions() {
+	@Override
+	public Boolean getcontainsAnnotations() {
+		if (this.annotations == null) {
+			this.annotations = parseAnnotations();
+		}
+
+		return !this.annotations.isEmpty();
+	}
+
+	private List<PDAnnot> parseAnnotations() {
 		try {
 			List<PDAnnotation> pdfboxAnnotations = ((org.apache.pdfbox.pdmodel.PDPage) this.simplePDObject)
 					.getAnnotations();

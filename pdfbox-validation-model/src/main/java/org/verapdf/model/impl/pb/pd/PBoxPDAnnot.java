@@ -212,6 +212,14 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 	}
 
 	@Override
+	public Boolean getcontainsAppearances() {
+		if (this.appearance == null) {
+			parseAppearance();
+		}
+		return !this.appearance.isEmpty();
+	}
+
+	@Override
 	public Long getF() {
 		return isFKeyPresent ? Long.valueOf(this.annotationFlag) : null;
 	}
@@ -292,7 +300,22 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		return null;
 	}
 
-	private List<CosLang> getLang() {
+	@Override
+	public Boolean getcontainsLang() {
+		return getLang() != null;
+	}
+
+	private List<CosLang> getLinkLang() {
+		String lang = getLang();
+		if (lang != null) {
+			List<CosLang> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+			list.add(new PBCosLang(new COSString(lang)));
+			return Collections.unmodifiableList(list);
+		}
+		return Collections.emptyList();
+	}
+
+	private String getLang() {
 		PDStructureTreeRoot structTreeRoot = this.document.getDocumentCatalog().getStructureTreeRoot();
 		int structParent = ((PDAnnotation) this.simplePDObject).getStructParent();
 		if (structTreeRoot != null && structParent != 0) {
@@ -302,18 +325,13 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 				PDParentTreeValue treeValue = parentTreeRoot == null ? null : (PDParentTreeValue) parentTreeRoot.getValue(structParent);
 				structureElement = treeValue == null ? null : treeValue.getCOSObject();
 			} catch (IOException e) {
-				return Collections.emptyList();
+				return null;
 			}
 			if (structureElement instanceof COSDictionary) {
-				String lang = ((COSDictionary) structureElement).getNameAsString(COSName.LANG);
-				if (lang != null) {
-					List<CosLang> list = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
-					list.add(new PBCosLang(new COSString(lang)));
-					return Collections.unmodifiableList(list);
-				}
+				return ((COSDictionary) structureElement).getNameAsString(COSName.LANG);
 			}
 		}
-		return Collections.emptyList();
+		return null;
 	}
 
 	@Override
@@ -373,7 +391,7 @@ public class PBoxPDAnnot extends PBoxPDObject implements PDAnnot {
 		case APPEARANCE:
 			return this.getAppearance();
 		case LANG:
-			return this.getLang();
+			return this.getLinkLang();
 		case BM:
 			return this.getBM();
 		default:
