@@ -59,6 +59,7 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 	public static final String INTENT = "Intent";
 	public static final String JPX_STREAM = "jpxStream";
 	public static final String S_MASK = "SMask";
+	public static final String MASK = "Mask";
 
 	private final boolean interpolate;
 	private List<JPEG2000> jpeg2000List = null;
@@ -86,6 +87,11 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 	}
 
 	@Override
+	public Boolean getisMask() {
+		return false;
+	}
+
+	@Override
 	public Boolean getcontainsAlternates() {
 		COSBase pageObject = this.simplePDObject.getCOSObject();
 		return pageObject != null && pageObject instanceof COSDictionary &&
@@ -104,7 +110,9 @@ public class PBoxPDXImage extends PBoxPDXObject implements PDXImage {
 		case JPX_STREAM:
 			return this.getJPXStream();
 		case S_MASK:
-			return this.getSMask();
+			return this.getSMask(); 
+		case MASK:
+			return Collections.emptyList();			
 		default:
 			return super.getLinkedObjects(link);
 		}

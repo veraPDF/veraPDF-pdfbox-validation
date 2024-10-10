@@ -74,6 +74,11 @@ public class PBoxPDInlineImage extends PBoxPDObject implements PDInlineImage {
 	}
 
 	@Override
+	public Boolean getisMask() {
+		return false;
+	}
+
+	@Override
 	public String getSubtype() {
 		return null;
 	}
@@ -112,6 +117,7 @@ public class PBoxPDInlineImage extends PBoxPDObject implements PDInlineImage {
 				return this.getIntent();
 			case PBoxPDXImage.IMAGE_CS:
 				return this.getImageCS();
+			case PBoxPDXImage.MASK:
 			case PBoxPDXImage.S_MASK:
 			case PBoxPDXObject.OPI:
 			case PBoxPDXImage.ALTERNATES:
