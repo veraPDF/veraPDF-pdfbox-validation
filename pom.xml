@@ -84,7 +84,7 @@
     <verapdf.library.version>[1.27.0,1.28.0-RC)</verapdf.library.version>
     <verapdf.model.version>[1.27.0,1.28.0-RC)</verapdf.model.version>
     <verapdf.pdfbox.version>[2.0.62,2.1.0)</verapdf.pdfbox.version>
-    <org.bouncycastle.version>1.67</org.bouncycastle.version>
+    <org.bouncycastle.version>1.70</org.bouncycastle.version>
   </properties>
 
   <dependencyManagement>
