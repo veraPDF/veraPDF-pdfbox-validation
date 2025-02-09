@@ -31,8 +31,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>pdfbox-feature-reporting-jakarta</artifactId>
-  <name>veraPDF PDF Box Features Reporting</name>
-  <description>Reports features extracted from a PDF document.</description>
+  <name>veraPDF PDF Box Features Reporting for Jakarta EE</name>
+  <description>Reports features extracted from a PDF document with Jakarta EE support.</description>
 
   <dependencies>
 

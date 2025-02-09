@@ -32,8 +32,8 @@
   </parent>
 
   <artifactId>pdfbox-validation-model-jakarta</artifactId>
-  <name>veraPDF PDF Box Validation Model Implementation</name>
-  <description>Java PDF Box implementation for the veraPDF Validation Java API, generated from an Xtext model.</description>
+  <name>veraPDF PDF Box Validation Model Implementation for Jakarta EE</name>
+  <description>Java PDF Box implementation for the veraPDF Validation Java API with Jakarta EE support.</description>
 
   <dependencies>
 

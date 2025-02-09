@@ -32,8 +32,8 @@
   </parent>
 
   <artifactId>pdfbox-metadata-fixer-jakarta</artifactId>
-  <name>veraPDF PDF Box Metadata Fixer</name>
-  <description>Performs basic metadata repair for a PDF document.</description>
+  <name>veraPDF PDF Box Metadata Fixer for Jakarta EE</name>
+  <description>Performs basic metadata repair for a PDF document with Jakarta EE support.</description>
 
   <dependencies>
     <dependency>
