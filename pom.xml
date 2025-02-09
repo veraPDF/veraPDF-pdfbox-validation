@@ -36,8 +36,8 @@
   <version>1.28.0-RC1</version>
   <packaging>pom</packaging>
 
-  <name>veraPDF PDF-Box PDF/A Validation</name>
-  <description>veraPDF PDF-Box based PDF/A Validation implementation.</description>
+  <name>veraPDF PDF-Box Validation</name>
+  <description>veraPDF PDF-Box based Validation implementation.</description>
   <url>https://github.com/veraPDF/veraPDF-pdfbox-validation/</url>
   <inceptionYear>2015</inceptionYear>
 
