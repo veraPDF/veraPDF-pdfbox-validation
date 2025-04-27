@@ -21,8 +21,11 @@
 package org.verapdf.model;
 
 import org.verapdf.xmp.XMPException;
+import org.verapdf.containers.StaticCoreContainers;
 import org.verapdf.xmp.containers.StaticXmpCoreContainers;
 import org.verapdf.xmp.impl.VeraPDFMeta;
+
+import java.util.Collections;
 import java.util.logging.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
@@ -68,16 +71,18 @@ public final class ModelParser implements PDFAParser {
 
 	private PDDocument document;
 
-	private final PDFAFlavour flavour;
+	private PDFAFlavour flavour;
 
 	private ModelParser(final InputStream docStream, PDFAFlavour flavour, PDFAFlavour defaultFlavour) throws IOException {
 		this.document = PDDocument.load(docStream, false, true);
 		this.flavour = detectFlavour(this.document, flavour, defaultFlavour);
+		StaticCoreContainers.setFlavour(this.flavour);
 	}
 
 	private ModelParser(final File pdfFile, PDFAFlavour flavour, PDFAFlavour defaultFlavour) throws IOException {
 		this.document = PDDocument.load(pdfFile, false, true);
 		this.flavour = detectFlavour(this.document, flavour, defaultFlavour);
+		StaticCoreContainers.setFlavour(this.flavour);
 	}
 
 	public static ModelParser createModelWithFlavour(InputStream toLoad, PDFAFlavour flavour)
@@ -158,6 +163,7 @@ public final class ModelParser implements PDFAParser {
 
 	private static void cleanUp() {
 		StaticContainers.clearAllContainers();
+		StaticCoreContainers.clearAllContainers();
 		StaticXmpCoreContainers.clearAllContainers();
 	}
 
@@ -189,6 +195,16 @@ public final class ModelParser implements PDFAParser {
 	@Override
 	public PDFAFlavour getFlavour() {
 		return this.flavour;
+	}
+
+	@Override
+	public List<PDFAFlavour> getFlavours() {
+		return Collections.singletonList(flavour);
+	}
+
+	@Override
+	public void setFlavours(List<PDFAFlavour> flavours) {
+		this.flavour = flavours.get(0);
 	}
 
 	@Override

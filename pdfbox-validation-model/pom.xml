@@ -28,11 +28,11 @@
   <parent>
     <artifactId>verapdf-pdfbox-validation</artifactId>
     <groupId>org.verapdf</groupId>
-    <version>1.26.0</version>
+    <version>1.28.0</version>
   </parent>
 
   <artifactId>pdfbox-validation-model</artifactId>
-  <name>veraPDF PDF Box PDF/A Validation Model Implementation</name>
+  <name>veraPDF PDF Box Validation Model Implementation</name>
   <description>Java PDF Box implementation for the veraPDF Validation Java API, generated from an Xtext model.</description>
 
   <dependencies>

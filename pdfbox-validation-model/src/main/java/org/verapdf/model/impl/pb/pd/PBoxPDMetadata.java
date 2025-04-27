@@ -103,7 +103,7 @@ public class PBoxPDMetadata extends PBoxPDObject implements PDMetadata {
 			if (stream != null) {
 				VeraPDFMeta metadata = VeraPDFMeta.parse(stream.getUnfilteredStream());
 				if (isMainMetadata) {
-					xmp.add(new AXLMainXMPPackage(metadata, true, this.flavour));
+					xmp.add(new AXLMainXMPPackage(metadata, true));
 				} else if (this.flavour == null || this.flavour.getPart() == null
 						|| this.flavour.getPart().getPartNumber() != 1) {
 					COSStream mainStream = mainMetadata.getStream();
@@ -112,16 +112,16 @@ public class PBoxPDMetadata extends PBoxPDObject implements PDMetadata {
 						VeraPDFMeta mainMeta = VeraPDFMeta.parse(mainStream.getUnfilteredStream());
 						mainExtensionNode = mainMeta.getExtensionSchemasNode();
 					}
-					xmp.add(new AXLXMPPackage(metadata, true, mainExtensionNode, this.flavour));
+					xmp.add(new AXLXMPPackage(metadata, true, mainExtensionNode));
 				}
 			}
 		} catch (XMPException | IOException e) {
 			LOGGER.log(java.util.logging.Level.INFO, "Problems with parsing metadata. " + e.getMessage());
 			if (isMainMetadata) {
-				xmp.add(new AXLMainXMPPackage(null, false, this.flavour));
+				xmp.add(new AXLMainXMPPackage(null, false));
 			} else if (this.flavour == null || this.flavour.getPart() == null
 					|| this.flavour.getPart().getPartNumber() != 1) {
-				xmp.add(new AXLXMPPackage(null, false, null, this.flavour));
+				xmp.add(new AXLXMPPackage(null, false, null));
 			}
 		}
 		return xmp;
@@ -141,5 +141,10 @@ public class PBoxPDMetadata extends PBoxPDObject implements PDMetadata {
 		return obj instanceof COSStream
 				&& ((COSStream) obj).getCOSName(COSName.TYPE) == COSName.METADATA
 				&& ((COSStream) obj).getCOSName(COSName.SUBTYPE) == COSName.getPDFName("XML");
+	}
+
+	@Override
+	public Boolean getisCatalogMetadata() {
+		return isMainMetadata;
 	}
 }

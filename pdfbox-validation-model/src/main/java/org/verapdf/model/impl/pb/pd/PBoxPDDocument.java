@@ -328,6 +328,17 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 	}
 
 	@Override
+	public Boolean getcontainsMetadata() {
+		org.apache.pdfbox.pdmodel.common.PDMetadata meta = this.catalog != null ? this.catalog.getMetadata() : null;
+		return meta != null && PBoxPDMetadata.isMetadataObject(meta.getCOSObject());
+	}
+
+	@Override
+	public Boolean getcontainsStructTreeRoot() {
+		return this.catalog != null && this.catalog.getStructureTreeRoot() != null;
+	}
+
+	@Override
 	public Boolean getcontainsAlternatePresentations() {
 		if (this.catalog != null) {
 			COSDictionary rawCatalog = this.catalog.getCOSObject();
@@ -370,6 +381,11 @@ public class PBoxPDDocument extends PBoxPDObject implements PDDocument {
 			}
 		}
 		return Collections.emptyList();
+	}
+	
+	@Override
+	public Boolean getcontainsLang() {
+		return this.catalog != null && catalog.getCOSObject().getDictionaryObject(COSName.LANG) instanceof COSString;
 	}
 
 }

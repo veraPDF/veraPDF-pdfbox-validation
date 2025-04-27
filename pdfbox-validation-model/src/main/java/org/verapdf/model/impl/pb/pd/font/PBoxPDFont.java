@@ -133,11 +133,22 @@ public abstract class PBoxPDFont extends PBoxPDResource implements PDFont {
 	}
 
 	private List<FontProgram> getFontFile() {
+		FontProgram fontProgram = getFontProgram();
+		if (fontProgram != null) {
+			return PBoxPDFont.getFontProgramList(fontProgram);
+		}
+		return Collections.emptyList();
+	}
+
+	@Override
+	public Boolean getcontainsFontFile() {
+		return getFontProgram() != null;
+	}
+	
+	private FontProgram getFontProgram() {
 		if (!getSubtype().equals(FontFactory.TYPE_3) && (this.pdFontLike.isEmbedded())) {
 			if (getSubtype().equals(FontFactory.TRUE_TYPE)) {
-				PBoxTrueTypeFontProgram trueTypeFontProgram = new PBoxTrueTypeFontProgram(
-						((PDTrueTypeFont) this.pdFontLike).getTrueTypeFont(), getisSymbolic());
-				return PBoxPDFont.getFontProgramList(trueTypeFontProgram);
+				return new PBoxTrueTypeFontProgram(((PDTrueTypeFont) this.pdFontLike).getTrueTypeFont(), getisSymbolic());
 			}
 			PDFontDescriptor fontDescriptor = pdFontLike.getFontDescriptor();
 			PDStream fontFile;
@@ -153,10 +164,10 @@ public abstract class PBoxPDFont extends PBoxPDResource implements PDFont {
 				fontFile = fontDescriptor.getFontFile3();
 			}
 			if (fontFile != null) {
-				return PBoxPDFont.getFontProgramList(new PBoxFontProgram(fontFile));
+				return new PBoxFontProgram(fontFile);
 			}
 		}
-		return Collections.emptyList();
+		return null;
 	}
 
 	private static List<FontProgram> getFontProgramList(FontProgram fontProgram) {

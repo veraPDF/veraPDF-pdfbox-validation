@@ -117,6 +117,11 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 	}
 
 	@Override
+	public String getnamespaceAndTag() {
+		return null;
+	}
+
+	@Override
 	public Boolean getcontainsParent() {
 		return ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.P) != null;
 	}
@@ -156,6 +161,12 @@ public class PBoxPDStructElem extends PBoxPDObject implements PDStructElem {
 			return this.roleMapHelper.getStandardType(((COSName) type).getName());
 		}
 		return null;
+	}
+
+	@Override
+	public Boolean getcontainsLang() {
+		COSBase baseLang = ((COSDictionary) this.simplePDObject).getDictionaryObject(COSName.LANG);
+		return baseLang instanceof COSString;
 	}
 
 	@Override

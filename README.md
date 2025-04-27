@@ -2,7 +2,7 @@ veraPDF-pdfbox-validation
 =========================
 *PDF Box based PDF/A and PDF/UA validation, feature extraction and metadata repair developed for veraPDF*
 
-[![Build Status](https://jenkins.openpreservation.org/job/veraPDF/job/1.26/job/pdfbox-validation/badge/icon)](https://jenkins.openpreservation.org/job/veraPDF/job/1.26/job/pdfbox-validation/ "OPF Jenkins")
+[![Build Status](https://jenkins.openpreservation.org/job/veraPDF/job/1.28/job/pdfbox-validation/badge/icon)](https://jenkins.openpreservation.org/job/veraPDF/job/1.28/job/pdfbox-validation/ "OPF Jenkins")
 [![Maven Central](https://img.shields.io/maven-central/v/org.verapdf/pdfbox-validation-model.svg)](https://repo1.maven.org/maven2/org/verapdf/pdfbox-validation-model/ "Maven central")
 [![CodeCov Coverage](https://img.shields.io/codecov/c/github/veraPDF/veraPDF-pdfbox-validation.svg)](https://codecov.io/gh/veraPDF/veraPDF-pdfbox-validation/ "CodeCov coverage")
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/216fae32f94541e694228d96527aee5c)](https://app.codacy.com/gh/veraPDF/veraPDF-pdfbox-validation/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade "Codacy coverage")
@@ -29,7 +29,7 @@ Quick Start
 
 In order to build the parser you'll need:
 
- * Java 9 - 21, which can be downloaded [from Oracle](https://www.oracle.com/technetwork/java/javase/downloads/index.html), or for Linux users [OpenJDK](https://openjdk.java.net/install/index.html).
+ * Java 8, 11, 17 or 21, which can be downloaded [from Oracle](https://www.oracle.com/technetwork/java/javase/downloads/index.html), or for Linux users [OpenJDK](https://openjdk.java.net/install/index.html).
  * [Maven v3+](https://maven.apache.org/)
 
 ### Building the veraPDF PDF Box Validation Model
