@@ -64,6 +64,11 @@ public class PBoxPDCMap extends PBoxPDObject implements PDCMap {
 	}
 
     @Override
+    public Boolean getcontainsEmbeddedFile() {
+        return this.simplePDObject instanceof COSStream;
+    }
+
+    @Override
     public List<? extends Object> getLinkedObjects(String link) {
         switch (link) {
             case EMBEDDED_FILE:

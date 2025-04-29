@@ -28,16 +28,16 @@
   <parent>
     <groupId>org.verapdf</groupId>
     <artifactId>verapdf-parent</artifactId>
-    <version>1.26.2</version>
+    <version>1.28.1</version>
   </parent>
 
   <groupId>org.verapdf</groupId>
   <artifactId>verapdf-pdfbox-validation-jakarta</artifactId>
-  <version>1.26.0</version>
+  <version>1.28.0</version>
   <packaging>pom</packaging>
 
-  <name>veraPDF PDF-Box PDF/A Validation</name>
-  <description>veraPDF PDF-Box based PDF/A Validation implementation.</description>
+  <name>veraPDF PDF-Box Validation for Jakarta EE</name>
+  <description>veraPDF PDF-Box based Validation implementation with Jakarta EE support.</description>
   <url>https://github.com/veraPDF/veraPDF-pdfbox-validation/</url>
   <inceptionYear>2015</inceptionYear>
 
@@ -81,8 +81,8 @@
   <properties>
     <sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.itReportPath>
     <sonar.language>java</sonar.language>
-    <verapdf.library.version>[1.26.0,1.27.0)</verapdf.library.version>
-    <verapdf.model.version>[1.26.0,1.27.0)</verapdf.model.version>
+    <verapdf.library.version>[1.28.0,1.29.0)</verapdf.library.version>
+    <verapdf.model.version>[1.28.0,1.29.0)</verapdf.model.version>
     <verapdf.pdfbox.version>[2.0.62,2.1.0)</verapdf.pdfbox.version>
     <org.bouncycastle.version>1.67</org.bouncycastle.version>
   </properties>

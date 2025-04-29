@@ -52,10 +52,6 @@ public class PBoxPDExtGState extends PBoxPDResource implements PDExtGState {
 	public static final String HALFTONE = "HT";
 	public static final String LINK_BM = "bm";
 
-	private final String tr;
-	private final String tr2;
-	private final String sMask;
-	private final String BM;
 	private final Double ca;
 	private final Double CA;
 	
@@ -63,33 +59,9 @@ public class PBoxPDExtGState extends PBoxPDResource implements PDExtGState {
 
     public PBoxPDExtGState(PDExtendedGraphicsState state, PDFAFlavour flavour) {
         super(state, EXT_G_STATE_TYPE);
-		this.tr = PBoxPDExtGState.getStringProperty(state, COSName.TR);
-		this.tr2 = PBoxPDExtGState.getStringProperty(state, COSName.getPDFName("TR2"));
-		this.sMask = PBoxPDExtGState.getStringProperty(state, COSName.SMASK);
-		this.BM = PBoxPDExtGState.getStringProperty(state, COSName.BM);
 		this.ca = PBoxPDExtGState.getDoubleProperty(state, COSName.CA_NS);
 		this.CA = PBoxPDExtGState.getDoubleProperty(state, COSName.CA);
 		this.flavour = flavour;
-    }
-
-	@Override
-    public String getTR() {
-		return this.tr;
-    }
-
-    @Override
-    public String getTR2() {
-		return this.tr2;
-    }
-
-    @Override
-    public String getSMask() {
-		return this.sMask;
-    }
-
-    @Override
-    public String getBM() {
-        return this.BM;
     }
 
     @Override
@@ -103,23 +75,53 @@ public class PBoxPDExtGState extends PBoxPDResource implements PDExtGState {
     }
 
 	@Override
+	public String getTR2NameValue() {
+		return getNameKeyStringValue((COSDictionary)simplePDObject.getCOSObject(), COSName.getPDFName("TR2"));
+	}
+
+	@Override
+	public Boolean getcontainsTR() {
+		return ((COSDictionary)simplePDObject.getCOSObject()).containsKey(COSName.TR);
+	}
+
+	@Override
+	public Boolean getcontainsTR2() {
+		return ((COSDictionary)simplePDObject.getCOSObject()).containsKey(COSName.getPDFName("TR2"));
+	}
+
+	@Override
 	public Boolean getcontainsHTP() {
-		COSBase pageObject = this.simplePDObject.getCOSObject();
-		return pageObject != null && pageObject instanceof COSDictionary &&
-				((COSDictionary) pageObject).containsKey(COSName.getPDFName("HTP"));
+		return ((COSDictionary)simplePDObject.getCOSObject()).containsKey(COSName.getPDFName("HTP"));
 	}
 
 	@Override
 	public Boolean getcontainsHTO() {
-		COSBase pageObject = this.simplePDObject.getCOSObject();
-		return pageObject != null && pageObject instanceof COSDictionary &&
-				((COSDictionary) pageObject).containsKey(COSName.getPDFName("HTO"));
+		return ((COSDictionary)simplePDObject.getCOSObject()).containsKey(COSName.getPDFName("HTO"));
 	}
 
-	private static String getStringProperty(PDExtendedGraphicsState state, COSName key) {
-		COSBase base = state.getCOSObject().getDictionaryObject(key);
-		return base == null ? null : base instanceof COSName ?
-				((COSName) base).getName() : base.toString();
+	@Override
+	public String getSMaskNameValue() {
+		return getNameKeyStringValue((COSDictionary)simplePDObject.getCOSObject(), COSName.SMASK);
+	}
+
+	@Override
+	public Boolean getcontainsSMask() {
+		return ((COSDictionary)simplePDObject.getCOSObject()).containsKey(COSName.SMASK);
+	}
+
+	@Override
+	public Boolean getcontainsBM() {
+		return ((COSDictionary)simplePDObject.getCOSObject()).containsKey(COSName.BM);
+	}
+
+	@Override
+	public String getBMNameValue() {
+		return getNameKeyStringValue((COSDictionary)simplePDObject.getCOSObject(), COSName.BM);
+	}
+
+	private static String getNameKeyStringValue(COSDictionary dictionary, COSName key) {
+		COSBase base = dictionary.getDictionaryObject(key);
+		return base instanceof COSName ? ((COSName) base).getName() : null;
     }
 
 	private static Double getDoubleProperty(PDExtendedGraphicsState state, COSName key) {

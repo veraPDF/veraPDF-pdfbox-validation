@@ -223,10 +223,9 @@ public class PDInheritableResources {
 	}
 
 	public static PDInheritableResources getInstance(PDResources inheritedResources, PDResources currentResources) {
-		inheritedResources = inheritedResources != null && currentResources == null ? inheritedResources
-				: EMPTY_RESOURCES;
-		currentResources = currentResources != null ? currentResources : EMPTY_RESOURCES;
-		return new PDInheritableResources(inheritedResources, currentResources);
+		PDResources inheritedResourcesDictionary = inheritedResources != null ? inheritedResources : EMPTY_RESOURCES;
+		PDResources currentResourcesDictionary = currentResources != null ? currentResources : EMPTY_RESOURCES;
+		return new PDInheritableResources(inheritedResourcesDictionary, currentResourcesDictionary);
 	}
 
 	public Set<COSName> getUndefinedResourceNames() {

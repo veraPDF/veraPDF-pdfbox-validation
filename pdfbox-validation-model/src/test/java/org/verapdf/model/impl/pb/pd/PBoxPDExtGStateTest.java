@@ -54,22 +54,22 @@ public class PBoxPDExtGStateTest extends BaseTest {
 
 	@Test
 	public void testTRMethod() {
-		Assert.assertNull(((PBoxPDExtGState) actual).getTR());
+		Assert.assertFalse(((PBoxPDExtGState) actual).getcontainsTR());
 	}
 
 	@Test
 	public void testTR2Method() {
-		Assert.assertNull(((PBoxPDExtGState) actual).getTR2());
+		Assert.assertFalse(((PBoxPDExtGState) actual).getcontainsTR2());
 	}
 
 	@Test
 	public void testSMaskMethod() {
-		Assert.assertNull(((PBoxPDExtGState) actual).getSMask());
+		Assert.assertFalse(((PBoxPDExtGState) actual).getcontainsSMask());
 	}
 
 	@Test
 	public void testBMMethod() {
-		Assert.assertEquals("Screen", ((PBoxPDExtGState) actual).getBM());
+		Assert.assertEquals("Screen", ((PBoxPDExtGState) actual).getBMNameValue());
 	}
 
 	@Test
